@@ -17,70 +17,77 @@ import 'package:http/http.dart' as http;
 
 import '../pages/order/OrdersScreen.dart';
 import 'order_controller.dart';
-class AuthController extends GetxController{
+
+class AuthController extends GetxController {
   static SharedPreferences? sharedPreferences;
-  final OrderCustimizationController _orderCustimizationController=Get.find<OrderCustimizationController>();
-  Future<void> callUserLogin(String email,String password,BuildContext context) async {
+  final OrderCustimizationController _orderCustimizationController =
+      Get.find<OrderCustimizationController>();
+  Future<void> callUserLogin(
+      String email, String password, BuildContext context) async {
     LoginModel loginModel;
     try {
       Constants.onLoading(context);
       Map<String, String> body = {
         'email_id': email,
-        'password':password,
+        'password': password,
         'provider': 'LOCAL',
+        'vendor_id': Constants.vendorId.toString(),
         'device_token': '',
       };
       print(body);
-      Uri loginLink= Uri.parse('${Constants.baseLink}/pos/user_login');
+      Uri loginLink = Uri.parse('${Constants.baseLink}/pos/user_login');
       print(loginLink);
-      var response=await http.post(
-          loginLink,
-          body: body
-      );
+      var response = await http.post(loginLink, body: body);
       print(response.body);
-      if(response.statusCode==200){
-      loginModel =  LoginModel.fromJson(jsonDecode(response.body));
-      Constants.hideDialog(context);
-      if (loginModel.success!) {
-        Constants.toastMessage('Login Successfully');
-        sharedPreferences=await SharedPreferences.getInstance();
-        sharedPreferences?.setString(Constants.headerToken, loginModel.data!.token!);
-        sharedPreferences?.setString(Constants.loginUserId, loginModel.data!.id!.toString());
+      if (response.statusCode == 200) {
+        loginModel = LoginModel.fromJson(jsonDecode(response.body));
+        Constants.hideDialog(context);
+        if (loginModel.success!) {
+          Constants.toastMessage('Login Successfully');
+          sharedPreferences = await SharedPreferences.getInstance();
+          sharedPreferences?.setString(
+              Constants.headerToken, loginModel.data!.token!);
+          sharedPreferences?.setString(
+              Constants.loginUserId, loginModel.data!.id!.toString());
 
-        sharedPreferences?.setBool(Constants.isLoggedIn, true);
-        AuthController.sharedPreferences=sharedPreferences;
-        //Constants.onLoading(context);
-        // await _orderCustimizationController.callGetRestaurantsDetails(Constants.vendorId);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PosMenu(isDining: false,)),
-        );
-        AuthController.sharedPreferences?.setString(Constants.loginUserId, loginModel.data!.id.toString());
-
-      }else{
-        Constants.toastMessage(jsonDecode(response.body)['message']);
-      }
-      }else {
-        print(jsonDecode(response.body));
-        CommonMsgModel commonMsgModel=CommonMsgModel.fromJson(jsonDecode(response.body));
-
-        if(!commonMsgModel.success!){
-
-          Get.snackbar('ALERT',commonMsgModel.message!);
+          sharedPreferences?.setBool(Constants.isLoggedIn, true);
+          AuthController.sharedPreferences = sharedPreferences;
+          //Constants.onLoading(context);
+          // await _orderCustimizationController.callGetRestaurantsDetails(Constants.vendorId);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PosMenu(
+                      isDining: false,
+                    )),
+          );
+          AuthController.sharedPreferences?.setString(
+              Constants.loginUserId, loginModel.data!.id.toString());
+        } else {
+          Constants.toastMessage(jsonDecode(response.body)['message']);
         }
-      Constants.hideDialog(context);
+      } else {
+        print(jsonDecode(response.body));
+        CommonMsgModel commonMsgModel =
+            CommonMsgModel.fromJson(jsonDecode(response.body));
+
+        if (!commonMsgModel.success!) {
+          Get.snackbar('ALERT', commonMsgModel.message!);
+        }
+        Constants.hideDialog(context);
       }
-    }catch (error, stacktrace) {
+    } catch (error, stacktrace) {
       Constants.hideDialog(context);
       print("Exception occurred: $error stackTrace: $stacktrace");
-
     }
   }
-  Future<void> callVendorLogin(String email,String password,BuildContext context)async{
-   try {
-     Constants.onLoading(context);
-     Uri loginLink= Uri.parse('${Constants.vendorBaseLink}login');
-      var response=await http.post(
+
+  Future<void> callVendorLogin(
+      String email, String password, BuildContext context) async {
+    try {
+      Constants.onLoading(context);
+      Uri loginLink = Uri.parse('${Constants.vendorBaseLink}login');
+      var response = await http.post(
         loginLink,
         body: {
           'email_id': email,
@@ -89,34 +96,32 @@ class AuthController extends GetxController{
         },
       );
       // print(response.statusCode);
-      if(response.statusCode==200){
-          Vendor vendor=Vendor.fromJson(jsonDecode(response.body));
-          print(vendor.toJson());
-          sharedPreferences=await SharedPreferences.getInstance();
-          AuthController.sharedPreferences=sharedPreferences;
-          sharedPreferences?.setString(Constants.vendorBearerToken, vendor.data!.token!);
+      if (response.statusCode == 200) {
+        Vendor vendor = Vendor.fromJson(jsonDecode(response.body));
+        print(vendor.toJson());
+        sharedPreferences = await SharedPreferences.getInstance();
+        AuthController.sharedPreferences = sharedPreferences;
+        sharedPreferences?.setString(
+            Constants.vendorBearerToken, vendor.data!.token!);
         sharedPreferences!.setString(Constants.vendorName, vendor.data!.name!);
-          sharedPreferences?.setBool(Constants.isKitchenLoggedIn, true);
+        sharedPreferences?.setBool(Constants.isKitchenLoggedIn, true);
 
-        OrderController orderController=Get.find<OrderController>() ;
-          Constants.hideDialog(context);
+        OrderController orderController = Get.find<OrderController>();
+        Constants.hideDialog(context);
         await orderController.getOrders('NewOrders');
-          Get.to(()=>OrderScreen(title: 'Kitchen', apiName: 'NewOrders'));
+        Get.to(() => OrderScreen(title: 'Kitchen', apiName: 'NewOrders'));
         // Get.to()
-      }else{
-        CommonMsgModel commonMsgModel=CommonMsgModel.fromJson(jsonDecode(response.body));
-        if(!commonMsgModel.success!){
-
-          Get.snackbar('ALERT',commonMsgModel.message!);
+      } else {
+        CommonMsgModel commonMsgModel =
+            CommonMsgModel.fromJson(jsonDecode(response.body));
+        if (!commonMsgModel.success!) {
+          Get.snackbar('ALERT', commonMsgModel.message!);
         }
         Constants.hideDialog(context);
       }
-   } on Exception catch (e,stk) {
-     print(e);
-     print(stk);
-   }
-
-
-
+    } on Exception catch (e, stk) {
+      print(e);
+      print(stk);
+    }
   }
 }
