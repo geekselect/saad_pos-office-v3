@@ -456,5 +456,6 @@ class ReportController extends GetxController {
 
     printer.feed(1);
     printer.cut();
+    printer.beep();
   }
 }

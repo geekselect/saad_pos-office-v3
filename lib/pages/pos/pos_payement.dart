@@ -626,6 +626,7 @@ class _PosPaymentState extends State<PosPayment> {
 
     printer.feed(1);
     printer.cut();
+    printer.beep();
   }
 
   void testPrintKitchen(String printerIp, int port, BuildContext ctx,
@@ -996,6 +997,7 @@ class _PosPaymentState extends State<PosPayment> {
 
     printer.feed(1);
     printer.cut();
+    printer.beep();
   }
 
   // int _selectedButton = -1;
