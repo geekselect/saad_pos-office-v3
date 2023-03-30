@@ -1,0 +1,6 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/ozpos/pospos/BuildConfig.java
+ com.ozpos.pospos.BuildConfig
+com/ozpos/pospos/MainActivity.java
+ com.ozpos.pospos.MainActivity

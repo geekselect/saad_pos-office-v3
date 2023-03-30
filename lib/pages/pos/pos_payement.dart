@@ -8,6 +8,7 @@ import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
+import 'package:pos/pages/pos/pos_menu.dart';
 import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/widgets/number_btn.dart';
 import 'package:pos/widgets/shortcut_button.dart';
@@ -749,10 +750,8 @@ class _PosPaymentState extends State<PosPayment> {
     //   ),);
     printer.hr();
     printer.row([
-      PosColumn(text: 'Qty', width: 1),
-      PosColumn(text: 'Item', width: 9),
-      PosColumn(
-          text: 'Total', width: 2, styles: PosStyles(align: PosAlign.right)),
+      PosColumn(text: 'Qty', width: 2),
+      PosColumn(text: 'Item', width: 10),
     ]);
     for (int itemIndex = 0; itemIndex < cart.length; itemIndex++) {
       String category = cart[itemIndex].category;
@@ -760,33 +759,25 @@ class _PosPaymentState extends State<PosPayment> {
       List<MenuCartMaster> menu = cart[itemIndex].menu;
       if (category == 'SINGLE') {
         Cart cartItem = cart[itemIndex];
-        printer.row([
-          PosColumn(
-              text: "-SINGLE-",
-              width: 12,
-              styles: PosStyles(
-                  width: PosTextSize.size1,
-                  height: PosTextSize.size1,
-                  align: PosAlign.center))
-        ]);
+
         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
           MenuCartMaster menuItem = menu[menuIndex];
           printer.row([
-            PosColumn(text: cartItem.quantity.toString(), width: 1),
+            PosColumn(
+                text: cartItem.quantity.toString(),
+                width: 2,
+                styles: PosStyles(bold: true)),
             PosColumn(
                 text: menu[menuIndex].name +
                     (cart[itemIndex].size != null
                         ? '(${cart[itemIndex].size?.sizeName})'
                         : ''),
-                width: 9,
+                width: 10,
                 styles: PosStyles(
                     width: PosTextSize.size1,
                     height: PosTextSize.size1,
-                    align: PosAlign.center)),
-            PosColumn(
-                text: cartItem.totalAmount.toString(),
-                width: 2,
-                styles: PosStyles(align: PosAlign.right)),
+                    align: PosAlign.left,
+                    bold: true)),
           ]);
           for (int addonIndex = 0;
               addonIndex < menuItem.addons.length;
@@ -804,14 +795,10 @@ class _PosPaymentState extends State<PosPayment> {
               ]);
             }
             printer.row([
-              PosColumn(text: '', width: 1),
-              PosColumn(text: addonItem.name, width: 9),
+              PosColumn(text: '', width: 2),
+              PosColumn(text: addonItem.name, width: 10),
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
-              PosColumn(
-                  text: addonItem.price.toString(),
-                  width: 2,
-                  styles: PosStyles(align: PosAlign.right)),
             ]);
           }
         }
@@ -2166,9 +2153,7 @@ class _PosPaymentState extends State<PosPayment> {
         }
         // Future.delayed(Duration(seconds: 3), () {
         Get.offAll(
-          () => OrderHistory(
-            isFromProfile: false,
-          ),
+          () => PosMenu(isDining: false),
         );
         // });
       } else {

@@ -867,6 +867,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pos/model/report_model.dart';
 import 'package:pos/pages/Reports/report_controller.dart';
+import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
 import 'package:pos/utils/constants.dart';
 
@@ -874,6 +875,7 @@ import '../../retrofit/base_model.dart';
 
 class Reports extends StatelessWidget {
   final _reportController = Get.put(ReportController());
+  PrinterController _printerController = Get.find<PrinterController>();
 
   @override
   Widget build(BuildContext context) {
@@ -1416,17 +1418,28 @@ class Reports extends StatelessWidget {
                         alignment: Alignment.center,
                         child: ElevatedButton(
                             onPressed: () {
-                              if (_reportController.posPort != null) {
+                              if (_printerController.printerModel.value.ipPos !=
+                                  null) {
                                 print("POS ADDED");
-                                if (_reportController.posIp == '' &&
-                                        _reportController.posPort == '' ||
-                                    _reportController.posIp == null &&
-                                        _reportController.posPort == null) {
+                                if (_printerController
+                                                .printerModel.value.ipPos ==
+                                            '' &&
+                                        _printerController
+                                                .printerModel.value.portPos ==
+                                            '' ||
+                                    _printerController
+                                                .printerModel.value.ipPos ==
+                                            null &&
+                                        _printerController
+                                                .printerModel.value.portPos ==
+                                            null) {
                                   print("pos ip empty");
                                 } else {
                                   _reportController.testPrintPOS(
-                                    _reportController.posIp!,
-                                    _reportController.posPort!,
+                                    _printerController
+                                        .printerModel.value.ipPos!,
+                                    int.parse(_printerController
+                                        .printerModel.value.portPos!),
                                     context,
                                   );
                                 }

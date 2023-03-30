@@ -12,6 +12,7 @@ import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/cart_master.dart' as cm;
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/OrderHistory/order_history.dart';
+import 'package:pos/pages/Reports/report_screen.dart';
 import 'package:pos/pages/cart_screen.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_item_categories.dart';
@@ -530,9 +531,11 @@ class _VendorMenuState extends State<VendorMenu>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text(_cartController.diningValue
-                                  ? 'Dine in'
-                                  : 'Take Away',),
+                              Text(
+                                _cartController.diningValue
+                                    ? 'Dine in'
+                                    : 'Take Away',
+                              ),
                               Switch(
                                 onChanged: (bool? value) async {
                                   if (value!) {
@@ -955,7 +958,9 @@ class _VendorMenuState extends State<VendorMenu>
                               }
                             },
                           ),
-                          circleWidget(Icons.report, () {}),
+                          circleWidget(Icons.report, () {
+                            Get.to(() => Reports());
+                          }),
                           circleWidget(Icons.logout, () async {
                             SharedPreferences sharedPrefs =
                                 await SharedPreferences.getInstance();
@@ -1605,7 +1610,6 @@ class _VendorMenuState extends State<VendorMenu>
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     builder: (BuildContext context) {
                                       return AddonsOnly(
-
                                         data: searchResults[i].menu!,
                                         menuPrice:
                                             searchResults[i].menu!.price!,
