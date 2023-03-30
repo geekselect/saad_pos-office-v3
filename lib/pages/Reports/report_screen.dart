@@ -885,555 +885,573 @@ class Reports extends StatelessWidget {
         onBtnPress: () {},
       ),
       body: Container(
-        decoration: BoxDecoration(
-            color: Colors.red.shade50,
-            image: DecorationImage(
-              image: AssetImage('images/ic_background_image.png'),
-              fit: BoxFit.cover,
-            )),
-        child: FutureBuilder<BaseModel<ReportModel>>(
-          builder: (ctx, snapshot) {
-            // Checking if future is resolved or not
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If we got an error
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    '${snapshot.error} occurred',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                );
+          decoration: BoxDecoration(
+              color: Colors.red.shade50,
+              image: DecorationImage(
+                image: AssetImage('images/ic_background_image.png'),
+                fit: BoxFit.cover,
+              )),
+          child: FutureBuilder<BaseModel<ReportModel>>(
+            builder: (ctx, snapshot) {
+              // Checking if future is resolved or not
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If we got an error
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      '${snapshot.error} occurred',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
 
-                // if we got our data
-              } else if (snapshot.hasData) {
-                // Extracting data from snapshot object
-                // final data = snapshot.data as String;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        "Payments",
-                        style: TextStyle(
-                            color: Colors.red.shade400,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600),
+                  // if we got our data
+                } else if (snapshot.hasData) {
+                  // Extracting data from snapshot object
+                  // final data = snapshot.data as String;
+                  // return Container();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          "Payments",
+                          style: TextStyle(
+                              color: Colors.red.shade400,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      height: 70,
-                      width: double.infinity,
-                      // padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: const [
-                              Expanded(
-                                child: Center(
-                                  child: Text(
-                                    "Name",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        height: 70,
+                        width: double.infinity,
+                        // padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: const [
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      "Name",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Center(
-                                  child: Text(
-                                    "Type",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      "Type",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Center(
-                                  child: Text(
-                                    "Amount",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      "Amount",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Center(
-                                      child: Text(_reportController
-                                          .reportModelData
-                                          .value
-                                          .payments!
-                                          .posCash!
-                                          .name!
-                                          .first
-                                          .toString()))),
-                              const Expanded(
-                                  child: Center(child: Text("POS Cash"))),
-                              Expanded(
-                                  child: Center(
-                                      child: Text(_reportController
-                                          .reportModelData
-                                          .value
-                                          .payments!
-                                          .posCash!
-                                          .amount
-                                          .toString()))),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Center(
-                                      child: Text(
-                                _reportController.reportModelData.value
-                                    .payments!.posCard!.name!.first
-                                    .toString(),
-                              ))),
-                              const Expanded(
-                                  child: Center(child: Text("POS Card"))),
-                              Expanded(
-                                  child: Center(
-                                      child: Text(_reportController
-                                          .reportModelData
-                                          .value
-                                          .payments!
-                                          .posCard!
-                                          .amount
-                                          .toString()))),
-                            ],
-                          )
-                        ],
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Center(
+                                        child: Text(_reportController
+                                                .reportModelData
+                                                .value
+                                                .payments!
+                                                .posCash!
+                                                .name!
+                                                .isNotEmpty
+                                            ? _reportController
+                                                .reportModelData
+                                                .value
+                                                .payments!
+                                                .posCash!
+                                                .name!
+                                                .first
+                                                .toString()
+                                            : "No data"))),
+                                const Expanded(
+                                    child: Center(child: Text("POS Cash"))),
+                                Expanded(
+                                    child: Center(
+                                        child: Text(_reportController
+                                            .reportModelData
+                                            .value
+                                            .payments!
+                                            .posCash!
+                                            .amount
+                                            .toString()))),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Center(
+                                        child: Text(
+                                  _reportController.reportModelData.value
+                                          .payments!.posCard!.name!.isNotEmpty
+                                      ? _reportController.reportModelData.value
+                                          .payments!.posCard!.name!.first
+                                          .toString()
+                                      : "No data",
+                                ))),
+                                const Expanded(
+                                    child: Center(child: Text("POS Card"))),
+                                Expanded(
+                                    child: Center(
+                                        child: Text(_reportController
+                                            .reportModelData
+                                            .value
+                                            .payments!
+                                            .posCard!
+                                            .amount
+                                            .toString()))),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        "Orders",
-                        style: TextStyle(
-                            color: Colors.red.shade400,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600),
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Expanded(
-                      child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: snapshot.data!.data!.orders!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            _reportController.reportModelOrderData.value =
-                                snapshot.data!.data!.orders![index];
-                            return Container(
-                              color: Colors.white,
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              child: ListTile(
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10),
-                                title: Text(
-                                  "Item Name: ${_reportController.reportModelOrderData.value.itemName.toString()}",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 18),
-                                ),
-                                subtitle: Text(
-                                  "Quantity ${_reportController.reportModelOrderData.value.quantity.toString()}",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 15),
-                                ),
-                              ), // title: Text("List item $index")),
-                            );
-                          }),
-                    ),
-                    SizedBox(height: 5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        "Total Orders",
-                        style: TextStyle(
-                            color: Colors.red.shade400,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          "Orders",
+                          style: TextStyle(
+                              color: Colors.red.shade400,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      height: 50,
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Todays total orders"),
-                              Text(_reportController
-                                  .reportModelData.value.todaysTotalOrders
-                                  .toString()),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Todays total TakeAway"),
-                              Text(_reportController
-                                  .reportModelData.value.todaysTotalTakeaway
-                                  .toString()),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Todays total Dine in"),
-                              Text(_reportController
-                                  .reportModelData.value.todaysTotalDining
-                                  .toString()),
-                            ],
-                          ),
-                        ],
+                      SizedBox(height: 5),
+                      Expanded(
+                        child: snapshot.data!.data!.orders!.length == 0
+                            ? Center(
+                                child: Text("No data"),
+                              )
+                            : ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount: snapshot.data!.data!.orders!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  _reportController.reportModelOrderData.value =
+                                      snapshot.data!.data!.orders![index];
+                                  return Container(
+                                    color: Colors.white,
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    child: ListTile(
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      title: Text(
+                                        "Item Name: ${_reportController.reportModelOrderData.value.itemName.toString()}",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 18),
+                                      ),
+                                      subtitle: Text(
+                                        "Quantity ${_reportController.reportModelOrderData.value.quantity.toString()}",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 15),
+                                      ),
+                                    ), // title: Text("List item $index")),
+                                  );
+                                }),
                       ),
-                    ),
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          "Total Orders",
+                          style: TextStyle(
+                              color: Colors.red.shade400,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        height: 50,
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Todays total orders"),
+                                Text(_reportController
+                                    .reportModelData.value.todaysTotalOrders
+                                    .toString()),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Todays total TakeAway"),
+                                Text(_reportController
+                                    .reportModelData.value.todaysTotalTakeaway
+                                    .toString()),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Todays total Dine in"),
+                                Text(_reportController
+                                    .reportModelData.value.todaysTotalDining
+                                    .toString()),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 5),
 
-                    ///For both but 2 future builders
-                    // Expanded(
-                    //   child: FutureBuilder<BaseModel<ReportCashModel>>(
-                    //     builder: (ctx, snapshot) {
-                    //       // Checking if future is resolved or not
-                    //       if (snapshot.connectionState == ConnectionState.done) {
-                    //         // If we got an error
-                    //         if (snapshot.hasError) {
-                    //           return Center(
-                    //             child: Text(
-                    //               '${snapshot.error} occurred',
-                    //               style: TextStyle(fontSize: 18),
-                    //             ),
-                    //           );
-                    //
-                    //           // if we got our data
-                    //         } else if (snapshot.hasData) {
-                    //           // Extracting data from snapshot object
-                    //           // final data = snapshot.data as String;
-                    //           return Center(
-                    //             child: ListView.builder(
-                    //               padding: EdgeInsets.zero,
-                    //                 itemCount: snapshot.data!.data!.data!.names!.length,
-                    //                 itemBuilder: (BuildContext context, int index) {
-                    //                   _reportController.posCashLength.value = snapshot.data!.data!.data!.amount!;
-                    //                   return Container(
-                    //                     color: Colors.white,
-                    //                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    //                     child: ListTile(
-                    //                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    //                         title:  Text(
-                    //                           "${snapshot.data!.data!.data!.names![index].toString()}",
-                    //                           style: TextStyle(color: Colors.black, fontSize: 18),
-                    //                         ),
-                    //                         subtitle:  Text(
-                    //                           "Payment pos cash ${snapshot.data!.data!.data!.amount![index].toString()}",
-                    //                           style: TextStyle(color: Colors.black, fontSize: 15),
-                    //                         ),
-                    //                     ),  // title: Text("List item $index")),
-                    //                   );
-                    //                 }),
-                    //
-                    //
-                    //
-                    //             // Container(
-                    //             //   child: Column(
-                    //             //     children: [
-                    //             //      Row(
-                    //             //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //             //        children: [
-                    //             //          Text("Name"),
-                    //             //          Text("${snapshot.data!.data!.data!.names!.first.toString()}")
-                    //             //        ],
-                    //             //      ),
-                    //             //       SizedBox(height: 10,),
-                    //             //       Row(
-                    //             //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //             //         children: [
-                    //             //           Text("Amount"),
-                    //             //           Text("${snapshot.data!.data!.data!.amount!.first.toString()}")
-                    //             //         ],
-                    //             //       ),
-                    //             //     ],
-                    //             //   ),
-                    //             // ),
-                    //           );
-                    //         }
-                    //       }
-                    //
-                    //       // Displaying LoadingSpinner to indicate waiting state
-                    //       return Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     },
-                    //
-                    //     // Future that needs to be resolved
-                    //     // inorder to display something on the Canvas
-                    //     future: _reportController.posCashCall(Constants.vendorId),
-                    //   ),
-                    // ),
-                    // Expanded(
-                    //   child: FutureBuilder<BaseModel<ReportCardModel>>(
-                    //     builder: (ctx, snapshot) {
-                    //       // Checking if future is resolved or not
-                    //       if (snapshot.connectionState == ConnectionState.done) {
-                    //         // If we got an error
-                    //         if (snapshot.hasError) {
-                    //           return Center(
-                    //             child: Text(
-                    //               '${snapshot.error} occurred',
-                    //               style: TextStyle(fontSize: 18),
-                    //             ),
-                    //           );
-                    //
-                    //           // if we got our data
-                    //         } else if (snapshot.hasData) {
-                    //           // Extracting data from snapshot object
-                    //           // final data = snapshot.data as String;
-                    //           return Center(
-                    //             child: ListView.builder(
-                    //                 padding: EdgeInsets.zero,
-                    //                 itemCount: snapshot.data!.data!.data!.names!.length,
-                    //                 itemBuilder: (BuildContext context, int index) {
-                    //                   _reportController.poscardlength.value = snapshot.data!.data!.data!.amount!;
-                    //                   return Container(
-                    //                     color: Colors.white,
-                    //                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    //                     child: ListTile(
-                    //                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    //                       title:  Text(
-                    //                         "${snapshot.data!.data!.data!.names![index].toString()}",
-                    //                         style: TextStyle(color: Colors.black, fontSize: 18),
-                    //                       ),
-                    //                       subtitle:  Text(
-                    //                         "Payment pos card ${snapshot.data!.data!.data!.amount![index].toString()}",
-                    //                         style: TextStyle(color: Colors.black, fontSize: 15),
-                    //                       ),
-                    //                     ),  // title: Text("List item $index")),
-                    //                   );
-                    //                 }),
-                    //
-                    //
-                    //
-                    //             // Container(
-                    //             //   child: Column(
-                    //             //     children: [
-                    //             //      Row(
-                    //             //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //             //        children: [
-                    //             //          Text("Name"),
-                    //             //          Text("${snapshot.data!.data!.data!.names!.first.toString()}")
-                    //             //        ],
-                    //             //      ),
-                    //             //       SizedBox(height: 10,),
-                    //             //       Row(
-                    //             //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //             //         children: [
-                    //             //           Text("Amount"),
-                    //             //           Text("${snapshot.data!.data!.data!.amount!.first.toString()}")
-                    //             //         ],
-                    //             //       ),
-                    //             //     ],
-                    //             //   ),
-                    //             // ),
-                    //           );
-                    //         }
-                    //       }
-                    //
-                    //       // Displaying LoadingSpinner to indicate waiting state
-                    //       return Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     },
-                    //
-                    //     // Future that needs to be resolved
-                    //     // inorder to display something on the Canvas
-                    //     future: _reportController.posCardCall(Constants.vendorId),
-                    //   ),
-                    // ),
-                    ///For both Pos card and also pos cash call in same futurebuilder
-                    // Expanded(
-                    //   child: FutureBuilder<List<dynamic>>(
-                    //     builder: (ctx, snapshot) {
-                    //       // Checking if future is resolved or not
-                    //       if (snapshot.connectionState == ConnectionState.done) {
-                    //         // If we got an error
-                    //         if (snapshot.hasError) {
-                    //           return Center(
-                    //             child: Text(
-                    //               '${snapshot.error} occurred',
-                    //               style: TextStyle(fontSize: 18),
-                    //             ),
-                    //           );
-                    //         } else if (snapshot.hasData) {
-                    //           // Combine the two lists
-                    //           List<dynamic> list1 = snapshot.data![0];
-                    //           List<dynamic> list2 = snapshot.data![1];
-                    //           List<dynamic> combinedList = [...list1, ...list2];
-                    //           // Build the ListView using the combined list
-                    //           return Center(
-                    //             child: ListView.builder(
-                    //               padding: EdgeInsets.zero,
-                    //               itemCount: combinedList.length,
-                    //               itemBuilder: (BuildContext context, int index) {
-                    //                 print("value..${combinedList[index].toJson()}");
-                    //
-                    //                 String subtitle = "Payment";
-                    //                 // Get the payment method from the current item
-                    //                var type = combinedList[index].runtimeType;
-                    //                print("type ${type}");
-                    //                 ReportCashModel? reportCashModel;
-                    //                 ReportCardModel? reportCardModel;
-                    //
-                    //                 // Check the payment method and call the appropriate model
-                    //                 if (type == ReportCashModel) {
-                    //                   // Call the Pos cash model
-                    //                   print("ABC");
-                    //                    reportCashModel = combinedList[index];
-                    //                    _reportController.posCashdata.value = reportCashModel!;
-                    //                   // posCashModel(combinedList[index]);
-                    //                 } else if (type == ReportCardModel) {
-                    //                   // Call the Pos card model
-                    //                   // posCardModel(combinedList[index]);
-                    //                    reportCardModel = combinedList[index];
-                    //                    _reportController.posCarddata.value = reportCardModel!;
-                    //                   print("DEF");
-                    //
-                    //                 }
-                    //
-                    //                 return type == ReportCashModel ?
-                    //                 reportCashModel!.data!.names!.length == 0 ? Container() :
-                    //                 Container(
-                    //                   color: Colors.white,
-                    //                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    //                   child: ListTile(
-                    //                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    //                     title: Text(
-                    //                         reportCashModel.data!.names!.first.toString(),
-                    //                       style: TextStyle(color: Colors.black, fontSize: 18),
-                    //                     ),
-                    //                     subtitle: Text(
-                    //                        "Payement pos cash ${reportCashModel.data!.amount!.first.toString()}",
-                    //                       style: TextStyle(color: Colors.black, fontSize: 15),
-                    //                     )
-                    //                   ),
-                    //                 ) :
-                    //                 reportCardModel!.data!.names!.length == 0 ? Container() :
-                    //                 Container(
-                    //                   color: Colors.white,
-                    //                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    //                   child: ListTile(
-                    //                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    //                     title: Text(
-                    //                       reportCardModel.data!.names!.first.toString(),
-                    //                       style: TextStyle(color: Colors.black, fontSize: 18),
-                    //                     ),
-                    //                     subtitle:  Text(
-                    //                       "Payement pos card ${reportCardModel.data!.amount!.first.toString()}",
-                    //                       style: TextStyle(color: Colors.black, fontSize: 15),
-                    //                     ),
-                    //                   ),
-                    //                 );
-                    //               },
-                    //             ),
-                    //             // child: ListView.builder(
-                    //             //   padding: EdgeInsets.zero,
-                    //             //   itemCount: combinedList.length,
-                    //             //   itemBuilder: (BuildContext context, int index) {
-                    //             //   print("value..${combinedList[index].toJson()}");
-                    //             //
-                    //             //     String subtitle = "Payment";
-                    //             //     return Container(
-                    //             //       color: Colors.white,
-                    //             //       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    //             //       child: ListTile(
-                    //             //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    //             //         title: Text(
-                    //             //           "${combinedList[index].toString()}",
-                    //             //           style: TextStyle(color: Colors.black, fontSize: 18),
-                    //             //         ),
-                    //             //         subtitle: Text(
-                    //             //           subtitle,
-                    //             //           style: TextStyle(color: Colors.black, fontSize: 15),
-                    //             //         ),
-                    //             //       ),
-                    //             //     );
-                    //             //   },
-                    //             // ),
-                    //           );
-                    //         }
-                    //       }
-                    //
-                    //       // Displaying LoadingSpinner to indicate waiting state
-                    //       return Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     },
-                    //
-                    //     // Future that needs to be resolved
-                    //     // inorder to display something on the Canvas
-                    //     future: Future.wait([
-                    //       _reportController.posCashCall(Constants.vendorId),
-                    //       _reportController.posCardCall(Constants.vendorId)
-                    //     ]),
-                    //   ),
-                    // ),
-                    ///End futurebuilder for both
+                      ///For both but 2 future builders
+                      // Expanded(
+                      //   child: FutureBuilder<BaseModel<ReportCashModel>>(
+                      //     builder: (ctx, snapshot) {
+                      //       // Checking if future is resolved or not
+                      //       if (snapshot.connectionState == ConnectionState.done) {
+                      //         // If we got an error
+                      //         if (snapshot.hasError) {
+                      //           return Center(
+                      //             child: Text(
+                      //               '${snapshot.error} occurred',
+                      //               style: TextStyle(fontSize: 18),
+                      //             ),
+                      //           );
+                      //
+                      //           // if we got our data
+                      //         } else if (snapshot.hasData) {
+                      //           // Extracting data from snapshot object
+                      //           // final data = snapshot.data as String;
+                      //           return Center(
+                      //             child: ListView.builder(
+                      //               padding: EdgeInsets.zero,
+                      //                 itemCount: snapshot.data!.data!.data!.names!.length,
+                      //                 itemBuilder: (BuildContext context, int index) {
+                      //                   _reportController.posCashLength.value = snapshot.data!.data!.data!.amount!;
+                      //                   return Container(
+                      //                     color: Colors.white,
+                      //                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //                     child: ListTile(
+                      //                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      //                         title:  Text(
+                      //                           "${snapshot.data!.data!.data!.names![index].toString()}",
+                      //                           style: TextStyle(color: Colors.black, fontSize: 18),
+                      //                         ),
+                      //                         subtitle:  Text(
+                      //                           "Payment pos cash ${snapshot.data!.data!.data!.amount![index].toString()}",
+                      //                           style: TextStyle(color: Colors.black, fontSize: 15),
+                      //                         ),
+                      //                     ),  // title: Text("List item $index")),
+                      //                   );
+                      //                 }),
+                      //
+                      //
+                      //
+                      //             // Container(
+                      //             //   child: Column(
+                      //             //     children: [
+                      //             //      Row(
+                      //             //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //             //        children: [
+                      //             //          Text("Name"),
+                      //             //          Text("${snapshot.data!.data!.data!.names!.first.toString()}")
+                      //             //        ],
+                      //             //      ),
+                      //             //       SizedBox(height: 10,),
+                      //             //       Row(
+                      //             //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //             //         children: [
+                      //             //           Text("Amount"),
+                      //             //           Text("${snapshot.data!.data!.data!.amount!.first.toString()}")
+                      //             //         ],
+                      //             //       ),
+                      //             //     ],
+                      //             //   ),
+                      //             // ),
+                      //           );
+                      //         }
+                      //       }
+                      //
+                      //       // Displaying LoadingSpinner to indicate waiting state
+                      //       return Center(
+                      //         child: CircularProgressIndicator(),
+                      //       );
+                      //     },
+                      //
+                      //     // Future that needs to be resolved
+                      //     // inorder to display something on the Canvas
+                      //     future: _reportController.posCashCall(Constants.vendorId),
+                      //   ),
+                      // ),
+                      // Expanded(
+                      //   child: FutureBuilder<BaseModel<ReportCardModel>>(
+                      //     builder: (ctx, snapshot) {
+                      //       // Checking if future is resolved or not
+                      //       if (snapshot.connectionState == ConnectionState.done) {
+                      //         // If we got an error
+                      //         if (snapshot.hasError) {
+                      //           return Center(
+                      //             child: Text(
+                      //               '${snapshot.error} occurred',
+                      //               style: TextStyle(fontSize: 18),
+                      //             ),
+                      //           );
+                      //
+                      //           // if we got our data
+                      //         } else if (snapshot.hasData) {
+                      //           // Extracting data from snapshot object
+                      //           // final data = snapshot.data as String;
+                      //           return Center(
+                      //             child: ListView.builder(
+                      //                 padding: EdgeInsets.zero,
+                      //                 itemCount: snapshot.data!.data!.data!.names!.length,
+                      //                 itemBuilder: (BuildContext context, int index) {
+                      //                   _reportController.poscardlength.value = snapshot.data!.data!.data!.amount!;
+                      //                   return Container(
+                      //                     color: Colors.white,
+                      //                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //                     child: ListTile(
+                      //                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      //                       title:  Text(
+                      //                         "${snapshot.data!.data!.data!.names![index].toString()}",
+                      //                         style: TextStyle(color: Colors.black, fontSize: 18),
+                      //                       ),
+                      //                       subtitle:  Text(
+                      //                         "Payment pos card ${snapshot.data!.data!.data!.amount![index].toString()}",
+                      //                         style: TextStyle(color: Colors.black, fontSize: 15),
+                      //                       ),
+                      //                     ),  // title: Text("List item $index")),
+                      //                   );
+                      //                 }),
+                      //
+                      //
+                      //
+                      //             // Container(
+                      //             //   child: Column(
+                      //             //     children: [
+                      //             //      Row(
+                      //             //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //             //        children: [
+                      //             //          Text("Name"),
+                      //             //          Text("${snapshot.data!.data!.data!.names!.first.toString()}")
+                      //             //        ],
+                      //             //      ),
+                      //             //       SizedBox(height: 10,),
+                      //             //       Row(
+                      //             //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //             //         children: [
+                      //             //           Text("Amount"),
+                      //             //           Text("${snapshot.data!.data!.data!.amount!.first.toString()}")
+                      //             //         ],
+                      //             //       ),
+                      //             //     ],
+                      //             //   ),
+                      //             // ),
+                      //           );
+                      //         }
+                      //       }
+                      //
+                      //       // Displaying LoadingSpinner to indicate waiting state
+                      //       return Center(
+                      //         child: CircularProgressIndicator(),
+                      //       );
+                      //     },
+                      //
+                      //     // Future that needs to be resolved
+                      //     // inorder to display something on the Canvas
+                      //     future: _reportController.posCardCall(Constants.vendorId),
+                      //   ),
+                      // ),
+                      ///For both Pos card and also pos cash call in same futurebuilder
+                      // Expanded(
+                      //   child: FutureBuilder<List<dynamic>>(
+                      //     builder: (ctx, snapshot) {
+                      //       // Checking if future is resolved or not
+                      //       if (snapshot.connectionState == ConnectionState.done) {
+                      //         // If we got an error
+                      //         if (snapshot.hasError) {
+                      //           return Center(
+                      //             child: Text(
+                      //               '${snapshot.error} occurred',
+                      //               style: TextStyle(fontSize: 18),
+                      //             ),
+                      //           );
+                      //         } else if (snapshot.hasData) {
+                      //           // Combine the two lists
+                      //           List<dynamic> list1 = snapshot.data![0];
+                      //           List<dynamic> list2 = snapshot.data![1];
+                      //           List<dynamic> combinedList = [...list1, ...list2];
+                      //           // Build the ListView using the combined list
+                      //           return Center(
+                      //             child: ListView.builder(
+                      //               padding: EdgeInsets.zero,
+                      //               itemCount: combinedList.length,
+                      //               itemBuilder: (BuildContext context, int index) {
+                      //                 print("value..${combinedList[index].toJson()}");
+                      //
+                      //                 String subtitle = "Payment";
+                      //                 // Get the payment method from the current item
+                      //                var type = combinedList[index].runtimeType;
+                      //                print("type ${type}");
+                      //                 ReportCashModel? reportCashModel;
+                      //                 ReportCardModel? reportCardModel;
+                      //
+                      //                 // Check the payment method and call the appropriate model
+                      //                 if (type == ReportCashModel) {
+                      //                   // Call the Pos cash model
+                      //                   print("ABC");
+                      //                    reportCashModel = combinedList[index];
+                      //                    _reportController.posCashdata.value = reportCashModel!;
+                      //                   // posCashModel(combinedList[index]);
+                      //                 } else if (type == ReportCardModel) {
+                      //                   // Call the Pos card model
+                      //                   // posCardModel(combinedList[index]);
+                      //                    reportCardModel = combinedList[index];
+                      //                    _reportController.posCarddata.value = reportCardModel!;
+                      //                   print("DEF");
+                      //
+                      //                 }
+                      //
+                      //                 return type == ReportCashModel ?
+                      //                 reportCashModel!.data!.names!.length == 0 ? Container() :
+                      //                 Container(
+                      //                   color: Colors.white,
+                      //                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //                   child: ListTile(
+                      //                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      //                     title: Text(
+                      //                         reportCashModel.data!.names!.first.toString(),
+                      //                       style: TextStyle(color: Colors.black, fontSize: 18),
+                      //                     ),
+                      //                     subtitle: Text(
+                      //                        "Payement pos cash ${reportCashModel.data!.amount!.first.toString()}",
+                      //                       style: TextStyle(color: Colors.black, fontSize: 15),
+                      //                     )
+                      //                   ),
+                      //                 ) :
+                      //                 reportCardModel!.data!.names!.length == 0 ? Container() :
+                      //                 Container(
+                      //                   color: Colors.white,
+                      //                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //                   child: ListTile(
+                      //                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      //                     title: Text(
+                      //                       reportCardModel.data!.names!.first.toString(),
+                      //                       style: TextStyle(color: Colors.black, fontSize: 18),
+                      //                     ),
+                      //                     subtitle:  Text(
+                      //                       "Payement pos card ${reportCardModel.data!.amount!.first.toString()}",
+                      //                       style: TextStyle(color: Colors.black, fontSize: 15),
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               },
+                      //             ),
+                      //             // child: ListView.builder(
+                      //             //   padding: EdgeInsets.zero,
+                      //             //   itemCount: combinedList.length,
+                      //             //   itemBuilder: (BuildContext context, int index) {
+                      //             //   print("value..${combinedList[index].toJson()}");
+                      //             //
+                      //             //     String subtitle = "Payment";
+                      //             //     return Container(
+                      //             //       color: Colors.white,
+                      //             //       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      //             //       child: ListTile(
+                      //             //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      //             //         title: Text(
+                      //             //           "${combinedList[index].toString()}",
+                      //             //           style: TextStyle(color: Colors.black, fontSize: 18),
+                      //             //         ),
+                      //             //         subtitle: Text(
+                      //             //           subtitle,
+                      //             //           style: TextStyle(color: Colors.black, fontSize: 15),
+                      //             //         ),
+                      //             //       ),
+                      //             //     );
+                      //             //   },
+                      //             // ),
+                      //           );
+                      //         }
+                      //       }
+                      //
+                      //       // Displaying LoadingSpinner to indicate waiting state
+                      //       return Center(
+                      //         child: CircularProgressIndicator(),
+                      //       );
+                      //     },
+                      //
+                      //     // Future that needs to be resolved
+                      //     // inorder to display something on the Canvas
+                      //     future: Future.wait([
+                      //       _reportController.posCashCall(Constants.vendorId),
+                      //       _reportController.posCardCall(Constants.vendorId)
+                      //     ]),
+                      //   ),
+                      // ),
+                      ///End futurebuilder for both
 
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            if (_reportController.posPort != null) {
-                              print("POS ADDED");
-                              if (_reportController.posIp == '' &&
-                                      _reportController.posPort == '' ||
-                                  _reportController.posIp == null &&
-                                      _reportController.posPort == null) {
-                                print("pos ip empty");
-                              } else {
-                                _reportController.testPrintPOS(
-                                  _reportController.posIp!,
-                                  _reportController.posPort!,
-                                  context,
-                                );
+                      Align(
+                        alignment: Alignment.center,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if (_reportController.posPort != null) {
+                                print("POS ADDED");
+                                if (_reportController.posIp == '' &&
+                                        _reportController.posPort == '' ||
+                                    _reportController.posIp == null &&
+                                        _reportController.posPort == null) {
+                                  print("pos ip empty");
+                                } else {
+                                  _reportController.testPrintPOS(
+                                    _reportController.posIp!,
+                                    _reportController.posPort!,
+                                    context,
+                                  );
+                                }
                               }
-                            }
-                          },
-                          child: Text("Reports")),
-                    )
-                  ],
-                );
+                            },
+                            child: Text("Reports")),
+                      )
+                    ],
+                  );
+                  // : Center(
+                  //     child: Text("No data"),
+                  //   );
+                }
               }
-            }
 
-            // Displaying LoadingSpinner to indicate waiting state
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+              // Displaying LoadingSpinner to indicate waiting state
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
 
-          // Future that needs to be resolved
-          // inorder to display something on the Canvas
-          future: _reportController.reportsApiCall(Constants.vendorId),
-        ),
-      ),
+            // Future that needs to be resolved
+            // inorder to display something on the Canvas
+            future: _reportController.reportsApiCall(Constants.vendorId),
+          )),
     );
   }
 }

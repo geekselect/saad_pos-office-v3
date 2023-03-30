@@ -10,6 +10,7 @@ import 'package:pos/model/book_table_model.dart';
 import 'package:pos/model/booked_order_model.dart';
 import 'package:pos/model/cart_master.dart' as cart;
 import 'package:pos/model/single_restaurants_details_model.dart';
+import 'package:pos/pages/OrderHistory/new_button_check_file.dart';
 import 'package:pos/pages/OrderHistory/order_history.dart';
 import 'package:pos/pages/Reports/report_screen.dart';
 import 'package:pos/pages/addons/Half_n_half.dart';
@@ -18,6 +19,7 @@ import 'package:pos/pages/addons/addons_with_sizes.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_menu.dart';
 import 'package:pos/printer/printer_config.dart';
+import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/retrofit/base_model.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:pos/pages/addons/deals_items.dart' as dealsItems;
@@ -34,7 +36,10 @@ class PosMenu extends StatefulWidget {
   final bool isDining;
   // final String orderId;
 
-  PosMenu({Key? key, required this.isDining,}) : super(key: key);
+  PosMenu({
+    Key? key,
+    required this.isDining,
+  }) : super(key: key);
 
   @override
   _PosMenuState createState() => _PosMenuState();
@@ -49,6 +54,7 @@ class _PosMenuState extends State<PosMenu> {
   bool runFirstTime = true;
   Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   CartController _cartController = Get.find<CartController>();
+  var _printerController = Get.put(PrinterController());
   List<SideBarGridTile> sidebarGridTileList = [];
 
   Future<BookTableModel> getBookTable() async {
@@ -104,8 +110,6 @@ class _PosMenuState extends State<PosMenu> {
     }
   }
 
-
-
   @override
   void initState() {
     sidebarGridTileList = [
@@ -159,55 +163,42 @@ class _PosMenuState extends State<PosMenu> {
                                           .data
                                           .bookedTable[index]
                                           .bookedTableNumber;
-                                      if (snapshot.data!.data.bookedTable[index].status == 1) {
+                                      if (snapshot.data!.data.bookedTable[index]
+                                              .status ==
+                                          1) {
                                         Map<String, dynamic> param = {
                                           'vendor_id': Constants.vendorId,
-                                          'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
+                                          'booked_table_number': snapshot
+                                              .data!
+                                              .data
+                                              .bookedTable[index]
+                                              .bookedTableNumber,
                                         };
                                         BaseModel<BookedOrderModel> baseModel =
                                             await _cartController
-                                                .getBookedTableData(param, context);
+                                                .getBookedTableData(
+                                                    param, context);
                                         BookedOrderModel bookOrderModel =
                                             baseModel.data!;
                                         if (bookOrderModel.success!) {
                                           print('order');
-                                          print(
-                                              "****************");
-                                          if (bookOrderModel
-                                              .data!
-                                              .userName !=
+                                          print("****************");
+                                          if (bookOrderModel.data!.userName !=
                                               null) {
-                                            _cartController
-                                                .userName =
-                                            bookOrderModel
-                                                .data!
-                                                .userName!;
+                                            _cartController.userName =
+                                                bookOrderModel.data!.userName!;
                                           }
-                                          print(
-                                              bookOrderModel
-                                                  .data!
-                                                  .userName);
-                                          print(
-                                              "****************");
+                                          print(bookOrderModel.data!.userName);
+                                          print("****************");
 
-                                          print(
-                                              "----------------");
-                                          if (bookOrderModel
-                                              .data!
-                                              .mobile !=
+                                          print("----------------");
+                                          if (bookOrderModel.data!.mobile !=
                                               null) {
-                                            _cartController
-                                                .userMobileNumber =
-                                            bookOrderModel
-                                                .data!
-                                                .mobile!;
+                                            _cartController.userMobileNumber =
+                                                bookOrderModel.data!.mobile!;
                                           }
-                                          print(
-                                              bookOrderModel
-                                                  .data!
-                                                  .mobile);
-                                          print(
-                                              "----------------");
+                                          print(bookOrderModel.data!.mobile);
+                                          print("----------------");
 
                                           print(bookOrderModel.data!.orderId);
                                           _cartController.cartMaster =
@@ -321,13 +312,13 @@ class _PosMenuState extends State<PosMenu> {
       print("Dining false");
       _cartController.tableNumber = 0;
     } else {
-
       print("Dining true");
       print("---------");
     }
     print("table value after ${_cartController.tableNumber}");
 
-    callGetResturantDetailsRef = _orderCustimizationController.callGetRestaurantsDetails(Constants.vendorId);
+    callGetResturantDetailsRef = _orderCustimizationController
+        .callGetRestaurantsDetails(Constants.vendorId);
     callGetResturantDetailsRef!.then((value) {
       print("*****************");
       print("ORder Data POS MENU ${value.data!.toJson()}");
@@ -427,11 +418,12 @@ class _PosMenuState extends State<PosMenu> {
                     AsyncSnapshot<BaseModel<SingleRestaurantsDetailsModel>>
                         snapshot) {
                   if (snapshot.hasData) {
-                    SingleRestaurantsDetailsModel singleRestaurantsDetailsModel =
-                        snapshot.data!.data!;
+                    SingleRestaurantsDetailsModel
+                        singleRestaurantsDetailsModel = snapshot.data!.data!;
                     // singleRestaurantsDetailsModel.data.menuCategory.
                     if (singleRestaurantsDetailsModel.success) {
-                      Vendor vendor = singleRestaurantsDetailsModel.data!.vendor!;
+                      Vendor vendor =
+                          singleRestaurantsDetailsModel.data!.vendor!;
                       List vendorNameList = vendor.name.split(' ');
                       List<MenuCategory> _menuCategories =
                           singleRestaurantsDetailsModel.data!.menuCategory!;
@@ -489,6 +481,16 @@ class _PosMenuState extends State<PosMenu> {
                                         ],
                                       ),
                                       Spacer(),
+                                      // Container(
+                                      //   child: GestureDetector(
+                                      //       onTap: () {
+                                      //         Get.to(() => NewFile());
+                                      //       },
+                                      //       child: Text("New Page")),
+                                      // ),
+                                      // SizedBox(
+                                      //   width: 5,
+                                      // ),
                                       Container(
                                         width: 200,
                                         // child: TextField(
@@ -555,105 +557,100 @@ class _PosMenuState extends State<PosMenu> {
                                                 if (value!) {
                                                   await showDialog<int>(
                                                       context: context,
-                                                      builder: (_) => AlertDialog(
-                                                            title: Center(
-                                                                child: Text(
-                                                                    'Available table no')),
-                                                            content: SizedBox(
-                                                              height: Get.height *
-                                                                  0.4,
-                                                              width:
-                                                                  Get.width * 0.5,
-                                                              child: Column(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: FutureBuilder<
-                                                                            BookTableModel>(
-                                                                        future:
-                                                                            getBookTable(),
-                                                                        builder:
-                                                                            (context,
-                                                                                snapshot) {
-                                                                          if (snapshot
-                                                                              .hasError) {
-                                                                            return Center(
-                                                                              child:
-                                                                                  Text(snapshot.error.toString()),
-                                                                            );
-                                                                          } else if (snapshot
-                                                                              .hasData) {
-                                                                            return GridView
-                                                                                .builder(
-                                                                              itemCount:
-                                                                                  snapshot.data?.data.bookedTable.length ?? 0,
-                                                                              itemBuilder:
-                                                                                  (builder, index) {
-                                                                                return GestureDetector(
-                                                                                  onTap: () async {
-                                                                                    _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
-                                                                                    if (snapshot.data!.data.bookedTable[index].status == 1) {
-                                                                                      Map<String, dynamic> param = {
-                                                                                        'vendor_id': Constants.vendorId,
-                                                                                        'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
-                                                                                      };
-                                                                                      BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
-                                                                                      BookedOrderModel bookOrderModel = baseModel.data!;
-                                                                                      if (bookOrderModel.success!) {
-                                                                                        print('order');
-                                                                                        print(bookOrderModel.data!.orderId);
-                                                                                        _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
-                                                                                        _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
-                                                                                        Navigator.pop(context);
-                                                                                      } else {
-                                                                                        print(bookOrderModel.toJson());
-                                                                                        // print(baseModel.error);
-                                                                                      }
-                                                                                    } else {
-                                                                                      Navigator.pop(context);
-                                                                                    }
+                                                      builder:
+                                                          (_) => AlertDialog(
+                                                                title: Center(
+                                                                    child: Text(
+                                                                        'Available table no')),
+                                                                content:
+                                                                    SizedBox(
+                                                                  height:
+                                                                      Get.height *
+                                                                          0.4,
+                                                                  width:
+                                                                      Get.width *
+                                                                          0.5,
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: FutureBuilder<
+                                                                                BookTableModel>(
+                                                                            future:
+                                                                                getBookTable(),
+                                                                            builder:
+                                                                                (context, snapshot) {
+                                                                              if (snapshot.hasError) {
+                                                                                return Center(
+                                                                                  child: Text(snapshot.error.toString()),
+                                                                                );
+                                                                              } else if (snapshot.hasData) {
+                                                                                return GridView.builder(
+                                                                                  itemCount: snapshot.data?.data.bookedTable.length ?? 0,
+                                                                                  itemBuilder: (builder, index) {
+                                                                                    return GestureDetector(
+                                                                                      onTap: () async {
+                                                                                        _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
+                                                                                        if (snapshot.data!.data.bookedTable[index].status == 1) {
+                                                                                          Map<String, dynamic> param = {
+                                                                                            'vendor_id': Constants.vendorId,
+                                                                                            'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
+                                                                                          };
+                                                                                          BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
+                                                                                          BookedOrderModel bookOrderModel = baseModel.data!;
+                                                                                          if (bookOrderModel.success!) {
+                                                                                            print('order');
+                                                                                            print(bookOrderModel.data!.orderId);
+                                                                                            _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
+                                                                                            _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                                                                                            Navigator.pop(context);
+                                                                                          } else {
+                                                                                            print(bookOrderModel.toJson());
+                                                                                            // print(baseModel.error);
+                                                                                          }
+                                                                                        } else {
+                                                                                          Navigator.pop(context);
+                                                                                        }
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        margin: EdgeInsets.only(bottom: 18),
+                                                                                        child: Stack(
+                                                                                          children: [
+                                                                                            Positioned(
+                                                                                              child: Container(
+                                                                                                padding: EdgeInsets.all(40.0),
+                                                                                                decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Center(
+                                                                                              child: Text(
+                                                                                                snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
+                                                                                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    );
                                                                                   },
-                                                                                  child: Container(
-                                                                                    margin: EdgeInsets.only(bottom: 18),
-                                                                                    child: Stack(
-                                                                                      children: [
-                                                                                        Positioned(
-                                                                                          child: Container(
-                                                                                            padding: EdgeInsets.all(40.0),
-                                                                                            decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
-                                                                                          ),
-                                                                                        ),
-                                                                                        Center(
-                                                                                          child: Text(
-                                                                                            snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
-                                                                                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
-                                                                                          ),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
+                                                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                    crossAxisCount: kIsWeb ? 8 : 3,
+                                                                                    mainAxisExtent: 80,
                                                                                   ),
                                                                                 );
-                                                                              },
-                                                                              gridDelegate:
-                                                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                crossAxisCount: kIsWeb ? 8 : 3,
-                                                                                mainAxisExtent: 80,
-                                                                              ),
-                                                                            );
-                                                                          }
-                                                                          return Center(
-                                                                            child:
-                                                                                CircularProgressIndicator(color: Color(Constants.colorTheme)),
-                                                                          );
-                                                                        }),
+                                                                              }
+                                                                              return Center(
+                                                                                child: CircularProgressIndicator(color: Color(Constants.colorTheme)),
+                                                                              );
+                                                                            }),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ));
+                                                                ),
+                                                              ));
                                                   setState(() {
-
                                                     // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-                                                    _cartController.diningValue =
+                                                    _cartController
+                                                            .diningValue =
                                                         _cartController
                                                                     .tableNumber !=
                                                                 null
@@ -665,21 +662,24 @@ class _PosMenuState extends State<PosMenu> {
                                                   });
                                                 } else {
                                                   setState(() {
-                                                    if (_cartController.cartMaster
+                                                    if (_cartController
+                                                            .cartMaster
                                                             ?.oldOrderId !=
                                                         null) {
-                                                      _cartController.cartMaster =
-                                                          null;
+                                                      _cartController
+                                                          .cartMaster = null;
                                                     }
-                                                    _cartController.tableNumber =
-                                                        null;
-                                                    _cartController.diningValue =
-                                                        false;
+                                                    _cartController
+                                                        .tableNumber = null;
+                                                    _cartController
+                                                        .diningValue = false;
                                                   });
                                                 }
                                               },
-                                              value: _cartController.diningValue,
-                                              activeColor: Constants.yellowColor,
+                                              value:
+                                                  _cartController.diningValue,
+                                              activeColor:
+                                                  Constants.yellowColor,
                                               activeTrackColor:
                                                   Constants.yellowColor,
                                               inactiveThumbColor: Colors.white,
@@ -821,7 +821,8 @@ class _PosMenuState extends State<PosMenu> {
                                       margin: EdgeInsets.only(top: 5),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16.0),
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
                                       ),
                                       child: Column(
                                         children: [
@@ -837,7 +838,8 @@ class _PosMenuState extends State<PosMenu> {
                                               crossAxisCount: 2,
                                               mainAxisExtent: Get.height * 0.1,
                                             ),
-                                            itemCount: sidebarGridTileList.length,
+                                            itemCount:
+                                                sidebarGridTileList.length,
                                             itemBuilder: (BuildContext context,
                                                 int sidebarGridTileListIndex) {
                                               return sidebarGridTileList[
@@ -974,7 +976,8 @@ class _PosMenuState extends State<PosMenu> {
                                                     color: Colors.white,
                                                     borderRadius:
                                                         BorderRadius.all(
-                                                            Radius.circular(8))),
+                                                            Radius.circular(
+                                                                8))),
                                                 height: 60,
                                                 width: Get.width * 0.9,
 
@@ -1132,7 +1135,8 @@ class _PosMenuState extends State<PosMenu> {
                                                               .menuCategory!
                                                               .length +
                                                           1,
-                                                  itemBuilder: (context, index) {
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     return Padding(
                                                       padding:
                                                           const EdgeInsets.all(
@@ -1147,7 +1151,8 @@ class _PosMenuState extends State<PosMenu> {
                                                         child: Container(
                                                           padding: EdgeInsets
                                                               .symmetric(
-                                                                  vertical: 10.0,
+                                                                  vertical:
+                                                                      10.0,
                                                                   horizontal:
                                                                       25.0),
                                                           decoration:
@@ -1159,7 +1164,8 @@ class _PosMenuState extends State<PosMenu> {
                                                                 : null,
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(24),
+                                                                    .circular(
+                                                                        24),
                                                             border: Border.all(
                                                                 color: Colors
                                                                     .redAccent,
@@ -1173,7 +1179,8 @@ class _PosMenuState extends State<PosMenu> {
                                                                 : singleRestaurantsDetailsModel
                                                                     .data!
                                                                     .menuCategory![
-                                                                        index - 1]
+                                                                        index -
+                                                                            1]
                                                                     .name,
                                                             style: TextStyle(
                                                               color:
@@ -1603,8 +1610,8 @@ class _PosMenuState extends State<PosMenu> {
                                           //     },
                                           //   ),
                                           // ),
-///on d
-      // onTap: () async {
+                                          ///on d
+                                          // onTap: () async {
                                           //                                                   // TODO: && operator added
                                           //                                                   if (singleMenu!
                                           //                                                       .menu!.price ==
@@ -1829,361 +1836,367 @@ class _PosMenuState extends State<PosMenu> {
                                           Expanded(
                                             child: GridView.builder(
                                               shrinkWrap: true,
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 5,
-                                                mainAxisExtent: Get.height * 0.25,
+                                                mainAxisExtent:
+                                                    Get.height * 0.25,
                                               ),
-                                              itemCount: _getMenuItemCount(singleRestaurantsDetailsModel.data!.menuCategory!),
-                                              itemBuilder: (BuildContext context, int index) {
+                                              itemCount: _getMenuItemCount(
+                                                  singleRestaurantsDetailsModel
+                                                      .data!.menuCategory!),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
                                                 SingleMenu? singleMenu;
-                                                List<SingleMenu> filteredMenus = [];
-                                                if (_selectedCategoryIndex == 0) {
-                                                  for (MenuCategory category in singleRestaurantsDetailsModel.data!.menuCategory!) {
-                                                    filteredMenus.addAll(category.singleMenu!
-                                                        .where((menu) =>
-                                                        menu.menu!.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+                                                List<SingleMenu> filteredMenus =
+                                                    [];
+                                                if (_selectedCategoryIndex ==
+                                                    0) {
+                                                  for (MenuCategory category
+                                                      in singleRestaurantsDetailsModel
+                                                          .data!
+                                                          .menuCategory!) {
+                                                    filteredMenus.addAll(category
+                                                        .singleMenu!
+                                                        .where((menu) => menu
+                                                            .menu!.name
+                                                            .toLowerCase()
+                                                            .contains(_searchQuery
+                                                                .toLowerCase()))
                                                         .toList());
                                                   }
                                                 } else {
-                                                  filteredMenus.addAll(singleRestaurantsDetailsModel.data!.menuCategory![_selectedCategoryIndex - 1]
-                                                      .singleMenu!
-                                                      .where((menu) =>
-                                                      menu.menu!.name.toLowerCase().contains(_searchQuery.toLowerCase()))
-                                                      .toList());
+                                                  filteredMenus.addAll(
+                                                      singleRestaurantsDetailsModel
+                                                          .data!
+                                                          .menuCategory![
+                                                              _selectedCategoryIndex -
+                                                                  1]
+                                                          .singleMenu!
+                                                          .where((menu) => menu
+                                                              .menu!.name
+                                                              .toLowerCase()
+                                                              .contains(_searchQuery
+                                                                  .toLowerCase()))
+                                                          .toList());
                                                 }
-                                                if (index < filteredMenus.length) {
-                                                  singleMenu = filteredMenus[index];
+                                                if (index <
+                                                    filteredMenus.length) {
+                                                  singleMenu =
+                                                      filteredMenus[index];
                                                 }
-                                                return singleMenu == null ? SizedBox.shrink() :  GestureDetector(
-                                                  onTap: () async {
-                                                    // TODO: && operator added
-                                                    if (singleMenu!
-                                                        .menu!.price ==
-                                                        null ||
-                                                        singleMenu
-                                                            .menu!
-                                                            .menuAddon!
-                                                            .isNotEmpty) {
-                                                      List<MenuSize> tempList =
-                                                      [];
-                                                      tempList.addAll(singleMenu
-                                                          .menu!.menuSize!);
-                                                      if (singleMenu
-                                                          .menu!.price ==
-                                                          null) {
-                                                        List<MenuSize>
-                                                        menuSizeList =
-                                                        singleMenu.menu!
-                                                            .menuSize!;
-                                                        for (int menuSizeIndex =
-                                                        0;
-                                                        menuSizeIndex <
-                                                            menuSizeList
-                                                                .length;
-                                                        menuSizeIndex++) {
-                                                          List<MenuAddon>
-                                                          groupMenuAddon =
-                                                          menuSizeList[
-                                                          menuSizeIndex]
-                                                              .groupMenuAddon!;
-                                                          Set set = {};
-                                                          for (int groupMenuAddonIndex =
-                                                          0;
-                                                          groupMenuAddonIndex <
-                                                              groupMenuAddon
-                                                                  .length;
-                                                          groupMenuAddonIndex++) {
-                                                            if (set.contains(
-                                                                groupMenuAddon[
-                                                                groupMenuAddonIndex]
-                                                                    .addonCategoryId)) {
-                                                              //duplicate
-                                                              groupMenuAddon[
-                                                              groupMenuAddonIndex]
-                                                                  .isDuplicate = true;
-                                                            } else {
-                                                              //unique
-                                                              set.add(groupMenuAddon[
-                                                              groupMenuAddonIndex]
-                                                                  .addonCategoryId);
-                                                            }
-                                                          }
-                                                        }
-                                                        showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                            context) {
-                                                              return AlertDialog(
-                                                                contentPadding:
-                                                                EdgeInsets
-                                                                    .all(
-                                                                    0.0),
-                                                                shape:
-                                                                RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius
-                                                                      .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                        20),
-                                                                  ),
-                                                                ),
-                                                                clipBehavior: Clip
-                                                                    .antiAliasWithSaveLayer,
-                                                                content:
-                                                                Builder(
+                                                return singleMenu == null
+                                                    ? SizedBox.shrink()
+                                                    : GestureDetector(
+                                                        onTap: () async {
+                                                          // TODO: && operator added
+                                                          if (singleMenu!.menu!
+                                                                      .price ==
+                                                                  null ||
+                                                              singleMenu
+                                                                  .menu!
+                                                                  .menuAddon!
+                                                                  .isNotEmpty) {
+                                                            List<MenuSize>
+                                                                tempList = [];
+                                                            tempList.addAll(
+                                                                singleMenu.menu!
+                                                                    .menuSize!);
+                                                            if (singleMenu.menu!
+                                                                    .price ==
+                                                                null) {
+                                                              List<MenuSize>
+                                                                  menuSizeList =
+                                                                  singleMenu
+                                                                      .menu!
+                                                                      .menuSize!;
+                                                              for (int menuSizeIndex =
+                                                                      0;
+                                                                  menuSizeIndex <
+                                                                      menuSizeList
+                                                                          .length;
+                                                                  menuSizeIndex++) {
+                                                                List<MenuAddon>
+                                                                    groupMenuAddon =
+                                                                    menuSizeList[
+                                                                            menuSizeIndex]
+                                                                        .groupMenuAddon!;
+                                                                Set set = {};
+                                                                for (int groupMenuAddonIndex =
+                                                                        0;
+                                                                    groupMenuAddonIndex <
+                                                                        groupMenuAddon
+                                                                            .length;
+                                                                    groupMenuAddonIndex++) {
+                                                                  if (set.contains(
+                                                                      groupMenuAddon[
+                                                                              groupMenuAddonIndex]
+                                                                          .addonCategoryId)) {
+                                                                    //duplicate
+                                                                    groupMenuAddon[
+                                                                            groupMenuAddonIndex]
+                                                                        .isDuplicate = true;
+                                                                  } else {
+                                                                    //unique
+                                                                    set.add(groupMenuAddon[
+                                                                            groupMenuAddonIndex]
+                                                                        .addonCategoryId);
+                                                                  }
+                                                                }
+                                                              }
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
                                                                   builder:
-                                                                      (context) {
-                                                                    var height =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .height;
-                                                                    var width =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .width;
-                                                                    return Container(
-                                                                        height: height -
-                                                                            100,
-                                                                        width: width *
-                                                                            0.5,
-                                                                        child:
-                                                                        AddonsWithSized(
-                                                                          menu:
-                                                                          singleMenu!.menu!,
-                                                                          category:
-                                                                          "SINGLE",
-                                                                          data: singleMenu
-                                                                              .menu!
-                                                                              .menuSize!,
-                                                                        ));
-                                                                  },
-                                                                ),
-                                                              );
-                                                            });
-                                                      } else if (singleMenu
-                                                          .menu!
-                                                          .menuAddon!
-                                                          .isNotEmpty) {
-                                                        print("ADDONS ONly ");
-                                                        showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                            context) {
-                                                              return AlertDialog(
-                                                                contentPadding:
-                                                                const EdgeInsets
-                                                                    .all(
-                                                                    0.0),
-                                                                shape:
-                                                                const RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius
-                                                                      .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                        20),
-                                                                  ),
-                                                                ),
-                                                                clipBehavior: Clip
-                                                                    .antiAliasWithSaveLayer,
-                                                                content:
-                                                                Builder(
-                                                                  builder:
-                                                                      (context) {
-                                                                    var height =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .height;
-                                                                    var width =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .width;
-                                                                    return Container(
-                                                                      height: height - 300,
-                                                                      // height: height - 100,
-                                                                      width: width * 0.5,
-                                                                      child:
-                                                                      AddonsOnly(
-                                                                        data: singleMenu!
-                                                                            .menu!,
-                                                                        menuPrice: singleMenu
-                                                                            .menu!
-                                                                            .price!,
-                                                                        menuId:
-                                                                        singleMenu.id,
-                                                                        category:
-                                                                        "SINGLE",
-                                                                        vendor: singleRestaurantsDetailsModel
-                                                                            .data!
-                                                                            .vendor!,
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      contentPadding:
+                                                                          EdgeInsets.all(
+                                                                              0.0),
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              20),
+                                                                        ),
+                                                                      ),
+                                                                      clipBehavior:
+                                                                          Clip.antiAliasWithSaveLayer,
+                                                                      content:
+                                                                          Builder(
+                                                                        builder:
+                                                                            (context) {
+                                                                          var height = MediaQuery.of(context)
+                                                                              .size
+                                                                              .height;
+                                                                          var width = MediaQuery.of(context)
+                                                                              .size
+                                                                              .width;
+                                                                          return Container(
+                                                                              height: height - 100,
+                                                                              width: width * 0.5,
+                                                                              child: AddonsWithSized(
+                                                                                menu: singleMenu!.menu!,
+                                                                                category: "SINGLE",
+                                                                                data: singleMenu.menu!.menuSize!,
+                                                                              ));
+                                                                        },
                                                                       ),
                                                                     );
-                                                                  },
+                                                                  });
+                                                            } else if (singleMenu
+                                                                .menu!
+                                                                .menuAddon!
+                                                                .isNotEmpty) {
+                                                              print(
+                                                                  "ADDONS ONly ");
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      contentPadding:
+                                                                          const EdgeInsets.all(
+                                                                              0.0),
+                                                                      shape:
+                                                                          const RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              20),
+                                                                        ),
+                                                                      ),
+                                                                      clipBehavior:
+                                                                          Clip.antiAliasWithSaveLayer,
+                                                                      content:
+                                                                          Builder(
+                                                                        builder:
+                                                                            (context) {
+                                                                          var height = MediaQuery.of(context)
+                                                                              .size
+                                                                              .height;
+                                                                          var width = MediaQuery.of(context)
+                                                                              .size
+                                                                              .width;
+                                                                          return Container(
+                                                                            height:
+                                                                                height - 300,
+                                                                            // height: height - 100,
+                                                                            width:
+                                                                                width * 0.5,
+                                                                            child:
+                                                                                AddonsOnly(
+                                                                              data: singleMenu!.menu!,
+                                                                              menuPrice: singleMenu.menu!.price!,
+                                                                              menuId: singleMenu.id,
+                                                                              category: "SINGLE",
+                                                                              vendor: singleRestaurantsDetailsModel.data!.vendor!,
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    );
+                                                                  });
+                                                            }
+                                                          } else {
+                                                            _cartController
+                                                                .addItem(
+                                                                    cart.Cart(
+                                                                        diningAmount:
+                                                                            double.parse(singleMenu.menu!.diningPrice ??
+                                                                                '0.0'),
+                                                                        category:
+                                                                            "SINGLE",
+                                                                        menu: [
+                                                                          cart.MenuCartMaster(
+                                                                            name:
+                                                                                singleMenu.menu!.name,
+                                                                            totalAmount:
+                                                                                double.parse(singleMenu.menu!.price!),
+                                                                            id: singleMenu.id,
+                                                                            addons: [],
+                                                                            image:
+                                                                                singleMenu.menu!.image,
+                                                                          )
+                                                                        ],
+                                                                        size:
+                                                                            null,
+                                                                        totalAmount: double.parse(singleMenu
+                                                                            .menu!
+                                                                            .price!),
+                                                                        quantity:
+                                                                            1),
+                                                                    Constants
+                                                                        .vendorId,
+                                                                    context);
+                                                            _cartController
+                                                                    .refreshScreen
+                                                                    .value =
+                                                                toggleBoolValue(
+                                                                    _cartController
+                                                                        .refreshScreen
+                                                                        .value);
+                                                          }
+                                                          // _addToCart(singleMenu!, index);
+                                                        },
+                                                        child: Container(
+                                                          // alignment: Alignment.center,
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 8.0,
+                                                                  right: 8.0,
+                                                                  bottom: 8.0),
+                                                          decoration: const BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          8))),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Container(
+                                                                height: 100,
+                                                                width: 100,
+                                                                // margin: EdgeInsets.only(left: 5.0),
+                                                                // decoration: ,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  image: DecorationImage(
+                                                                      // image: CachedNetworkImageProvider(
+                                                                      //     singleMenu
+                                                                      //         .menu!
+                                                                      //         .image),
+                                                                      image: NetworkImage(singleMenu.menu!.image),
+                                                                      fit: BoxFit.fill),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              12.0),
                                                                 ),
-                                                              );
-                                                            });
-                                                      }
-                                                    } else {
-                                                      _cartController.addItem(
-                                                          cart.Cart(
-                                                              diningAmount: double
-                                                                  .parse(singleMenu
-                                                                  .menu!
-                                                                  .diningPrice ??
-                                                                  '0.0'),
-                                                              category:
-                                                              "SINGLE",
-                                                              menu: [
-                                                                cart.MenuCartMaster(
-                                                                  name:
-                                                                  singleMenu
-                                                                      .menu!
-                                                                      .name,
-                                                                  totalAmount: double.parse(
-                                                                      singleMenu
-                                                                          .menu!
-                                                                          .price!),
-                                                                  id: singleMenu
-                                                                      .id,
-                                                                  addons: [],
-                                                                  image:
-                                                                  singleMenu
-                                                                      .menu!
-                                                                      .image,
-                                                                )
-                                                              ],
-                                                              size: null,
-                                                              totalAmount:
-                                                              double.parse(
-                                                                  singleMenu
-                                                                      .menu!
-                                                                      .price!),
-                                                              quantity: 1),
-                                                          Constants.vendorId,
-                                                          context);
-                                                      _cartController
-                                                          .refreshScreen
-                                                          .value =
-                                                          toggleBoolValue(
-                                                              _cartController
-                                                                  .refreshScreen
-                                                                  .value);
-                                                    }
-                                                    // _addToCart(singleMenu!, index);
-                                                  },
-                                                  child: Container(
-                                                    // alignment: Alignment.center,
-                                                    margin:
-                                                    const EdgeInsets.only(
-                                                        left: 8.0,
-                                                        right: 8.0,
-                                                        bottom: 8.0),
-                                                    decoration:
-                                                    const BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .all(Radius
-                                                            .circular(
-                                                            8))),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        Container(
-                                                          height: 100,
-                                                          width: 100,
-                                                          // margin: EdgeInsets.only(left: 5.0),
-                                                          // decoration: ,
-                                                          decoration:
-                                                          BoxDecoration(
-                                                            image: DecorationImage(
-                                                                // image: CachedNetworkImageProvider(
-                                                                //     singleMenu
-                                                                //         .menu!
-                                                                //         .image),
-                                                                image: NetworkImage(
-                                                                    singleMenu
-                                                                        .menu!
-                                                                        .image),
-                                                                fit: BoxFit
-                                                                    .fill),
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                12.0),
+                                                              ),
+                                                              Text(
+                                                                singleMenu
+                                                                    .menu!.name,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                maxLines: 2,
+                                                                style:
+                                                                    TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  fontFamily:
+                                                                      "ProximaBold",
+                                                                  color: Color(
+                                                                      Constants
+                                                                          .colorTheme),
+                                                                  fontSize: 17,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "Normal ${singleMenu.menu!.price}" ??
+                                                                    "Price In Addons",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 1,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize: 14,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "Dining ${singleMenu.menu!.diningPrice}" ??
+                                                                    "0.0",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 1,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize: 14,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 5,
+                                                              )
+                                                            ],
                                                           ),
                                                         ),
-                                                        Text(
-                                                          singleMenu.menu!.name,
-                                                          textAlign:
-                                                          TextAlign.center,
-                                                          maxLines: 2,
-                                                          style: TextStyle(
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                            fontFamily:
-                                                            "ProximaBold",
-                                                            color: Color(
-                                                                Constants
-                                                                    .colorTheme),
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          "Normal ${singleMenu.menu!.price}" ??
-                                                              "Price In Addons",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                          style:
-                                                          const TextStyle(
-                                                            fontWeight:
-                                                            FontWeight.w500,
-                                                            color: Colors.red,
-                                                            fontSize: 14,
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          "Dining ${singleMenu.menu!.diningPrice}" ??
-                                                              "0.0",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                          style:
-                                                          const TextStyle(
-                                                            fontWeight:
-                                                            FontWeight.w500,
-                                                            color: Colors.red,
-                                                            fontSize: 14,
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
+                                                      );
                                               },
                                             ),
                                           ),
-
-
                                         ],
                                       ),
                                     ),
@@ -2196,12 +2209,15 @@ class _PosMenuState extends State<PosMenu> {
                                               Radius.circular(8))),
                                       width: Get.width * 0.3,
                                       child: Obx(() {
-                                        if (_cartController.refreshScreen.value ||
+                                        if (_cartController
+                                                .refreshScreen.value ||
                                             !_cartController
                                                 .refreshScreen.value) {
-                                          print("mooooo ${_cartController.userMobileNumber}");
+                                          print(
+                                              "mooooo ${_cartController.userMobileNumber}");
                                           return CartScreen(
-                                              isDining: _cartController.diningValue);
+                                              isDining:
+                                                  _cartController.diningValue);
                                         } else {
                                           return Container();
                                         }
@@ -2243,16 +2259,17 @@ class _PosMenuState extends State<PosMenu> {
                 future: callGetResturantDetailsRef,
                 builder: (BuildContext context,
                     AsyncSnapshot<BaseModel<SingleRestaurantsDetailsModel>>
-                    snapshot) {
+                        snapshot) {
                   if (snapshot.hasData) {
-                    SingleRestaurantsDetailsModel singleRestaurantsDetailsModel =
-                    snapshot.data!.data!;
+                    SingleRestaurantsDetailsModel
+                        singleRestaurantsDetailsModel = snapshot.data!.data!;
                     // singleRestaurantsDetailsModel.data.menuCategory.
                     if (singleRestaurantsDetailsModel.success) {
-                      Vendor vendor = singleRestaurantsDetailsModel.data!.vendor!;
+                      Vendor vendor =
+                          singleRestaurantsDetailsModel.data!.vendor!;
                       List vendorNameList = vendor.name.split(' ');
                       List<MenuCategory> _menuCategories =
-                      singleRestaurantsDetailsModel.data!.menuCategory!;
+                          singleRestaurantsDetailsModel.data!.menuCategory!;
                       return Stack(
                         children: [
                           Column(
@@ -2268,7 +2285,7 @@ class _PosMenuState extends State<PosMenu> {
                                     children: [
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         children: [
                                           SizedBox(
                                             width: 10,
@@ -2289,7 +2306,7 @@ class _PosMenuState extends State<PosMenu> {
                                                       text: vendorNameList[0],
                                                       style: TextStyle(
                                                           fontWeight:
-                                                          FontWeight.w800,
+                                                              FontWeight.w800,
                                                           fontSize: 25,
                                                           color: Colors.black)),
                                                   TextSpan(text: ' '),
@@ -2297,7 +2314,7 @@ class _PosMenuState extends State<PosMenu> {
                                                       text: vendorNameList[1],
                                                       style: TextStyle(
                                                           fontWeight:
-                                                          FontWeight.w800,
+                                                              FontWeight.w800,
                                                           fontSize: 25,
                                                           color: Colors.white)),
                                                 ],
@@ -2335,16 +2352,16 @@ class _PosMenuState extends State<PosMenu> {
                                           decoration: const InputDecoration(
                                               labelText: 'Search',
                                               labelStyle:
-                                              TextStyle(color: Colors.white)
-                                            // border: OutlineInputBorder(),
-                                          ),
+                                                  TextStyle(color: Colors.white)
+                                              // border: OutlineInputBorder(),
+                                              ),
                                         ),
                                       ),
                                       SizedBox(
                                         width: Get.width * 0.3,
                                         child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
+                                              MainAxisAlignment.spaceAround,
                                           children: [
                                             if (_cartController.diningValue)
                                               Center(
@@ -2373,169 +2390,144 @@ class _PosMenuState extends State<PosMenu> {
                                                 if (value!) {
                                                   await showDialog<int>(
                                                       context: context,
-                                                      builder: (_) => AlertDialog(
-                                                        title: Center(
-                                                            child: Text(
-                                                                'Available table no')),
-                                                        content: SizedBox(
-                                                          height: Get.height *
-                                                              0.4,
-                                                          width:
-                                                          Get.width * 0.5,
-                                                          child: Column(
-                                                            children: [
-                                                              Expanded(
-                                                                child: FutureBuilder<
-                                                                    BookTableModel>(
-                                                                    future:
-                                                                    getBookTable(),
-                                                                    builder:
-                                                                        (context,
-                                                                        snapshot) {
-                                                                      if (snapshot
-                                                                          .hasError) {
-                                                                        return Center(
-                                                                          child:
-                                                                          Text(snapshot.error.toString()),
-                                                                        );
-                                                                      } else if (snapshot
-                                                                          .hasData) {
-                                                                        return GridView
-                                                                            .builder(
-                                                                          itemCount:
-                                                                          snapshot.data?.data.bookedTable.length ?? 0,
-                                                                          itemBuilder:
-                                                                              (builder, index) {
-                                                                            return GestureDetector(
-                                                                              onTap: () async {
-                                                                                _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
-                                                                                if (snapshot.data!.data.bookedTable[index].status == 1) {
-                                                                                  Map<String, dynamic> param = {
-                                                                                    'vendor_id': Constants.vendorId,
-                                                                                    'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
-                                                                                  };
-                                                                                  BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
-                                                                                  BookedOrderModel bookOrderModel = baseModel.data!;
-                                                                                  if (bookOrderModel.success!) {
-                                                                                    print('order');
-                                                                                    print(
-                                                                                        "****************");
-                                                                                    if (bookOrderModel
-                                                                                        .data!
-                                                                                        .userName !=
-                                                                                        null) {
-                                                                                      _cartController
-                                                                                          .userName =
-                                                                                      bookOrderModel
-                                                                                          .data!
-                                                                                          .userName!;
-                                                                                    }
-                                                                                    print(
-                                                                                        bookOrderModel
-                                                                                            .data!
-                                                                                            .userName);
-                                                                                    print(
-                                                                                        "****************");
+                                                      builder:
+                                                          (_) => AlertDialog(
+                                                                title: Center(
+                                                                    child: Text(
+                                                                        'Available table no')),
+                                                                content:
+                                                                    SizedBox(
+                                                                  height:
+                                                                      Get.height *
+                                                                          0.4,
+                                                                  width:
+                                                                      Get.width *
+                                                                          0.5,
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: FutureBuilder<
+                                                                                BookTableModel>(
+                                                                            future:
+                                                                                getBookTable(),
+                                                                            builder:
+                                                                                (context, snapshot) {
+                                                                              if (snapshot.hasError) {
+                                                                                return Center(
+                                                                                  child: Text(snapshot.error.toString()),
+                                                                                );
+                                                                              } else if (snapshot.hasData) {
+                                                                                return GridView.builder(
+                                                                                  itemCount: snapshot.data?.data.bookedTable.length ?? 0,
+                                                                                  itemBuilder: (builder, index) {
+                                                                                    return GestureDetector(
+                                                                                      onTap: () async {
+                                                                                        _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
+                                                                                        if (snapshot.data!.data.bookedTable[index].status == 1) {
+                                                                                          Map<String, dynamic> param = {
+                                                                                            'vendor_id': Constants.vendorId,
+                                                                                            'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
+                                                                                          };
+                                                                                          BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
+                                                                                          BookedOrderModel bookOrderModel = baseModel.data!;
+                                                                                          if (bookOrderModel.success!) {
+                                                                                            print('order');
+                                                                                            print("****************");
+                                                                                            if (bookOrderModel.data!.userName != null) {
+                                                                                              _cartController.userName = bookOrderModel.data!.userName!;
+                                                                                            }
+                                                                                            print(bookOrderModel.data!.userName);
+                                                                                            print("****************");
 
-                                                                                    print(
-                                                                                        "----------------");
-                                                                                    if (bookOrderModel
-                                                                                        .data!
-                                                                                        .mobile !=
-                                                                                        null) {
-                                                                                      _cartController
-                                                                                          .userMobileNumber =
-                                                                                      bookOrderModel
-                                                                                          .data!
-                                                                                          .mobile!;
-                                                                                    }
-                                                                                    print(
-                                                                                        bookOrderModel
-                                                                                            .data!
-                                                                                            .mobile);
-                                                                                    print(
-                                                                                        "----------------");
-                                                                                    print(bookOrderModel.data!.orderId);
-                                                                                    _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
-                                                                                    _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
-                                                                                    Navigator.pop(context);
-                                                                                  } else {
-                                                                                    print(bookOrderModel.toJson());
-                                                                                    // print(baseModel.error);
-                                                                                  }
-                                                                                } else {
-                                                                                  Navigator.pop(context);
-                                                                                }
-                                                                              },
-                                                                              child: Container(
-                                                                                margin: EdgeInsets.only(bottom: 18),
-                                                                                child: Stack(
-                                                                                  children: [
-                                                                                    Positioned(
+                                                                                            print("----------------");
+                                                                                            if (bookOrderModel.data!.mobile != null) {
+                                                                                              _cartController.userMobileNumber = bookOrderModel.data!.mobile!;
+                                                                                            }
+                                                                                            print(bookOrderModel.data!.mobile);
+                                                                                            print("----------------");
+                                                                                            print(bookOrderModel.data!.orderId);
+                                                                                            _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
+                                                                                            _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                                                                                            Navigator.pop(context);
+                                                                                          } else {
+                                                                                            print(bookOrderModel.toJson());
+                                                                                            // print(baseModel.error);
+                                                                                          }
+                                                                                        } else {
+                                                                                          Navigator.pop(context);
+                                                                                        }
+                                                                                      },
                                                                                       child: Container(
-                                                                                        padding: EdgeInsets.all(40.0),
-                                                                                        decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
+                                                                                        margin: EdgeInsets.only(bottom: 18),
+                                                                                        child: Stack(
+                                                                                          children: [
+                                                                                            Positioned(
+                                                                                              child: Container(
+                                                                                                padding: EdgeInsets.all(40.0),
+                                                                                                decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Center(
+                                                                                              child: Text(
+                                                                                                snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
+                                                                                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
                                                                                       ),
-                                                                                    ),
-                                                                                    Center(
-                                                                                      child: Text(
-                                                                                        snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
-                                                                                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                          gridDelegate:
-                                                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                                                            crossAxisCount: kIsWeb ? 8 : 3,
-                                                                            mainAxisExtent: 80,
-                                                                          ),
-                                                                        );
-                                                                      }
-                                                                      return Center(
-                                                                        child:
-                                                                        CircularProgressIndicator(color: Color(Constants.colorTheme)),
-                                                                      );
-                                                                    }),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ));
+                                                                                    );
+                                                                                  },
+                                                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                    crossAxisCount: kIsWeb ? 8 : 3,
+                                                                                    mainAxisExtent: 80,
+                                                                                  ),
+                                                                                );
+                                                                              }
+                                                                              return Center(
+                                                                                child: CircularProgressIndicator(color: Color(Constants.colorTheme)),
+                                                                              );
+                                                                            }),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ));
                                                   setState(() {
                                                     // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-                                                    _cartController.diningValue =
                                                     _cartController
-                                                        .tableNumber !=
-                                                        null
-                                                        ? true
-                                                        : false;
+                                                            .diningValue =
+                                                        _cartController
+                                                                    .tableNumber !=
+                                                                null
+                                                            ? true
+                                                            : false;
                                                     _cartController
-                                                        .isPromocodeApplied =
-                                                    false;
+                                                            .isPromocodeApplied =
+                                                        false;
                                                   });
                                                 } else {
                                                   setState(() {
-                                                    if (_cartController.cartMaster
-                                                        ?.oldOrderId !=
+                                                    if (_cartController
+                                                            .cartMaster
+                                                            ?.oldOrderId !=
                                                         null) {
-                                                      _cartController.cartMaster =
-                                                      null;
+                                                      _cartController
+                                                          .cartMaster = null;
                                                     }
-                                                    _cartController.tableNumber =
-                                                    null;
-                                                    _cartController.diningValue =
-                                                    false;
+                                                    _cartController
+                                                        .tableNumber = null;
+                                                    _cartController
+                                                        .diningValue = false;
                                                   });
                                                 }
                                               },
-                                              value: _cartController.diningValue,
-                                              activeColor: Constants.yellowColor,
+                                              value:
+                                                  _cartController.diningValue,
+                                              activeColor:
+                                                  Constants.yellowColor,
                                               activeTrackColor:
-                                              Constants.yellowColor,
+                                                  Constants.yellowColor,
                                               inactiveThumbColor: Colors.white,
                                               inactiveTrackColor: Colors.white,
                                             ),
@@ -2675,7 +2667,8 @@ class _PosMenuState extends State<PosMenu> {
                                       margin: EdgeInsets.only(top: 5),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16.0),
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
                                       ),
                                       child: Column(
                                         children: [
@@ -2687,15 +2680,16 @@ class _PosMenuState extends State<PosMenu> {
                                             scrollDirection: Axis.vertical,
                                             // physics: const NeverScrollableScrollPhysics(),
                                             gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 2,
                                               mainAxisExtent: Get.height * 0.1,
                                             ),
-                                            itemCount: sidebarGridTileList.length,
+                                            itemCount:
+                                                sidebarGridTileList.length,
                                             itemBuilder: (BuildContext context,
                                                 int sidebarGridTileListIndex) {
                                               return sidebarGridTileList[
-                                              sidebarGridTileListIndex];
+                                                  sidebarGridTileListIndex];
                                             },
                                           ),
                                         ],
@@ -2827,8 +2821,9 @@ class _PosMenuState extends State<PosMenu> {
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
-                                                    BorderRadius.all(
-                                                        Radius.circular(8))),
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 height: 60,
                                                 width: Get.width * 0.9,
 
@@ -2979,18 +2974,19 @@ class _PosMenuState extends State<PosMenu> {
                                                 // )
                                                 child: ListView.builder(
                                                   scrollDirection:
-                                                  Axis.horizontal,
+                                                      Axis.horizontal,
                                                   itemCount:
-                                                  singleRestaurantsDetailsModel
-                                                      .data!
-                                                      .menuCategory!
-                                                      .length +
-                                                      1,
-                                                  itemBuilder: (context, index) {
+                                                      singleRestaurantsDetailsModel
+                                                              .data!
+                                                              .menuCategory!
+                                                              .length +
+                                                          1,
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     return Padding(
                                                       padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: GestureDetector(
                                                         onTap: () {
                                                           setState(() {
@@ -3001,42 +2997,45 @@ class _PosMenuState extends State<PosMenu> {
                                                         child: Container(
                                                           padding: EdgeInsets
                                                               .symmetric(
-                                                              vertical: 10.0,
-                                                              horizontal:
-                                                              25.0),
+                                                                  vertical:
+                                                                      10.0,
+                                                                  horizontal:
+                                                                      25.0),
                                                           decoration:
-                                                          BoxDecoration(
+                                                              BoxDecoration(
                                                             color: _selectedCategoryIndex ==
-                                                                index
+                                                                    index
                                                                 ? Color(Constants
-                                                                .colorTheme)
+                                                                    .colorTheme)
                                                                 : null,
                                                             borderRadius:
-                                                            BorderRadius
-                                                                .circular(24),
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        24),
                                                             border: Border.all(
                                                                 color: Colors
                                                                     .redAccent,
                                                                 width: 1),
                                                           ),
                                                           alignment:
-                                                          Alignment.center,
+                                                              Alignment.center,
                                                           child: Text(
                                                             index == 0
                                                                 ? "All"
                                                                 : singleRestaurantsDetailsModel
-                                                                .data!
-                                                                .menuCategory![
-                                                            index - 1]
-                                                                .name,
+                                                                    .data!
+                                                                    .menuCategory![
+                                                                        index -
+                                                                            1]
+                                                                    .name,
                                                             style: TextStyle(
                                                               color:
-                                                              _selectedCategoryIndex ==
-                                                                  index
-                                                                  ? Colors
-                                                                  .white
-                                                                  : Colors
-                                                                  .black,
+                                                                  _selectedCategoryIndex ==
+                                                                          index
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
                                                             ),
                                                           ),
                                                         ),
@@ -3461,360 +3460,365 @@ class _PosMenuState extends State<PosMenu> {
                                           Expanded(
                                             child: GridView.builder(
                                               shrinkWrap: true,
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 3,
-                                                mainAxisExtent: Get.height * 0.25,
+                                                mainAxisExtent:
+                                                    Get.height * 0.25,
                                               ),
-                                              itemCount: _getMenuItemCount(singleRestaurantsDetailsModel.data!.menuCategory!),
-                                              itemBuilder: (BuildContext context, int index) {
+                                              itemCount: _getMenuItemCount(
+                                                  singleRestaurantsDetailsModel
+                                                      .data!.menuCategory!),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
                                                 SingleMenu? singleMenu;
-                                                List<SingleMenu> filteredMenus = [];
-                                                if (_selectedCategoryIndex == 0) {
-                                                  for (MenuCategory category in singleRestaurantsDetailsModel.data!.menuCategory!) {
-                                                    filteredMenus.addAll(category.singleMenu!
-                                                        .where((menu) =>
-                                                        menu.menu!.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+                                                List<SingleMenu> filteredMenus =
+                                                    [];
+                                                if (_selectedCategoryIndex ==
+                                                    0) {
+                                                  for (MenuCategory category
+                                                      in singleRestaurantsDetailsModel
+                                                          .data!
+                                                          .menuCategory!) {
+                                                    filteredMenus.addAll(category
+                                                        .singleMenu!
+                                                        .where((menu) => menu
+                                                            .menu!.name
+                                                            .toLowerCase()
+                                                            .contains(_searchQuery
+                                                                .toLowerCase()))
                                                         .toList());
                                                   }
                                                 } else {
-                                                  filteredMenus.addAll(singleRestaurantsDetailsModel.data!.menuCategory![_selectedCategoryIndex - 1]
-                                                      .singleMenu!
-                                                      .where((menu) =>
-                                                      menu.menu!.name.toLowerCase().contains(_searchQuery.toLowerCase()))
-                                                      .toList());
+                                                  filteredMenus.addAll(
+                                                      singleRestaurantsDetailsModel
+                                                          .data!
+                                                          .menuCategory![
+                                                              _selectedCategoryIndex -
+                                                                  1]
+                                                          .singleMenu!
+                                                          .where((menu) => menu
+                                                              .menu!.name
+                                                              .toLowerCase()
+                                                              .contains(_searchQuery
+                                                                  .toLowerCase()))
+                                                          .toList());
                                                 }
-                                                if (index < filteredMenus.length) {
-                                                  singleMenu = filteredMenus[index];
+                                                if (index <
+                                                    filteredMenus.length) {
+                                                  singleMenu =
+                                                      filteredMenus[index];
                                                 }
-                                                return singleMenu == null ? SizedBox.shrink() :  GestureDetector(
-                                                  onTap: () async {
-                                                    // TODO: && operator added
-                                                    if (singleMenu!
-                                                        .menu!.price ==
-                                                        null ||
-                                                        singleMenu
-                                                            .menu!
-                                                            .menuAddon!
-                                                            .isNotEmpty) {
-                                                      List<MenuSize> tempList =
-                                                      [];
-                                                      tempList.addAll(singleMenu
-                                                          .menu!.menuSize!);
-                                                      if (singleMenu
-                                                          .menu!.price ==
-                                                          null) {
-                                                        List<MenuSize>
-                                                        menuSizeList =
-                                                        singleMenu.menu!
-                                                            .menuSize!;
-                                                        for (int menuSizeIndex =
-                                                        0;
-                                                        menuSizeIndex <
-                                                            menuSizeList
-                                                                .length;
-                                                        menuSizeIndex++) {
-                                                          List<MenuAddon>
-                                                          groupMenuAddon =
-                                                          menuSizeList[
-                                                          menuSizeIndex]
-                                                              .groupMenuAddon!;
-                                                          Set set = {};
-                                                          for (int groupMenuAddonIndex =
-                                                          0;
-                                                          groupMenuAddonIndex <
-                                                              groupMenuAddon
-                                                                  .length;
-                                                          groupMenuAddonIndex++) {
-                                                            if (set.contains(
-                                                                groupMenuAddon[
-                                                                groupMenuAddonIndex]
-                                                                    .addonCategoryId)) {
-                                                              //duplicate
-                                                              groupMenuAddon[
-                                                              groupMenuAddonIndex]
-                                                                  .isDuplicate = true;
-                                                            } else {
-                                                              //unique
-                                                              set.add(groupMenuAddon[
-                                                              groupMenuAddonIndex]
-                                                                  .addonCategoryId);
-                                                            }
-                                                          }
-                                                        }
-                                                        showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                            context) {
-                                                              return AlertDialog(
-                                                                contentPadding:
-                                                                EdgeInsets
-                                                                    .all(
-                                                                    0.0),
-                                                                shape:
-                                                                RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius
-                                                                      .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                        20),
-                                                                  ),
-                                                                ),
-                                                                clipBehavior: Clip
-                                                                    .antiAliasWithSaveLayer,
-                                                                content:
-                                                                Builder(
+                                                return singleMenu == null
+                                                    ? SizedBox.shrink()
+                                                    : GestureDetector(
+                                                        onTap: () async {
+                                                          // TODO: && operator added
+                                                          if (singleMenu!.menu!
+                                                                      .price ==
+                                                                  null ||
+                                                              singleMenu
+                                                                  .menu!
+                                                                  .menuAddon!
+                                                                  .isNotEmpty) {
+                                                            List<MenuSize>
+                                                                tempList = [];
+                                                            tempList.addAll(
+                                                                singleMenu.menu!
+                                                                    .menuSize!);
+                                                            if (singleMenu.menu!
+                                                                    .price ==
+                                                                null) {
+                                                              List<MenuSize>
+                                                                  menuSizeList =
+                                                                  singleMenu
+                                                                      .menu!
+                                                                      .menuSize!;
+                                                              for (int menuSizeIndex =
+                                                                      0;
+                                                                  menuSizeIndex <
+                                                                      menuSizeList
+                                                                          .length;
+                                                                  menuSizeIndex++) {
+                                                                List<MenuAddon>
+                                                                    groupMenuAddon =
+                                                                    menuSizeList[
+                                                                            menuSizeIndex]
+                                                                        .groupMenuAddon!;
+                                                                Set set = {};
+                                                                for (int groupMenuAddonIndex =
+                                                                        0;
+                                                                    groupMenuAddonIndex <
+                                                                        groupMenuAddon
+                                                                            .length;
+                                                                    groupMenuAddonIndex++) {
+                                                                  if (set.contains(
+                                                                      groupMenuAddon[
+                                                                              groupMenuAddonIndex]
+                                                                          .addonCategoryId)) {
+                                                                    //duplicate
+                                                                    groupMenuAddon[
+                                                                            groupMenuAddonIndex]
+                                                                        .isDuplicate = true;
+                                                                  } else {
+                                                                    //unique
+                                                                    set.add(groupMenuAddon[
+                                                                            groupMenuAddonIndex]
+                                                                        .addonCategoryId);
+                                                                  }
+                                                                }
+                                                              }
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
                                                                   builder:
-                                                                      (context) {
-                                                                    var height =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .height;
-                                                                    var width =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .width;
-                                                                    return Container(
-                                                                        height: height -
-                                                                            100,
-                                                                        width: width *
-                                                                            0.5,
-                                                                        child:
-                                                                        AddonsWithSized(
-                                                                          menu:
-                                                                          singleMenu!.menu!,
-                                                                          category:
-                                                                          "SINGLE",
-                                                                          data: singleMenu
-                                                                              .menu!
-                                                                              .menuSize!,
-                                                                        ));
-                                                                  },
-                                                                ),
-                                                              );
-                                                            });
-                                                      } else if (singleMenu
-                                                          .menu!
-                                                          .menuAddon!
-                                                          .isNotEmpty) {
-                                                        print("ADDONS ONly ");
-                                                        showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                            context) {
-                                                              return AlertDialog(
-                                                                contentPadding:
-                                                                const EdgeInsets
-                                                                    .all(
-                                                                    0.0),
-                                                                shape:
-                                                                const RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius
-                                                                      .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                        20),
-                                                                  ),
-                                                                ),
-                                                                clipBehavior: Clip
-                                                                    .antiAliasWithSaveLayer,
-                                                                content:
-                                                                Builder(
-                                                                  builder:
-                                                                      (context) {
-                                                                    var height =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .height;
-                                                                    var width =
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .width;
-                                                                    return Container(
-                                                                      height:
-                                                                      height -
-                                                                          100,
-                                                                      width:
-                                                                      width *
-                                                                          0.5,
-                                                                      child:
-                                                                      AddonsOnly(
-                                                                        data: singleMenu!
-                                                                            .menu!,
-                                                                        menuPrice: singleMenu
-                                                                            .menu!
-                                                                            .price!,
-                                                                        menuId:
-                                                                        singleMenu.id,
-                                                                        category:
-                                                                        "SINGLE",
-                                                                        vendor: singleRestaurantsDetailsModel
-                                                                            .data!
-                                                                            .vendor!,
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      contentPadding:
+                                                                          EdgeInsets.all(
+                                                                              0.0),
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              20),
+                                                                        ),
+                                                                      ),
+                                                                      clipBehavior:
+                                                                          Clip.antiAliasWithSaveLayer,
+                                                                      content:
+                                                                          Builder(
+                                                                        builder:
+                                                                            (context) {
+                                                                          var height = MediaQuery.of(context)
+                                                                              .size
+                                                                              .height;
+                                                                          var width = MediaQuery.of(context)
+                                                                              .size
+                                                                              .width;
+                                                                          return Container(
+                                                                              height: height - 100,
+                                                                              width: width * 0.5,
+                                                                              child: AddonsWithSized(
+                                                                                menu: singleMenu!.menu!,
+                                                                                category: "SINGLE",
+                                                                                data: singleMenu.menu!.menuSize!,
+                                                                              ));
+                                                                        },
                                                                       ),
                                                                     );
-                                                                  },
-                                                                ),
-                                                              );
-                                                            });
-                                                      }
-                                                    } else {
-                                                      _cartController.addItem(
-                                                          cart.Cart(
-                                                              diningAmount: double
-                                                                  .parse(singleMenu
-                                                                  .menu!
-                                                                  .diningPrice ??
-                                                                  '0.0'),
-                                                              category:
-                                                              "SINGLE",
-                                                              menu: [
-                                                                cart.MenuCartMaster(
-                                                                  name:
-                                                                  singleMenu
-                                                                      .menu!
-                                                                      .name,
-                                                                  totalAmount: double.parse(
-                                                                      singleMenu
+                                                                  });
+                                                            } else if (singleMenu
+                                                                .menu!
+                                                                .menuAddon!
+                                                                .isNotEmpty) {
+                                                              print(
+                                                                  "ADDONS ONly ");
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      contentPadding:
+                                                                          const EdgeInsets.all(
+                                                                              0.0),
+                                                                      shape:
+                                                                          const RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              20),
+                                                                        ),
+                                                                      ),
+                                                                      clipBehavior:
+                                                                          Clip.antiAliasWithSaveLayer,
+                                                                      content:
+                                                                          Builder(
+                                                                        builder:
+                                                                            (context) {
+                                                                          var height = MediaQuery.of(context)
+                                                                              .size
+                                                                              .height;
+                                                                          var width = MediaQuery.of(context)
+                                                                              .size
+                                                                              .width;
+                                                                          return Container(
+                                                                            height:
+                                                                                height - 100,
+                                                                            width:
+                                                                                width * 0.5,
+                                                                            child:
+                                                                                AddonsOnly(
+                                                                              data: singleMenu!.menu!,
+                                                                              menuPrice: singleMenu.menu!.price!,
+                                                                              menuId: singleMenu.id,
+                                                                              category: "SINGLE",
+                                                                              vendor: singleRestaurantsDetailsModel.data!.vendor!,
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    );
+                                                                  });
+                                                            }
+                                                          } else {
+                                                            _cartController
+                                                                .addItem(
+                                                                    cart.Cart(
+                                                                        diningAmount:
+                                                                            double.parse(singleMenu.menu!.diningPrice ??
+                                                                                '0.0'),
+                                                                        category:
+                                                                            "SINGLE",
+                                                                        menu: [
+                                                                          cart.MenuCartMaster(
+                                                                            name:
+                                                                                singleMenu.menu!.name,
+                                                                            totalAmount:
+                                                                                double.parse(singleMenu.menu!.price!),
+                                                                            id: singleMenu.id,
+                                                                            addons: [],
+                                                                            image:
+                                                                                singleMenu.menu!.image,
+                                                                          )
+                                                                        ],
+                                                                        size:
+                                                                            null,
+                                                                        totalAmount: double.parse(singleMenu
+                                                                            .menu!
+                                                                            .price!),
+                                                                        quantity:
+                                                                            1),
+                                                                    Constants
+                                                                        .vendorId,
+                                                                    context);
+                                                            _cartController
+                                                                    .refreshScreen
+                                                                    .value =
+                                                                toggleBoolValue(
+                                                                    _cartController
+                                                                        .refreshScreen
+                                                                        .value);
+                                                          }
+                                                          // _addToCart(singleMenu!, index);
+                                                        },
+                                                        child: Container(
+                                                          // alignment: Alignment.center,
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 8.0,
+                                                                  right: 8.0,
+                                                                  bottom: 8.0),
+                                                          decoration: const BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          8))),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Container(
+                                                                height: 100,
+                                                                width: 100,
+                                                                // margin: EdgeInsets.only(left: 5.0),
+                                                                // decoration: ,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  image: DecorationImage(
+                                                                      image: CachedNetworkImageProvider(singleMenu!
                                                                           .menu!
-                                                                          .price!),
-                                                                  id: singleMenu
-                                                                      .id,
-                                                                  addons: [],
-                                                                  image:
-                                                                  singleMenu
-                                                                      .menu!
-                                                                      .image,
-                                                                )
-                                                              ],
-                                                              size: null,
-                                                              totalAmount:
-                                                              double.parse(
-                                                                  singleMenu
-                                                                      .menu!
-                                                                      .price!),
-                                                              quantity: 1),
-                                                          Constants.vendorId,
-                                                          context);
-                                                      _cartController
-                                                          .refreshScreen
-                                                          .value =
-                                                          toggleBoolValue(
-                                                              _cartController
-                                                                  .refreshScreen
-                                                                  .value);
-                                                    }
-                                                    // _addToCart(singleMenu!, index);
-                                                  },
-                                                  child: Container(
-                                                    // alignment: Alignment.center,
-                                                    margin:
-                                                    const EdgeInsets.only(
-                                                        left: 8.0,
-                                                        right: 8.0,
-                                                        bottom: 8.0),
-                                                    decoration:
-                                                    const BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .all(Radius
-                                                            .circular(
-                                                            8))),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center,
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        Container(
-                                                          height: 100,
-                                                          width: 100,
-                                                          // margin: EdgeInsets.only(left: 5.0),
-                                                          // decoration: ,
-                                                          decoration:
-                                                          BoxDecoration(
-                                                            image: DecorationImage(
-                                                                image: CachedNetworkImageProvider(
-                                                                    singleMenu!
-                                                                        .menu!
-                                                                        .image),
-                                                                fit: BoxFit
-                                                                    .fill),
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                12.0),
+                                                                          .image),
+                                                                      fit: BoxFit
+                                                                          .fill),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              12.0),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                singleMenu
+                                                                    .menu!.name,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                maxLines: 2,
+                                                                style:
+                                                                    TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  fontFamily:
+                                                                      "ProximaBold",
+                                                                  color: Color(
+                                                                      Constants
+                                                                          .colorTheme),
+                                                                  fontSize: 17,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "Normal ${singleMenu.menu!.price}" ??
+                                                                    "Price In Addons",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 1,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize: 14,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "Dining ${singleMenu.menu!.diningPrice}" ??
+                                                                    "0.0",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 1,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize: 14,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 5,
+                                                              )
+                                                            ],
                                                           ),
                                                         ),
-                                                        Text(
-                                                          singleMenu.menu!.name,
-                                                          textAlign:
-                                                          TextAlign.center,
-                                                          maxLines: 2,
-                                                          style: TextStyle(
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                            fontFamily:
-                                                            "ProximaBold",
-                                                            color: Color(
-                                                                Constants
-                                                                    .colorTheme),
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          "Normal ${singleMenu.menu!.price}" ??
-                                                              "Price In Addons",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                          style:
-                                                          const TextStyle(
-                                                            fontWeight:
-                                                            FontWeight.w500,
-                                                            color: Colors.red,
-                                                            fontSize: 14,
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          "Dining ${singleMenu.menu!.diningPrice}" ??
-                                                              "0.0",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                          style:
-                                                          const TextStyle(
-                                                            fontWeight:
-                                                            FontWeight.w500,
-                                                            color: Colors.red,
-                                                            fontSize: 14,
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
+                                                      );
                                               },
                                             ),
                                           ),
-
-
                                         ],
                                       ),
                                     ),
@@ -3827,7 +3831,8 @@ class _PosMenuState extends State<PosMenu> {
                                               Radius.circular(8))),
                                       width: Get.width * 0.25,
                                       child: Obx(() {
-                                        if (_cartController.refreshScreen.value ||
+                                        if (_cartController
+                                                .refreshScreen.value ||
                                             !_cartController
                                                 .refreshScreen.value) {
                                           return CartScreen(
@@ -3848,7 +3853,7 @@ class _PosMenuState extends State<PosMenu> {
                             child: CircleAvatar(
                                 radius: 36,
                                 backgroundImage:
-                                Image.network(vendor.image).image),
+                                    Image.network(vendor.image).image),
                           ),
                         ],
                       );

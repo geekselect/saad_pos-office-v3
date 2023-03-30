@@ -1054,4 +1054,56 @@ class _RestClient implements RestClient {
     final value = ReportModel.fromJson(_result.data!);
     return value;
   }
+
+  @override
+  Future<PrinterModel> printerData(int? id) async {
+    @override
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<PrinterModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'vendor/printerdata/${id}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = PrinterModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommenRes> updatePrinterData(Map<String, dynamic> map, int id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(map);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommenRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'vendor/printerdata/$id',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommenRes.fromJson(_result.data!);
+    return value;
+  }
+
+  // @override
+  // Future printerData(int? id) async {
+  //   @override
+  //   const _extra = <String, dynamic>{};
+  //   final queryParameters = <String, dynamic>{};
+  //   // queryParameters.removeWhere((k, v) => v == null);
+  //   final _headers = <String, dynamic>{};
+  //   final _data = <String, dynamic>{};
+  //   final _result = await _dio.fetch<Map<String, dynamic>>(_setStreamType(
+  //       Options(method: 'GET', headers: _headers, extra: _extra)
+  //           .compose(_dio.options, 'vendor/printerdata/${id}',
+  //               queryParameters: queryParameters, data: _data)
+  //           .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+  //   print("result printer ------------${_result.data}");
+  //   return _result.data;
+  // }
 }

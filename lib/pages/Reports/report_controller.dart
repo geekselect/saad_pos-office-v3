@@ -337,10 +337,10 @@ class ReportController extends GetxController {
     //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
     printer.hr();
     printer.row([
-      PosColumn(text: 'Sold Item Names', width: 7),
+      PosColumn(text: 'Sold Item Names', width: 9),
       PosColumn(
           text: 'Total Quantity',
-          width: 5,
+          width: 3,
           styles: PosStyles(align: PosAlign.right)),
     ]);
     for (int index = 0; index < reportModelData.value.orders!.length; index++) {

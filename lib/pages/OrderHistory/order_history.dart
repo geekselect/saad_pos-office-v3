@@ -20,6 +20,7 @@ import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/model/vendor/common_response.dart';
 import 'package:pos/pages/cart_screen.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
+import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
 import 'package:pos/retrofit/base_model.dart';
@@ -47,6 +48,7 @@ class OrderHistory extends StatefulWidget {
 }
 
 class _OrderHistoryState extends State<OrderHistory> {
+  PrinterController _printerController = Get.find<PrinterController>();
   OrderHistoryController _orderHistoryController =
       Get.find<OrderHistoryController>();
   OrderCustimizationController _orderCustimizationController =

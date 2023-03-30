@@ -12,6 +12,7 @@ import 'package:pos/model/report_model.dart';
 import 'package:pos/model/single_vendor_model.dart';
 import 'package:pos/model/vendor_banner_model.dart';
 import 'package:pos/model/vendor_item_model.dart';
+import 'package:pos/printer/printer_model.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:pos/model/TrackingModel.dart';
@@ -187,6 +188,15 @@ abstract class RestClient {
   Future reportsCall(
     @Path() int? id,
   );
+
+  @GET("vendor/printerdata/{id}")
+  Future<PrinterModel> printerData(@Path() int? id);
+
+  @POST("vendor/printerdata/{id}")
+  Future<CommenRes> updatePrinterData(@Body() Map<String, dynamic> map, int id);
+
+  // @GET("vendor/printerdata/{id}")
+  // Future printerData(@Path() int? id);
 
   @GET("slider/{id}")
   Future<VendorBanner> vendorSlider(

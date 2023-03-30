@@ -8,6 +8,7 @@ import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
+import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/widgets/number_btn.dart';
 import 'package:pos/widgets/shortcut_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,11 +86,12 @@ class _PosPaymentState extends State<PosPayment> {
   CartController _cartController = Get.find<CartController>();
   OrderHistoryController _orderHistoryController =
       Get.find<OrderHistoryController>();
+  PrinterController _printerController = Get.find<PrinterController>();
 
-  String? kitchenIp;
-  int? kitchenPort;
-  String? posIp;
-  int? posPort;
+  // String? kitchenIp;
+  // int? kitchenPort;
+  // String? posIp;
+  // int? posPort;
 
   bool isDisabled = false;
 
@@ -107,19 +109,20 @@ class _PosPaymentState extends State<PosPayment> {
     totalAmountController.text = widget.totalAmount.toString();
     // get();
 
-    posIp = box.read(Constants.posIp);
-    posPort = box.read(Constants.posPort);
-    print("POS IP ${box.read(Constants.posIp)}");
-    print("POS PORT ${box.read(Constants.posPort)}");
-    print("POS TYPE ${posPort.runtimeType}");
-    kitchenIp = box.read(Constants.kitchenIp);
-    kitchenPort = box.read(Constants.kitchenPort);
-    print("Kitchen IP ${box.read(Constants.kitchenIp)}");
-    print("Kitchen PORT ${box.read(Constants.kitchenPort)}");
-    print("Kitchen TYPE ${kitchenPort.runtimeType}");
-    print("Delievery Type ${widget.orderDeliveryType}");
+    // posIp = box.read(Constants.posIp);
+    // posPort = box.read(Constants.posPort);
+    // print("POS IP ${box.read(Constants.posIp)}");
+    // print("POS PORT ${box.read(Constants.posPort)}");
+    // print("POS TYPE ${posPort.runtimeType}");
+    // kitchenIp = box.read(Constants.kitchenIp);
+    // kitchenPort = box.read(Constants.kitchenPort);
+    // print("Kitchen IP ${box.read(Constants.kitchenIp)}");
+    // print("Kitchen PORT ${box.read(Constants.kitchenPort)}");
+    // print("Kitchen TYPE ${kitchenPort.runtimeType}");
+    // print("Delievery Type ${widget.orderDeliveryType}");
     callGetResturantDetailsRef = _orderCustimizationController
         .callGetRestaurantsDetails(Constants.vendorId);
+    _printerController.getPrinterDetails(Constants.vendorId);
     super.initState();
   }
 
@@ -207,6 +210,19 @@ class _PosPaymentState extends State<PosPayment> {
       BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails =
           await callGetResturantDetailsRef;
       if (restaurantDetails != null) {
+        print("--------POS PRint-------");
+        print(
+            'Print ip pos result: ${_printerController.printerModel.value.ipPos}');
+        print(
+            'Print ip posport result: ${_printerController.printerModel.value.portPos}');
+        print(
+            'Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
+        print(
+            'Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
+        print("---------------");
+        print('Print ip kitchen result: ${printerIp}');
+        print('Print ip kitchenport result: ${port}');
+        print("---------------");
         printPOSReceipt(printer, restaurantDetails, cartMaster);
         print(
             'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
@@ -631,11 +647,28 @@ class _PosPaymentState extends State<PosPayment> {
 
     if (res == PosPrintResult.success) {
       // DEMO RECEIPT
+      print("--------Kithcen PRint-------");
+      print(
+          'Print ip pos result: ${_printerController.printerModel.value.ipPos}');
+      print(
+          'Print ip posport result: ${_printerController.printerModel.value.portPos}');
+      print(
+          'Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
+      print(
+          'Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
+      print("---------------");
+      print('Print ip kitchen result: ${printerIp}');
+      print('Print ip kitchenport result: ${port}');
+      print("---------------");
       printKitchenReceipt(printer, cartMaster);
 
       // TEST PRINT
       // await testReceipt(printer);
       printer.disconnect();
+    } else {
+      print("--------NO-------");
+      print("--------$printerIp-------");
+      print("--------$port-------");
     }
   }
 
@@ -741,12 +774,15 @@ class _PosPaymentState extends State<PosPayment> {
           printer.row([
             PosColumn(text: cartItem.quantity.toString(), width: 1),
             PosColumn(
-              text: menu[menuIndex].name +
-                  (cart[itemIndex].size != null
-                      ? '(${cart[itemIndex].size?.sizeName})'
-                      : ''),
-              width: 9,
-            ),
+                text: menu[menuIndex].name +
+                    (cart[itemIndex].size != null
+                        ? '(${cart[itemIndex].size?.sizeName})'
+                        : ''),
+                width: 9,
+                styles: PosStyles(
+                    width: PosTextSize.size1,
+                    height: PosTextSize.size1,
+                    align: PosAlign.center)),
             PosColumn(
                 text: cartItem.totalAmount.toString(),
                 width: 2,
@@ -1567,9 +1603,15 @@ class _PosPaymentState extends State<PosPayment> {
                                           value: 'Pay Later',
                                           btnColor: Colors.green,
                                           onTapped: () {
+                                            print("lllllll");
                                             orderPaymentType =
                                                 'INCOMPLETE ORDER';
-                                            placeOrder(1);
+                                            // placeOrder(1);
+                                            testPrintKitchen(
+                                                "203.175.78.102",
+                                                8888,
+                                                context,
+                                                _cartController.cartMaster!);
                                             // if (kitchenPort != null) {
                                             //   print("kitchen Added");
                                             //   if (kitchenIp == '' &&
@@ -2019,6 +2061,10 @@ class _PosPaymentState extends State<PosPayment> {
         print("response id ${response.order_id}");
         print("response id type ${response.order_id.runtimeType}");
 
+        // print('Print ip pos result: ${_printerController.printerModel.value.ipPos}');
+        // print('Print ip posport result: ${_printerController.printerModel.value.portPos}');
+        // print('Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
+        // print('Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
         if (response.order_id == 0.toString()) {
           print("Number ${number.toString()}");
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -2034,49 +2080,74 @@ class _PosPaymentState extends State<PosPayment> {
           });
         }
         if (value == 0) {
-          if (posPort != null) {
+          if (_printerController.printerModel.value.portPos != null) {
             print("POS ADDED");
-            if (posIp == '' && posPort == '' ||
-                posIp == null && posPort == null) {
+            if (_printerController.printerModel.value.ipPos == '' &&
+                    _printerController.printerModel.value.portPos == '' ||
+                _printerController.printerModel.value.ipPos == null &&
+                    _printerController.printerModel.value.portPos == null) {
               print("pos ip empty");
             } else {
               print("pos ip not empty");
+              print("test pos ip not empty");
               testPrintPOS(
-                  posIp!, posPort!, context, _cartController.cartMaster!);
+                  _printerController.printerModel.value.ipPos!,
+                  int.parse(
+                      _printerController.printerModel.value.portPos.toString()),
+                  context,
+                  _cartController.cartMaster!);
             }
           }
         } else if (value == 1) {
-          if (kitchenPort != null) {
+          if (_printerController.printerModel.value.portKitchen != null) {
             print("kitchen Added");
-            if (kitchenIp == '' && kitchenPort == '' ||
-                kitchenIp == null && kitchenPort == null) {
+            if (_printerController.printerModel.value.ipKitchen == '' &&
+                    _printerController.printerModel.value.portKitchen == '' ||
+                _printerController.printerModel.value.ipKitchen == null &&
+                    _printerController.printerModel.value.portKitchen == null) {
               print("kitchen ip empty");
             } else {
               print(" kitchen ip not empty");
-              testPrintKitchen(kitchenIp!, kitchenPort!, context,
+              testPrintKitchen(
+                  _printerController.printerModel.value.ipKitchen!,
+                  int.parse(_printerController.printerModel.value.portKitchen
+                      .toString()),
+                  context,
                   _cartController.cartMaster!);
             }
           }
         } else if (value == 2) {
-          if (posPort != null) {
+          if (_printerController.printerModel.value.portPos != null) {
             print("POS ADDED");
-            if (posIp == '' && posPort == '' ||
-                posIp == null && posPort == null) {
+            if (_printerController.printerModel.value.ipPos == '' &&
+                    _printerController.printerModel.value.portPos == '' ||
+                _printerController.printerModel.value.ipPos == null &&
+                    _printerController.printerModel.value.portPos == null) {
               print("pos ip empty");
             } else {
               print("pos ip not empty");
               testPrintPOS(
-                  posIp!, posPort!, context, _cartController.cartMaster!);
+                  _printerController.printerModel.value.ipPos!,
+                  int.parse(
+                      _printerController.printerModel.value.portPos.toString()),
+                  context,
+                  _cartController.cartMaster!);
             }
           }
-          if (kitchenPort != null) {
+          if (_printerController.printerModel.value.portKitchen != null) {
             print("kitchen Added");
-            if (kitchenIp == '' && kitchenPort == '' ||
-                kitchenIp == null && kitchenPort == null) {
+            if (_printerController.printerModel.value.ipKitchen == '' &&
+                    _printerController.printerModel.value.portKitchen == '' ||
+                _printerController.printerModel.value.ipKitchen == null &&
+                    _printerController.printerModel.value.portKitchen == null) {
               print("kitchen ip empty");
             } else {
               print(" kitchen ip not empty");
-              testPrintKitchen(kitchenIp!, kitchenPort!, context,
+              testPrintKitchen(
+                  _printerController.printerModel.value.ipKitchen!,
+                  int.parse(_printerController.printerModel.value.portKitchen
+                      .toString()),
+                  context,
                   _cartController.cartMaster!);
             }
           }
@@ -2093,11 +2164,13 @@ class _PosPaymentState extends State<PosPayment> {
           _cartController.userName = '';
           _cartController.userMobileNumber = '';
         }
+        // Future.delayed(Duration(seconds: 3), () {
         Get.offAll(
           () => OrderHistory(
             isFromProfile: false,
           ),
         );
+        // });
       } else {
         Constants.toastMessage('Errow while place order.');
       }

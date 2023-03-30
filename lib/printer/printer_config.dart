@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
 
 import '../../config/Palette.dart';
@@ -33,67 +34,65 @@ class PrinterConfig extends StatefulWidget {
 }
 
 class _PrinterConfigState extends State<PrinterConfig> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController posIpEditingController = TextEditingController();
-  TextEditingController posPortEditingController = TextEditingController();
-  TextEditingController kitchenIpEditingController = TextEditingController();
-  TextEditingController kitchenPortEditingController = TextEditingController();
-  final box = GetStorage();
+  PrinterController _printerController = Get.find<PrinterController>();
 
-  void _validateIPAddress(String ip) {
-    setState(() {
-      if (IPAddressValidator.isValidIPAddress(ip)) {
-        print("NO error");
-      } else {
-        print('Invalid IP address');
-      }
-    });
-  }
+  // final box = GetStorage();
+  //
+  // void _validateIPAddress(String ip) {
+  //   setState(() {
+  //     if (IPAddressValidator.isValidIPAddress(ip)) {
+  //       print("NO error");
+  //     } else {
+  //       print('Invalid IP address');
+  //     }
+  //   });
+  // }
+  //
+  // void _validatePortNumber(String port) {
+  //   setState(() {
+  //     if (PortNumberValidator.isValidPortNumber(port)) {
+  //       print("NO port error");
+  //     } else {
+  //       print('Invalid port number');
+  //     }
+  //   });
+  // }
 
-  void _validatePortNumber(String port) {
-    setState(() {
-      if (PortNumberValidator.isValidPortNumber(port)) {
-        print("NO port error");
-      } else {
-        print('Invalid port number');
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    posIpEditingController.text = box.read(Constants.posIp) ?? '';
-    if (box.read(Constants.posPort) != null) {
-      if (box.read(Constants.posPort) != 0) {
-        posPortEditingController.text = box.read(Constants.posPort).toString();
-      } else {
-        posPortEditingController.text = '';
-      }
-    } else {
-      posPortEditingController.text = '';
-    }
-    print("pos ip ${box.read(Constants.posIp)}");
-    print("pos port ${box.read(Constants.posPort)}");
-    kitchenIpEditingController.text = box.read(Constants.kitchenIp) ?? '';
-    if (box.read(Constants.kitchenPort) != null) {
-      if (box.read(Constants.kitchenPort) != 0) {
-        kitchenPortEditingController.text = box.read(Constants.kitchenPort).toString();
-      } else {
-        kitchenPortEditingController.text = '';
-      }
-    } else {
-      kitchenPortEditingController.text = '';
-    }
-    print("kitchen ip ${box.read(Constants.kitchenIp)}");
-    print("kitchen port ${box.read(Constants.kitchenPort)}");
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   // posIpEditingController.text = box.read(Constants.posIp) ?? '';
+  //   // if (box.read(Constants.posPort) != null) {
+  //   //   if (box.read(Constants.posPort) != 0) {
+  //   //     posPortEditingController.text = box.read(Constants.posPort).toString();
+  //   //   } else {
+  //   //     posPortEditingController.text = '';
+  //   //   }
+  //   // } else {
+  //   //   posPortEditingController.text = '';
+  //   // }
+  //   // print("pos ip ${box.read(Constants.posIp)}");
+  //   // print("pos port ${box.read(Constants.posPort)}");
+  //   // kitchenIpEditingController.text = box.read(Constants.kitchenIp) ?? '';
+  //   // if (box.read(Constants.kitchenPort) != null) {
+  //   //   if (box.read(Constants.kitchenPort) != 0) {
+  //   //     kitchenPortEditingController.text = box.read(Constants.kitchenPort).toString();
+  //   //   } else {
+  //   //     kitchenPortEditingController.text = '';
+  //   //   }
+  //   // } else {
+  //   //   kitchenPortEditingController.text = '';
+  //   // }
+  //   // print("kitchen ip ${box.read(Constants.kitchenIp)}");
+  //   // print("kitchen port ${box.read(Constants.kitchenPort)}");
+  //
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: _printerController.formKey,
       child: Scaffold(
         appBar: ApplicationToolbarWithClrBtn(
           appbarTitle: 'Printer Configuration',
@@ -141,7 +140,7 @@ class _PrinterConfigState extends State<PrinterConfig> {
                     // onChanged: (text) {
                     //   _validateIPAddress(text);
                     // },
-                    controller: posIpEditingController,
+                    controller: _printerController.posIpEditingController,
                     hintText: 'Enter POS IP',
                     validator: (String? value) {
                       if (value!.isEmpty) {
@@ -165,7 +164,7 @@ class _PrinterConfigState extends State<PrinterConfig> {
                     // onChanged: (text) {
                     //   _validatePortNumber(text);
                     // },
-                    controller: posPortEditingController,
+                    controller: _printerController.posPortEditingController,
                     hintText: 'Enter POS Printer Port',
                     validator: (String? value) {
                       if (value!.isEmpty) {
@@ -189,10 +188,10 @@ class _PrinterConfigState extends State<PrinterConfig> {
                   height: 10,
                 ),
                 CustomTextFromfield(
-                  // onChanged: (text) {
-                  //   _validateIPAddress(text);
-                  // },
-                    controller: kitchenIpEditingController,
+                    // onChanged: (text) {
+                    //   _validateIPAddress(text);
+                    // },
+                    controller: _printerController.kitchenIpEditingController,
                     hintText: 'Enter Kitchen IP',
                     validator: (String? value) {
                       if (value!.isEmpty) {
@@ -213,10 +212,10 @@ class _PrinterConfigState extends State<PrinterConfig> {
                   height: 10,
                 ),
                 CustomTextFromfield(
-                  // onChanged: (text) {
-                  //   _validatePortNumber(text);
-                  // },
-                    controller: kitchenPortEditingController,
+                    // onChanged: (text) {
+                    //   _validatePortNumber(text);
+                    // },
+                    controller: _printerController.kitchenPortEditingController,
                     hintText: 'Enter kitchen Printer Port',
                     validator: (String? value) {
                       if (value!.isEmpty) {
@@ -246,12 +245,17 @@ class _PrinterConfigState extends State<PrinterConfig> {
             // } else {
             //   Get.snackbar('INFORMATION', 'Please fill the form');
             // }
-            int? intValuePosPort = int.tryParse(posPortEditingController.text);
-            box.write(Constants.posIp, posIpEditingController.text ??= '');
-            box.write(Constants.posPort, intValuePosPort);
-            int? intValueKitchenPort = int.tryParse(kitchenPortEditingController.text);
-            box.write(Constants.kitchenIp, kitchenIpEditingController.text ??= '');
-            box.write(Constants.kitchenPort, intValueKitchenPort);
+            ///Newupdate
+            // int? intValuePosPort = int.tryParse(posPortEditingController.text);
+            // box.write(Constants.posIp, posIpEditingController.text ??= '');
+            // box.write(Constants.posPort, intValuePosPort);
+            // int? intValueKitchenPort =
+            //     int.tryParse(kitchenPortEditingController.text);
+            // box.write(
+            //     Constants.kitchenIp, kitchenIpEditingController.text ??= '');
+            // box.write(Constants.kitchenPort, intValueKitchenPort);
+
+            await _printerController.updatePrinterDetails(Constants.vendorId);
             Get.back();
             Get.snackbar('INFORMATION', 'Successfully updated');
           },
