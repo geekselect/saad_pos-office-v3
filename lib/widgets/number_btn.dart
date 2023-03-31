@@ -7,21 +7,24 @@ class NumberButton extends StatelessWidget {
   final String? value;
   final VoidCallback? onTapped;
   final Color btnColor;
+  double? height;
 
-  const NumberButton(
+  NumberButton(
       {Key? key,
-        required this.value,
-        required this.onTapped,
-      this.btnColor=const Color(0xFFd12828)})
+      required this.value,
+      required this.onTapped,
+      this.height = 0.12,
+      this.btnColor = const Color(0xFFff6565)})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Padding(
-        padding: const EdgeInsets.only(left: 5,right: 5, bottom: 5),
+        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
         child: Container(
-          height: Get.height*0.09,
+          padding: const EdgeInsets.all(2),
+          height: Get.height * height!,
           // width: Get.width/7,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(10)),

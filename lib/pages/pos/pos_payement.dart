@@ -1135,860 +1135,3113 @@ class _PosPaymentState extends State<PosPayment> {
   Widget build(BuildContext context) {
     print("order main id on pos payemnet ${Constants.order_main_id}");
     print("resturant Details...${callGetResturantDetailsRef}");
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.all(32.0),
+    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+      return SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 4.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: Get.width * 0.3,
-                          child: Text(
-                            'Total',
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 35,
-                                color: Color(Constants.colorTheme)),
-                          ),
+          child: constraints.maxWidth > 600
+              ? Container(
+                  margin: EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFFff6565),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Icon(
+                                  Icons.clear,
+                                  grade: 3,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              )),
                         ),
-                        Expanded(
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: InputDecoration(),
-                            controller: totalAmountController,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: Get.width * 0.3,
-                          child: Text(
-                            'Recieved',
-                            maxLines: 2,
-                            style: TextStyle(
-                              fontSize: 35,
-                              color: Color(Constants.colorTheme),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            inputFormatters: [
-                              DecimalTextInputFormatter(decimalRange: 2)
-                            ],
-                            decoration: InputDecoration(),
-                            onChanged: (String? val) {
-                              calculateChanged();
-                            },
-                            validator: (String? value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter Amount';
-                              }
-                            },
-                            controller: receivedController,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: Get.width * 0.3,
-                          child: Text(
-                            'Changed',
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 35,
-                                color: Color(Constants.colorTheme)),
-                          ),
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: InputDecoration(),
-                            controller: changedController,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Flexible(
-                fit: FlexFit.loose,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: Get.width * 0.1,
-                      child: Column(
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
                         children: [
-                          // SizedBox(height: Get.height*0.02,),
-                          ShortCutButton(
-                            value: '5',
-                            onTapped: () {
-                              receivedController.text = addStringIntoInt(5);
-                              calculateChanged();
-                            },
-                          ),
-                          ShortCutButton(
-                            value: '10',
-                            onTapped: () {
-                              receivedController.text = addStringIntoInt(10);
-                              calculateChanged();
-                            },
-                          ),
-                          ShortCutButton(
-                            value: '20',
-                            onTapped: () {
-                              receivedController.text = addStringIntoInt(20);
-                              calculateChanged();
-                            },
-                          ),
-                          ShortCutButton(
-                            value: '50',
-                            onTapped: () {
-                              receivedController.text = addStringIntoInt(50);
-                              calculateChanged();
-                            },
-                          ),
-                          ShortCutButton(
-                            value: '100',
-                            onTapped: () {
-                              receivedController.text = addStringIntoInt(100);
-                              calculateChanged();
-                            },
+                          Row(children: [
+                            Expanded(
+                              flex: 1,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color(Constants.colorTheme)),
+                                onPressed: () {},
+                                child: Text(
+                                  "Total",
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                                readOnly: true,
+                                decoration: InputDecoration(),
+                                controller: totalAmountController,
+                              ),
+                            ),
+                          ]),
+                          Row(children: [
+                            Expanded(
+                              flex: 1,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color(Constants.colorTheme)),
+                                onPressed: () {},
+                                child: Text(
+                                  'Received',
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                                inputFormatters: [
+                                  DecimalTextInputFormatter(decimalRange: 2)
+                                ],
+                                decoration: InputDecoration(),
+                                onChanged: (String? val) {
+                                  calculateChanged();
+                                },
+                                validator: (String? value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please Enter Amount';
+                                  }
+                                },
+                                controller: receivedController,
+                              ),
+                            ),
+                          ]),
+                          Row(children: [
+                            Expanded(
+                              flex: 1,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color(Constants.colorTheme)),
+                                onPressed: () {},
+                                child: Text(
+                                  'Changed',
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                                readOnly: true,
+                                decoration: InputDecoration(),
+                                controller: changedController,
+                              ),
+                            ),
+                          ]),
+
+                          // SizedBox(
+                          //   width: Get.width * 0.3,
+                          //   child: Text(
+                          //     'Total',
+                          //     maxLines: 2,
+                          //     style: TextStyle(
+                          //         fontSize: 35,
+                          //         color: Color(Constants.colorTheme)),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  children: [
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '5',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(5);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '10',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(10);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '20',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(20);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '50',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(50);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '100',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(100);
+                                          calculateChanged();
+                                        }),
+
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(10);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     "10",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(20);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     "20",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(50);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     '50',
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(100);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     "100",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '1',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "1";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '2',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "2";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '3',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "3";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '4',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "4";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '5',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "5";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '6',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "6";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '7',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "7";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '8',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "8";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '9',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "9";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '.',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      ".";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '0',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "0";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: 'X',
+                                                onTapped: () {
+                                                  if (receivedController
+                                                      .text.isNotEmpty) {
+                                                    receivedController.text =
+                                                        receivedController.text
+                                                            .substring(
+                                                                0,
+                                                                receivedController
+                                                                        .text
+                                                                        .length -
+                                                                    1);
+                                                    calculateChanged();
+                                                  }
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      NumberButton(
+                                          value: '5% Discount',
+                                          btnColor: _selectedButton == 0 ||
+                                                  _selectedButton == -1
+                                              ? Colors.black
+                                              : Colors.grey,
+                                          onTapped: _selectedButton == 0
+                                              ? () {}
+                                              : () => _updatePrice(0)),
+                                      NumberButton(
+                                          value: '10% Discount',
+                                          btnColor: _selectedButton == 1 ||
+                                                  _selectedButton == -1
+                                              ? Colors.black
+                                              : Colors.grey,
+                                          onTapped: _selectedButton == 1
+                                              ? () {}
+                                              : () => _updatePrice(1)),
+                                      NumberButton(
+                                          value: '15% Discount',
+                                          btnColor: _selectedButton == 2 ||
+                                                  _selectedButton == -1
+                                              ? Colors.black
+                                              : Colors.grey,
+                                          onTapped: _selectedButton == 2
+                                              ? () {}
+                                              : () => _updatePrice(2)),
+                                      NumberButton(
+                                          value: 'Clear Discount',
+                                          btnColor: _selectedButton == 3 ||
+                                                  _selectedButton == -1
+                                              ? Colors.black
+                                              : Colors.grey,
+                                          onTapped: _selectedButton == 3 ||
+                                                  _selectedButton == -1
+                                              ? () {}
+                                              : () => _updatePrice(3)),
+                                    ],
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: () {
+                                    if (_cartController
+                                                .cartMaster?.oldOrderId ==
+                                            null &&
+                                        widget.orderDeliveryType == 'DINING') {
+                                      return Column(
+                                        children: [
+                                          NumberButton(
+                                              value: 'Pay Later',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                orderPaymentType =
+                                                    'INCOMPLETE ORDER';
+                                                placeOrder(1);
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //       kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(
+                                                //         " kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                              }),
+                                        ],
+                                      );
+                                    } else if (_cartController
+                                                .cartMaster?.oldOrderId !=
+                                            null &&
+                                        widget.orderDeliveryType == 'DINING') {
+                                      return Column(
+                                        children: [
+                                          NumberButton(
+                                              value: 'POS CASH',
+                                              btnColor: Colors.black,
+                                              onTapped: () {
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  orderPaymentType = 'POS CASH';
+                                                  placeOrder(0);
+                                                }
+
+                                                ///Last Changing
+                                                // if (posPort != null) {
+                                                //   print("POS ADDED");
+                                                //   if (posIp == '' &&
+                                                //       posPort == '' ||
+                                                //       posIp == null &&
+                                                //           posPort == null) {
+                                                //     print("pos ip empty");
+                                                //   } else {
+                                                //     print("pos ip not empty");
+                                                //     testPrintPOS(
+                                                //         posIp!,
+                                                //         posPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController.cartTotalQuantity.value = 0;
+
+                                                ///fazool
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                              }),
+                                          NumberButton(
+                                              value: 'POS CARD',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                orderPaymentType = 'POS CARD';
+                                                placeOrder(0);
+
+                                                ///Last Changing
+                                                // if (posPort != null) {
+                                                //   print("POS ADDED");
+                                                //   if (posIp == '' &&
+                                                //           posPort == '' ||
+                                                //       posIp == null &&
+                                                //           posPort == null) {
+                                                //     print("pos ip empty");
+                                                //   } else {
+                                                //     print("pos ip not empty");
+                                                //     testPrintPOS(
+                                                //         posIp!,
+                                                //         posPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController
+                                                //     .cartTotalQuantity.value = 0;
+
+                                                ///Fazool
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                              }),
+                                          NumberButton(
+                                              value: 'Pay Later',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                orderPaymentType =
+                                                    'INCOMPLETE ORDER';
+                                                placeOrder(1);
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //       kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(
+                                                //         " kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController.cartTotalQuantity.value = 0;
+                                              }),
+                                        ],
+                                      );
+                                    } else if (_cartController
+                                                .cartMaster?.oldOrderId !=
+                                            null &&
+                                        widget.orderDeliveryType ==
+                                            'TAKEAWAY') {
+                                      return Column(
+                                        children: [
+                                          NumberButton(
+                                              value: 'POS CASH',
+                                              btnColor: Colors.black,
+                                              onTapped: () {
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  orderPaymentType =
+                                                      'POS CASH TAKEAWAY';
+                                                  placeOrder(0);
+                                                }
+
+                                                ///Last Changing
+                                                // if (posPort != null) {
+                                                //   print("POS ADDED");
+                                                //   if (posIp == '' &&
+                                                //       posPort == '' ||
+                                                //       posIp == null &&
+                                                //           posPort == null) {
+                                                //     print("pos ip empty");
+                                                //   } else {
+                                                //     print("pos ip not empty");
+                                                //     testPrintPOS(
+                                                //         posIp!,
+                                                //         posPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController.cartTotalQuantity.value = 0;
+
+                                                ///fazool
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                              }),
+                                          NumberButton(
+                                              value: 'POS CARD',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                orderPaymentType =
+                                                    'POS CARD TAKEAWAY';
+                                                placeOrder(0);
+
+                                                ///Last Changing
+                                                // if (posPort != null) {
+                                                //   print("POS ADDED");
+                                                //   if (posIp == '' &&
+                                                //           posPort == '' ||
+                                                //       posIp == null &&
+                                                //           posPort == null) {
+                                                //     print("pos ip empty");
+                                                //   } else {
+                                                //     print("pos ip not empty");
+                                                //     testPrintPOS(
+                                                //         posIp!,
+                                                //         posPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController
+                                                //     .cartTotalQuantity.value = 0;
+
+                                                ///Fazool
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                              }),
+                                          NumberButton(
+                                              value: 'Pay Later',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                print("lllllll");
+                                                orderPaymentType =
+                                                    'INCOMPLETE ORDER';
+                                                // placeOrder(1);
+                                                testPrintKitchen(
+                                                    "203.175.78.102",
+                                                    8888,
+                                                    context,
+                                                    _cartController
+                                                        .cartMaster!);
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //       kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(
+                                                //         " kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController.cartTotalQuantity.value = 0;
+                                              }),
+                                        ],
+                                      );
+                                    } else {
+                                      return Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          // ElevatedButton(
+                                          //   onPressed: () {
+                                          //     receivedController.text =
+                                          //         addStringIntoInt(5);
+                                          //     calculateChanged();
+                                          //   },
+                                          //   child: const Text(
+                                          //     "5",
+                                          //     textAlign: TextAlign.center,
+                                          //     style: TextStyle(
+                                          //         fontSize: 28,
+                                          //         fontFamily: 'Dosis',
+                                          //         color: Colors.white,
+                                          //         fontWeight:
+                                          //             FontWeight.normal),
+                                          //   ),
+                                          // ),
+                                          // ElevatedButton(
+                                          //   onPressed: () {
+                                          //     receivedController.text =
+                                          //         addStringIntoInt(10);
+                                          //     calculateChanged();
+                                          //   },
+                                          //   child: const Text(
+                                          //     "10",
+                                          //     textAlign: TextAlign.center,
+                                          //     style: TextStyle(
+                                          //         fontSize: 28,
+                                          //         fontFamily: 'Dosis',
+                                          //         color: Colors.white,
+                                          //         fontWeight:
+                                          //             FontWeight.normal),
+                                          //   ),
+                                          // ),
+                                          // ElevatedButton(
+                                          //   onPressed: () {
+                                          //     receivedController.text =
+                                          //         addStringIntoInt(20);
+                                          //     calculateChanged();
+                                          //   },
+                                          //   child: const Text(
+                                          //     "20",
+                                          //     textAlign: TextAlign.center,
+                                          //     style: TextStyle(
+                                          //         fontSize: 28,
+                                          //         fontFamily: 'Dosis',
+                                          //         color: Colors.white,
+                                          //         fontWeight:
+                                          //             FontWeight.normal),
+                                          //   ),
+                                          // ),
+                                          NumberButton(
+                                              value: 'POS CASH',
+                                              btnColor: Colors.black,
+                                              onTapped: () {
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  orderPaymentType = 'POS CASH';
+                                                  placeOrder(2);
+                                                }
+                                                print("********");
+
+                                                ///Last Changing
+                                                // if (posPort != null) {
+                                                //   print("POS ADDED");
+                                                //   if (posIp == '' &&
+                                                //           posPort == '' ||
+                                                //       posIp == null &&
+                                                //           posPort == null) {
+                                                //     print("pos ip empty");
+                                                //   } else {
+                                                //     print("pos ip not empty");
+                                                //     testPrintPOS(
+                                                //         posIp!,
+                                                //         posPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController
+                                                //     .cartTotalQuantity.value = 0;
+
+                                                /// Fazool
+                                                // }
+                                                //
+                                                //     const PaperSize paper = PaperSize.mm80;
+                                                //     final profile = await CapabilityProfile.load();
+                                                //     final printer = NetworkPrinter(paper, profile);
+                                                //
+                                                //     final PosPrintResult res = await printer.connect('192.168.18.62', port: 9100);
+                                                //
+                                                //     if (res == PosPrintResult.success) {
+                                                //       testReceipt(printer);
+                                                //       printer.disconnect();
+                                                //     }
+                                                //
+                                                //     print('Print result: ${res.msg}');
+                                              }),
+                                          NumberButton(
+                                              value: 'POS CARD',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                orderPaymentType = 'POS CARD';
+                                                placeOrder(2);
+
+                                                ///Last Changing
+                                                // if (posPort != null) {
+                                                //   print("POS ADDED");
+                                                //   if (posIp == '' &&
+                                                //           posPort == '' ||
+                                                //       posIp == null &&
+                                                //           posPort == null) {
+                                                //     print("pos ip empty");
+                                                //   } else {
+                                                //     print("pos ip not empty");
+                                                //     testPrintPOS(
+                                                //         posIp!,
+                                                //         posPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController
+                                                //     .cartTotalQuantity.value = 0;
+                                              }),
+                                          NumberButton(
+                                              value: 'Pay Later',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped: () {
+                                                orderPaymentType =
+                                                    'INCOMPLETE ORDER';
+                                                placeOrder(1);
+
+                                                ///Last Changing
+                                                // if (kitchenPort != null) {
+                                                //   print("kitchen Added");
+                                                //   if (kitchenIp == '' &&
+                                                //           kitchenPort == '' ||
+                                                //       kitchenIp == null &&
+                                                //           kitchenPort == null) {
+                                                //     print("kitchen ip empty");
+                                                //   } else {
+                                                //     print(" kitchen ip not empty");
+                                                //     testPrintKitchen(
+                                                //         kitchenIp!,
+                                                //         kitchenPort!,
+                                                //         context,
+                                                //         _cartController
+                                                //             .cartMaster!);
+                                                //   }
+                                                // }
+                                                // _cartController.cartMaster = null;
+                                                // _cartController
+                                                //     .cartTotalQuantity.value = 0;
+                                              }),
+                                        ],
+                                      );
+                                    }
+                                  }()),
+
+                              ///COulumn
+
+                              ///
+                              // SizedBox(
+                              //   width: Get.width * 0.1,
+                              //   child: Column(
+                              //     children: [
+                              //       // SizedBox(height: Get.height*0.02,),
+                              //       ShortCutButton(
+                              //         value: '5',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(5);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '10',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(10);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '20',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(20);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '50',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(50);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '100',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(100);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              ///Chenged
+                              // Align(
+                              //   alignment: Alignment.topCenter,
+                              //   child: SizedBox(
+                              //     width: Get.width * 0.9 - 64,
+                              //     child:
+                              //   ),
+                              // )
+                            ],
                           ),
                         ],
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: SizedBox(
-                        width: Get.width * 0.9 - 64,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '1',
-                                      onTapped: () {
-                                        receivedController.text += "1";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '2',
-                                      onTapped: () {
-                                        receivedController.text += "2";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '3',
-                                      onTapped: () {
-                                        receivedController.text += "3";
-                                        calculateChanged();
-                                      }),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '4',
-                                      onTapped: () {
-                                        receivedController.text += "4";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '5',
-                                      onTapped: () {
-                                        receivedController.text += "5";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '6',
-                                      onTapped: () {
-                                        receivedController.text += "6";
-                                        calculateChanged();
-                                      }),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '7',
-                                      onTapped: () {
-                                        receivedController.text += "7";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '8',
-                                      onTapped: () {
-                                        receivedController.text += "8";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '9',
-                                      onTapped: () {
-                                        receivedController.text += "9";
-                                        calculateChanged();
-                                      }),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '.',
-                                      onTapped: () {
-                                        receivedController.text += ".";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: '0',
-                                      onTapped: () {
-                                        receivedController.text += "0";
-                                        calculateChanged();
-                                      }),
-                                ),
-                                Expanded(
-                                  child: NumberButton(
-                                      value: 'X',
-                                      onTapped: () {
-                                        if (receivedController
-                                            .text.isNotEmpty) {
-                                          receivedController.text =
-                                              receivedController.text.substring(
-                                                  0,
-                                                  receivedController
-                                                          .text.length -
-                                                      1);
-                                          calculateChanged();
-                                        }
-                                      }),
-                                ),
-                              ],
-                            ),
-                            () {
-                              if (_cartController.cartMaster?.oldOrderId ==
-                                      null &&
-                                  widget.orderDeliveryType == 'DINING') {
-                                return Row(
-                                  children: [
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'Pay Later',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            orderPaymentType =
-                                                'INCOMPLETE ORDER';
-                                            placeOrder(1);
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //       kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(
-                                            //         " kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                          }),
-                                    ),
-                                  ],
-                                );
-                              } else if (_cartController
-                                          .cartMaster?.oldOrderId !=
-                                      null &&
-                                  widget.orderDeliveryType == 'DINING') {
-                                return Row(
-                                  children: [
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'Pay Later',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            orderPaymentType =
-                                                'INCOMPLETE ORDER';
-                                            placeOrder(1);
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //       kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(
-                                            //         " kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController.cartTotalQuantity.value = 0;
-                                          }),
-                                    ),
-                                    Expanded(
-                                        child: NumberButton(
-                                            value: 'POS CASH',
-                                            btnColor: Colors.green,
-                                            onTapped: () {
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                orderPaymentType = 'POS CASH';
-                                                placeOrder(0);
-                                              }
+                      SizedBox(
+                        height: 30,
+                      ),
 
-                                              ///Last Changing
-                                              // if (posPort != null) {
-                                              //   print("POS ADDED");
-                                              //   if (posIp == '' &&
-                                              //       posPort == '' ||
-                                              //       posIp == null &&
-                                              //           posPort == null) {
-                                              //     print("pos ip empty");
-                                              //   } else {
-                                              //     print("pos ip not empty");
-                                              //     testPrintPOS(
-                                              //         posIp!,
-                                              //         posPort!,
-                                              //         context,
-                                              //         _cartController
-                                              //             .cartMaster!);
-                                              //   }
-                                              // }
-                                              // _cartController.cartMaster = null;
-                                              // _cartController.cartTotalQuantity.value = 0;
-
-                                              ///fazool
-                                              // if (kitchenPort != null) {
-                                              //   print("kitchen Added");
-                                              //   if (kitchenIp == '' &&
-                                              //           kitchenPort == '' ||
-                                              //       kitchenIp == null &&
-                                              //           kitchenPort == null) {
-                                              //     print("kitchen ip empty");
-                                              //   } else {
-                                              //     print(" kitchen ip not empty");
-                                              //     testPrintKitchen(
-                                              //         kitchenIp!,
-                                              //         kitchenPort!,
-                                              //         context,
-                                              //         _cartController
-                                              //             .cartMaster!);
-                                              //   }
-                                              // }
-                                            })),
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'POS CARD',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            orderPaymentType = 'POS CARD';
-                                            placeOrder(0);
-
-                                            ///Last Changing
-                                            // if (posPort != null) {
-                                            //   print("POS ADDED");
-                                            //   if (posIp == '' &&
-                                            //           posPort == '' ||
-                                            //       posIp == null &&
-                                            //           posPort == null) {
-                                            //     print("pos ip empty");
-                                            //   } else {
-                                            //     print("pos ip not empty");
-                                            //     testPrintPOS(
-                                            //         posIp!,
-                                            //         posPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController
-                                            //     .cartTotalQuantity.value = 0;
-
-                                            ///Fazool
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //           kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(" kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                          }),
-                                    ),
-                                  ],
-                                );
-                              } else if (_cartController
-                                          .cartMaster?.oldOrderId !=
-                                      null &&
-                                  widget.orderDeliveryType == 'TAKEAWAY') {
-                                return Row(
-                                  children: [
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'Pay Later',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            print("lllllll");
-                                            orderPaymentType =
-                                                'INCOMPLETE ORDER';
-                                            // placeOrder(1);
-                                            testPrintKitchen(
-                                                "203.175.78.102",
-                                                8888,
-                                                context,
-                                                _cartController.cartMaster!);
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //       kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(
-                                            //         " kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController.cartTotalQuantity.value = 0;
-                                          }),
-                                    ),
-                                    Expanded(
-                                        child: NumberButton(
-                                            value: 'POS CASH',
-                                            btnColor: Colors.green,
-                                            onTapped: () {
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                orderPaymentType =
-                                                    'POS CASH TAKEAWAY';
-                                                placeOrder(0);
-                                              }
-
-                                              ///Last Changing
-                                              // if (posPort != null) {
-                                              //   print("POS ADDED");
-                                              //   if (posIp == '' &&
-                                              //       posPort == '' ||
-                                              //       posIp == null &&
-                                              //           posPort == null) {
-                                              //     print("pos ip empty");
-                                              //   } else {
-                                              //     print("pos ip not empty");
-                                              //     testPrintPOS(
-                                              //         posIp!,
-                                              //         posPort!,
-                                              //         context,
-                                              //         _cartController
-                                              //             .cartMaster!);
-                                              //   }
-                                              // }
-                                              // _cartController.cartMaster = null;
-                                              // _cartController.cartTotalQuantity.value = 0;
-
-                                              ///fazool
-                                              // if (kitchenPort != null) {
-                                              //   print("kitchen Added");
-                                              //   if (kitchenIp == '' &&
-                                              //           kitchenPort == '' ||
-                                              //       kitchenIp == null &&
-                                              //           kitchenPort == null) {
-                                              //     print("kitchen ip empty");
-                                              //   } else {
-                                              //     print(" kitchen ip not empty");
-                                              //     testPrintKitchen(
-                                              //         kitchenIp!,
-                                              //         kitchenPort!,
-                                              //         context,
-                                              //         _cartController
-                                              //             .cartMaster!);
-                                              //   }
-                                              // }
-                                            })),
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'POS CARD',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            orderPaymentType =
-                                                'POS CARD TAKEAWAY';
-                                            placeOrder(0);
-
-                                            ///Last Changing
-                                            // if (posPort != null) {
-                                            //   print("POS ADDED");
-                                            //   if (posIp == '' &&
-                                            //           posPort == '' ||
-                                            //       posIp == null &&
-                                            //           posPort == null) {
-                                            //     print("pos ip empty");
-                                            //   } else {
-                                            //     print("pos ip not empty");
-                                            //     testPrintPOS(
-                                            //         posIp!,
-                                            //         posPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController
-                                            //     .cartTotalQuantity.value = 0;
-
-                                            ///Fazool
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //           kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(" kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                          }),
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return Row(
-                                  children: [
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'Pay Later',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            orderPaymentType =
-                                                'INCOMPLETE ORDER';
-                                            placeOrder(1);
-
-                                            ///Last Changing
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //           kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(" kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController
-                                            //     .cartTotalQuantity.value = 0;
-                                          }),
-                                    ),
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'POS CASH',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              orderPaymentType = 'POS CASH';
-                                              placeOrder(2);
-                                            }
-                                            print("********");
-
-                                            ///Last Changing
-                                            // if (posPort != null) {
-                                            //   print("POS ADDED");
-                                            //   if (posIp == '' &&
-                                            //           posPort == '' ||
-                                            //       posIp == null &&
-                                            //           posPort == null) {
-                                            //     print("pos ip empty");
-                                            //   } else {
-                                            //     print("pos ip not empty");
-                                            //     testPrintPOS(
-                                            //         posIp!,
-                                            //         posPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //           kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(" kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController
-                                            //     .cartTotalQuantity.value = 0;
-
-                                            /// Fazool
-                                            // }
-                                            //
-                                            //     const PaperSize paper = PaperSize.mm80;
-                                            //     final profile = await CapabilityProfile.load();
-                                            //     final printer = NetworkPrinter(paper, profile);
-                                            //
-                                            //     final PosPrintResult res = await printer.connect('192.168.18.62', port: 9100);
-                                            //
-                                            //     if (res == PosPrintResult.success) {
-                                            //       testReceipt(printer);
-                                            //       printer.disconnect();
-                                            //     }
-                                            //
-                                            //     print('Print result: ${res.msg}');
-                                          }),
-                                    ),
-                                    Expanded(
-                                      child: NumberButton(
-                                          value: 'POS CARD',
-                                          btnColor: Colors.green,
-                                          onTapped: () {
-                                            orderPaymentType = 'POS CARD';
-                                            placeOrder(2);
-
-                                            ///Last Changing
-                                            // if (posPort != null) {
-                                            //   print("POS ADDED");
-                                            //   if (posIp == '' &&
-                                            //           posPort == '' ||
-                                            //       posIp == null &&
-                                            //           posPort == null) {
-                                            //     print("pos ip empty");
-                                            //   } else {
-                                            //     print("pos ip not empty");
-                                            //     testPrintPOS(
-                                            //         posIp!,
-                                            //         posPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // if (kitchenPort != null) {
-                                            //   print("kitchen Added");
-                                            //   if (kitchenIp == '' &&
-                                            //           kitchenPort == '' ||
-                                            //       kitchenIp == null &&
-                                            //           kitchenPort == null) {
-                                            //     print("kitchen ip empty");
-                                            //   } else {
-                                            //     print(" kitchen ip not empty");
-                                            //     testPrintKitchen(
-                                            //         kitchenIp!,
-                                            //         kitchenPort!,
-                                            //         context,
-                                            //         _cartController
-                                            //             .cartMaster!);
-                                            //   }
-                                            // }
-                                            // _cartController.cartMaster = null;
-                                            // _cartController
-                                            //     .cartTotalQuantity.value = 0;
-                                          }),
-                                    ),
-                                  ],
-                                );
-                              }
-                            }(),
-                          ],
+                      //       Container(
+                      //         child: Row(
+                      //           children: [
+                      //             Expanded(
+                      //               child:  NumberButton(
+                      //                   value: '5% Discount',
+                      //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+                      //                   onTapped: isDisabled == true ? (){} : () {
+                      // setState(() {
+                      // isDisabled = true;
+                      // });
+                      // calculateDiscount(0.05);
+                      // }),
+                      //             ),
+                      //             Expanded(
+                      //               child:  NumberButton(
+                      //                   value: '10% Discount',
+                      //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+                      //                   onTapped: isDisabled == true ? (){} : () {
+                      //                     setState(() {
+                      //                       isDisabled = true;
+                      //                     });
+                      //                     calculateDiscount(0.010);
+                      //                   }),
+                      //             ),
+                      //             Expanded(
+                      //               child:  NumberButton(
+                      //                   value: '15% Discount',
+                      //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+                      //                   onTapped: isDisabled == true ? (){} : () {
+                      //                     setState(() {
+                      //                       isDisabled = true;
+                      //                     });
+                      //                     calculateDiscount(0.015);
+                      //                   }),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       )
+                      // totalAmountController
+                    ],
+                  ),
+                )
+              : Container(
+                  margin: EdgeInsets.symmetric(vertical: 32.0, horizontal: 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFFff6565),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Icon(
+                                  Icons.clear,
+                                  grade: 3,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              )),
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        children: [
+                          Row(children: [
+                            Expanded(
+                              flex: 8,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color(Constants.colorTheme)),
+                                onPressed: () {},
+                                child: Text(
+                                  "Total",
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              flex: 9,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                                readOnly: true,
+                                decoration: InputDecoration(),
+                                controller: totalAmountController,
+                              ),
+                            ),
+                          ]),
+                          Row(children: [
+                            Expanded(
+                              flex: 8,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color(Constants.colorTheme)),
+                                onPressed: () {},
+                                child: Text(
+                                  'Received',
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              flex: 9,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                                inputFormatters: [
+                                  DecimalTextInputFormatter(decimalRange: 2)
+                                ],
+                                decoration: InputDecoration(),
+                                onChanged: (String? val) {
+                                  calculateChanged();
+                                },
+                                validator: (String? value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please Enter Amount';
+                                  }
+                                },
+                                controller: receivedController,
+                              ),
+                            ),
+                          ]),
+                          Row(children: [
+                            Expanded(
+                              flex: 8,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color(Constants.colorTheme)),
+                                onPressed: () {},
+                                child: Text(
+                                  "Change",
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              flex: 9,
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                                readOnly: true,
+                                decoration: InputDecoration(),
+                                controller: changedController,
+                              ),
+                            ),
+                          ]),
 
-              //       Container(
-              //         child: Row(
-              //           children: [
-              //             Expanded(
-              //               child:  NumberButton(
-              //                   value: '5% Discount',
-              //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
-              //                   onTapped: isDisabled == true ? (){} : () {
-              // setState(() {
-              // isDisabled = true;
-              // });
-              // calculateDiscount(0.05);
-              // }),
-              //             ),
-              //             Expanded(
-              //               child:  NumberButton(
-              //                   value: '10% Discount',
-              //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
-              //                   onTapped: isDisabled == true ? (){} : () {
-              //                     setState(() {
-              //                       isDisabled = true;
-              //                     });
-              //                     calculateDiscount(0.010);
-              //                   }),
-              //             ),
-              //             Expanded(
-              //               child:  NumberButton(
-              //                   value: '15% Discount',
-              //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
-              //                   onTapped: isDisabled == true ? (){} : () {
-              //                     setState(() {
-              //                       isDisabled = true;
-              //                     });
-              //                     calculateDiscount(0.015);
-              //                   }),
-              //             ),
-              //           ],
-              //         ),
-              //       )
-              // totalAmountController
+                          // SizedBox(
+                          //   width: Get.width * 0.3,
+                          //   child: Text(
+                          //     'Total',
+                          //     maxLines: 2,
+                          //     style: TextStyle(
+                          //         fontSize: 35,
+                          //         color: Color(Constants.colorTheme)),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  children: [
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '5',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(5);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '10',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(10);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '20',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(20);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '50',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(50);
+                                          calculateChanged();
+                                        }),
+                                    NumberButton(
+                                        height: 0.09,
+                                        btnColor: Colors.red.shade600,
+                                        value: '100',
+                                        onTapped: () {
+                                          receivedController.text =
+                                              addStringIntoInt(100);
+                                          calculateChanged();
+                                        }),
 
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: NumberButton(
-                          value: '5% Discount',
-                          btnColor:
-                              _selectedButton == 0 || _selectedButton == -1
-                                  ? Colors.red.shade500
-                                  : Colors.grey,
-                          onTapped: _selectedButton == 0
-                              ? () {}
-                              : () => _updatePrice(0)),
-                    ),
-                    Expanded(
-                      child: NumberButton(
-                          value: '10% Discount',
-                          btnColor:
-                              _selectedButton == 1 || _selectedButton == -1
-                                  ? Colors.red.shade500
-                                  : Colors.grey,
-                          onTapped: _selectedButton == 1
-                              ? () {}
-                              : () => _updatePrice(1)),
-                    ),
-                    Expanded(
-                      child: NumberButton(
-                          value: '15% Discount',
-                          btnColor:
-                              _selectedButton == 2 || _selectedButton == -1
-                                  ? Colors.red.shade500
-                                  : Colors.grey,
-                          onTapped: _selectedButton == 2
-                              ? () {}
-                              : () => _updatePrice(2)),
-                    ),
-                    Expanded(
-                      child: NumberButton(
-                          value: 'Clear Discount',
-                          btnColor:
-                              _selectedButton == 3 || _selectedButton == -1
-                                  ? Colors.red.shade500
-                                  : Colors.grey,
-                          onTapped:
-                              _selectedButton == 3 || _selectedButton == -1
-                                  ? () {}
-                                  : () => _updatePrice(3)),
-                    ),
-                  ],
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(10);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     "10",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(20);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     "20",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(50);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     '50',
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     receivedController.text =
+                                    //         addStringIntoInt(100);
+                                    //     calculateChanged();
+                                    //   },
+                                    //   child: const Text(
+                                    //     "100",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         fontFamily: 'Dosis',
+                                    //         color: Colors.white,
+                                    //         fontWeight: FontWeight.normal),
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '1',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "1";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '2',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "2";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '3',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "3";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '4',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "4";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '5',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "5";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '6',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "6";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '7',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "7";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '8',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "8";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '9',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "9";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '.',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      ".";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: '0',
+                                                onTapped: () {
+                                                  receivedController.text +=
+                                                      "0";
+                                                  calculateChanged();
+                                                }),
+                                          ),
+                                          Expanded(
+                                            child: NumberButton(
+                                                value: 'X',
+                                                onTapped: () {
+                                                  if (receivedController
+                                                      .text.isNotEmpty) {
+                                                    receivedController.text =
+                                                        receivedController.text
+                                                            .substring(
+                                                                0,
+                                                                receivedController
+                                                                        .text
+                                                                        .length -
+                                                                    1);
+                                                    calculateChanged();
+                                                  }
+                                                }),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                              // Expanded(
+                              //     flex: 1,
+                              //     child: Column(
+                              //       children: [
+                              //         NumberButton(
+                              //             value: '5% Discount',
+                              //             btnColor: _selectedButton == 0 ||
+                              //                     _selectedButton == -1
+                              //                 ? Colors.black
+                              //                 : Colors.grey,
+                              //             onTapped: _selectedButton == 0
+                              //                 ? () {}
+                              //                 : () => _updatePrice(0)),
+                              //         NumberButton(
+                              //             value: '10% Discount',
+                              //             btnColor: _selectedButton == 1 ||
+                              //                     _selectedButton == -1
+                              //                 ? Colors.black
+                              //                 : Colors.grey,
+                              //             onTapped: _selectedButton == 1
+                              //                 ? () {}
+                              //                 : () => _updatePrice(1)),
+                              //         NumberButton(
+                              //             value: '15% Discount',
+                              //             btnColor: _selectedButton == 2 ||
+                              //                     _selectedButton == -1
+                              //                 ? Colors.black
+                              //                 : Colors.grey,
+                              //             onTapped: _selectedButton == 2
+                              //                 ? () {}
+                              //                 : () => _updatePrice(2)),
+                              //         NumberButton(
+                              //             value: 'Clear Discount',
+                              //             btnColor: _selectedButton == 3 ||
+                              //                     _selectedButton == -1
+                              //                 ? Colors.black
+                              //                 : Colors.grey,
+                              //             onTapped: _selectedButton == 3 ||
+                              //                     _selectedButton == -1
+                              //                 ? () {}
+                              //                 : () => _updatePrice(3)),
+                              //       ],
+                              //     )),
+
+                              ///COulumn
+
+                              ///
+                              // SizedBox(
+                              //   width: Get.width * 0.1,
+                              //   child: Column(
+                              //     children: [
+                              //       // SizedBox(height: Get.height*0.02,),
+                              //       ShortCutButton(
+                              //         value: '5',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(5);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '10',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(10);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '20',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(20);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '50',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(50);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //       ShortCutButton(
+                              //         value: '100',
+                              //         onTapped: () {
+                              //           receivedController.text =
+                              //               addStringIntoInt(100);
+                              //           calculateChanged();
+                              //         },
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              ///Chenged
+                              // Align(
+                              //   alignment: Alignment.topCenter,
+                              //   child: SizedBox(
+                              //     width: Get.width * 0.9 - 64,
+                              //     child:
+                              //   ),
+                              // )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: NumberButton(
+                                height: 0.12,
+                                value: '5% Discount',
+                                btnColor: _selectedButton == 0 ||
+                                        _selectedButton == -1
+                                    ? Colors.black
+                                    : Colors.grey,
+                                onTapped: _selectedButton == 0
+                                    ? () {}
+                                    : () => _updatePrice(0)),
+                          ),
+                          Expanded(
+                            child: NumberButton(
+                                height: 0.12,
+                                value: '10% Discount',
+                                btnColor: _selectedButton == 1 ||
+                                        _selectedButton == -1
+                                    ? Colors.black
+                                    : Colors.grey,
+                                onTapped: _selectedButton == 1
+                                    ? () {}
+                                    : () => _updatePrice(1)),
+                          ),
+                          Expanded(
+                            child: NumberButton(
+                                height: 0.12,
+                                value: '15% Discount',
+                                btnColor: _selectedButton == 2 ||
+                                        _selectedButton == -1
+                                    ? Colors.black
+                                    : Colors.grey,
+                                onTapped: _selectedButton == 2
+                                    ? () {}
+                                    : () => _updatePrice(2)),
+                          ),
+                          Expanded(
+                            child: NumberButton(
+                                height: 0.12,
+                                value: 'Clear Discount',
+                                btnColor: _selectedButton == 3 ||
+                                        _selectedButton == -1
+                                    ? Colors.black
+                                    : Colors.grey,
+                                onTapped: _selectedButton == 3 ||
+                                        _selectedButton == -1
+                                    ? () {}
+                                    : () => _updatePrice(3)),
+                          )
+                        ],
+                      ),
+                      () {
+                        if (_cartController.cartMaster?.oldOrderId == null &&
+                            widget.orderDeliveryType == 'DINING') {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'Pay Later',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'INCOMPLETE ORDER';
+                                      placeOrder(1);
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //       kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(
+                                      //         " kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                    }),
+                              ),
+                            ],
+                          );
+                        } else if (_cartController.cartMaster?.oldOrderId !=
+                                null &&
+                            widget.orderDeliveryType == 'DINING') {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'POS CASH',
+                                    btnColor: Colors.black,
+                                    onTapped: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        orderPaymentType = 'POS CASH';
+                                        placeOrder(0);
+                                      }
+
+                                      ///Last Changing
+                                      // if (posPort != null) {
+                                      //   print("POS ADDED");
+                                      //   if (posIp == '' &&
+                                      //       posPort == '' ||
+                                      //       posIp == null &&
+                                      //           posPort == null) {
+                                      //     print("pos ip empty");
+                                      //   } else {
+                                      //     print("pos ip not empty");
+                                      //     testPrintPOS(
+                                      //         posIp!,
+                                      //         posPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController.cartTotalQuantity.value = 0;
+
+                                      ///fazool
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'POS CARD',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'POS CARD';
+                                      placeOrder(0);
+
+                                      ///Last Changing
+                                      // if (posPort != null) {
+                                      //   print("POS ADDED");
+                                      //   if (posIp == '' &&
+                                      //           posPort == '' ||
+                                      //       posIp == null &&
+                                      //           posPort == null) {
+                                      //     print("pos ip empty");
+                                      //   } else {
+                                      //     print("pos ip not empty");
+                                      //     testPrintPOS(
+                                      //         posIp!,
+                                      //         posPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController
+                                      //     .cartTotalQuantity.value = 0;
+
+                                      ///Fazool
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'Pay Later',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'INCOMPLETE ORDER';
+                                      placeOrder(1);
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //       kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(
+                                      //         " kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController.cartTotalQuantity.value = 0;
+                                    }),
+                              ),
+                            ],
+                          );
+                        } else if (_cartController.cartMaster?.oldOrderId !=
+                                null &&
+                            widget.orderDeliveryType == 'TAKEAWAY') {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'POS CASH',
+                                    btnColor: Colors.black,
+                                    onTapped: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        orderPaymentType = 'POS CASH TAKEAWAY';
+                                        placeOrder(0);
+                                      }
+
+                                      ///Last Changing
+                                      // if (posPort != null) {
+                                      //   print("POS ADDED");
+                                      //   if (posIp == '' &&
+                                      //       posPort == '' ||
+                                      //       posIp == null &&
+                                      //           posPort == null) {
+                                      //     print("pos ip empty");
+                                      //   } else {
+                                      //     print("pos ip not empty");
+                                      //     testPrintPOS(
+                                      //         posIp!,
+                                      //         posPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController.cartTotalQuantity.value = 0;
+
+                                      ///fazool
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'POS CARD',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'POS CARD TAKEAWAY';
+                                      placeOrder(0);
+
+                                      ///Last Changing
+                                      // if (posPort != null) {
+                                      //   print("POS ADDED");
+                                      //   if (posIp == '' &&
+                                      //           posPort == '' ||
+                                      //       posIp == null &&
+                                      //           posPort == null) {
+                                      //     print("pos ip empty");
+                                      //   } else {
+                                      //     print("pos ip not empty");
+                                      //     testPrintPOS(
+                                      //         posIp!,
+                                      //         posPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController
+                                      //     .cartTotalQuantity.value = 0;
+
+                                      ///Fazool
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'Pay Later',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      print("lllllll");
+                                      orderPaymentType = 'INCOMPLETE ORDER';
+                                      // placeOrder(1);
+                                      testPrintKitchen("203.175.78.102", 8888,
+                                          context, _cartController.cartMaster!);
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //       kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(
+                                      //         " kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController.cartTotalQuantity.value = 0;
+                                    }),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Row(
+                            children: [
+                              // ElevatedButton(
+                              //   onPressed: () {
+                              //     receivedController.text =
+                              //         addStringIntoInt(5);
+                              //     calculateChanged();
+                              //   },
+                              //   child: const Text(
+                              //     "5",
+                              //     textAlign: TextAlign.center,
+                              //     style: TextStyle(
+                              //         fontSize: 28,
+                              //         fontFamily: 'Dosis',
+                              //         color: Colors.white,
+                              //         fontWeight:
+                              //             FontWeight.normal),
+                              //   ),
+                              // ),
+                              // ElevatedButton(
+                              //   onPressed: () {
+                              //     receivedController.text =
+                              //         addStringIntoInt(10);
+                              //     calculateChanged();
+                              //   },
+                              //   child: const Text(
+                              //     "10",
+                              //     textAlign: TextAlign.center,
+                              //     style: TextStyle(
+                              //         fontSize: 28,
+                              //         fontFamily: 'Dosis',
+                              //         color: Colors.white,
+                              //         fontWeight:
+                              //             FontWeight.normal),
+                              //   ),
+                              // ),
+                              // ElevatedButton(
+                              //   onPressed: () {
+                              //     receivedController.text =
+                              //         addStringIntoInt(20);
+                              //     calculateChanged();
+                              //   },
+                              //   child: const Text(
+                              //     "20",
+                              //     textAlign: TextAlign.center,
+                              //     style: TextStyle(
+                              //         fontSize: 28,
+                              //         fontFamily: 'Dosis',
+                              //         color: Colors.white,
+                              //         fontWeight:
+                              //             FontWeight.normal),
+                              //   ),
+                              // ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'POS CASH',
+                                    btnColor: Colors.black,
+                                    onTapped: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        orderPaymentType = 'POS CASH';
+                                        placeOrder(2);
+                                      }
+                                      print("********");
+
+                                      ///Last Changing
+                                      // if (posPort != null) {
+                                      //   print("POS ADDED");
+                                      //   if (posIp == '' &&
+                                      //           posPort == '' ||
+                                      //       posIp == null &&
+                                      //           posPort == null) {
+                                      //     print("pos ip empty");
+                                      //   } else {
+                                      //     print("pos ip not empty");
+                                      //     testPrintPOS(
+                                      //         posIp!,
+                                      //         posPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController
+                                      //     .cartTotalQuantity.value = 0;
+
+                                      /// Fazool
+                                      // }
+                                      //
+                                      //     const PaperSize paper = PaperSize.mm80;
+                                      //     final profile = await CapabilityProfile.load();
+                                      //     final printer = NetworkPrinter(paper, profile);
+                                      //
+                                      //     final PosPrintResult res = await printer.connect('192.168.18.62', port: 9100);
+                                      //
+                                      //     if (res == PosPrintResult.success) {
+                                      //       testReceipt(printer);
+                                      //       printer.disconnect();
+                                      //     }
+                                      //
+                                      //     print('Print result: ${res.msg}');
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'POS CARD',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'POS CARD';
+                                      placeOrder(2);
+
+                                      ///Last Changing
+                                      // if (posPort != null) {
+                                      //   print("POS ADDED");
+                                      //   if (posIp == '' &&
+                                      //           posPort == '' ||
+                                      //       posIp == null &&
+                                      //           posPort == null) {
+                                      //     print("pos ip empty");
+                                      //   } else {
+                                      //     print("pos ip not empty");
+                                      //     testPrintPOS(
+                                      //         posIp!,
+                                      //         posPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController
+                                      //     .cartTotalQuantity.value = 0;
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'Pay Later',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'INCOMPLETE ORDER';
+                                      placeOrder(1);
+
+                                      ///Last Changing
+                                      // if (kitchenPort != null) {
+                                      //   print("kitchen Added");
+                                      //   if (kitchenIp == '' &&
+                                      //           kitchenPort == '' ||
+                                      //       kitchenIp == null &&
+                                      //           kitchenPort == null) {
+                                      //     print("kitchen ip empty");
+                                      //   } else {
+                                      //     print(" kitchen ip not empty");
+                                      //     testPrintKitchen(
+                                      //         kitchenIp!,
+                                      //         kitchenPort!,
+                                      //         context,
+                                      //         _cartController
+                                      //             .cartMaster!);
+                                      //   }
+                                      // }
+                                      // _cartController.cartMaster = null;
+                                      // _cartController
+                                      //     .cartTotalQuantity.value = 0;
+                                    }),
+                              ),
+                            ],
+                          );
+                        }
+                      }(),
+                      SizedBox(
+                        height: 30,
+                      ),
+
+                      //       Container(
+                      //         child: Row(
+                      //           children: [
+                      //             Expanded(
+                      //               child:  NumberButton(
+                      //                   value: '5% Discount',
+                      //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+                      //                   onTapped: isDisabled == true ? (){} : () {
+                      // setState(() {
+                      // isDisabled = true;
+                      // });
+                      // calculateDiscount(0.05);
+                      // }),
+                      //             ),
+                      //             Expanded(
+                      //               child:  NumberButton(
+                      //                   value: '10% Discount',
+                      //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+                      //                   onTapped: isDisabled == true ? (){} : () {
+                      //                     setState(() {
+                      //                       isDisabled = true;
+                      //                     });
+                      //                     calculateDiscount(0.010);
+                      //                   }),
+                      //             ),
+                      //             Expanded(
+                      //               child:  NumberButton(
+                      //                   value: '15% Discount',
+                      //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+                      //                   onTapped: isDisabled == true ? (){} : () {
+                      //                     setState(() {
+                      //                       isDisabled = true;
+                      //                     });
+                      //                     calculateDiscount(0.015);
+                      //                   }),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       )
+                      // totalAmountController
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ),
         ),
-      ),
-    ));
+      );
+    }));
   }
+
+  ///Form
+  //Form(
+  //           key: _formKey,
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               SizedBox(
+  //                 height: 30,
+  //               ),
+  //               Container(
+  //                 margin: EdgeInsets.only(left: 4.0),
+  //                 child: Column(
+  //                   children: [
+  //                     Row(
+  //                       children: [
+  //                         SizedBox(
+  //                           width: Get.width * 0.3,
+  //                           child: Text(
+  //                             'Total',
+  //                             maxLines: 2,
+  //                             style: TextStyle(
+  //                                 fontSize: 35,
+  //                                 color: Color(Constants.colorTheme)),
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           child: TextFormField(
+  //                             readOnly: true,
+  //                             decoration: InputDecoration(),
+  //                             controller: totalAmountController,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     Row(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       children: [
+  //                         SizedBox(
+  //                           width: Get.width * 0.3,
+  //                           child: Text(
+  //                             'Recieved',
+  //                             maxLines: 2,
+  //                             style: TextStyle(
+  //                               fontSize: 35,
+  //                               color: Color(Constants.colorTheme),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           child: TextFormField(
+  //                             inputFormatters: [
+  //                               DecimalTextInputFormatter(decimalRange: 2)
+  //                             ],
+  //                             decoration: InputDecoration(),
+  //                             onChanged: (String? val) {
+  //                               calculateChanged();
+  //                             },
+  //                             validator: (String? value) {
+  //                               if (value!.isEmpty) {
+  //                                 return 'Please Enter Amount';
+  //                               }
+  //                             },
+  //                             controller: receivedController,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     Row(
+  //                       children: [
+  //                         SizedBox(
+  //                           width: Get.width * 0.3,
+  //                           child: Text(
+  //                             'Changed',
+  //                             maxLines: 2,
+  //                             style: TextStyle(
+  //                                 fontSize: 35,
+  //                                 color: Color(Constants.colorTheme)),
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           child: TextFormField(
+  //                             readOnly: true,
+  //                             decoration: InputDecoration(),
+  //                             controller: changedController,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               SizedBox(
+  //                 height: 10,
+  //               ),
+  //               Flexible(
+  //                 fit: FlexFit.loose,
+  //                 child: Row(
+  //                   children: [
+  //                     SizedBox(
+  //                       width: Get.width * 0.1,
+  //                       child: Column(
+  //                         children: [
+  //                           // SizedBox(height: Get.height*0.02,),
+  //                           ShortCutButton(
+  //                             value: '5',
+  //                             onTapped: () {
+  //                               receivedController.text = addStringIntoInt(5);
+  //                               calculateChanged();
+  //                             },
+  //                           ),
+  //                           ShortCutButton(
+  //                             value: '10',
+  //                             onTapped: () {
+  //                               receivedController.text = addStringIntoInt(10);
+  //                               calculateChanged();
+  //                             },
+  //                           ),
+  //                           ShortCutButton(
+  //                             value: '20',
+  //                             onTapped: () {
+  //                               receivedController.text = addStringIntoInt(20);
+  //                               calculateChanged();
+  //                             },
+  //                           ),
+  //                           ShortCutButton(
+  //                             value: '50',
+  //                             onTapped: () {
+  //                               receivedController.text = addStringIntoInt(50);
+  //                               calculateChanged();
+  //                             },
+  //                           ),
+  //                           ShortCutButton(
+  //                             value: '100',
+  //                             onTapped: () {
+  //                               receivedController.text = addStringIntoInt(100);
+  //                               calculateChanged();
+  //                             },
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                     Align(
+  //                       alignment: Alignment.topCenter,
+  //                       child: SizedBox(
+  //                         width: Get.width * 0.9 - 64,
+  //                         child: Column(
+  //                           mainAxisAlignment: MainAxisAlignment.start,
+  //                           children: [
+  //                             Row(
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '1',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "1";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '2',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "2";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '3',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "3";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '4',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "4";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '5',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "5";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '6',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "6";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '7',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "7";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '8',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "8";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '9',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "9";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             Row(
+  //                               children: [
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '.',
+  //                                       onTapped: () {
+  //                                         receivedController.text += ".";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: '0',
+  //                                       onTapped: () {
+  //                                         receivedController.text += "0";
+  //                                         calculateChanged();
+  //                                       }),
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: NumberButton(
+  //                                       value: 'X',
+  //                                       onTapped: () {
+  //                                         if (receivedController
+  //                                             .text.isNotEmpty) {
+  //                                           receivedController.text =
+  //                                               receivedController.text.substring(
+  //                                                   0,
+  //                                                   receivedController
+  //                                                           .text.length -
+  //                                                       1);
+  //                                           calculateChanged();
+  //                                         }
+  //                                       }),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             () {
+  //                               if (_cartController.cartMaster?.oldOrderId ==
+  //                                       null &&
+  //                                   widget.orderDeliveryType == 'DINING') {
+  //                                 return Row(
+  //                                   children: [
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'Pay Later',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             orderPaymentType =
+  //                                                 'INCOMPLETE ORDER';
+  //                                             placeOrder(1);
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //       kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(
+  //                                             //         " kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                           }),
+  //                                     ),
+  //                                   ],
+  //                                 );
+  //                               } else if (_cartController
+  //                                           .cartMaster?.oldOrderId !=
+  //                                       null &&
+  //                                   widget.orderDeliveryType == 'DINING') {
+  //                                 return Row(
+  //                                   children: [
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'Pay Later',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             orderPaymentType =
+  //                                                 'INCOMPLETE ORDER';
+  //                                             placeOrder(1);
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //       kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(
+  //                                             //         " kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController.cartTotalQuantity.value = 0;
+  //                                           }),
+  //                                     ),
+  //                                     Expanded(
+  //                                         child: NumberButton(
+  //                                             value: 'POS CASH',
+  //                                             btnColor: Colors.green,
+  //                                             onTapped: () {
+  //                                               if (_formKey.currentState!
+  //                                                   .validate()) {
+  //                                                 orderPaymentType = 'POS CASH';
+  //                                                 placeOrder(0);
+  //                                               }
+  //
+  //                                               ///Last Changing
+  //                                               // if (posPort != null) {
+  //                                               //   print("POS ADDED");
+  //                                               //   if (posIp == '' &&
+  //                                               //       posPort == '' ||
+  //                                               //       posIp == null &&
+  //                                               //           posPort == null) {
+  //                                               //     print("pos ip empty");
+  //                                               //   } else {
+  //                                               //     print("pos ip not empty");
+  //                                               //     testPrintPOS(
+  //                                               //         posIp!,
+  //                                               //         posPort!,
+  //                                               //         context,
+  //                                               //         _cartController
+  //                                               //             .cartMaster!);
+  //                                               //   }
+  //                                               // }
+  //                                               // _cartController.cartMaster = null;
+  //                                               // _cartController.cartTotalQuantity.value = 0;
+  //
+  //                                               ///fazool
+  //                                               // if (kitchenPort != null) {
+  //                                               //   print("kitchen Added");
+  //                                               //   if (kitchenIp == '' &&
+  //                                               //           kitchenPort == '' ||
+  //                                               //       kitchenIp == null &&
+  //                                               //           kitchenPort == null) {
+  //                                               //     print("kitchen ip empty");
+  //                                               //   } else {
+  //                                               //     print(" kitchen ip not empty");
+  //                                               //     testPrintKitchen(
+  //                                               //         kitchenIp!,
+  //                                               //         kitchenPort!,
+  //                                               //         context,
+  //                                               //         _cartController
+  //                                               //             .cartMaster!);
+  //                                               //   }
+  //                                               // }
+  //                                             })),
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'POS CARD',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             orderPaymentType = 'POS CARD';
+  //                                             placeOrder(0);
+  //
+  //                                             ///Last Changing
+  //                                             // if (posPort != null) {
+  //                                             //   print("POS ADDED");
+  //                                             //   if (posIp == '' &&
+  //                                             //           posPort == '' ||
+  //                                             //       posIp == null &&
+  //                                             //           posPort == null) {
+  //                                             //     print("pos ip empty");
+  //                                             //   } else {
+  //                                             //     print("pos ip not empty");
+  //                                             //     testPrintPOS(
+  //                                             //         posIp!,
+  //                                             //         posPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController
+  //                                             //     .cartTotalQuantity.value = 0;
+  //
+  //                                             ///Fazool
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //           kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(" kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                           }),
+  //                                     ),
+  //                                   ],
+  //                                 );
+  //                               } else if (_cartController
+  //                                           .cartMaster?.oldOrderId !=
+  //                                       null &&
+  //                                   widget.orderDeliveryType == 'TAKEAWAY') {
+  //                                 return Row(
+  //                                   children: [
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'Pay Later',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             print("lllllll");
+  //                                             orderPaymentType =
+  //                                                 'INCOMPLETE ORDER';
+  //                                             // placeOrder(1);
+  //                                             testPrintKitchen(
+  //                                                 "203.175.78.102",
+  //                                                 8888,
+  //                                                 context,
+  //                                                 _cartController.cartMaster!);
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //       kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(
+  //                                             //         " kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController.cartTotalQuantity.value = 0;
+  //                                           }),
+  //                                     ),
+  //                                     Expanded(
+  //                                         child: NumberButton(
+  //                                             value: 'POS CASH',
+  //                                             btnColor: Colors.green,
+  //                                             onTapped: () {
+  //                                               if (_formKey.currentState!
+  //                                                   .validate()) {
+  //                                                 orderPaymentType =
+  //                                                     'POS CASH TAKEAWAY';
+  //                                                 placeOrder(0);
+  //                                               }
+  //
+  //                                               ///Last Changing
+  //                                               // if (posPort != null) {
+  //                                               //   print("POS ADDED");
+  //                                               //   if (posIp == '' &&
+  //                                               //       posPort == '' ||
+  //                                               //       posIp == null &&
+  //                                               //           posPort == null) {
+  //                                               //     print("pos ip empty");
+  //                                               //   } else {
+  //                                               //     print("pos ip not empty");
+  //                                               //     testPrintPOS(
+  //                                               //         posIp!,
+  //                                               //         posPort!,
+  //                                               //         context,
+  //                                               //         _cartController
+  //                                               //             .cartMaster!);
+  //                                               //   }
+  //                                               // }
+  //                                               // _cartController.cartMaster = null;
+  //                                               // _cartController.cartTotalQuantity.value = 0;
+  //
+  //                                               ///fazool
+  //                                               // if (kitchenPort != null) {
+  //                                               //   print("kitchen Added");
+  //                                               //   if (kitchenIp == '' &&
+  //                                               //           kitchenPort == '' ||
+  //                                               //       kitchenIp == null &&
+  //                                               //           kitchenPort == null) {
+  //                                               //     print("kitchen ip empty");
+  //                                               //   } else {
+  //                                               //     print(" kitchen ip not empty");
+  //                                               //     testPrintKitchen(
+  //                                               //         kitchenIp!,
+  //                                               //         kitchenPort!,
+  //                                               //         context,
+  //                                               //         _cartController
+  //                                               //             .cartMaster!);
+  //                                               //   }
+  //                                               // }
+  //                                             })),
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'POS CARD',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             orderPaymentType =
+  //                                                 'POS CARD TAKEAWAY';
+  //                                             placeOrder(0);
+  //
+  //                                             ///Last Changing
+  //                                             // if (posPort != null) {
+  //                                             //   print("POS ADDED");
+  //                                             //   if (posIp == '' &&
+  //                                             //           posPort == '' ||
+  //                                             //       posIp == null &&
+  //                                             //           posPort == null) {
+  //                                             //     print("pos ip empty");
+  //                                             //   } else {
+  //                                             //     print("pos ip not empty");
+  //                                             //     testPrintPOS(
+  //                                             //         posIp!,
+  //                                             //         posPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController
+  //                                             //     .cartTotalQuantity.value = 0;
+  //
+  //                                             ///Fazool
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //           kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(" kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                           }),
+  //                                     ),
+  //                                   ],
+  //                                 );
+  //                               } else {
+  //                                 return Row(
+  //                                   children: [
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'Pay Later',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             orderPaymentType =
+  //                                                 'INCOMPLETE ORDER';
+  //                                             placeOrder(1);
+  //
+  //                                             ///Last Changing
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //           kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(" kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController
+  //                                             //     .cartTotalQuantity.value = 0;
+  //                                           }),
+  //                                     ),
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'POS CASH',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             if (_formKey.currentState!
+  //                                                 .validate()) {
+  //                                               orderPaymentType = 'POS CASH';
+  //                                               placeOrder(2);
+  //                                             }
+  //                                             print("********");
+  //
+  //                                             ///Last Changing
+  //                                             // if (posPort != null) {
+  //                                             //   print("POS ADDED");
+  //                                             //   if (posIp == '' &&
+  //                                             //           posPort == '' ||
+  //                                             //       posIp == null &&
+  //                                             //           posPort == null) {
+  //                                             //     print("pos ip empty");
+  //                                             //   } else {
+  //                                             //     print("pos ip not empty");
+  //                                             //     testPrintPOS(
+  //                                             //         posIp!,
+  //                                             //         posPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //           kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(" kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController
+  //                                             //     .cartTotalQuantity.value = 0;
+  //
+  //                                             /// Fazool
+  //                                             // }
+  //                                             //
+  //                                             //     const PaperSize paper = PaperSize.mm80;
+  //                                             //     final profile = await CapabilityProfile.load();
+  //                                             //     final printer = NetworkPrinter(paper, profile);
+  //                                             //
+  //                                             //     final PosPrintResult res = await printer.connect('192.168.18.62', port: 9100);
+  //                                             //
+  //                                             //     if (res == PosPrintResult.success) {
+  //                                             //       testReceipt(printer);
+  //                                             //       printer.disconnect();
+  //                                             //     }
+  //                                             //
+  //                                             //     print('Print result: ${res.msg}');
+  //                                           }),
+  //                                     ),
+  //                                     Expanded(
+  //                                       child: NumberButton(
+  //                                           value: 'POS CARD',
+  //                                           btnColor: Colors.green,
+  //                                           onTapped: () {
+  //                                             orderPaymentType = 'POS CARD';
+  //                                             placeOrder(2);
+  //
+  //                                             ///Last Changing
+  //                                             // if (posPort != null) {
+  //                                             //   print("POS ADDED");
+  //                                             //   if (posIp == '' &&
+  //                                             //           posPort == '' ||
+  //                                             //       posIp == null &&
+  //                                             //           posPort == null) {
+  //                                             //     print("pos ip empty");
+  //                                             //   } else {
+  //                                             //     print("pos ip not empty");
+  //                                             //     testPrintPOS(
+  //                                             //         posIp!,
+  //                                             //         posPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // if (kitchenPort != null) {
+  //                                             //   print("kitchen Added");
+  //                                             //   if (kitchenIp == '' &&
+  //                                             //           kitchenPort == '' ||
+  //                                             //       kitchenIp == null &&
+  //                                             //           kitchenPort == null) {
+  //                                             //     print("kitchen ip empty");
+  //                                             //   } else {
+  //                                             //     print(" kitchen ip not empty");
+  //                                             //     testPrintKitchen(
+  //                                             //         kitchenIp!,
+  //                                             //         kitchenPort!,
+  //                                             //         context,
+  //                                             //         _cartController
+  //                                             //             .cartMaster!);
+  //                                             //   }
+  //                                             // }
+  //                                             // _cartController.cartMaster = null;
+  //                                             // _cartController
+  //                                             //     .cartTotalQuantity.value = 0;
+  //                                           }),
+  //                                     ),
+  //                                   ],
+  //                                 );
+  //                               }
+  //                             }(),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     )
+  //                   ],
+  //                 ),
+  //               ),
+  //
+  //               //       Container(
+  //               //         child: Row(
+  //               //           children: [
+  //               //             Expanded(
+  //               //               child:  NumberButton(
+  //               //                   value: '5% Discount',
+  //               //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+  //               //                   onTapped: isDisabled == true ? (){} : () {
+  //               // setState(() {
+  //               // isDisabled = true;
+  //               // });
+  //               // calculateDiscount(0.05);
+  //               // }),
+  //               //             ),
+  //               //             Expanded(
+  //               //               child:  NumberButton(
+  //               //                   value: '10% Discount',
+  //               //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+  //               //                   onTapped: isDisabled == true ? (){} : () {
+  //               //                     setState(() {
+  //               //                       isDisabled = true;
+  //               //                     });
+  //               //                     calculateDiscount(0.010);
+  //               //                   }),
+  //               //             ),
+  //               //             Expanded(
+  //               //               child:  NumberButton(
+  //               //                   value: '15% Discount',
+  //               //                   btnColor: isDisabled == true ? Colors.grey : Colors.red.shade500,
+  //               //                   onTapped: isDisabled == true ? (){} : () {
+  //               //                     setState(() {
+  //               //                       isDisabled = true;
+  //               //                     });
+  //               //                     calculateDiscount(0.015);
+  //               //                   }),
+  //               //             ),
+  //               //           ],
+  //               //         ),
+  //               //       )
+  //               // totalAmountController
+  //
+  //               Container(
+  //                 child: Row(
+  //                   children: [
+  //                     Expanded(
+  //                       child: NumberButton(
+  //                           value: '5% Discount',
+  //                           btnColor:
+  //                               _selectedButton == 0 || _selectedButton == -1
+  //                                   ? Colors.red.shade500
+  //                                   : Colors.grey,
+  //                           onTapped: _selectedButton == 0
+  //                               ? () {}
+  //                               : () => _updatePrice(0)),
+  //                     ),
+  //                     Expanded(
+  //                       child: NumberButton(
+  //                           value: '10% Discount',
+  //                           btnColor:
+  //                               _selectedButton == 1 || _selectedButton == -1
+  //                                   ? Colors.red.shade500
+  //                                   : Colors.grey,
+  //                           onTapped: _selectedButton == 1
+  //                               ? () {}
+  //                               : () => _updatePrice(1)),
+  //                     ),
+  //                     Expanded(
+  //                       child: NumberButton(
+  //                           value: '15% Discount',
+  //                           btnColor:
+  //                               _selectedButton == 2 || _selectedButton == -1
+  //                                   ? Colors.red.shade500
+  //                                   : Colors.grey,
+  //                           onTapped: _selectedButton == 2
+  //                               ? () {}
+  //                               : () => _updatePrice(2)),
+  //                     ),
+  //                     Expanded(
+  //                       child: NumberButton(
+  //                           value: 'Clear Discount',
+  //                           btnColor:
+  //                               _selectedButton == 3 || _selectedButton == -1
+  //                                   ? Colors.red.shade500
+  //                                   : Colors.grey,
+  //                           onTapped:
+  //                               _selectedButton == 3 || _selectedButton == -1
+  //                                   ? () {}
+  //                                   : () => _updatePrice(3)),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         ),
 
   calculateChanged() {
     if (receivedController.text.isNotEmpty) {
