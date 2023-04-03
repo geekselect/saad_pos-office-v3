@@ -510,6 +510,13 @@ class _PosMenuState extends State<PosMenu> {
                                         //   },
                                         // ),
                                         child: TextField(
+                                          onTap: () {
+                                            if (_selectedCategoryIndex != 0) {
+                                              setState(() {
+                                                _selectedCategoryIndex = 0;
+                                              });
+                                            }
+                                          },
                                           style: TextStyle(color: Colors.white),
                                           onChanged: (value) {
                                             setState(() {
