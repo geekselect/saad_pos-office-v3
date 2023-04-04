@@ -102,17 +102,23 @@ class _OrderHistoryState extends State<OrderHistory> {
   //   }
   // }
 
-  initAsync() async {
-    firebaseListener = _firebaseRef
-        .child('orders')
-        .child((await SharedPreferences.getInstance())
-                .getString(Constants.loginUserId) ??
-            '144')
-        .onChildChanged
-        .listen((event) {
+  initAsync()async{
+    firebaseListener=_firebaseRef.child('orders').child((await SharedPreferences.getInstance()).getString(Constants.loginUserId) ??'144').onChildChanged.listen((event) {
       _orderHistoryController.refreshOrderHistory(context);
     });
   }
+
+  // initAsync() async {
+  //   firebaseListener = _firebaseRef
+  //       .child('orders')
+  //       .child((await SharedPreferences.getInstance())
+  //               .getString(Constants.loginUserId) ??
+  //           '144')
+  //       .onChildChanged
+  //       .listen((event) {
+  //     _orderHistoryController.refreshOrderHistory(context);
+  //   });
+  // }
 
   final _totalOrders = <OrderHistoryData>[].obs;
   final _takeAwayOrders = <OrderHistoryData>[].obs;
