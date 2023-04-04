@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:esc_pos_printer/esc_pos_printer.dart';
+import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,7 +85,482 @@ class _OrderHistoryState extends State<OrderHistory> {
 
     _getOrders();
     initAsync();
+    print("<><><><><><><><><><>");
+    // print(_printerController.printerModel.value.ipPos!);
+    // print(_printerController.printerModel.value.portPos);
+    print("<><><><><><><><><><>");
+
     super.initState();
+  }
+
+  void testPrintPOS(String printerIp, int port, BuildContext ctx,
+      OrderHistoryData order) async {
+    // TODO Don't forget to choose printer's paper size
+    const PaperSize paper = PaperSize.mm80;
+    final profile = await CapabilityProfile.load();
+    final printer = NetworkPrinter(paper, profile);
+    final PosPrintResult res = await printer.connect(
+      printerIp,
+      port: port,
+    );
+
+    print('Print result: ${res.msg}');
+    Get.snackbar("", res.msg);
+
+    if (res == PosPrintResult.success) {
+      // DEMO RECEIPT
+      if (order != null) {
+        print("--------POS PRint-------");
+        print(
+            'Print ip pos result: ${_printerController.printerModel.value.ipPos}');
+        print(
+            'Print ip posport result: ${_printerController.printerModel.value.portPos}');
+        print(
+            'Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
+        print(
+            'Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
+        print("---------------");
+        print('Print ip kitchen result: ${printerIp}');
+        print('Print ip kitchenport result: ${port}');
+        print("---------------");
+        printPOSReceipt(printer, order);
+      } else {
+        print('Failed to fetch restaurant details');
+      }
+      // TEST PRINT
+      // await testReceipt(printer);
+      printer.disconnect();
+    }
+
+    // final snackBar =
+    //     SnackBar(content: Text(res.msg, textAlign: TextAlign.center));
+    // ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
+
+  printPOSReceipt(
+    NetworkPrinter printer,
+    OrderHistoryData order,
+  ) {
+    // // Print image
+    // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
+    // final Uint8List bytes = data.buffer.asUint8List();
+    // final img.Image? image = img.decodeImage(bytes);
+    // printer.image(image!);
+    printer.text(order.vendor!.name!,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.text(order.vendor!.mapAddress.toString(),
+        styles: PosStyles(align: PosAlign.center));
+    // printer.text('New Braunfels, TX',
+    //     styles: PosStyles(align: PosAlign.center));
+
+    printer.text("Phone : ${order.vendor!.contact.toString()}",
+        styles: PosStyles(align: PosAlign.left));
+
+    printer.text("Order Id ${order.order_id.toString()}",
+        styles: PosStyles(align: PosAlign.left));
+
+    if (order.user!.name.isNotEmpty && order.user!.phone.isNotEmpty) {
+      printer.text('Customer Name : ${order.user!.name}',
+          styles: PosStyles(align: PosAlign.left));
+
+      printer.text('Customer Phone No : ${order.user!.phone}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    // printer.text('${order.time} ${widget.orderTime}',
+    //     styles: PosStyles(align: PosAlign.left));
+    printer.text('${order.time}', styles: PosStyles(align: PosAlign.left));
+
+    // printer.text('Customer Name : ${restaurantDetails.data!.data!.vendor!.name}',
+    //     styles: PosStyles(align: PosAlign.center));
+    // printer.text('Customer Phone : ${restaurantDetails.data!.data!.vendor!.contact}',
+    //     styles: PosStyles(align: PosAlign.center));
+    // printer.text('Vendor type : ${restaurantDetails.data!.data!.vendor!.vendorType}',
+    //     styles: PosStyles(align: PosAlign.center));
+    if (order.tableNo != null && order.tableNo != 0) {
+      printer.text('Table Number : ${order.tableNo}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    if (order.payment_type.toString() == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : INCOMPLETE PAYMENT',
+          styles: PosStyles(align: PosAlign.left));
+    } else {
+      printer.text('Payment Status : ${order.payment_type.toString()}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('Order Type :  ${order.deliveryType.toString()}',
+        styles: PosStyles(align: PosAlign.left));
+
+    // printer.text('Web: www.example.com',
+    //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
+
+    printer.hr();
+    printer.row([
+      PosColumn(text: 'Qty', width: 1),
+      PosColumn(text: 'Item', width: 9),
+      PosColumn(
+          text: 'Total', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    for (int itemIndex = 0; itemIndex < order.orderItems!.length; itemIndex++) {
+      OrderItems orderItem = order.orderItems![itemIndex];
+      printer.row([
+        PosColumn(text: orderItem.qty.toString(), width: 1),
+        PosColumn(
+          text: orderItem.itemName.toString(),
+          width: 9,
+        ),
+        PosColumn(
+            text: orderItem.price.toString(),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+
+      ///Addons
+      // for (int addonIndex = 0; addonIndex < order; addonIndex++) {
+      //   AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //   if (addonIndex == 0) {
+      //     printer.row([
+      //       PosColumn(
+      //           text: "-ADDONS-",
+      //           width: 12,
+      //           styles: PosStyles(
+      //               width: PosTextSize.size1,
+      //               height: PosTextSize.size1,
+      //               align: PosAlign.center))
+      //     ]);
+      //   }
+      //   printer.row([
+      //     PosColumn(text: '', width: 1),
+      //     PosColumn(text: addonItem.name, width: 9),
+      //     // PosColumn(
+      //     // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     PosColumn(
+      //         text: addonItem.price.toString(),
+      //         width: 2,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      // }
+
+      ///Chening deals and half and half
+      //if (category == 'SINGLE') {
+      //         Cart cartItem = cart[itemIndex];
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-SINGLE-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //
+      //         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //           MenuCartMaster menuItem = menu[menuIndex];
+      //           printer.row([
+      //             PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //             PosColumn(
+      //               text: menu[menuIndex].name +
+      //                   (cart[itemIndex].size != null
+      //                       ? '(${cart[itemIndex].size?.sizeName})'
+      //                       : ''),
+      //               width: 9,
+      //             ),
+      //             PosColumn(
+      //                 text: cartItem.totalAmount.toString(),
+      //                 width: 2,
+      //                 styles: PosStyles(align: PosAlign.right)),
+      //           ]);
+      //           for (int addonIndex = 0;
+      //               addonIndex < menuItem.addons.length;
+      //               addonIndex++) {
+      //             AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //             if (addonIndex == 0) {
+      //               printer.row([
+      //                 PosColumn(
+      //                     text: "-ADDONS-",
+      //                     width: 12,
+      //                     styles: PosStyles(
+      //                         width: PosTextSize.size1,
+      //                         height: PosTextSize.size1,
+      //                         align: PosAlign.center))
+      //               ]);
+      //             }
+      //             printer.row([
+      //               PosColumn(text: '', width: 1),
+      //               PosColumn(text: addonItem.name, width: 9),
+      //               // PosColumn(
+      //               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //               PosColumn(
+      //                   text: addonItem.price.toString(),
+      //                   width: 2,
+      //                   styles: PosStyles(align: PosAlign.right)),
+      //             ]);
+      //           }
+      //         }
+      //       } else if (category == 'HALF_N_HALF') {
+      //         Cart cartItem = cart[itemIndex];
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-HALF & HALF-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //         printer.row([
+      //           PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //           PosColumn(
+      //               text: menuCategory!.name +
+      //                   (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //               width: 9,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1, height: PosTextSize.size1)),
+      //           // PosColumn(
+      //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //           PosColumn(
+      //               text: cartItem.totalAmount.toString(),
+      //               width: 2,
+      //               styles: PosStyles(align: PosAlign.right)),
+      //         ]);
+      //
+      //         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //           MenuCartMaster menuItem = menu[menuIndex];
+      //           printer.row([
+      //             PosColumn(
+      //                 text: ' ${menuIndex == 0 ? '-1st Half-' : "-2nd Half-"}',
+      //                 width: 12,
+      //                 styles: PosStyles(
+      //                     width: PosTextSize.size1,
+      //                     height: PosTextSize.size1,
+      //                     align: PosAlign.center))
+      //           ]);
+      //           printer.row([
+      //             PosColumn(text: '', width: 1),
+      //             PosColumn(text: menuItem.name + '', width: 9),
+      //             // PosColumn(
+      //             // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //             PosColumn(
+      //                 text: '', width: 2, styles: PosStyles(align: PosAlign.right)),
+      //           ]);
+      //
+      //           for (int addonIndex = 0;
+      //               addonIndex < menuItem.addons.length;
+      //               addonIndex++) {
+      //             AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //             if (addonIndex == 0) {
+      //               printer.row([
+      //                 PosColumn(
+      //                     text: "-ADDONS-",
+      //                     width: 12,
+      //                     styles: PosStyles(
+      //                         width: PosTextSize.size1,
+      //                         height: PosTextSize.size1,
+      //                         align: PosAlign.center))
+      //               ]);
+      //             }
+      //             printer.row([
+      //               PosColumn(text: '', width: 1),
+      //               PosColumn(text: addonItem.name, width: 9),
+      //               // PosColumn(
+      //               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //               PosColumn(
+      //                   text: addonItem.price.toString(),
+      //                   width: 2,
+      //                   styles: PosStyles(align: PosAlign.right)),
+      //             ]);
+      //           }
+      //         }
+      //       } else if (category == 'DEALS') {
+      //         Cart cartItem = cart[itemIndex];
+      //
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-DEALS-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //         printer.row([
+      //           PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //           PosColumn(
+      //               text: menuCategory!.name +
+      //                   (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //               width: 9,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1, height: PosTextSize.size1)),
+      //           // PosColumn(
+      //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //           PosColumn(
+      //               text: cartItem.totalAmount.toString(),
+      //               width: 2,
+      //               styles: PosStyles(align: PosAlign.right)),
+      //         ]);
+      //         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //           MenuCartMaster menuItem = menu[menuIndex];
+      //           DealsItems dealsItems = menu[menuIndex].dealsItems!;
+      //           printer.row([
+      //             PosColumn(
+      //                 text: "-${menuItem.name}(${dealsItems.name})-",
+      //                 width: 12,
+      //                 styles: PosStyles(
+      //                     width: PosTextSize.size1,
+      //                     height: PosTextSize.size1,
+      //                     align: PosAlign.center))
+      //           ]);
+      //           for (int addonIndex = 0;
+      //               addonIndex < menuItem.addons.length;
+      //               addonIndex++) {
+      //             AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //             if (addonIndex == 0) {
+      //               printer.row([
+      //                 PosColumn(width: 1),
+      //                 PosColumn(
+      //                     text: "        -ADDONS-",
+      //                     width: 9,
+      //                     styles: PosStyles(
+      //                         width: PosTextSize.size1,
+      //                         height: PosTextSize.size1,
+      //                         align: PosAlign.center)),
+      //                 PosColumn(width: 2),
+      //               ]);
+      //             }
+      //             printer.row([
+      //               PosColumn(text: '', width: 1),
+      //               PosColumn(text: addonItem.name, width: 9),
+      //               // PosColumn(
+      //               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //               PosColumn(
+      //                   text: addonItem.price.toString(),
+      //                   width: 2,
+      //                   styles: PosStyles(align: PosAlign.right)),
+      //             ]);
+      //           }
+      //         }
+      //       }
+    }
+    printer.hr();
+
+    ///Tax and Subtotal
+    // printer.row([
+    //   PosColumn(
+    //       text: 'SubTotal',
+    //       width: 6,
+    //       styles: PosStyles(
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1,
+    //       )),
+    //   PosColumn(
+    //       text: "$currencySymbol${widget.subTotal}",
+    //       width: 6,
+    //       styles: PosStyles(
+    //         align: PosAlign.right,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1,
+    //       )),
+    // ]);
+    //
+    // printer.row([
+    //   PosColumn(
+    //       text: 'Tax',
+    //       width: 6,
+    //       styles: PosStyles(
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1,
+    //       )),
+    //   PosColumn(
+    //       text: "$currencySymbol${widget.strTaxAmount}",
+    //       width: 6,
+    //       styles: PosStyles(
+    //         align: PosAlign.right,
+    //         height: PosTextSize.size1,
+    //         width: PosTextSize.size1,
+    //       )),
+    // ]);
+
+    ///Discount
+    // if (order.amount != double.parse(totalAmountController.text)) {
+    //   printer.row([
+    //     PosColumn(
+    //         text:
+    //             'Discount ${_selectedButton == 0 ? "5%" : _selectedButton == 1 ? "10%" : _selectedButton == 2 ? "15%" : ''}',
+    //         width: 6,
+    //         styles: PosStyles(
+    //           height: PosTextSize.size1,
+    //           width: PosTextSize.size1,
+    //         )),
+    //     PosColumn(
+    //         text:
+    //             "$currencySymbol${widget.totalAmount - double.parse(totalAmountController.text)}",
+    //         width: 6,
+    //         styles: PosStyles(
+    //           align: PosAlign.right,
+    //           height: PosTextSize.size1,
+    //           width: PosTextSize.size1,
+    //         )),
+    //   ]);
+    // }
+
+    printer.row([
+      PosColumn(
+          text: 'TOTAL',
+          width: 6,
+          styles: PosStyles(
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          )),
+      PosColumn(
+          text: "${order.amount}",
+          width: 6,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          )),
+    ]);
+
+    printer.hr(ch: '=', linesAfter: 1);
+
+    printer.feed(2);
+    printer.text('Thank you!',
+        styles: PosStyles(align: PosAlign.center, bold: true));
+
+    // Print QR Code from image
+    // try {
+    //   const String qrData = 'example.com';
+    //   const double qrSize = 200;
+    //   final uiImg = await QrPainter(
+    //     data: qrData,
+    //     version: QrVersions.auto,
+    //     gapless: false,
+    //   ).toImageData(qrSize);
+    //   final dir = await getTemporaryDirectory();
+    //   final pathName = '${dir.path}/qr_tmp.png';
+    //   final qrFile = File(pathName);
+    //   final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
+    //   final img = decodeImage(imgFile.readAsBytesSync());
+
+    //   printer.image(img);
+    // } catch (e) {
+    //   print(e);
+    // }
+
+    // Print QR Code using native function
+    // printer.qrcode('example.com');
+
+    printer.feed(1);
+    printer.cut();
+    printer.beep();
   }
 
   // void _applyFilter(FilterType filterType) {
@@ -102,8 +579,14 @@ class _OrderHistoryState extends State<OrderHistory> {
   //   }
   // }
 
-  initAsync()async{
-    firebaseListener=_firebaseRef.child('orders').child((await SharedPreferences.getInstance()).getString(Constants.loginUserId) ??'144').onChildChanged.listen((event) {
+  initAsync() async {
+    firebaseListener = _firebaseRef
+        .child('orders')
+        .child((await SharedPreferences.getInstance())
+                .getString(Constants.loginUserId) ??
+            '144')
+        .onChildChanged
+        .listen((event) {
       _orderHistoryController.refreshOrderHistory(context);
     });
   }
@@ -701,15 +1184,66 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                     padding:
                                                         const EdgeInsets.only(
                                                             left: 10, top: 10),
-                                                    child: Text(
-                                                      "Order ${order.order_id.toString()} | ${order.user!.name} | ${order.vendor!.name!} | ${order.payment_type.toString()} | ${order.deliveryType} | ${order.user!.name} | ${order.user_name != null ? order.user_name : ''} | ${order.mobile != null ? order.mobile : ""}",
-                                                      style: TextStyle(
-                                                        fontFamily: Constants
-                                                            .appFontBold,
-                                                        fontSize: 12,
-                                                        color: Color(Constants
-                                                            .colorGray),
-                                                      ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Order ${order.order_id.toString()} | ${order.user!.name} | ${order.vendor!.name!} | ${order.payment_type.toString()} | ${order.deliveryType} | ${order.user!.name} | ${order.user_name != null ? order.user_name : ''} | ${order.mobile != null ? order.mobile : ""}",
+                                                          style: TextStyle(
+                                                            fontFamily: Constants
+                                                                .appFontBold,
+                                                            fontSize: 12,
+                                                            color: Color(
+                                                                Constants
+                                                                    .colorGray),
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            // if (_printerController
+                                                            //         .printerModel
+                                                            //         .value
+                                                            //         .ipPos! !=
+                                                            //     null) {
+                                                            //   print(_printerController
+                                                            //       .printerModel
+                                                            //       .value
+                                                            //       .ipPos!);
+                                                            //   print(_printerController
+                                                            //       .printerModel
+                                                            //       .value
+                                                            //       .portPos);
+                                                            // }
+
+                                                            if (_printerController
+                                                                    .printerModel
+                                                                    .value
+                                                                    .ipPos !=
+                                                                null) {
+                                                              testPrintPOS(
+                                                                  _printerController
+                                                                      .printerModel
+                                                                      .value
+                                                                      .ipPos!,
+                                                                  int.parse(_printerController
+                                                                      .printerModel
+                                                                      .value
+                                                                      .portPos
+                                                                      .toString()),
+                                                                  context,
+                                                                  order);
+                                                            } else {
+                                                              Get.snackbar(
+                                                                  "Error",
+                                                                  "Please add printer ip and port");
+                                                            }
+                                                          },
+                                                          icon:
+                                                              Icon(Icons.print),
+                                                        )
+                                                      ],
                                                     ),
 
                                                     // child: Row(

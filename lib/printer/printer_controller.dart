@@ -53,6 +53,10 @@ class PrinterController extends GetxController {
         vendorId,
       );
       printerModel.value = response;
+      print("<><><><><><><><><><>");
+      print(printerModel.value.ipPos);
+      // print(_printerController.printerModel.value.portPos);
+      print("<><><><><><><><><><>");
       posIpEditingController.text = printerModel.value.ipPos ?? '';
       kitchenIpEditingController.text = printerModel.value.ipKitchen ?? '';
       posPortEditingController.text = printerModel.value.portPos ?? '';
