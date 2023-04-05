@@ -587,6 +587,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             '144')
         .onChildChanged
         .listen((event) {
+      print("Event Trigger ${event}");
       _orderHistoryController.refreshOrderHistory(context);
     });
   }
