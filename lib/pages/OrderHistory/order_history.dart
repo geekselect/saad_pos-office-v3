@@ -1189,15 +1189,17 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(
-                                                          "Order ${order.order_id.toString()} | ${order.user!.name} | ${order.vendor!.name!} | ${order.payment_type.toString()} | ${order.deliveryType} | ${order.user!.name} | ${order.user_name != null ? order.user_name : ''} | ${order.mobile != null ? order.mobile : ""}",
-                                                          style: TextStyle(
-                                                            fontFamily: Constants
-                                                                .appFontBold,
-                                                            fontSize: 12,
-                                                            color: Color(
-                                                                Constants
-                                                                    .colorGray),
+                                                        Expanded(
+                                                          child: Text(
+                                                            "Order ${order.order_id.toString()} | ${order.user!.name} | ${order.vendor!.name!} | ${order.payment_type.toString()} | ${order.deliveryType} | ${order.user!.name} | ${order.user_name != null ? order.user_name : ''} | ${order.mobile != null ? order.mobile : ""}",
+                                                            style: TextStyle(
+                                                              fontFamily: Constants
+                                                                  .appFontBold,
+                                                              fontSize: 12,
+                                                              color: Color(
+                                                                  Constants
+                                                                      .colorGray),
+                                                            ),
                                                           ),
                                                         ),
                                                         IconButton(

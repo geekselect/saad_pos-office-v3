@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\saadi\\Desktop\\ozpos_pos_saad_2023-master\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-te\\values-te.xml",
+            "outputFile": "C:\\Users\\saadi\\Desktop\\ozpos\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-te\\values-te.xml",
             "map": [
                 {
                     "source": "C:\\Users\\saadi\\.gradle\\caches\\transforms-2\\files-2.1\\25fbb6a3e47380dc53f9e038ee0298c6\\core-1.8.0\\res\\values-te\\values-te.xml",
