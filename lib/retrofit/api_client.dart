@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:pos/model/SingleVendorRetrieveSize.dart';
 import 'package:pos/model/banner_response.dart';
+import 'package:pos/model/customer_data_model.dart';
 import 'package:pos/model/deals_items_model.dart';
 import 'package:pos/model/deals_sizes.dart';
 import 'package:pos/model/half_n_half_model.dart';
@@ -188,6 +189,9 @@ abstract class RestClient {
   Future reportsCall(
     @Path() int? id,
   );
+
+  @GET("Pos-User-record/{vendorId}/{user_id}")
+  Future customerDataCall(@Path() int? vendorId, int user_id);
 
   @GET("vendor/printerdata/{id}")
   Future<PrinterModel> printerData(@Path() int? id);

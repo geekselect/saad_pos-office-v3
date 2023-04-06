@@ -1091,6 +1091,23 @@ class _RestClient implements RestClient {
     return value;
   }
 
+  @override
+  Future customerDataCall(int? vendorId, int user_id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CustomerDataModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'Pos-User-record/${vendorId}/${user_id}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CustomerDataModel.fromJson(_result.data!);
+    return value;
+  }
+
   // @override
   // Future printerData(int? id) async {
   //   @override
