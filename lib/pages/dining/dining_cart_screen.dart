@@ -25,8 +25,7 @@ import '../cart_screen.dart';
 import '../payment_method_screen.dart';
 
 class DiningCartScreen extends StatefulWidget {
-
-   DiningCartScreen({Key? key}) : super(key: key);
+  DiningCartScreen({Key? key}) : super(key: key);
 
   @override
   State<DiningCartScreen> createState() => _DiningCartScreenState();
@@ -35,11 +34,12 @@ class DiningCartScreen extends StatefulWidget {
 class _DiningCartScreenState extends State<DiningCartScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
   CartController _cartController = Get.find<CartController>();
   DateTime? selectedDate;
   TimeOfDay? picked;
-  OrderCustimizationController _orderCustimizationController = Get.find<
-      OrderCustimizationController>();
+  OrderCustimizationController _orderCustimizationController =
+      Get.find<OrderCustimizationController>();
 
   double totalAmount = 0.0;
   double subTotal = 0.0;
@@ -49,7 +49,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   ScheduleMethod scheduleMethod = ScheduleMethod.DELIVERNOW;
   Future<BaseModel<OrderSettingModel>>? callOrderSettingRef;
   Future<BaseModel<StatusModel>>? statusRef;
-  Color primaryColor=Color(Constants.colorTheme);
+  Color primaryColor = Color(Constants.colorTheme);
 
   @override
   void initState() {
@@ -64,7 +64,6 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder<BaseModel<OrderSettingModel>>(
         future: callOrderSettingRef,
         builder: (context, snapshot) {
@@ -75,36 +74,41 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
 
             _cartController.calculatedTax = 0.0;
             if (_cartController.cartMaster != null) {
-              for (int i = 0; i <
-                  _cartController.cartMaster!.cart.length; i++) {
+              for (int i = 0;
+                  i < _cartController.cartMaster!.cart.length;
+                  i++) {
                 print(_cartController.cartMaster!.cart[i].diningAmount);
                 totalAmount +=
-                    ((_cartController.cartMaster!.cart[i].diningAmount ?? 0.0)*_cartController.cartMaster!.cart[i].quantity  );
+                    ((_cartController.cartMaster!.cart[i].diningAmount ?? 0.0) *
+                        _cartController.cartMaster!.cart[i].quantity);
               }
               totalAmount = double.parse((totalAmount).toStringAsFixed(2));
               _cartController.calculatedAmount = totalAmount;
             }
-            if(_cartController.isPromocodeApplied){
+            if (_cartController.isPromocodeApplied) {
               if (_cartController.discountType == 'percentage') {
-                _cartController.discountAmount= totalAmount* _cartController.discount / 100;
-              }else{
-                _cartController.discountAmount=double.parse(_cartController.discount.toString());
-
+                _cartController.discountAmount =
+                    totalAmount * _cartController.discount / 100;
+              } else {
+                _cartController.discountAmount =
+                    double.parse(_cartController.discount.toString());
               }
-              _cartController.calculatedAmount-=_cartController.discountAmount;
-              print("sadas"+_cartController.calculatedAmount.toString());
+              _cartController.calculatedAmount -=
+                  _cartController.discountAmount;
+              print("sadas" + _cartController.calculatedAmount.toString());
               print(_cartController.discountAmount);
-            }else{
-              _cartController.discountAmount=0.0;
-              _cartController.appliedCouponName=null;
-              _cartController.strAppiedPromocodeId='0';
+            } else {
+              _cartController.discountAmount = 0.0;
+              _cartController.appliedCouponName = null;
+              _cartController.strAppiedPromocodeId = '0';
             }
             // print(jsonEncode(snapshot.data!.data!.toJson()));
             BaseModel<OrderSettingModel> orderSettingModel = snapshot.data!;
             //1 for percentage
             if (orderSettingModel.data?.data!.taxType == 1) {
               _cartController.calculatedTax = _cartController.calculatedAmount *
-                  double.parse(orderSettingModel.data!.data!.tax!) / 100;
+                  double.parse(orderSettingModel.data!.data!.tax!) /
+                  100;
               totalAmount -= _cartController.calculatedTax;
             }
             //2 for percentage
@@ -130,34 +134,35 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                         Container(
                           height: 40,
                           width: MediaQuery.of(context).size.width,
-
                           child: Row(
                             children: [
-
                               SizedBox(width: 5),
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                          color: Theme.of(context).primaryColor
-                                      ),
+                                          color:
+                                              Theme.of(context).primaryColor),
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white.withOpacity(0.4)),
                                   child: TextField(
                                     controller: nameController,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: (40 - 15) / 2,),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: (40 - 15) / 2,
+                                      ),
                                       border: InputBorder.none,
-                                      hintText: "Enter a Name ${nameController.text}",
+                                      hintText:
+                                          "Enter a Name ${nameController.text}",
                                       hintStyle: TextStyle(
                                           color: Colors.black26,
                                           fontSize: 15,
                                           fontFamily: "ProximaNova"),
-
                                     ),
-                                    style:
-                                    TextStyle(color: Colors.black, fontSize: 15),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
                                   ),
                                 ),
                               ),
@@ -166,60 +171,69 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                          color: Theme.of(context).primaryColor
-                                      ),
+                                          color:
+                                              Theme.of(context).primaryColor),
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white.withOpacity(0.4)),
                                   child: TextField(
-
                                     controller: phoneNoController,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: (40 - 15) / 2,),
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: (40 - 15) / 2,
+                                        ),
                                         border: InputBorder.none,
-                                        hintText: "Enter phone Number ${phoneNoController.text}",
+                                        hintText:
+                                            "Enter phone Number ${phoneNoController.text}",
                                         hintStyle: TextStyle(
                                             color: Colors.black26,
                                             fontSize: 15,
                                             fontFamily: "ProximaNova")),
-                                    style:
-                                    TextStyle(color: Colors.black, fontSize: 15),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
                                   ),
                                 ),
                               ),
                               SizedBox(width: 5),
                             ],
                           ),
-                        ) ,
+                        ),
                         Align(
                             alignment: Alignment.centerRight,
-                            child: TextButton(onPressed: (){
-                              nameController.clear();
-                              phoneNoController.clear();
-                              // _cartController.tableNumber = null;
-                              setState(() {
-
-                              });
-                            }, child: Text('Clear'))),
+                            child: TextButton(
+                                onPressed: () {
+                                  nameController.clear();
+                                  phoneNoController.clear();
+                                  // _cartController.tableNumber = null;
+                                  setState(() {});
+                                },
+                                child: Text('Clear'))),
                         SizedBox(height: 2),
-                        _cartController.tableNumber == null ? Container() : Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                            Text('Table Number'),
-                            Container(
-                                margin: EdgeInsets.only(right: 8.0),
-                                child: Text(_cartController.tableNumber.toString())),
-                          ],),
-                        ),
-                        if(picked != null && selectedDate != null &&
+                        _cartController.tableNumber == null
+                            ? Container()
+                            : Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Table Number'),
+                                    Container(
+                                        margin: EdgeInsets.only(right: 8.0),
+                                        child: Text(_cartController.tableNumber
+                                            .toString())),
+                                  ],
+                                ),
+                              ),
+                        if (picked != null &&
+                            selectedDate != null &&
                             scheduleMethod != ScheduleMethod.DELIVERNOW)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(DateFormat('yyyy-MM-dd hh:mm').format(
-                                  selectedDate!)),
+                              Text(DateFormat('yyyy-MM-dd hh:mm')
+                                  .format(selectedDate!)),
                               Text(picked!.format(context)),
                               GestureDetector(
                                   onTap: () async {
@@ -227,33 +241,34 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                     if (selectedDate != null) {
                                       await _selectTime(context);
                                       if (picked != null) {
-                                        setState(() {
-
-                                        });
+                                        setState(() {});
                                       } else {
                                         Get.snackbar(
                                             'ALERT', 'Please Select Time');
                                       }
                                     } else {
-                                      Get.snackbar('ALERT', 'Please Select Date');
+                                      Get.snackbar(
+                                          'ALERT', 'Please Select Date');
                                     }
                                   },
-                                  child: Text("  Edit here", style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.blue))),
-                            ],),
+                                  child: Text("  Edit here",
+                                      style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          color: Colors.blue))),
+                            ],
+                          ),
 
                         SizedBox(
                           height: ScreenConfig.blockHeight * 37,
                           child: getCartData(),
                         ),
+
                         ///Coupon Widget
                         // getCouponWidget(),
-
                         SizedBox(
                           height: !_cartController.isPromocodeApplied
-                              ? ScreenConfig.blockHeight * 19
-                              : ScreenConfig.blockHeight * 20,
+                              ? ScreenConfig.blockHeight * 22
+                              : ScreenConfig.blockHeight * 23,
                           child: getTotalAmountWidget(orderSettingModel),
                         ),
                         Padding(
@@ -264,71 +279,81 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                             children: [
                               Expanded(
                                 child: RoundedCornerAppButton(
-                                    btnLabel: "Checkout", onPressed: () {
-                                  if (scheduleMethod.index == 0) {
-                                    selectedDate = null;
-                                    picked = null;
-                                  }
-                                  print(selectedDate?.toString());
-                                  print(picked?.toString());
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        PosPayment(
-                                          mobileNumber: phoneNoController.text,
-                                          userName: nameController.text,
-                                          venderId: _cartController.cartMaster!
-                                              .vendorId,
-                                          orderDeliveryType: () {
-                                            if (_cartController.diningValue) {
-                                              return 'DINING';
-                                            } else {
-                                              if (selectMethod.index == 0) {
-                                                return "TAKEAWAY";
-                                              } else {
-                                                return "DELIVERY";
-                                              }
-                                            }
-                                          }(),
-                                          orderDate: DateFormat('y-MM-dd')
-                                              .format(DateTime.now())
-                                              .toString(),
-                                          orderTime: DateFormat('hh:mm a')
-                                              .format(DateTime.now())
-                                              .toString(),
-                                          totalAmount: _cartController
-                                              .calculatedAmount,
-                                          addressId: 0,
-                                          orderDeliveryCharge: "${_cartController
-                                              .deliveryCharge}",
-                                          orderStatus: "PENDING",
-                                          ordrePromoCode: _cartController
-                                              .appliedCouponName,
-                                          vendorDiscountAmount: _cartController
-                                              .discountAmount,
-                                          vendorDiscountId: int.parse(
-                                              _cartController
-                                                  .strAppiedPromocodeId),
-                                          strTaxAmount: _cartController
-                                              .calculatedTax.toString(),
-                                          allTax: [],
-                                          subTotal: subTotal,
-                                          deliveryDate: selectedDate
-                                              ?.toString(),
-                                          deliveryTime: picked?.format(context),
-                                          tableNumber: _cartController.tableNumber,
-                                          customerName: '',
-                                          customerPhone: '',
-
-                                        )
-                                    ),);
-                                  print("Test");
-                                }),
+                                    btnLabel: "Checkout",
+                                    onPressed: () {
+                                      if (scheduleMethod.index == 0) {
+                                        selectedDate = null;
+                                        picked = null;
+                                      }
+                                      print(selectedDate?.toString());
+                                      print(picked?.toString());
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PosPayment(
+                                                  notes: notesController.text,
+                                                  mobileNumber:
+                                                      phoneNoController.text,
+                                                  userName: nameController.text,
+                                                  venderId: _cartController
+                                                      .cartMaster!.vendorId,
+                                                  orderDeliveryType: () {
+                                                    if (_cartController
+                                                        .diningValue) {
+                                                      return 'DINING';
+                                                    } else {
+                                                      if (selectMethod.index ==
+                                                          0) {
+                                                        return "TAKEAWAY";
+                                                      } else {
+                                                        return "DELIVERY";
+                                                      }
+                                                    }
+                                                  }(),
+                                                  orderDate: DateFormat(
+                                                          'y-MM-dd')
+                                                      .format(DateTime.now())
+                                                      .toString(),
+                                                  orderTime: DateFormat(
+                                                          'hh:mm a')
+                                                      .format(DateTime.now())
+                                                      .toString(),
+                                                  totalAmount: _cartController
+                                                      .calculatedAmount,
+                                                  addressId: 0,
+                                                  orderDeliveryCharge:
+                                                      "${_cartController.deliveryCharge}",
+                                                  orderStatus: "PENDING",
+                                                  ordrePromoCode:
+                                                      _cartController
+                                                          .appliedCouponName,
+                                                  vendorDiscountAmount:
+                                                      _cartController
+                                                          .discountAmount,
+                                                  vendorDiscountId: int.parse(
+                                                      _cartController
+                                                          .strAppiedPromocodeId),
+                                                  strTaxAmount: _cartController
+                                                      .calculatedTax
+                                                      .toString(),
+                                                  allTax: [],
+                                                  subTotal: subTotal,
+                                                  deliveryDate:
+                                                      selectedDate?.toString(),
+                                                  deliveryTime:
+                                                      picked?.format(context),
+                                                  tableNumber: _cartController
+                                                      .tableNumber,
+                                                  customerName: '',
+                                                  customerPhone: '',
+                                                )),
+                                      );
+                                      print("Test");
+                                    }),
                               ),
                             ],
                           ),
                         )
-
                       ],
                     ),
                   ),
@@ -337,8 +362,9 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
             );
           }
           return Scaffold(
-            body: Center(
-              child:  CircularProgressIndicator(color: Color(Constants.colorTheme),
+              body: Center(
+            child: CircularProgressIndicator(
+              color: Color(Constants.colorTheme),
             ),
           ));
         });
@@ -356,15 +382,14 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
             //primaryColor: const Color(0xFF8CE7F1),
             backgroundColor: Color(Constants.colorTheme),
             unselectedWidgetColor: Colors.white,
-            buttonTheme: ButtonThemeData(
-                textTheme: ButtonTextTheme.primary
-            ),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
             colorScheme: ColorScheme.light(primary: Color(Constants.colorTheme))
                 .copyWith(secondary: const Color(0xFF8CE7F1)),
           ),
           child: child!,
         );
-      },);
+      },
+    );
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
@@ -381,9 +406,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
             //primaryColor: const Color(0xFF8CE7F1),
             dialogBackgroundColor: Color(Constants.colorTheme),
             //unselectedWidgetColor: Colors.white,
-            buttonTheme: ButtonThemeData(
-                textTheme: ButtonTextTheme.primary
-            ),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
             colorScheme: ColorScheme.light(primary: Color(Constants.colorTheme))
                 .copyWith(secondary: const Color(0xFF8CE7F1)),
           ),
@@ -396,24 +419,25 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   getCartData() {
     if (_cartController.cartMaster == null ||
         _cartController.cartMaster!.cart.isEmpty) {
-      return Center(child: Text("No data in the cart"),);
+      return Center(
+        child: Text("No data in the cart"),
+      );
     } else {
       return Column(
         children: [
-
           Align(
               alignment: Alignment.centerRight,
-              child: TextButton(onPressed: (){
-                _cartController.cartMaster?.cart.clear();
-                _cartController.userName = '';
-                _cartController.userMobileNumber = '';
-               nameController.clear();
-               phoneNoController.clear();
-                _cartController.tableNumber = null;
-                setState(() {
-
-                });
-              }, child: Text('Clear Cart'))),
+              child: TextButton(
+                  onPressed: () {
+                    _cartController.cartMaster?.cart.clear();
+                    _cartController.userName = '';
+                    _cartController.userMobileNumber = '';
+                    nameController.clear();
+                    phoneNoController.clear();
+                    _cartController.tableNumber = null;
+                    setState(() {});
+                  },
+                  child: Text('Clear Cart'))),
           Flexible(
             child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
@@ -421,11 +445,12 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                 itemCount: _cartController.cartMaster!.cart.length,
                 itemBuilder: (context, index) {
                   //totalAmount+=_cartController.cartMaster!.cart[index].totalAmount;
-                  Cart cart=_cartController.cartMaster!.cart[index];
-                  MenuCategoryCartMaster? menuCategory=cart.menuCategory;
-                  List<MenuCartMaster> menu=cart.menu;
-                  if (_cartController.cartMaster!.cart[index].category == "SINGLE") {
-                    MenuCartMaster menuItem= cart.menu[0];
+                  Cart cart = _cartController.cartMaster!.cart[index];
+                  MenuCategoryCartMaster? menuCategory = cart.menuCategory;
+                  List<MenuCartMaster> menu = cart.menu;
+                  if (_cartController.cartMaster!.cart[index].category ==
+                      "SINGLE") {
+                    MenuCartMaster menuItem = cart.menu[0];
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
                       decoration: BoxDecoration(
@@ -435,16 +460,11 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                       width: Get.width,
                       child: Padding(
                         padding: EdgeInsets.only(
-
-                            top: ScreenUtil()
-                                .setHeight(15),
-                            left: ScreenUtil()
-                                .setHeight(15),
-                            bottom: ScreenUtil()
-                                .setHeight(5)),
+                            top: ScreenUtil().setHeight(15),
+                            left: ScreenUtil().setHeight(15),
+                            bottom: ScreenUtil().setHeight(5)),
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Flexible(
@@ -455,18 +475,25 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   Flexible(
                                     fit: FlexFit.loose,
-                                    child:  Column(
+                                    child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Flexible(
-                                          fit:FlexFit.loose,
-                                          child: Text(menuItem.name+
-                                              (cart.size!=null?' ( ${cart.size?.sizeName}) ':'')+' x ${cart.quantity}  ',
-                                              style: TextStyle(color: primaryColor,fontWeight: FontWeight.w900, fontSize: 16)),
+                                          fit: FlexFit.loose,
+                                          child: Text(
+                                              menuItem.name +
+                                                  (cart.size != null
+                                                      ? ' ( ${cart.size?.sizeName}) '
+                                                      : '') +
+                                                  ' x ${cart.quantity}  ',
+                                              style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 16)),
                                         ),
 
                                         // SizedBox(
@@ -487,27 +514,34 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                       ],
                                     ),
                                   ),
-                                  Flexible(child: Text('${cart
-                                      .diningAmount!*cart
-                                      .quantity}', style: TextStyle(
-                                      color: Constants.yellowColor
-                                  ),),),
+                                  Flexible(
+                                    child: Text(
+                                      '${cart.diningAmount! * cart.quantity}',
+                                      style: TextStyle(
+                                          color: Constants.yellowColor),
+                                    ),
+                                  ),
                                   Flexible(
                                     fit: FlexFit.loose,
                                     child: ListView.builder(
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
                                         itemCount: menuItem.addons.length,
-                                        itemBuilder: (context,addonIndex){
-                                          AddonCartMaster addonItem=menuItem.addons[addonIndex];
+                                        itemBuilder: (context, addonIndex) {
+                                          AddonCartMaster addonItem =
+                                              menuItem.addons[addonIndex];
                                           return Row(
                                             children: [
-                                              Text(addonItem.name+' '),
-                                              Text('(ADDON)',
-                                                style: TextStyle(color: primaryColor, fontWeight: FontWeight.w500, fontSize: 12),)
+                                              Text(addonItem.name + ' '),
+                                              Text(
+                                                '(ADDON)',
+                                                style: TextStyle(
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12),
+                                              )
                                             ],
                                           );
-
                                         }),
                                   )
                                 ],
@@ -518,20 +552,17 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Row(
-
                                     children: [
                                       //decrement section
                                       GestureDetector(
-                                        onTap: (){
+                                        onTap: () {
                                           removeButton(index);
-
                                         },
                                         child: Container(
-                                          height:19.5 ,
+                                          height: 19.5,
                                           width: 19.5,
-                                          decoration:
-                                          BoxDecoration(
-                                            color:Constants.yellowColor,
+                                          decoration: BoxDecoration(
+                                            color: Constants.yellowColor,
                                             shape: BoxShape.circle,
                                             // borderRadius: BorderRadius.all(Radius.circular(8.0)),
                                           ),
@@ -541,7 +572,6 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                               style: TextStyle(
                                                 color: Colors.white,
                                               ),
-
                                             ),
                                           ),
                                         ),
@@ -549,38 +579,33 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                       SizedBox(
                                         width: 18,
                                         child: Text(
-                                          _cartController.cartMaster!.cart[index].quantity.toString(),
+                                          _cartController
+                                              .cartMaster!.cart[index].quantity
+                                              .toString(),
                                           style: TextStyle(
                                               fontSize: 15,
-                                              fontFamily:
-                                              Constants
-                                                  .appFont),
-                                          textAlign:
-                                          TextAlign
-                                              .center,
+                                              fontFamily: Constants.appFont),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                       //increment section
                                       GestureDetector(
-                                        onTap: (){
+                                        onTap: () {
                                           addButton(index);
                                         },
                                         child: Container(
-                                          height:19.5 ,
+                                          height: 19.5,
                                           width: 19.5,
-                                          decoration:
-                                          BoxDecoration(
+                                          decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color:Constants.yellowColor,
+                                            color: Constants.yellowColor,
                                           ),
                                           child: Center(
                                             child: Text(
                                               '+',
                                               style: TextStyle(
                                                   color: Colors.white),
-                                              textAlign:
-                                              TextAlign
-                                                  .center,
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
                                         ),
@@ -592,8 +617,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                         ),
                       ),
                     );
-                  }
-                  else if (_cartController.cartMaster!.cart[index].category ==
+                  } else if (_cartController.cartMaster!.cart[index].category ==
                       "HALF_N_HALF") {
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -604,8 +628,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                       width: Get.width,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment:
-                        MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Flexible(
                             flex: 4,
@@ -614,39 +637,54 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Flexible(child: Text('${cart.totalAmount*cart.quantity}'),),
+                                Flexible(
+                                  child: Text(
+                                      '${cart.totalAmount * cart.quantity}'),
+                                ),
                                 Flexible(
                                   fit: FlexFit.loose,
-                                  child:Padding(
-                                    padding: const EdgeInsets.only(top: 20.0,left: 15.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 20.0, left: 15.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Flexible(
                                           fit: FlexFit.loose,
-                                          child: Text(menuCategory!.name
-                                              +(cart.size!=null?' ( ${cart.size?.sizeName}) ':'')
-                                              +' x ${cart.quantity}  '
-                                              ,style: TextStyle(color: primaryColor,fontWeight: FontWeight.w900, fontSize: 16)
-                                          ),
+                                          child: Text(
+                                              menuCategory!.name +
+                                                  (cart.size != null
+                                                      ? ' ( ${cart.size?.sizeName}) '
+                                                      : '') +
+                                                  ' x ${cart.quantity}  ',
+                                              style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 16)),
                                         ),
-                                        SizedBox(height: 5,),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: Container(
                                             decoration: BoxDecoration(
                                                 color: primaryColor,
-                                                borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                            ),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(4.0))),
                                             child: Text(' HALF & HALF ',
-                                                style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)
-                                            ),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 16)),
                                           ),
                                         )
                                       ],
                                     ),
-                                  ),),
+                                  ),
+                                ),
                                 Flexible(
                                   fit: FlexFit.loose,
                                   child: ListView.builder(
@@ -654,88 +692,140 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                       padding: EdgeInsets.only(left: 25),
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: menu.length,
-                                      itemBuilder: (context,menuIndex){
-                                        MenuCartMaster menuItem= menu[menuIndex];
+                                      itemBuilder: (context, menuIndex) {
+                                        MenuCartMaster menuItem =
+                                            menu[menuIndex];
                                         return Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Flexible(
                                                 fit: FlexFit.loose,
-                                                child:Padding(
-                                                  padding: const EdgeInsets.only(top: 5.0),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 5.0),
                                                   child: Row(
                                                     children: [
-                                                      Text(menuItem.name+' ',style: TextStyle(fontWeight: FontWeight.w900),),
-                                                      if(menuIndex==0)
+                                                      Text(
+                                                        menuItem.name + ' ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w900),
+                                                      ),
+                                                      if (menuIndex == 0)
                                                         Container(
                                                           height: 20,
-                                                          padding: EdgeInsets.all(3.0),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  3.0),
                                                           decoration: BoxDecoration(
-                                                              color: primaryColor,
-                                                              borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                          ),
+                                                              color:
+                                                                  primaryColor,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          4.0))),
                                                           child: Center(
-                                                            child: Text('First Half'.toUpperCase(),
-                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),),
+                                                            child: Text(
+                                                              'First Half'
+                                                                  .toUpperCase(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  fontSize: 12),
+                                                            ),
                                                           ),
                                                         )
                                                       else
                                                         Container(
                                                           height: 20,
-                                                          padding: EdgeInsets.all(3.0),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  3.0),
                                                           decoration: BoxDecoration(
-                                                              color: primaryColor,
-                                                              borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                          ),
-
+                                                              color:
+                                                                  primaryColor,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          4.0))),
                                                           child: Center(
-                                                            child: Text('Second Half'.toUpperCase(),
-                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),),
+                                                            child: Text(
+                                                              'Second Half'
+                                                                  .toUpperCase(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  fontSize: 12),
+                                                            ),
                                                           ),
                                                         )
                                                     ],
                                                   ),
-                                                )
-                                            ),
+                                                )),
                                             Flexible(
                                               fit: FlexFit.loose,
                                               child: ListView.builder(
                                                   shrinkWrap: true,
-                                                  physics: NeverScrollableScrollPhysics(),
-                                                  padding: EdgeInsets.only(left: 16,top: 5.0,),
-                                                  itemCount:menuItem.addons.length,
-                                                  itemBuilder: (context,addonIndex) {
-                                                    AddonCartMaster addonItem=menuItem.addons[addonIndex];
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  padding: EdgeInsets.only(
+                                                    left: 16,
+                                                    top: 5.0,
+                                                  ),
+                                                  itemCount:
+                                                      menuItem.addons.length,
+                                                  itemBuilder:
+                                                      (context, addonIndex) {
+                                                    AddonCartMaster addonItem =
+                                                        menuItem
+                                                            .addons[addonIndex];
                                                     return Padding(
-                                                      padding: const EdgeInsets.only(bottom: 5.0),
-                                                      child: Row(children: [
-                                                        Text(addonItem.name+' '),
-                                                        Text('(ADDONS)',
-                                                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.w500, fontSize: 12),),
-                                                      ],),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 5.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(addonItem.name +
+                                                              ' '),
+                                                          Text(
+                                                            '(ADDONS)',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    primaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     );
-                                                  }
-                                              ),
+                                                  }),
                                             )
                                           ],
                                         );
-
                                       }),
                                 ),
                               ],
                             ),
                           ),
                           Flexible(
-                            fit: FlexFit.loose,
+                              fit: FlexFit.loose,
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    right: ScreenUtil()
-                                        .setWidth(15)),
+                                    right: ScreenUtil().setWidth(15)),
                                 child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     //decrement section
                                     GestureDetector(
@@ -743,61 +833,40 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                         removeButton(index);
                                       },
                                       child: Container(
-                                        height: ScreenUtil()
-                                            .setHeight(21),
-                                        width: ScreenUtil()
-                                            .setWidth(36),
-                                        decoration:
-                                        BoxDecoration(
+                                        height: ScreenUtil().setHeight(21),
+                                        width: ScreenUtil().setWidth(36),
+                                        decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
-                                              topLeft: Radius
-                                                  .circular(
-                                                  10),
-                                              topRight: Radius
-                                                  .circular(
-                                                  10)),
-                                          color: Color(
-                                              0xfff1f1f1),
+                                              topLeft: Radius.circular(10),
+                                              topRight: Radius.circular(10)),
+                                          color: Color(0xfff1f1f1),
                                         ),
                                         child: Center(
                                           child: Text(
                                             '-',
                                             style: TextStyle(
                                                 color: Color(
-                                                    Constants
-                                                        .colorTheme)),
-                                            textAlign:
-                                            TextAlign
-                                                .center,
+                                                    Constants.colorTheme)),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          top: ScreenUtil()
-                                              .setHeight(5),
-                                          bottom:
-                                          ScreenUtil()
-                                              .setHeight(
-                                              5)),
+                                          top: ScreenUtil().setHeight(5),
+                                          bottom: ScreenUtil().setHeight(5)),
                                       child: Container(
-                                        alignment: Alignment
-                                            .center,
-                                        height: ScreenUtil()
-                                            .setHeight(21),
-                                        width: ScreenUtil()
-                                            .setWidth(36),
+                                        alignment: Alignment.center,
+                                        height: ScreenUtil().setHeight(21),
+                                        width: ScreenUtil().setWidth(36),
                                         child: Text(
-                                          _cartController.cartMaster!.cart[index]
-                                              .quantity.toString(),
+                                          _cartController
+                                              .cartMaster!.cart[index].quantity
+                                              .toString(),
                                           style: TextStyle(
-                                              fontFamily:
-                                              Constants
-                                                  .appFont),
-                                          textAlign:
-                                          TextAlign
-                                              .center,
+                                              fontFamily: Constants.appFont),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                     ),
@@ -807,32 +876,21 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                         addButton(index);
                                       },
                                       child: Container(
-                                        height: ScreenUtil()
-                                            .setHeight(21),
-                                        width: ScreenUtil()
-                                            .setWidth(36),
-                                        decoration:
-                                        BoxDecoration(
+                                        height: ScreenUtil().setHeight(21),
+                                        width: ScreenUtil().setWidth(36),
+                                        decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius
-                                                  .circular(
-                                                  10),
-                                              bottomRight: Radius
-                                                  .circular(
-                                                  10)),
-                                          color: Color(
-                                              0xfff1f1f1),
+                                              bottomLeft: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                          color: Color(0xfff1f1f1),
                                         ),
                                         child: Center(
                                           child: Text(
                                             '+',
                                             style: TextStyle(
                                                 color: Color(
-                                                    Constants
-                                                        .colorTheme)),
-                                            textAlign:
-                                            TextAlign
-                                                .center,
+                                                    Constants.colorTheme)),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
@@ -843,28 +901,23 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                         ],
                       ),
                     );
-                  }
-                  else
-                  if (_cartController.cartMaster!.cart[index].category == "DEALS") {
+                  } else if (_cartController.cartMaster!.cart[index].category ==
+                      "DEALS") {
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
                       decoration: BoxDecoration(
                         color: Constants.secondaryColor,
                         borderRadius: BorderRadius.all(Radius.circular(4)),
                       ),
-                     width: Get.width,
+                      width: Get.width,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left:
-                            ScreenUtil().setWidth(5),
-                            top: ScreenUtil()
-                                .setHeight(15),
-                            bottom: ScreenUtil()
-                                .setHeight(5)),
+                            left: ScreenUtil().setWidth(5),
+                            top: ScreenUtil().setHeight(15),
+                            bottom: ScreenUtil().setHeight(5)),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Flexible(
                               flex: 4,
@@ -873,32 +926,49 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Flexible(child: Text('${cart.totalAmount*cart.quantity}'),),
+                                  Flexible(
+                                    child: Text(
+                                        '${cart.totalAmount * cart.quantity}'),
+                                  ),
                                   Flexible(
                                     fit: FlexFit.loose,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 20.0,left: 15.0),
+                                      padding: const EdgeInsets.only(
+                                          top: 20.0, left: 15.0),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Flexible(
                                             fit: FlexFit.loose,
-                                            child: Text(menuCategory!.name
-                                                +'  x ${cart.quantity} '
-                                                ,style: TextStyle(color: primaryColor,fontWeight: FontWeight.w900, fontSize: 16)
-                                            ),
+                                            child: Text(
+                                                menuCategory!.name +
+                                                    '  x ${cart.quantity} ',
+                                                style: TextStyle(
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 16)),
                                           ),
-                                          SizedBox(height: 5,),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: Container(
-                                                padding: EdgeInsets.all( 3.0),
+                                                padding: EdgeInsets.all(3.0),
                                                 decoration: BoxDecoration(
                                                     color: primaryColor,
-                                                    borderRadius: BorderRadius.all(Radius.circular(3.0))
-                                                ),
-                                                child: Text('DEALS',style: TextStyle(color: Colors.white,fontWeight:FontWeight.w500 , fontSize: 14))),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                3.0))),
+                                                child: Text('DEALS',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 14))),
                                           )
                                         ],
                                       ),
@@ -908,70 +978,113 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                     fit: FlexFit.loose,
                                     child: ListView.builder(
                                         shrinkWrap: true,
-                                        padding: EdgeInsets.only(left: 25,top: 5.0),
+                                        padding:
+                                            EdgeInsets.only(left: 25, top: 5.0),
                                         physics: NeverScrollableScrollPhysics(),
                                         itemCount: menu.length,
-                                        itemBuilder: (context,menuIndex){
-                                          MenuCartMaster menuItem= menu[menuIndex];
-                                          DealsItems dealsItems=menu[menuIndex].dealsItems!;
+                                        itemBuilder: (context, menuIndex) {
+                                          MenuCartMaster menuItem =
+                                              menu[menuIndex];
+                                          DealsItems dealsItems =
+                                              menu[menuIndex].dealsItems!;
                                           return Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Flexible(
                                                   fit: FlexFit.loose,
-                                                  child:Row(
+                                                  child: Row(
                                                     children: [
-                                                      Text(menuItem.name+' ',style: TextStyle(fontWeight: FontWeight.w900),),
+                                                      Text(
+                                                        menuItem.name + ' ',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w900),
+                                                      ),
                                                       Container(
                                                           height: 20,
-                                                          padding: EdgeInsets.all(3.0),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  3.0),
                                                           decoration: BoxDecoration(
-                                                              color: primaryColor,
-                                                              borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                          ),
-                                                          child: Center(child: Text('${dealsItems.name} ',style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),)))
+                                                              color:
+                                                                  primaryColor,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          4.0))),
+                                                          child: Center(
+                                                              child: Text(
+                                                            '${dealsItems.name} ',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 12),
+                                                          )))
                                                     ],
-                                                  )
-                                              ),
+                                                  )),
                                               Flexible(
                                                 fit: FlexFit.loose,
                                                 child: ListView.builder(
                                                     shrinkWrap: true,
-                                                    physics: NeverScrollableScrollPhysics(),
-                                                    padding: EdgeInsets.only(left: 24,top: 5.0,),
-                                                    itemCount:menuItem.addons.length,
-                                                    itemBuilder: (context,addonIndex) {
-                                                      AddonCartMaster addonItem=menuItem.addons[addonIndex];
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    padding: EdgeInsets.only(
+                                                      left: 24,
+                                                      top: 5.0,
+                                                    ),
+                                                    itemCount:
+                                                        menuItem.addons.length,
+                                                    itemBuilder:
+                                                        (context, addonIndex) {
+                                                      AddonCartMaster
+                                                          addonItem =
+                                                          menuItem.addons[
+                                                              addonIndex];
                                                       return Padding(
-                                                        padding: const EdgeInsets.only(bottom: 5.0),
-                                                        child: Row(children: [
-                                                          Text(addonItem.name+' '),
-                                                          Text('(ADDONS)',
-                                                            style: TextStyle(color: primaryColor, fontWeight: FontWeight.w500, fontSize: 12),)
-                                                        ],),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                bottom: 5.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                                addonItem.name +
+                                                                    ' '),
+                                                            Text(
+                                                              '(ADDONS)',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      primaryColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 12),
+                                                            )
+                                                          ],
+                                                        ),
                                                       );
-                                                    }
-                                                ),
+                                                    }),
                                               )
                                             ],
                                           );
-
                                         }),
                                   ),
                                 ],
                               ),
                             ),
                             Flexible(
-                              fit: FlexFit.loose,
+                                fit: FlexFit.loose,
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                      right: ScreenUtil()
-                                          .setWidth(15)),
+                                      right: ScreenUtil().setWidth(15)),
                                   child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       //decrement section
                                       GestureDetector(
@@ -979,61 +1092,40 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                           removeButton(index);
                                         },
                                         child: Container(
-                                          height: ScreenUtil()
-                                              .setHeight(21),
-                                          width: ScreenUtil()
-                                              .setWidth(36),
-                                          decoration:
-                                          BoxDecoration(
+                                          height: ScreenUtil().setHeight(21),
+                                          width: ScreenUtil().setWidth(36),
+                                          decoration: BoxDecoration(
                                             borderRadius: BorderRadius.only(
-                                                topLeft: Radius
-                                                    .circular(
-                                                    10),
-                                                topRight: Radius
-                                                    .circular(
-                                                    10)),
-                                            color: Color(
-                                                0xfff1f1f1),
+                                                topLeft: Radius.circular(10),
+                                                topRight: Radius.circular(10)),
+                                            color: Color(0xfff1f1f1),
                                           ),
                                           child: Center(
                                             child: Text(
                                               '-',
                                               style: TextStyle(
                                                   color: Color(
-                                                      Constants
-                                                          .colorTheme)),
-                                              textAlign:
-                                              TextAlign
-                                                  .center,
+                                                      Constants.colorTheme)),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
                                         ),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            top: ScreenUtil()
-                                                .setHeight(5),
-                                            bottom:
-                                            ScreenUtil()
-                                                .setHeight(
-                                                5)),
+                                            top: ScreenUtil().setHeight(5),
+                                            bottom: ScreenUtil().setHeight(5)),
                                         child: Container(
-                                          alignment: Alignment
-                                              .center,
-                                          height: ScreenUtil()
-                                              .setHeight(21),
-                                          width: ScreenUtil()
-                                              .setWidth(36),
+                                          alignment: Alignment.center,
+                                          height: ScreenUtil().setHeight(21),
+                                          width: ScreenUtil().setWidth(36),
                                           child: Text(
-                                            _cartController.cartMaster!.cart[index]
-                                                .quantity.toString(),
+                                            _cartController.cartMaster!
+                                                .cart[index].quantity
+                                                .toString(),
                                             style: TextStyle(
-                                                fontFamily:
-                                                Constants
-                                                    .appFont),
-                                            textAlign:
-                                            TextAlign
-                                                .center,
+                                                fontFamily: Constants.appFont),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
@@ -1043,32 +1135,22 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                           addButton(index);
                                         },
                                         child: Container(
-                                          height: ScreenUtil()
-                                              .setHeight(21),
-                                          width: ScreenUtil()
-                                              .setWidth(36),
-                                          decoration:
-                                          BoxDecoration(
+                                          height: ScreenUtil().setHeight(21),
+                                          width: ScreenUtil().setWidth(36),
+                                          decoration: BoxDecoration(
                                             borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius
-                                                    .circular(
-                                                    10),
-                                                bottomRight: Radius
-                                                    .circular(
-                                                    10)),
-                                            color: Color(
-                                                0xfff1f1f1),
+                                                bottomLeft: Radius.circular(10),
+                                                bottomRight:
+                                                    Radius.circular(10)),
+                                            color: Color(0xfff1f1f1),
                                           ),
                                           child: Center(
                                             child: Text(
                                               '+',
                                               style: TextStyle(
                                                   color: Color(
-                                                      Constants
-                                                          .colorTheme)),
-                                              textAlign:
-                                              TextAlign
-                                                  .center,
+                                                      Constants.colorTheme)),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
                                         ),
@@ -1080,8 +1162,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                         ),
                       ),
                     );
-                  }
-                  else {
+                  } else {
                     return Container();
                   }
                 }),
@@ -1092,7 +1173,8 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   }
 
   getTotalAmountWidget(BaseModel<OrderSettingModel> orderSettingModel) {
-    if(_cartController.cartMaster!=null || _cartController.cartMaster!.cart.length>0){
+    if (_cartController.cartMaster != null ||
+        _cartController.cartMaster!.cart.length > 0) {
       return Card(
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -1104,145 +1186,171 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
             children: [
               Row(
                 children: [
-                  Text("Sub Total ",
+                  Text(
+                    "Sub Total ",
                     style: TextStyle(
                         fontFamily: Constants.appFont,
-                        fontSize:
-                        ScreenUtil().setSp(16)),),
-                  Spacer(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: ScreenUtil()
-                            .setWidth(10)),
-                    child: Text(totalAmount.toStringAsFixed(2),
-                      style: TextStyle(
-                          fontFamily: Constants.appFont,
-                          fontSize:
-                          ScreenUtil().setSp(14)  ),),
-                  ),
-                ],
-              ),
-              (_cartController.isPromocodeApplied)?
-              Row(
-
-                children: [
-                  Text('Coupon',
-                    style: TextStyle(
-                        fontFamily: Constants.appFont,
-                        fontSize:
-                        ScreenUtil().setSp(16)),),
-                  Spacer(),
-                  GestureDetector(
-                    onTap: (){
-                      _cartController.isPromocodeApplied=false;
-                      setState(() {
-
-                      });
-                    },
-                    child: Text('Remove' ,
-                        maxLines: 1,
-                        style: TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontFamily: Constants.appFont,
-                          color: Color(Constants.colorTheme),
-                          fontWeight: FontWeight.w800,
-
-                        )),
+                        fontSize: ScreenUtil().setSp(16)),
                   ),
                   Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text('-${_cartController.discountAmount.toStringAsFixed(2)}',
+                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(10)),
+                    child: Text(
+                      totalAmount.toStringAsFixed(2),
                       style: TextStyle(
                           fontFamily: Constants.appFont,
-                          fontSize:
-
-                          ScreenUtil().setSp(14)  ),),
-                  ),
-                ],
-              ):Container(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Tax ",
-                    style: TextStyle(
-                        fontFamily: Constants.appFont,
-                        fontSize:
-                        ScreenUtil().setSp(17)),),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: ScreenUtil()
-                            .setWidth(10)),
-                    child: Text(_cartController.calculatedTax.toStringAsFixed(2),
-                      style: TextStyle(
-                          fontFamily: Constants.appFont,
-                          fontSize:
-                          ScreenUtil().setSp(14)),),
-                  ),
-                ],
-              ),
-              // SizedBox(height: ScreenConfig.blockHeight*1.5,),
-              SizedBox(height: ScreenConfig.blockHeight,),
-              DottedLine(dashColor: Colors.black,),
-              SizedBox(height: ScreenConfig.blockHeight,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("TOTAL",
-                    style: TextStyle(
-                        fontFamily:
-                        Constants.appFont,
-                        color: Color(
-                            Constants.colorTheme),
-                        fontSize:
-                        ScreenUtil().setSp(16)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: ScreenUtil()
-                            .setWidth(10)),
-                    child: Text(_cartController.calculatedAmount.toStringAsFixed(2),
-                      style: TextStyle(
-                          fontFamily:
-                          Constants.appFont,
-                          color: Color(
-                              Constants.colorTheme),
-                          fontSize: ScreenUtil()
-                              .setSp(14)),
+                          fontSize: ScreenUtil().setSp(14)),
                     ),
                   ),
                 ],
               ),
-
+              (_cartController.isPromocodeApplied)
+                  ? Row(
+                      children: [
+                        Text(
+                          'Coupon',
+                          style: TextStyle(
+                              fontFamily: Constants.appFont,
+                              fontSize: ScreenUtil().setSp(16)),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            _cartController.isPromocodeApplied = false;
+                            setState(() {});
+                          },
+                          child: Text('Remove',
+                              maxLines: 1,
+                              style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontFamily: Constants.appFont,
+                                color: Color(Constants.colorTheme),
+                                fontWeight: FontWeight.w800,
+                              )),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(
+                            '-${_cartController.discountAmount.toStringAsFixed(2)}',
+                            style: TextStyle(
+                                fontFamily: Constants.appFont,
+                                fontSize: ScreenUtil().setSp(14)),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Tax ",
+                    style: TextStyle(
+                        fontFamily: Constants.appFont,
+                        fontSize: ScreenUtil().setSp(17)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(10)),
+                    child: Text(
+                      _cartController.calculatedTax.toStringAsFixed(2),
+                      style: TextStyle(
+                          fontFamily: Constants.appFont,
+                          fontSize: ScreenUtil().setSp(14)),
+                    ),
+                  ),
+                ],
+              ),
+              // SizedBox(height: ScreenConfig.blockHeight*1.5,),
+              SizedBox(
+                height: ScreenConfig.blockHeight,
+              ),
+              DottedLine(
+                dashColor: Colors.black,
+              ),
+              SizedBox(
+                height: ScreenConfig.blockHeight,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "TOTAL",
+                    style: TextStyle(
+                        fontFamily: Constants.appFont,
+                        color: Color(Constants.colorTheme),
+                        fontSize: ScreenUtil().setSp(16)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(10)),
+                    child: Text(
+                      _cartController.calculatedAmount.toStringAsFixed(2),
+                      style: TextStyle(
+                          fontFamily: Constants.appFont,
+                          color: Color(Constants.colorTheme),
+                          fontSize: ScreenUtil().setSp(14)),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: ScreenConfig.blockHeight,
+              ),
+              Container(
+                height: 30,
+                // color: Colors.red,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white.withOpacity(0.4)),
+                child: TextFormField(
+                  // minLines: 2,
+                  // maxLines: 3,
+                  controller: notesController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: (45 - 15) / 2,
+                      ),
+                      border: InputBorder.none,
+                      hintText: "Enter Notes",
+                      hintStyle: TextStyle(
+                          color: Colors.black26,
+                          fontSize: 15,
+                          fontFamily: "ProximaNova")),
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                ),
+              ),
             ],
           ),
         ),
       );
-    }else{
+    } else {
       return Container();
     }
   }
 
   addButton(int index) {
-    double diningAmount = _cartController.cartMaster!.cart[index]
-        .diningAmount! / _cartController.cartMaster!.cart[index].quantity;
+    double diningAmount =
+        _cartController.cartMaster!.cart[index].diningAmount! /
+            _cartController.cartMaster!.cart[index].quantity;
     _cartController.cartMaster!.cart[index].diningAmount =
         _cartController.cartMaster!.cart[index].diningAmount! + diningAmount;
     double amount = _cartController.cartMaster!.cart[index].totalAmount /
         _cartController.cartMaster!.cart[index].quantity;
     _cartController.cartMaster!.cart[index].quantity++;
     _cartController.cartMaster!.cart[index].totalAmount += amount;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   removeButton(int index) {
     if (_cartController.cartMaster!.cart[index].quantity == 1) {
       _cartController.cartMaster!.cart.removeAt(index);
     } else {
-      double diningAmount = _cartController.cartMaster!.cart[index]
-          .diningAmount! / _cartController.cartMaster!.cart[index].quantity;
+      double diningAmount =
+          _cartController.cartMaster!.cart[index].diningAmount! /
+              _cartController.cartMaster!.cart[index].quantity;
       _cartController.cartMaster!.cart[index].diningAmount =
           _cartController.cartMaster!.cart[index].diningAmount! - diningAmount;
       double amount = _cartController.cartMaster!.cart[index].totalAmount /
@@ -1250,9 +1358,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
       _cartController.cartMaster!.cart[index].quantity--;
       _cartController.cartMaster!.cart[index].totalAmount -= amount;
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   getCouponWidget() {
@@ -1270,39 +1376,28 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
               dashPattern: [8, 4],
               color: Color(Constants.colorTheme),
               child: ClipRRect(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(12)),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
                 child: Container(
-                  height:
-                  ScreenUtil().setHeight(25),
+                  height: ScreenUtil().setHeight(25),
                   color: Color(0xffd4e1db),
                   child: Padding(
                     padding: EdgeInsets.only(
-                        left: ScreenUtil()
-                            .setWidth(15),
-                        right: ScreenUtil()
-                            .setWidth(15)),
+                        left: ScreenUtil().setWidth(15),
+                        right: ScreenUtil().setWidth(15)),
                     child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment
-                          .spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'You Have Coupon',
                           style: TextStyle(
-                              fontFamily:
-                              Constants.appFont,
-                              fontSize: 16),
+                              fontFamily: Constants.appFont, fontSize: 16),
                         ),
                         Text(
                           'Apply It',
                           style: TextStyle(
-                              fontFamily:
-                              Constants.appFont,
-                              color: Color(Constants
-                                  .colorTheme),
-                              fontSize: ScreenUtil()
-                                  .setSp(16)),
+                              fontFamily: Constants.appFont,
+                              color: Color(Constants.colorTheme),
+                              fontSize: ScreenUtil().setSp(16)),
                         ),
                       ],
                     ),
@@ -1320,13 +1415,13 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                 transitionType: TransitionType.fade,
                 curve: Curves.bounceInOut,
                 reverseCurve: Curves.fastLinearToSlowEaseIn,
-                widget: ApplyCouppon(totalPrice: totalAmount,),
+                widget: ApplyCouppon(
+                  totalPrice: totalAmount,
+                ),
               ),
             );
             if (_cartController.isPromocodeApplied) {
-              setState(() {
-
-              });
+              setState(() {});
             }
           },
         );

@@ -48,7 +48,7 @@ class PrinterController extends GetxController {
     PrinterModel response;
     try {
       response = await RestClient(await RetroApi().dioData(),
-              baseUrl: "https://v3.ozfoodz.com.au/api/")
+              baseUrl: "https://v4.ozfoodz.com.au/api/")
           .printerData(
         vendorId,
       );
@@ -80,7 +80,7 @@ class PrinterController extends GetxController {
     };
     try {
       response = await RestClient(await RetroApi().dioData(),
-              baseUrl: "https://v3.ozfoodz.com.au/api/")
+              baseUrl: "https://v4.ozfoodz.com.au/api/")
           .updatePrinterData(body, id);
       print("response printer ${response.toJson()}");
     } catch (error, stacktrace) {

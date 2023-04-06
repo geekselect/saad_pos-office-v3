@@ -16,6 +16,7 @@ import 'package:pos/pages/Reports/report_screen.dart';
 import 'package:pos/pages/addons/Half_n_half.dart';
 import 'package:pos/pages/addons/addons_only.dart';
 import 'package:pos/pages/addons/addons_with_sizes.dart';
+import 'package:pos/pages/customer_data_screen.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_menu.dart';
 import 'package:pos/printer/printer_config.dart';
@@ -292,6 +293,13 @@ class _PosMenuState extends State<PosMenu> {
         title: 'Reports',
         onTap: () {
           Get.to(() => Reports());
+        },
+      ),
+      SideBarGridTile(
+        icon: Icons.person,
+        title: 'Customer Data',
+        onTap: () {
+          Get.to(() => CustomerDataScreen());
         },
       ),
       SideBarGridTile(

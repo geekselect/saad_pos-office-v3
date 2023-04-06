@@ -49,6 +49,7 @@ class _CartScreenState extends State<CartScreen> {
   CartController _cartController = Get.find<CartController>();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? picked;
   OrderCustimizationController _orderCustimizationController =
@@ -162,15 +163,17 @@ class _CartScreenState extends State<CartScreen> {
                     // print(jsonEncode(snapshot.data!.data!.toJson()));
                     BaseModel<OrderSettingModel> orderSettingModel =
                         snapshot.data!;
-                    //inclusive tax
-                    print(orderSettingModel.data!.data!.resturantDiningStatus);
+                    print("Order DAta ${snapshot.data!.data!.toJson()}");
+
+                    ///Inclusive tax
                     if (orderSettingModel.data?.data!.taxType == 1) {
                       _cartController.calculatedTax =
                           _cartController.calculatedAmount *
                               double.parse(orderSettingModel.data!.data!.tax!) /
                               100;
                       totalAmount -= _cartController.calculatedTax;
-                      //exclusive tax
+
+                      ///Exclusive tax
                     } else if (orderSettingModel.data!.data!.taxType == 2) {
                       _cartController.calculatedTax =
                           _cartController.calculatedAmount *
@@ -233,8 +236,8 @@ class _CartScreenState extends State<CartScreen> {
                                 // getCouponWidget(),
                                 SizedBox(
                                   height: !_cartController.isPromocodeApplied
-                                      ? ScreenConfig.blockHeight * 19
-                                      : ScreenConfig.blockHeight * 20,
+                                      ? ScreenConfig.blockHeight * 22
+                                      : ScreenConfig.blockHeight * 23,
                                   child:
                                       getTotalAmountWidget(orderSettingModel),
                                 ),
@@ -269,6 +272,8 @@ class _CartScreenState extends State<CartScreen> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         PosPayment(
+                                                          notes: notesController
+                                                              .text,
                                                           mobileNumber:
                                                               phoneNoController
                                                                   .text,
@@ -1556,6 +1561,35 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: ScreenConfig.blockHeight,
+              ),
+              Container(
+                // height: 30,
+                // color: Colors.red,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white.withOpacity(0.4)),
+                child: TextFormField(
+                  // minLines: 1,
+                  // maxLines: 3,
+                  controller: notesController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        // vertical: (38 - 15) / 2,
+                      ),
+                      border: InputBorder.none,
+                      hintText: "Enter Notes",
+                      hintStyle: TextStyle(
+                          color: Colors.black26,
+                          fontSize: 15,
+                          fontFamily: "ProximaNova")),
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                ),
               ),
             ],
           ),

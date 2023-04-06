@@ -42,6 +42,7 @@ class PosPayment extends StatefulWidget {
   final String? deliveryDate;
   final String? userName;
   final String? mobileNumber;
+  final String? notes;
 
   // final double orderItem;
   final double? vendorDiscountAmount, subTotal;
@@ -50,6 +51,7 @@ class PosPayment extends StatefulWidget {
 
   PosPayment({
     Key? key,
+    this.notes,
     this.userName,
     this.mobileNumber,
     required this.customerName,
@@ -107,6 +109,7 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   void initState() {
+    print("Widget notes ${widget.notes!}");
     totalAmountController.text = widget.totalAmount.toString();
     // get();
 
@@ -294,11 +297,13 @@ class _PosPaymentState extends State<PosPayment> {
     }
 
     if (orderPaymentType == "INCOMPLETE ORDER") {
-      printer.text('Payment Status : INCOMPLETE PAYMENT',
+      printer.text('Payment Status : UnPaid',
           styles: PosStyles(align: PosAlign.left));
     } else {
       printer.text('Payment Status : ${orderPaymentType}',
           styles: PosStyles(align: PosAlign.left));
+      // printer.text('Payment Status : Paid',
+      //     styles: PosStyles(align: PosAlign.left));
     }
 
     printer.text('Order Type :  ${widget.orderDeliveryType}',
@@ -320,15 +325,15 @@ class _PosPaymentState extends State<PosPayment> {
       List<MenuCartMaster> menu = cart[itemIndex].menu;
       if (category == 'SINGLE') {
         Cart cartItem = cart[itemIndex];
-        printer.row([
-          PosColumn(
-              text: "-SINGLE-",
-              width: 12,
-              styles: PosStyles(
-                  width: PosTextSize.size1,
-                  height: PosTextSize.size1,
-                  align: PosAlign.center))
-        ]);
+        // printer.row([
+        //   PosColumn(
+        //       text: "-SINGLE-",
+        //       width: 12,
+        //       styles: PosStyles(
+        //           width: PosTextSize.size1,
+        //           height: PosTextSize.size1,
+        //           align: PosAlign.center))
+        // ]);
 
         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
           MenuCartMaster menuItem = menu[menuIndex];
@@ -595,6 +600,16 @@ class _PosPaymentState extends State<PosPayment> {
           )),
     ]);
 
+    printer.hr();
+
+    if (widget.notes != null ||
+        widget.notes!.isNotEmpty ||
+        widget.notes != '') {
+      printer.text(
+        "Instructions: ${widget.notes!}",
+      );
+    }
+
     printer.hr(ch: '=', linesAfter: 1);
 
     printer.feed(2);
@@ -729,11 +744,13 @@ class _PosPaymentState extends State<PosPayment> {
         styles: PosStyles(align: PosAlign.left));
 
     if (orderPaymentType == "INCOMPLETE ORDER") {
-      printer.text('Payment Status : INCOMPLETE PAYMENT',
+      printer.text('Payment Status : Unpaid',
           styles: PosStyles(align: PosAlign.left));
     } else {
       printer.text('Payment Status : ${orderPaymentType}',
           styles: PosStyles(align: PosAlign.left));
+      // printer.text('Payment Status : Paid',
+      //     styles: PosStyles(align: PosAlign.left));
     }
 
     printer.text("Order Type : ${widget.orderDeliveryType}",
@@ -965,6 +982,15 @@ class _PosPaymentState extends State<PosPayment> {
     //         width: PosTextSize.size2,
     //       )),
     // ]);
+    printer.hr();
+
+    if (widget.notes != null ||
+        widget.notes!.isNotEmpty ||
+        widget.notes != '') {
+      printer.text(
+        "Instructions: ${widget.notes!}",
+      );
+    }
 
     printer.hr(ch: '=', linesAfter: 1);
 
@@ -3108,9 +3134,7 @@ class _PosPaymentState extends State<PosPayment> {
                                     onTapped: () {
                                       print("lllllll");
                                       orderPaymentType = 'INCOMPLETE ORDER';
-                                      // placeOrder(1);
-                                      testPrintKitchen("203.175.78.102", 8888,
-                                          context, _cartController.cartMaster!);
+                                      placeOrder(1);
                                       // if (kitchenPort != null) {
                                       //   print("kitchen Added");
                                       //   if (kitchenIp == '' &&
@@ -4263,8 +4287,20 @@ class _PosPaymentState extends State<PosPayment> {
     CommenRes response;
     try {
       Constants.onLoading(context);
-      Map<String, String?> body = {
+      Map<String, dynamic> body = {
         // "order_id": Constants.order_main_id ?? '',
+        'notes': widget.notes == null || widget.notes!.isEmpty
+            ? null
+            : widget.notes.toString(),
+        'discounts': _selectedButton == -1
+            ? null
+            : _selectedButton == 0
+                ? 5
+                : _selectedButton == 1
+                    ? 10
+                    : _selectedButton == 2
+                        ? 15
+                        : null,
         'vendor_id': widget.venderId.toString(),
         'date': widget.orderDate,
         'time': widget.orderTime,
