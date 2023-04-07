@@ -193,10 +193,10 @@ abstract class RestClient {
   @GET("Pos-User-record/{vendorId}/{user_id}")
   Future customerDataCall(@Path() int? vendorId, int user_id);
 
-  @GET("vendor/printerdata/{id}")
+  @GET("Pos-print-data/{id}")
   Future<PrinterModel> printerData(@Path() int? id);
 
-  @POST("vendor/printerdata/{id}")
+  @POST("Pos-print-data-post/{id}")
   Future<CommenRes> updatePrinterData(@Body() Map<String, dynamic> map, int id);
 
   // @GET("vendor/printerdata/{id}")

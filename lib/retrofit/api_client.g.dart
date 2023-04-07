@@ -1067,7 +1067,7 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<PrinterModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'vendor/printerdata/${id}',
+                .compose(_dio.options, 'Pos-print-data/${id}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = PrinterModel.fromJson(_result.data!);
@@ -1084,7 +1084,7 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommenRes>(
             Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'vendor/printerdata/$id',
+                .compose(_dio.options, 'Pos-print-data-post/$id',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommenRes.fromJson(_result.data!);

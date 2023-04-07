@@ -2,9 +2,7 @@ class OrdersResponse {
   bool? success;
   List<Data>? data;
 
-  OrdersResponse({
-    this.success,
-    this.data});
+  OrdersResponse({this.success, this.data});
 
   OrdersResponse.fromJson(dynamic json) {
     success = json["success"];
@@ -24,7 +22,6 @@ class OrdersResponse {
     }
     return map;
   }
-
 }
 
 class Data {
@@ -56,13 +53,17 @@ class Data {
   String? orderStartTime;
   String? orderEndTime;
   String? userName;
+  String? userName1;
   String? userPhone;
   String? userAddress;
+  String? mobile;
+  String? discounts;
+  String? notes;
   DeliveryPerson? deliveryPerson;
   String? vendorAddress;
   DateTime? deliveryTime;
   List<OrderItems>? orderItems;
-  bool isDisable=false;
+  bool isDisable = false;
   String? orderData;
   int? table_no;
 
@@ -91,11 +92,15 @@ class Data {
     this.deliveryCharge,
     this.orderStatus,
     this.cancelBy,
+    this.notes,
+    this.discounts,
+    this.mobile,
     this.cancelReason,
     this.tax,
     this.orderStartTime,
     this.orderEndTime,
     this.userName,
+    this.userName1,
     this.userAddress,
     this.deliveryPerson,
     this.userPhone,
@@ -103,7 +108,6 @@ class Data {
     this.deliveryTime,
     this.orderItems,
     required this.orderData,
-
   });
 
   Data.fromJson(dynamic json) {
@@ -136,12 +140,20 @@ class Data {
     orderStartTime = json["order_start_time"];
     orderEndTime = json["order_end_time"];
     userName = json["user_name"];
+    userName1 = json["user_name1"];
     userPhone = json["user_phone"];
     vendorAddress = json["vendorAddress"];
+    mobile = json["mobile"];
+    discounts = json["discounts"];
+    notes = json["notes"];
     userAddress = json["userAddress"];
-    deliveryTime = json["delivery_time"]==null? null:DateTime.parse(json["delivery_time"]);
-    isDisable=json["delivery_time"]==null?false:true;
-    deliveryPerson = json["delivery_person"] != null ? DeliveryPerson.fromJson(json["delivery_person"]) : null;
+    deliveryTime = json["delivery_time"] == null
+        ? null
+        : DateTime.parse(json["delivery_time"]);
+    isDisable = json["delivery_time"] == null ? false : true;
+    deliveryPerson = json["delivery_person"] != null
+        ? DeliveryPerson.fromJson(json["delivery_person"])
+        : null;
     orderData = json["order_data"];
     if (json["orderItems"] != null) {
       orderItems = [];
@@ -182,11 +194,15 @@ class Data {
     map["order_start_time"] = orderStartTime;
     map["order_end_time"] = orderEndTime;
     map["user_name"] = userName;
+    map["user_name1"] = userName1;
     map["user_phone"] = userPhone;
     map["vendorAddress"] = vendorAddress;
     map["userAddress"] = userAddress;
+    map["mobile"] = mobile;
+    map["discounts"] = discounts;
+    map["notes"] = notes;
     map["delivery_time"] = deliveryTime;
-    map['order_data']=orderData;
+    map['order_data'] = orderData;
     if (deliveryPerson != null) {
       map["delivery_person"] = deliveryPerson?.toJson();
     }
@@ -195,7 +211,6 @@ class Data {
     }
     return map;
   }
-
 }
 
 class OrderItems {
@@ -209,16 +224,16 @@ class OrderItems {
   String? updatedAt;
   String? itemName;
 
-  OrderItems({
-    this.id,
-    this.orderId,
-    this.item,
-    this.price,
-    this.qty,
-    this.customization,
-    this.createdAt,
-    this.updatedAt,
-    this.itemName});
+  OrderItems(
+      {this.id,
+      this.orderId,
+      this.item,
+      this.price,
+      this.qty,
+      this.customization,
+      this.createdAt,
+      this.updatedAt,
+      this.itemName});
 
   OrderItems.fromJson(dynamic json) {
     id = json["id"];
@@ -245,7 +260,6 @@ class OrderItems {
     map["item_name"] = itemName;
     return map;
   }
-
 }
 
 class DeliveryPerson {
@@ -253,10 +267,7 @@ class DeliveryPerson {
   String? lastName;
   String? contact;
 
-  DeliveryPerson({
-    this.firstName,
-    this.lastName,
-    this.contact});
+  DeliveryPerson({this.firstName, this.lastName, this.contact});
 
   DeliveryPerson.fromJson(dynamic json) {
     firstName = json["first_name"];
@@ -271,5 +282,4 @@ class DeliveryPerson {
     map["contact"] = contact;
     return map;
   }
-
 }

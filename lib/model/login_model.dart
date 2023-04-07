@@ -6,11 +6,11 @@ class LoginModel {
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
@@ -24,7 +24,7 @@ class Data {
   String? name;
   String? image;
   String? emailId;
-  String?  emailVerifiedAt;
+  String? emailVerifiedAt;
   String? phone;
   int? isVerified;
   int? status;
@@ -38,6 +38,7 @@ class Data {
   String? accountNumber;
   String? micrCode;
   String? ifscCode;
+  int? vendor_id;
   List<Roles>? roles;
 
   Data(
@@ -58,11 +59,13 @@ class Data {
       this.accountName,
       this.accountNumber,
       this.micrCode,
+      this.vendor_id,
       this.ifscCode,
       this.roles});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    vendor_id = json['vendor_id'];
     name = json['name'].toString();
     image = json['image'];
     emailId = json['email_id'].toString();
@@ -99,14 +102,15 @@ class Data {
     if (json['roles'] != null) {
       roles = [];
       json['roles'].forEach((v) {
-        roles!.add( Roles.fromJson(v));
+        roles!.add(Roles.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
+    data['vendor_id'] = this.vendor_id;
     data['name'] = this.name;
     data['image'] = this.image;
     data['email_id'] = this.emailId;
@@ -159,11 +163,11 @@ class Roles {
     title = json['title'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    pivot = json['pivot'] != null ?  Pivot.fromJson(json['pivot']) : null;
+    pivot = json['pivot'] != null ? Pivot.fromJson(json['pivot']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
     data['created_at'] = this.createdAt;
@@ -187,7 +191,7 @@ class Pivot {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['user_id'] = this.userId;
     data['role_id'] = this.roleId;
     return data;

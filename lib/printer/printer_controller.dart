@@ -47,9 +47,7 @@ class PrinterController extends GetxController {
   Future<BaseModel<PrinterModel>> getPrinterDetails(int? vendorId) async {
     PrinterModel response;
     try {
-      response = await RestClient(await RetroApi().dioData(),
-              baseUrl: "https://v4.ozfoodz.com.au/api/")
-          .printerData(
+      response = await RestClient(await RetroApi().dioData()).printerData(
         vendorId,
       );
       printerModel.value = response;
@@ -79,8 +77,7 @@ class PrinterController extends GetxController {
       "port_kitchen": kitchenPortEditingController.text,
     };
     try {
-      response = await RestClient(await RetroApi().dioData(),
-              baseUrl: "https://v4.ozfoodz.com.au/api/")
+      response = await RestClient(await RetroApi().dioData())
           .updatePrinterData(body, id);
       print("response printer ${response.toJson()}");
     } catch (error, stacktrace) {

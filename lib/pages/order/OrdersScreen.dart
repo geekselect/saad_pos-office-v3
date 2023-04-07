@@ -136,9 +136,12 @@ class _OrderScreenState extends State<OrderScreen> {
                     alignment: Alignment.centerRight,
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 5),
-                      child: ElevatedButton(onPressed: () async {
-                        await _orderController.getOrders(widget.apiName);
-                      }, child: Text("Reload"),),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await _orderController.getOrders(widget.apiName);
+                        },
+                        child: Text("Reload"),
+                      ),
                     ),
                   ),
                   Flexible(
@@ -185,6 +188,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                 }
                               }
                             }
+                            print("----------");
+                            print(order.toJson());
+                            print("----------");
                             return SizedBox(
                               // height:150,
                               height: (order.orderItems!.length * 30) +
@@ -254,6 +260,42 @@ class _OrderScreenState extends State<OrderScreen> {
                                                               proxima_nova_reg,
                                                           fontSize: 12),
                                                     ),
+                                                    Text(
+                                                      " | ",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Palette.switchs,
+                                                          fontFamily:
+                                                              proxima_nova_reg,
+                                                          fontSize: 12),
+                                                    ),
+                                                    Text(
+                                                      order.userName1 ?? '',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Palette.switchs,
+                                                          fontFamily:
+                                                              proxima_nova_reg,
+                                                          fontSize: 12),
+                                                    ),
+                                                    Text(
+                                                      " | ",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Palette.switchs,
+                                                          fontFamily:
+                                                              proxima_nova_reg,
+                                                          fontSize: 12),
+                                                    ),
+                                                    Text(
+                                                      order.mobile ?? '',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Palette.switchs,
+                                                          fontFamily:
+                                                              proxima_nova_reg,
+                                                          fontSize: 12),
+                                                    ),
                                                   ],
                                                 ),
                                                 _orderController
@@ -278,6 +320,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                       ),
                                               ],
                                             ),
+                                            //     : SizedBox(),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -510,6 +553,28 @@ class _OrderScreenState extends State<OrderScreen> {
                                         ),
                                       ],
                                     ),
+                                    order.notes == null || order.notes!.isEmpty
+                                        ? SizedBox()
+                                        : Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                order.notes == null ||
+                                                        order.notes!.isEmpty
+                                                    ? ''
+                                                    : "Sheff Notes : ${order.notes ?? ''}",
+                                                // : "Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes Sheff Notes ''}",
+                                                style: TextStyle(
+                                                    color: Palette.switchs,
+                                                    fontFamily:
+                                                        proxima_nova_reg,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                    SizedBox(height: 5),
                                     DottedLine(
                                       direction: Axis.horizontal,
                                       lineThickness: 1.0,
@@ -556,9 +621,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                    order.paymentType == "POS CASH" || order.paymentType == "POS CARD" ?  'Payment : Completed' : 'Payment : Incomplete',
+                                                  order.paymentType ==
+                                                              "POS CASH" ||
+                                                          order.paymentType ==
+                                                              "POS CARD"
+                                                      ? 'Payment : Completed'
+                                                      : 'Payment : Incomplete',
                                                   style: TextStyle(
-                                                      color: Colors.red.shade500,
+                                                      color:
+                                                          Colors.red.shade500,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontFamily:
