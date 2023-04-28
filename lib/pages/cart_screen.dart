@@ -1,21 +1,14 @@
-import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pos/config/screen_config.dart';
-import 'package:pos/controller/auth_controller.dart';
 import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
-import 'package:pos/dummy.dart';
-import 'package:pos/model/booked_order_model.dart';
 import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/order_setting_api_model.dart';
 import 'package:pos/model/status_model.dart';
@@ -99,7 +92,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("name ${_cartController.userName}");
     ScreenConfig().init(context);
     if (_cartController.cartMaster == null ||
         _cartController.cartMaster!.cart.isEmpty) {
@@ -126,8 +118,11 @@ class _CartScreenState extends State<CartScreen> {
                 id: 'dining',
                 builder: (controller) {
                   if (_cartController.diningValue) {
+                    print("DINING SCREEN");
                     return DiningCartScreen();
                   } else {
+                    print("CArt SCREEN");
+
                     _cartController.calculatedAmount = 0.0;
                     totalAmount = 0.0;
 

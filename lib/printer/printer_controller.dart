@@ -14,10 +14,6 @@ class PrinterController extends GetxController {
   TextEditingController posPortEditingController = TextEditingController();
   TextEditingController kitchenIpEditingController = TextEditingController();
   TextEditingController kitchenPortEditingController = TextEditingController();
-  // RxString printerIp = ''.obs;
-  // RxString printerPort = ''.obs;
-  // RxString kitchenIp = ''.obs;
-  // RxString kitchenPort = ''.obs;
 
   var printerModel = PrinterModel().obs;
 
@@ -26,6 +22,7 @@ class PrinterController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     getPrinterDetails(Constants.vendorId);
+    print('print Model ${printerModel.value.toJson()}');
   }
 
   // Future callGetRestaurantsDetails(int? vendorId) async {
@@ -79,6 +76,14 @@ class PrinterController extends GetxController {
     try {
       response = await RestClient(await RetroApi().dioData())
           .updatePrinterData(body, id);
+      printerModel.value = PrinterModel(
+        ipPos: posIpEditingController.text,
+        ipKitchen: kitchenIpEditingController.text,
+        portKitchen: kitchenPortEditingController.text,
+        portPos: posPortEditingController.text,
+        autoStatusKitchen: null,
+        autoStatusPos: ''
+      );
       print("response printer ${response.toJson()}");
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");

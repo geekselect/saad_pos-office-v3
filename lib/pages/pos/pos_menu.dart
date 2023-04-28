@@ -318,7 +318,7 @@ class _PosMenuState extends State<PosMenu> {
     print("table value before ${_cartController.tableNumber}");
     if (_cartController.diningValue == false) {
       print("Dining false");
-      _cartController.tableNumber = 0;
+      _cartController.tableNumber = null;
     } else {
       print("Dining true");
       print("---------");
@@ -385,7 +385,7 @@ class _PosMenuState extends State<PosMenu> {
   //   }
   //
   //   return filteredItems;
-  // }
+  // }FTAKEAW
   void _addToCart(SingleMenu singleMenu, int index) {
     print("Item $index is pressed  ${singleMenu.menu!.name}");
   }
@@ -570,6 +570,9 @@ class _PosMenuState extends State<PosMenu> {
                                             Switch(
                                               onChanged: (bool? value) async {
                                                 if (value!) {
+                                                  print("if Block");
+                                                  print("${_cartController.tableNumber}");
+                                                  print("if Block End");
                                                   await showDialog<int>(
                                                       context: context,
                                                       builder:
@@ -676,6 +679,9 @@ class _PosMenuState extends State<PosMenu> {
                                                         false;
                                                   });
                                                 } else {
+                                                  print("else Block");
+                                                  print("${_cartController.tableNumber}");
+                                                  print("else Block End");
                                                   setState(() {
                                                     if (_cartController
                                                             .cartMaster
@@ -2228,8 +2234,6 @@ class _PosMenuState extends State<PosMenu> {
                                                 .refreshScreen.value ||
                                             !_cartController
                                                 .refreshScreen.value) {
-                                          print(
-                                              "mooooo ${_cartController.userMobileNumber}");
                                           return CartScreen(
                                               isDining:
                                                   _cartController.diningValue);

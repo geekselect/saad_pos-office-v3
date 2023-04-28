@@ -53,7 +53,6 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
 
   @override
   void initState() {
-    print("Dining cart ${_cartController.userName}");
     nameController.text = _cartController.userName;
     phoneNoController.text = _cartController.userMobileNumber;
     callOrderSettingRef =
@@ -281,74 +280,82 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 child: RoundedCornerAppButton(
                                     btnLabel: "Checkout",
                                     onPressed: () {
-                                      if (scheduleMethod.index == 0) {
-                                        selectedDate = null;
-                                        picked = null;
-                                      }
-                                      print(selectedDate?.toString());
-                                      print(picked?.toString());
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => PosPayment(
-                                                  notes: notesController.text,
-                                                  mobileNumber:
-                                                      phoneNoController.text,
-                                                  userName: nameController.text,
-                                                  venderId: _cartController
-                                                      .cartMaster!.vendorId,
-                                                  orderDeliveryType: () {
-                                                    if (_cartController
-                                                        .diningValue) {
-                                                      return 'DINING';
-                                                    } else {
-                                                      if (selectMethod.index ==
-                                                          0) {
-                                                        return "TAKEAWAY";
+                                      if(_cartController.diningValue == true && _cartController.tableNumber != 0) {
+                                        if (scheduleMethod.index == 0) {
+                                          selectedDate = null;
+                                          picked = null;
+                                        }
+                                        print(selectedDate?.toString());
+                                        print(picked?.toString());
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PosPayment(
+                                                    notes: notesController.text,
+                                                    mobileNumber:
+                                                    phoneNoController.text,
+                                                    userName: nameController
+                                                        .text,
+                                                    venderId: _cartController
+                                                        .cartMaster!.vendorId,
+                                                    orderDeliveryType: () {
+                                                      if (_cartController
+                                                          .diningValue) {
+                                                        return 'DINING';
                                                       } else {
-                                                        return "DELIVERY";
+                                                        if (selectMethod
+                                                            .index ==
+                                                            0) {
+                                                          return "TAKEAWAY";
+                                                        } else {
+                                                          return "DELIVERY";
+                                                        }
                                                       }
-                                                    }
-                                                  }(),
-                                                  orderDate: DateFormat(
-                                                          'y-MM-dd')
-                                                      .format(DateTime.now())
-                                                      .toString(),
-                                                  orderTime: DateFormat(
-                                                          'hh:mm a')
-                                                      .format(DateTime.now())
-                                                      .toString(),
-                                                  totalAmount: _cartController
-                                                      .calculatedAmount,
-                                                  addressId: 0,
-                                                  orderDeliveryCharge:
-                                                      "${_cartController.deliveryCharge}",
-                                                  orderStatus: "PENDING",
-                                                  ordrePromoCode:
-                                                      _cartController
-                                                          .appliedCouponName,
-                                                  vendorDiscountAmount:
-                                                      _cartController
-                                                          .discountAmount,
-                                                  vendorDiscountId: int.parse(
-                                                      _cartController
-                                                          .strAppiedPromocodeId),
-                                                  strTaxAmount: _cartController
-                                                      .calculatedTax
-                                                      .toString(),
-                                                  allTax: [],
-                                                  subTotal: subTotal,
-                                                  deliveryDate:
-                                                      selectedDate?.toString(),
-                                                  deliveryTime:
-                                                      picked?.format(context),
-                                                  tableNumber: _cartController
-                                                      .tableNumber,
-                                                  customerName: '',
-                                                  customerPhone: '',
-                                                )),
-                                      );
-                                      print("Test");
+                                                    }(),
+                                                    orderDate: DateFormat(
+                                                        'y-MM-dd')
+                                                        .format(DateTime.now())
+                                                        .toString(),
+                                                    orderTime: DateFormat(
+                                                        'hh:mm a')
+                                                        .format(DateTime.now())
+                                                        .toString(),
+                                                    totalAmount: _cartController
+                                                        .calculatedAmount,
+                                                    addressId: 0,
+                                                    orderDeliveryCharge:
+                                                    "${_cartController
+                                                        .deliveryCharge}",
+                                                    orderStatus: "PENDING",
+                                                    ordrePromoCode:
+                                                    _cartController
+                                                        .appliedCouponName,
+                                                    vendorDiscountAmount:
+                                                    _cartController
+                                                        .discountAmount,
+                                                    vendorDiscountId: int.parse(
+                                                        _cartController
+                                                            .strAppiedPromocodeId),
+                                                    strTaxAmount: _cartController
+                                                        .calculatedTax
+                                                        .toString(),
+                                                    allTax: [],
+                                                    subTotal: subTotal,
+                                                    deliveryDate:
+                                                    selectedDate?.toString(),
+                                                    deliveryTime:
+                                                    picked?.format(context),
+                                                    tableNumber: _cartController
+                                                        .tableNumber,
+                                                    customerName: '',
+                                                    customerPhone: '',
+                                                  )),
+                                        );
+                                        print("Test");
+                                      } else {
+                                        Get.snackbar("Error", "Please Re-Enter Table Number");
+                                      }
                                     }),
                               ),
                             ],

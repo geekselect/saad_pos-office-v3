@@ -1220,11 +1220,21 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             //       .portPos);
                                                             // }
 
-                                                            if (_printerController
+                                                            if ((_printerController
                                                                     .printerModel
                                                                     .value
                                                                     .ipPos !=
-                                                                null) {
+                                                                null && _printerController
+                                                                .printerModel
+                                                                .value
+                                                                .ipPos!.isNotEmpty) && (_printerController
+                                                                .printerModel
+                                                                .value
+                                                                .portPos !=
+                                                                null && _printerController
+                                                                .printerModel
+                                                                .value
+                                                                .portPos!.isNotEmpty)) {
                                                               testPrintPOS(
                                                                   _printerController
                                                                       .printerModel

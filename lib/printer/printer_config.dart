@@ -91,6 +91,9 @@ class _PrinterConfigState extends State<PrinterConfig> {
 
   @override
   Widget build(BuildContext context) {
+    print("-----------------");
+    print("Print Model ${_printerController.printerModel.value.toJson()}");
+    print("-----------------");
     return Form(
       key: _printerController.formKey,
       child: Scaffold(
