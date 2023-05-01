@@ -258,7 +258,7 @@ class _PrinterConfigState extends State<PrinterConfig> {
             //     Constants.kitchenIp, kitchenIpEditingController.text ??= '');
             // box.write(Constants.kitchenPort, intValueKitchenPort);
 
-            await _printerController.updatePrinterDetails(Constants.vendorId);
+            await _printerController.updatePrinterDetails(Constants.vendorId!);
             Get.back();
             Get.snackbar('INFORMATION', 'Successfully updated');
           },

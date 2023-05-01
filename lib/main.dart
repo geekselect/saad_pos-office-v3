@@ -41,6 +41,7 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+
 //flutter run -d chrome --web-renderer html
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
@@ -59,7 +60,6 @@ void main() async {
   Get.put(OrderController());
   Get.put(AuthController());
   final prefs = await SharedPreferences.getInstance();
-  AuthController.sharedPreferences = prefs;
   runApp(LoginUiApp(
     sharedPreferences: prefs,
   ));

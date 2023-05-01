@@ -506,7 +506,10 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       width: Get.width,
                       child: Padding(
-                        padding: EdgeInsets.zero,
+                        padding: EdgeInsets.only(
+                          top: ScreenUtil().setHeight(15),
+                          left: ScreenUtil().setHeight(15),
+                          bottom: ScreenUtil().setHeight(5)),
                         // padding: EdgeInsets.only(
                         //     top: ScreenUtil()
                         //         .setHeight(15),

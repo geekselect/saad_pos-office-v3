@@ -35,6 +35,7 @@ import '../cart_screen.dart';
 
 class PosMenu extends StatefulWidget {
   final bool isDining;
+
   // final String orderId;
 
   PosMenu({
@@ -280,11 +281,6 @@ class _PosMenuState extends State<PosMenu> {
                   _cartController.tableNumber != null ? true : false;
               _cartController.isPromocodeApplied = false;
             });
-          } else {
-            setState(() {
-              _cartController.tableNumber = null;
-              _cartController.diningValue = false;
-            });
           }
         },
       ),
@@ -297,11 +293,18 @@ class _PosMenuState extends State<PosMenu> {
       ),
       SideBarGridTile(
         icon: Icons.person,
-        title: 'Customer Data',
+        title: 'Customer',
         onTap: () {
           Get.to(() => CustomerDataScreen());
         },
       ),
+      // SideBarGridTile(
+      //   icon: Icons.sync,
+      //   title: 'Reload',
+      //   onTap: ()  {
+      //     callGetResturantDetailsRef;
+      //   },
+      // ),
       SideBarGridTile(
         icon: Icons.logout,
         title: 'Logout',
@@ -571,7 +574,8 @@ class _PosMenuState extends State<PosMenu> {
                                               onChanged: (bool? value) async {
                                                 if (value!) {
                                                   print("if Block");
-                                                  print("${_cartController.tableNumber}");
+                                                  print(
+                                                      "${_cartController.tableNumber}");
                                                   print("if Block End");
                                                   await showDialog<int>(
                                                       context: context,
@@ -680,7 +684,8 @@ class _PosMenuState extends State<PosMenu> {
                                                   });
                                                 } else {
                                                   print("else Block");
-                                                  print("${_cartController.tableNumber}");
+                                                  print(
+                                                      "${_cartController.tableNumber}");
                                                   print("else Block End");
                                                   setState(() {
                                                     if (_cartController
@@ -2065,12 +2070,14 @@ class _PosMenuState extends State<PosMenu> {
                                                                   });
                                                             }
                                                           } else {
+                                                            print("ABC");
                                                             _cartController
                                                                 .addItem(
                                                                     cart.Cart(
-                                                                        diningAmount:
-                                                                            double.parse(singleMenu.menu!.diningPrice ??
-                                                                                '0.0'),
+                                                                        diningAmount: double.parse(
+                                                                            singleMenu
+                                                                                .menu!
+                                                                                .diningPrice!),
                                                                         category:
                                                                             "SINGLE",
                                                                         menu: [
@@ -2263,10 +2270,8 @@ class _PosMenuState extends State<PosMenu> {
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error.toString());
                   } else {
-                    return Container(
-                      child: CircularProgressIndicator(
-                          color: Color(Constants.colorTheme)),
-                    );
+                    return CircularProgressIndicator(
+                        color: Color(Constants.colorTheme));
                   }
                 },
               ),

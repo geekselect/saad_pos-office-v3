@@ -1203,58 +1203,52 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             ),
                                                           ),
                                                         ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            // if (_printerController
-                                                            //         .printerModel
-                                                            //         .value
-                                                            //         .ipPos! !=
-                                                            //     null) {
-                                                            //   print(_printerController
-                                                            //       .printerModel
-                                                            //       .value
-                                                            //       .ipPos!);
-                                                            //   print(_printerController
-                                                            //       .printerModel
-                                                            //       .value
-                                                            //       .portPos);
-                                                            // }
 
-                                                            if ((_printerController
-                                                                    .printerModel
-                                                                    .value
-                                                                    .ipPos !=
-                                                                null && _printerController
-                                                                .printerModel
-                                                                .value
-                                                                .ipPos!.isNotEmpty) && (_printerController
-                                                                .printerModel
-                                                                .value
-                                                                .portPos !=
-                                                                null && _printerController
-                                                                .printerModel
-                                                                .value
-                                                                .portPos!.isNotEmpty)) {
-                                                              testPrintPOS(
-                                                                  _printerController
-                                                                      .printerModel
-                                                                      .value
-                                                                      .ipPos!,
-                                                                  int.parse(_printerController
-                                                                      .printerModel
-                                                                      .value
-                                                                      .portPos
-                                                                      .toString()),
-                                                                  context,
-                                                                  order);
-                                                            } else {
-                                                              Get.snackbar(
-                                                                  "Error",
-                                                                  "Please add printer ip and port");
-                                                            }
-                                                          },
-                                                          icon:
-                                                              Icon(Icons.print),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(right: 4),
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              if ((_printerController
+                                                                  .printerModel
+                                                                  .value
+                                                                  .ipPos !=
+                                                                  null && _printerController
+                                                                  .printerModel
+                                                                  .value
+                                                                  .ipPos!.isNotEmpty) && (_printerController
+                                                                  .printerModel
+                                                                  .value
+                                                                  .portPos !=
+                                                                  null && _printerController
+                                                                  .printerModel
+                                                                  .value
+                                                                  .portPos!.isNotEmpty)) {
+                                                                testPrintPOS(
+                                                                    _printerController
+                                                                        .printerModel
+                                                                        .value
+                                                                        .ipPos!,
+                                                                    int.parse(_printerController
+                                                                        .printerModel
+                                                                        .value
+                                                                        .portPos
+                                                                        .toString()),
+                                                                    context,
+                                                                    order);
+                                                              } else {
+                                                                Get.snackbar(
+                                                                    "Error",
+                                                                    "Please add printer ip and port");
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                              "Print Order",
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         )
                                                       ],
                                                     ),

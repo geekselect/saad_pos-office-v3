@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Constants {
+class Constants extends GetxController{
   //static const String serverLink='http://192.168.18.25/ozpos/ozpos/public/api/';
   static const String serverLink =
       'http://www.menucart.com.au/ozpos/public/api/';
@@ -113,10 +114,12 @@ class Constants {
   static String vendorName = 'vendorName';
   static String baseLink = 'https://v3.ozfoodz.com.au/api';
   static String vendorBaseLink = '$baseLink/kitchen/';
-  static int vendorId = 7;
+  static int vendorId = 5;
   static Color secondaryColor = Color(0xfff2f7fb);
   static Color yellowColor = Color(0xffffbb2e);
   static int order_main_id = 0;
+
+
 
   static var kAppLabelWidget = TextStyle(
       fontWeight: FontWeight.bold,
