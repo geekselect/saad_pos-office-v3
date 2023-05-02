@@ -125,7 +125,7 @@ class OrderHistoryData {
     data['address_id'] = this.addressId;
     data['delivery_type'] = this.deliveryType;
     data['table_no'] = tableNo;
-    data['order_data'] = orderData;
+    data['order_data'] = orderData!;
     if (this.deliveryPerson != null) {
       data['delivery_person'] = this.deliveryPerson!.toJson();
     }
@@ -142,6 +142,114 @@ class OrderHistoryData {
     return data;
   }
 }
+
+
+OrderDataModel orderDataModelFromJson(String str) => OrderDataModel.fromJson(json.decode(str));
+
+String orderDataModelToJson(OrderDataModel data) => json.encode(data.toJson());
+
+class OrderDataModel {
+  int? vendorId;
+  List<Cart>? cart;
+
+  OrderDataModel({
+    this.vendorId,
+    this.cart,
+  });
+
+  factory OrderDataModel.fromJson(Map<String, dynamic> json) => OrderDataModel(
+    vendorId: json["vendor_id"],
+    cart: json["cart"] == null ? [] : List<Cart>.from(json["cart"]!.map((x) => Cart.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "vendor_id": vendorId,
+    "cart": cart == null ? [] : List<dynamic>.from(cart!.map((x) => x.toJson())),
+  };
+}
+
+class Cart {
+  String? category;
+  dynamic totalAmount;
+  dynamic diningAmount;
+  List<Menu>? menu;
+  dynamic size;
+  dynamic menuCategory;
+  dynamic quantity;
+
+  Cart({
+    this.category,
+    this.totalAmount,
+    this.diningAmount,
+    this.menu,
+    this.size,
+    this.menuCategory,
+    this.quantity,
+  });
+
+  factory Cart.fromJson(Map<String, dynamic> json) => Cart(
+    category: json["category"],
+    totalAmount: json["total_amount"],
+    diningAmount: json["dining_amount"],
+    menu: json["menu"] == null ? [] : List<Menu>.from(json["menu"]!.map((x) => Menu.fromJson(x))),
+    size: json["size"],
+    menuCategory: json["menu_category"],
+    quantity: json["quantity"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "category": category,
+    "total_amount": totalAmount,
+    "dining_amount": diningAmount,
+    "menu": menu == null ? [] : List<dynamic>.from(menu!.map((x) => x.toJson())),
+    "size": size,
+    "menu_category": menuCategory,
+    "quantity": quantity,
+  };
+}
+
+class Menu {
+  int? id;
+  String? name;
+  String? image;
+  double? totalAmount;
+  dynamic diningAmount;
+  List<dynamic>? addons;
+  dynamic dealsItems;
+
+  Menu({
+    this.id,
+    this.name,
+    this.image,
+    this.totalAmount,
+    this.diningAmount,
+    this.addons,
+    this.dealsItems,
+  });
+
+  factory Menu.fromJson(Map<String, dynamic> json) => Menu(
+    id: json["id"],
+    name: json["name"],
+    image: json["image"],
+    totalAmount: json["total_amount"]?.toDouble(),
+    diningAmount: json["dining_amount"],
+    addons: json["addons"] == null ? [] : List<dynamic>.from(json["addons"]!.map((x) => x)),
+    dealsItems: json["deals_items"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "image": image,
+    "total_amount": totalAmount,
+    "dining_amount": diningAmount,
+    "addons": addons == null ? [] : List<dynamic>.from(addons!.map((x) => x)),
+    "deals_items": dealsItems,
+  };
+}
+
+
+
 
 class DeliveryPerson {
   String? name;

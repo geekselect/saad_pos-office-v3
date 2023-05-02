@@ -67,7 +67,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
         future: callOrderSettingRef,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            print(snapshot.data!.data!.toJson());
+            print("Dining Cart SCREEN ${_cartController.cartMaster!.toMap()}");
             _cartController.calculatedAmount = 0.0;
             totalAmount = 0.0;
 
@@ -76,24 +76,14 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
               for (int i = 0;
                   i < _cartController.cartMaster!.cart.length;
                   i++) {
-                double diningAmount =
-                    _cartController.cartMaster!.cart[i].diningAmount! /
-                        _cartController.cartMaster!.cart[i].quantity;
-                if(diningAmount == 1 || diningAmount == 1.00 || diningAmount == 1.0){
-                  diningAmount = diningAmount * _cartController.cartMaster!.cart[i].quantity;
-                  _cartController.cartMaster!.cart[i].diningAmount = diningAmount * _cartController.cartMaster!.cart[i].quantity;
-                }
                 totalAmount +=
-                    ((diningAmount) *
-                        _cartController.cartMaster!.cart[i].quantity);
-                print("before ${_cartController.cartMaster!.cart[i].diningAmount}");
+                _cartController.cartMaster!.cart[i].diningAmount!;
+                totalAmount = double.parse((totalAmount).toStringAsFixed(2));
+                _cartController.calculatedAmount = totalAmount;
               }
-              totalAmount = double.parse((totalAmount).toStringAsFixed(2));
-              _cartController.calculatedAmount = totalAmount;
-              print(totalAmount);
-              print("after outer end");
             }
             if (_cartController.isPromocodeApplied) {
+              print("promo code applied");
               if (_cartController.discountType == 'percentage') {
                 _cartController.discountAmount =
                     totalAmount * _cartController.discount / 100;
@@ -103,28 +93,42 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
               }
               _cartController.calculatedAmount -=
                   _cartController.discountAmount;
-              print("sadas" + _cartController.calculatedAmount.toString());
               print(_cartController.discountAmount);
             } else {
               _cartController.discountAmount = 0.0;
               _cartController.appliedCouponName = null;
               _cartController.strAppiedPromocodeId = '0';
             }
-            // print(jsonEncode(snapshot.data!.data!.toJson()));
             BaseModel<OrderSettingModel> orderSettingModel = snapshot.data!;
-            //1 for percentage
+            ///Inclusive tax
             if (orderSettingModel.data?.data!.taxType == 1) {
-              _cartController.calculatedTax = _cartController.calculatedAmount *
-                  double.parse(orderSettingModel.data!.data!.tax!) /
-                  100;
+              _cartController.calculatedTax =
+                  _cartController.calculatedAmount *
+                      double.parse(orderSettingModel.data!.data!.tax!) /
+                      100;
               totalAmount -= _cartController.calculatedTax;
+
+              ///Exclusive tax
+            } else if (orderSettingModel.data!.data!.taxType == 2) {
+              _cartController.calculatedTax =
+                  _cartController.calculatedAmount *
+                      double.parse(orderSettingModel.data!.data!.tax!) /
+                      100;
+              _cartController.calculatedAmount +=
+                  _cartController.calculatedTax;
             }
-            //2 for percentage
-            else if (orderSettingModel.data!.data!.taxType == 2) {
-              _cartController.calculatedTax = _cartController.calculatedAmount *
-                  double.parse(orderSettingModel.data!.data!.tax!);
-              _cartController.calculatedAmount += _cartController.calculatedTax;
-            }
+            // if (orderSettingModel.data?.data!.taxType == 1) {
+            //   _cartController.calculatedTax = _cartController.calculatedAmount *
+            //       double.parse(orderSettingModel.data!.data!.tax!) /
+            //       100;
+            //   totalAmount -= _cartController.calculatedTax;
+            // }
+            // //2 for percentage
+            // else if (orderSettingModel.data!.data!.taxType == 2) {
+            //   _cartController.calculatedTax = _cartController.calculatedAmount *
+            //       double.parse(orderSettingModel.data!.data!.tax!);
+            //   _cartController.calculatedAmount += _cartController.calculatedTax;
+            // }
 
             subTotal = totalAmount;
             return Scaffold(

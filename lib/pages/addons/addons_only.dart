@@ -494,7 +494,6 @@ class AddonsOnly extends StatefulWidget {
 }
 
 class _AddonsOnlyState extends State<AddonsOnly> {
-  // List<String> data = ['Page 0', 'Page 1', 'Page 2'];
   Set set = Set();
 
   int initPosition = 0;
@@ -603,6 +602,7 @@ class _AddonsOnlyState extends State<AddonsOnly> {
                                 _cartController.getQuantity(
                                     getCurrentCart(), widget.data.vendorId);
                           }, btnFloatOnPressed: () {
+                            print("DATA ${widget.data.toMap()}");
                             _cartController.addItem(
                                 getCurrentCart(), widget.data.vendorId, context);
                             _cartController.quantity.value =
@@ -633,6 +633,7 @@ class _AddonsOnlyState extends State<AddonsOnly> {
                 SizedBox(
                   height: ScreenConfig.blockHeight * 1,
                 ),
+
                 Expanded(
                     flex: 2,
                     child: ListView.builder(

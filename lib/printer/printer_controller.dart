@@ -19,10 +19,8 @@ class PrinterController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     getPrinterDetails(Constants.vendorId);
-    print('print Model ${printerModel.value.toJson()}');
   }
 
   // Future callGetRestaurantsDetails(int? vendorId) async {
@@ -48,15 +46,10 @@ class PrinterController extends GetxController {
         vendorId,
       );
       printerModel.value = response;
-      print("<><><><><><><><><><>");
-      print(printerModel.value.ipPos);
-      // print(_printerController.printerModel.value.portPos);
-      print("<><><><><><><><><><>");
       posIpEditingController.text = printerModel.value.ipPos ?? '';
       kitchenIpEditingController.text = printerModel.value.ipKitchen ?? '';
       posPortEditingController.text = printerModel.value.portPos ?? '';
       kitchenPortEditingController.text = printerModel.value.portKitchen ?? '';
-      print("response printer ${response.toJson()}");
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
@@ -84,7 +77,6 @@ class PrinterController extends GetxController {
         autoStatusKitchen: null,
         autoStatusPos: ''
       );
-      print("response printer ${response.toJson()}");
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));

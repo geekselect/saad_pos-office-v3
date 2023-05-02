@@ -310,19 +310,52 @@ class CartController extends GetxController{
 
              if(exist){
                print("Exist");
-               double totalAmount = cartMaster!.cart[i].diningAmount / cartMaster!.cart[i].quantity;
-               if(totalAmount == 1 || totalAmount == 1.00 || totalAmount == 1.0){
-                 totalAmount = totalAmount * cartMaster!.cart[i].quantity;
-               }
-               // print("before ${cartMaster!.cart[i].totalAmount}");
-               // print("before ${cartMaster!.cart[i].diningAmount}");
-               // print("before ${cartMaster!.cart[i].quantity}");
-               cartMaster!.cart[i].quantity++;
-               double amount = totalAmount + cartMaster!.cart[i].diningAmount;
-               cartMaster!.cart[i].diningAmount = amount;
-               // print("total ${cartMaster!.cart[i].totalAmount}");
-               // print("total ${cartMaster!.cart[i].diningAmount}");
-               // print("total ${cartMaster!.cart[i].quantity}");
+               // if(diningValue) {
+               //   print("diningValue");
+
+                 double diningAmountMain = cartMaster!.cart[i].diningAmount /
+                     cartMaster!.cart[i].quantity;
+                 if (diningAmountMain == 1 || diningAmountMain == 1.00 ||
+                     diningAmountMain == 1.0) {
+                   diningAmountMain = diningAmountMain * cartMaster!.cart[i].quantity;
+                 }
+
+                 double takeAwayAmountMain = cartMaster!.cart[i].totalAmount /
+                     cartMaster!.cart[i].quantity;
+                 if (takeAwayAmountMain == 1 || takeAwayAmountMain == 1.00 ||
+                     takeAwayAmountMain == 1.0) {
+                   takeAwayAmountMain = takeAwayAmountMain * cartMaster!.cart[i].quantity;
+                 }
+                 print("before ${cartMaster!.cart[i].totalAmount}");
+                 print("before ${cartMaster!.cart[i].diningAmount}");
+                 print("before ${cartMaster!.cart[i].quantity}");
+
+                 cartMaster!.cart[i].quantity++;
+                 cartMaster!.cart[i].diningAmount = diningAmountMain * cartMaster!.cart[i].quantity;
+                 cartMaster!.cart[i].totalAmount = takeAwayAmountMain * cartMaster!.cart[i].quantity;
+                 // cartMaster!.cart[i].diningAmount = amount;
+                 print("total ${cartMaster!.cart[i].totalAmount}");
+                 print("total ${cartMaster!.cart[i].diningAmount}");
+                 print("total ${cartMaster!.cart[i].quantity}");
+               // } else {
+               //   print("No diningValue");
+               //
+               //   double totalAmount = cartMaster!.cart[i].totalAmount /
+               //       cartMaster!.cart[i].quantity;
+               //   if (totalAmount == 1 || totalAmount == 1.00 ||
+               //       totalAmount == 1.0) {
+               //     totalAmount = totalAmount * cartMaster!.cart[i].quantity;
+               //   }
+               //   print("before ${cartMaster!.cart[i].totalAmount}");
+               //   print("before ${cartMaster!.cart[i].diningAmount}");
+               //   print("before ${cartMaster!.cart[i].quantity}");
+               //   cartMaster!.cart[i].quantity++;
+               //   double amount = totalAmount + cartMaster!.cart[i].totalAmount;
+               //   cartMaster!.cart[i].totalAmount = amount;
+               //   print("total ${cartMaster!.cart[i].totalAmount}");
+               //   print("total ${cartMaster!.cart[i].diningAmount}");
+               //   print("total ${cartMaster!.cart[i].quantity}");
+               // }
                return;
              }
            }

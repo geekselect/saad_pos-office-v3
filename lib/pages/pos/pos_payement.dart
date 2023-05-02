@@ -335,22 +335,53 @@ class _PosPaymentState extends State<PosPayment> {
         //           align: PosAlign.center))
         // ]);
 
+        // var price;
+        // if(_cartController.diningValue) {
+        //   price =  cart[
+        //   itemIndex]
+        //       .diningAmount;
+        // } else {
+        //   price =  cart[
+        //   itemIndex]
+        //       .totalAmount;
+        // }
+
         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
           MenuCartMaster menuItem = menu[menuIndex];
-          printer.row([
-            PosColumn(text: cartItem.quantity.toString(), width: 1),
-            PosColumn(
-              text: menu[menuIndex].name +
-                  (cart[itemIndex].size != null
-                      ? '(${cart[itemIndex].size?.sizeName})'
-                      : ''),
-              width: 9,
-            ),
-            PosColumn(
-                text: cartItem.totalAmount.toString(),
-                width: 2,
-                styles: PosStyles(align: PosAlign.right)),
-          ]);
+          if(widget.orderDeliveryType == 'DINING') {
+            print("dining row");
+            printer.row([
+              PosColumn(text: cartItem.quantity.toString(), width: 1),
+              PosColumn(
+                text: menu[menuIndex].name +
+                    (cart[itemIndex].size != null
+                        ? '(${cart[itemIndex].size?.sizeName})'
+                        : ''),
+                width: 9,
+              ),
+              PosColumn(
+                  text: cartItem.diningAmount.toString(),
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          } else {
+            print("takeaway row");
+            printer.row([
+              PosColumn(text: cartItem.quantity.toString(), width: 1),
+              PosColumn(
+                text: menu[menuIndex].name +
+                    (cart[itemIndex].size != null
+                        ? '(${cart[itemIndex].size?.sizeName})'
+                        : ''),
+                width: 9,
+              ),
+              PosColumn(
+                  text:  cartItem.totalAmount
+                      .toString(),
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          }
           for (int addonIndex = 0;
               addonIndex < menuItem.addons.length;
               addonIndex++) {
@@ -654,13 +685,13 @@ class _PosPaymentState extends State<PosPayment> {
       printerIp,
       port: port,
     );
-
     Get.snackbar("", res.msg);
+
     // final snackBar =
     // SnackBar(content: Text(res.msg, textAlign: TextAlign.center));
     // ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
 
-    print('Print result: ${res.msg}');
+    // print('Print result: ${res.msg}');
 
     if (res == PosPrintResult.success) {
       // DEMO RECEIPT
@@ -1161,6 +1192,11 @@ class _PosPaymentState extends State<PosPayment> {
   Widget build(BuildContext context) {
     print("order main id on pos payemnet ${Constants.order_main_id}");
     print("resturant Details...${callGetResturantDetailsRef}");
+    // _cartController.cartMaster!.cart.forEach((element) {
+    //   print("cart Details...${element.toMap()}");
+    // });
+    print("${json.encode(_cartController.cartMaster!.toMap())}");
+    print("cart Details 2...${_cartController.quantity}");
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         child: Form(
@@ -1914,16 +1950,16 @@ class _PosPaymentState extends State<PosPayment> {
                                               btnColor:
                                                   Color(Constants.colorTheme),
                                               onTapped: () {
-                                                print("lllllll");
+                                                print("Takeaway older id");
                                                 orderPaymentType =
                                                     'INCOMPLETE ORDER';
-                                                // placeOrder(1);
-                                                testPrintKitchen(
-                                                    "203.175.78.102",
-                                                    8888,
-                                                    context,
-                                                    _cartController
-                                                        .cartMaster!);
+                                                placeOrder(1);
+                                                // testPrintKitchen(
+                                                //     "203.175.78.102",
+                                                //     8888,
+                                                //     context,
+                                                //     _cartController
+                                                //         .cartMaster!);
                                                 // if (kitchenPort != null) {
                                                 //   print("kitchen Added");
                                                 //   if (kitchenIp == '' &&
@@ -2121,6 +2157,7 @@ class _PosPaymentState extends State<PosPayment> {
                                               btnColor:
                                                   Color(Constants.colorTheme),
                                               onTapped: () {
+                                                print("Takeaway first older");
                                                 orderPaymentType =
                                                     'INCOMPLETE ORDER';
                                                 placeOrder(1);
@@ -4368,6 +4405,7 @@ class _PosPaymentState extends State<PosPayment> {
             } else {
               print("pos ip not empty");
               print("test pos ip not empty");
+              print("Cart ${_cartController.cartMaster!.toMap()}");
               testPrintPOS(
                   _printerController.printerModel.value.ipPos!,
                   int.parse(

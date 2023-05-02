@@ -48,6 +48,22 @@ class PosMenu extends StatefulWidget {
 }
 
 class _PosMenuState extends State<PosMenu> {
+
+  bool isLoading = false;
+
+  void _reloadScreen() {
+    setState(() {
+      isLoading = true;
+    });
+
+    // Simulate a 3-second delay
+    Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
 
@@ -298,13 +314,11 @@ class _PosMenuState extends State<PosMenu> {
           Get.to(() => CustomerDataScreen());
         },
       ),
-      // SideBarGridTile(
-      //   icon: Icons.sync,
-      //   title: 'Reload',
-      //   onTap: ()  {
-      //     callGetResturantDetailsRef;
-      //   },
-      // ),
+      SideBarGridTile(
+        icon: Icons.sync,
+        title: 'Reload',
+        onTap: _reloadScreen,
+      ),
       SideBarGridTile(
         icon: Icons.logout,
         title: 'Logout',
@@ -331,9 +345,6 @@ class _PosMenuState extends State<PosMenu> {
     callGetResturantDetailsRef = _orderCustimizationController
         .callGetRestaurantsDetails(Constants.vendorId);
     callGetResturantDetailsRef!.then((value) {
-      print("*****************");
-      print("ORder Data POS MENU ${value.data!.toJson()}");
-      print("*****************");
     });
 
     // callGetResturantDetailsRef!.then((value) {
@@ -418,7 +429,8 @@ class _PosMenuState extends State<PosMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.secondaryColor,
-      body: LayoutBuilder(
+      body:  isLoading ?
+    Center(child: CircularProgressIndicator()) : LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth > 900) {
             print("Desktop");
@@ -431,7 +443,6 @@ class _PosMenuState extends State<PosMenu> {
                   if (snapshot.hasData) {
                     SingleRestaurantsDetailsModel
                         singleRestaurantsDetailsModel = snapshot.data!.data!;
-                    // singleRestaurantsDetailsModel.data.menuCategory.
                     if (singleRestaurantsDetailsModel.success) {
                       Vendor vendor =
                           singleRestaurantsDetailsModel.data!.vendor!;
@@ -1924,14 +1935,15 @@ class _PosMenuState extends State<PosMenu> {
                                                                   .menu!
                                                                   .menuAddon!
                                                                   .isNotEmpty) {
-                                                            List<MenuSize>
-                                                                tempList = [];
+                                                            print("not empty addon");
+                                                            List<MenuSize>tempList = [];
                                                             tempList.addAll(
                                                                 singleMenu.menu!
                                                                     .menuSize!);
                                                             if (singleMenu.menu!
                                                                     .price ==
                                                                 null) {
+                                                              print("ADDONS Only");
                                                               List<MenuSize>
                                                                   menuSizeList =
                                                                   singleMenu
@@ -2017,8 +2029,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                 .menu!
                                                                 .menuAddon!
                                                                 .isNotEmpty) {
-                                                              print(
-                                                                  "ADDONS ONly ");
+                                                              print("ADDONS Only Dialog");
                                                               showDialog(
                                                                   context:
                                                                       context,
@@ -2070,7 +2081,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                   });
                                                             }
                                                           } else {
-                                                            print("ABC");
+                                                            print("Empty addon");
                                                             _cartController
                                                                 .addItem(
                                                                     cart.Cart(
@@ -2110,7 +2121,6 @@ class _PosMenuState extends State<PosMenu> {
                                                                         .refreshScreen
                                                                         .value);
                                                           }
-                                                          // _addToCart(singleMenu!, index);
                                                         },
                                                         child: Container(
                                                           // alignment: Alignment.center,
@@ -2270,8 +2280,10 @@ class _PosMenuState extends State<PosMenu> {
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error.toString());
                   } else {
-                    return CircularProgressIndicator(
-                        color: Color(Constants.colorTheme));
+                    return Center(
+                      child: CircularProgressIndicator(
+                          color: Color(Constants.colorTheme)),
+                    );
                   }
                 },
               ),
@@ -3887,7 +3899,7 @@ class _PosMenuState extends State<PosMenu> {
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error.toString());
                   } else {
-                    return Container(
+                    return Center(
                       child: CircularProgressIndicator(
                           color: Color(Constants.colorTheme)),
                     );

@@ -65,25 +65,6 @@ class _CartScreenState extends State<CartScreen> {
     if (_cartController.cartMaster != null) {
       callOrderSettingRef = _cartController
           .callOrderSetting(_cartController.cartMaster!.vendorId);
-
-      // callOrderSettingRef!.then((value) {
-      //   print("---------------");
-      //   print("Order Data Cart Screen ${value.data!.toJson()}");
-      //   if(value.data!.data!. != null){
-      //     nameController.text = value.data!.data!.user_name.toString();
-      //   } else {
-      //     print("NUll Name");
-      //     nameController.text = _cartController.userName;
-      //   }
-      //   if(value.data!.data!.mobile != null){
-      //     phoneNoController.text = value.data!.data!.mobile.toString();
-      //   } else {
-      //     print("NUll Phone");
-      //     phoneNoController.text = _cartController.userMobileNumber;
-      //   }
-      //   print("---------------");
-      // });
-
       statusRef = _orderCustimizationController
           .status(_cartController.cartMaster!.vendorId);
     }
@@ -118,10 +99,9 @@ class _CartScreenState extends State<CartScreen> {
                 id: 'dining',
                 builder: (controller) {
                   if (_cartController.diningValue) {
-                    print("DINING SCREEN");
                     return DiningCartScreen();
                   } else {
-                    print("CArt SCREEN");
+                    print("Cart SCREEN ${_cartController.cartMaster!.toMap()}");
 
                     _cartController.calculatedAmount = 0.0;
                     totalAmount = 0.0;
@@ -130,12 +110,14 @@ class _CartScreenState extends State<CartScreen> {
                     if (_cartController.cartMaster != null) {
                       for (int i = 0;
                           i < _cartController.cartMaster!.cart.length;
-                          i++)
+                          i++) {
+
                         totalAmount +=
                             _cartController.cartMaster!.cart[i].totalAmount;
-                      totalAmount =
-                          double.parse((totalAmount).toStringAsFixed(2));
-                      _cartController.calculatedAmount = totalAmount;
+                        totalAmount =
+                            double.parse((totalAmount).toStringAsFixed(2));
+                        _cartController.calculatedAmount = totalAmount;
+                      }
                     }
                     if (_cartController.isPromocodeApplied) {
                       if (_cartController.discountType == 'percentage') {
@@ -147,18 +129,14 @@ class _CartScreenState extends State<CartScreen> {
                       }
                       _cartController.calculatedAmount -=
                           _cartController.discountAmount;
-                      print("sadas" +
-                          _cartController.calculatedAmount.toString());
                       print(_cartController.discountAmount);
                     } else {
                       _cartController.discountAmount = 0.0;
                       _cartController.appliedCouponName = null;
                       _cartController.strAppiedPromocodeId = '0';
                     }
-                    // print(jsonEncode(snapshot.data!.data!.toJson()));
                     BaseModel<OrderSettingModel> orderSettingModel =
                         snapshot.data!;
-                    print("Order DAta ${snapshot.data!.data!.toJson()}");
 
                     ///Inclusive tax
                     if (orderSettingModel.data?.data!.taxType == 1) {
@@ -568,7 +546,8 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                   Flexible(
                                     child: Text(
-                                      '${cart.menu[0].totalAmount}',
+                                      // '${cart.menu[0].totalAmount}',
+                                      '${_cartController.cartMaster!.cart[index].totalAmount}',
                                       style: TextStyle(
                                           color: Constants.yellowColor),
                                     ),
