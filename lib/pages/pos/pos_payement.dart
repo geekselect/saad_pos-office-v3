@@ -106,6 +106,7 @@ class _PosPaymentState extends State<PosPayment> {
       Get.find<OrderCustimizationController>();
   dynamic number;
   dynamic orderId;
+  FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -127,6 +128,7 @@ class _PosPaymentState extends State<PosPayment> {
     callGetResturantDetailsRef = _orderCustimizationController
         .callGetRestaurantsDetails(Constants.vendorId);
     _printerController.getPrinterDetails(Constants.vendorId);
+    _focusNode = FocusNode();
     super.initState();
   }
 
@@ -1190,6 +1192,9 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         child: Form(
@@ -1299,6 +1304,7 @@ class _PosPaymentState extends State<PosPayment> {
                                     return 'Please Enter Amount';
                                   }
                                 },
+                                focusNode: _focusNode,
                                 controller: receivedController,
                               ),
                             ),
@@ -2395,6 +2401,7 @@ class _PosPaymentState extends State<PosPayment> {
                                     return 'Please Enter Amount';
                                   }
                                 },
+                                focusNode: _focusNode,
                                 controller: receivedController,
                               ),
                             ),

@@ -114,7 +114,7 @@ class Constants extends GetxController{
   static String vendorName = 'vendorName';
   static String baseLink = 'https://v3.ozfoodz.com.au/api';
   static String vendorBaseLink = '$baseLink/kitchen/';
-  static int vendorId = 7;
+  static int vendorId = 5;
   static Color secondaryColor = Color(0xfff2f7fb);
   static Color yellowColor = Color(0xffffbb2e);
   static int order_main_id = 0;

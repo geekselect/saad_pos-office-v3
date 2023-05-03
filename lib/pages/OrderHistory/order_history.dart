@@ -991,10 +991,8 @@ class _OrderHistoryState extends State<OrderHistory> {
                           itemBuilder: (BuildContext context, int index) {
                             // build the list item here
                             final order = _getFilteredOrders()[index];
-                            print("order ${order.orderData}");
                             Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
                             OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
-                            // print("order.orderStatus ${order.orderStatus}");
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
