@@ -24,6 +24,7 @@ class CartController extends GetxController{
   List<PromoCodeListData> listPromoCode = [];
 
   double discountAmount=0.0;
+  RxInt taxType= 1.obs;
 
   String appliedCouponPercentage='';
 

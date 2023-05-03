@@ -50,344 +50,686 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   Future<BaseModel<OrderSettingModel>>? callOrderSettingRef;
   Future<BaseModel<StatusModel>>? statusRef;
   Color primaryColor = Color(Constants.colorTheme);
+  // BaseModel<OrderSettingModel>? orderSettingModel;
 
   @override
   void initState() {
     nameController.text = _cartController.userName;
     phoneNoController.text = _cartController.userMobileNumber;
-    callOrderSettingRef =
-        _cartController.callOrderSetting(_cartController.cartMaster!.vendorId);
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<BaseModel<OrderSettingModel>>(
-        future: callOrderSettingRef,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            print("Dining Cart SCREEN ${_cartController.cartMaster!.toMap()}");
-            _cartController.calculatedAmount = 0.0;
-            totalAmount = 0.0;
+    _cartController.calculatedAmount = 0.0;
+    totalAmount = 0.0;
 
-            _cartController.calculatedTax = 0.0;
-            if (_cartController.cartMaster != null) {
-              for (int i = 0;
-                  i < _cartController.cartMaster!.cart.length;
-                  i++) {
-                totalAmount +=
-                _cartController.cartMaster!.cart[i].diningAmount!;
-                totalAmount = double.parse((totalAmount).toStringAsFixed(2));
-                _cartController.calculatedAmount = totalAmount;
-              }
-            }
-            if (_cartController.isPromocodeApplied) {
-              print("promo code applied");
-              if (_cartController.discountType == 'percentage') {
-                _cartController.discountAmount =
-                    totalAmount * _cartController.discount / 100;
-              } else {
-                _cartController.discountAmount =
-                    double.parse(_cartController.discount.toString());
-              }
-              _cartController.calculatedAmount -=
-                  _cartController.discountAmount;
-              print(_cartController.discountAmount);
-            } else {
-              _cartController.discountAmount = 0.0;
-              _cartController.appliedCouponName = null;
-              _cartController.strAppiedPromocodeId = '0';
-            }
-            BaseModel<OrderSettingModel> orderSettingModel = snapshot.data!;
-            ///Inclusive tax
-            if (orderSettingModel.data?.data!.taxType == 1) {
-              _cartController.calculatedTax =
-                  _cartController.calculatedAmount *
-                      double.parse(orderSettingModel.data!.data!.tax!) /
-                      100;
-              totalAmount -= _cartController.calculatedTax;
+    _cartController.calculatedTax = 0.0;
+    if (_cartController.cartMaster != null) {
+      for (int i = 0;
+      i < _cartController.cartMaster!.cart.length;
+      i++) {
+        totalAmount +=
+        _cartController.cartMaster!.cart[i].diningAmount!;
+        totalAmount = double.parse((totalAmount).toStringAsFixed(2));
+        _cartController.calculatedAmount = totalAmount;
+      }
+    }
+    if (_cartController.isPromocodeApplied) {
+      print("promo code applied");
+      if (_cartController.discountType == 'percentage') {
+        _cartController.discountAmount =
+            totalAmount * _cartController.discount / 100;
+      } else {
+        _cartController.discountAmount =
+            double.parse(_cartController.discount.toString());
+      }
+      _cartController.calculatedAmount -=
+          _cartController.discountAmount;
+      print(_cartController.discountAmount);
+    } else {
+      _cartController.discountAmount = 0.0;
+      _cartController.appliedCouponName = null;
+      _cartController.strAppiedPromocodeId = '0';
+    }
+    if (_cartController.taxType.value == 1) {
+      _cartController.calculatedTax =
+          _cartController.calculatedAmount *
+              double.parse(_cartController.taxType.value.toString()) /
+              100;
+      totalAmount -= _cartController.calculatedTax;
 
-              ///Exclusive tax
-            } else if (orderSettingModel.data!.data!.taxType == 2) {
-              _cartController.calculatedTax =
-                  _cartController.calculatedAmount *
-                      double.parse(orderSettingModel.data!.data!.tax!) /
-                      100;
-              _cartController.calculatedAmount +=
-                  _cartController.calculatedTax;
-            }
-            // if (orderSettingModel.data?.data!.taxType == 1) {
-            //   _cartController.calculatedTax = _cartController.calculatedAmount *
-            //       double.parse(orderSettingModel.data!.data!.tax!) /
-            //       100;
-            //   totalAmount -= _cartController.calculatedTax;
-            // }
-            // //2 for percentage
-            // else if (orderSettingModel.data!.data!.taxType == 2) {
-            //   _cartController.calculatedTax = _cartController.calculatedAmount *
-            //       double.parse(orderSettingModel.data!.data!.tax!);
-            //   _cartController.calculatedAmount += _cartController.calculatedTax;
-            // }
-
-            subTotal = totalAmount;
-            return Scaffold(
-              body: Container(
-                decoration: BoxDecoration(
-                    color: Color(Constants.colorScreenBackGround),
-                    image: DecorationImage(
-                      image: AssetImage('images/ic_background_image.png'),
-                      fit: BoxFit.cover,
-                    )),
-                child: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 40,
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            children: [
-                              SizedBox(width: 5),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white.withOpacity(0.4)),
-                                  child: TextField(
-                                    controller: nameController,
-                                    keyboardType: TextInputType.text,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: (40 - 15) / 2,
-                                      ),
-                                      border: InputBorder.none,
-                                      hintText:
-                                          "Enter a Name",
-                                      hintStyle: TextStyle(
-                                          color: Colors.black26,
-                                          fontSize: 15,
-                                          fontFamily: "ProximaNova"),
-                                    ),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 15),
-                                  ),
-                                ),
+      ///Exclusive tax
+    } else if (_cartController.taxType.value == 2) {
+      _cartController.calculatedTax =
+          _cartController.calculatedAmount *
+              double.parse(_cartController.taxType.value.toString()) /
+              100;
+      _cartController.calculatedAmount +=
+          _cartController.calculatedTax;
+    }
+    subTotal = totalAmount;
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+            color: Color(Constants.colorScreenBackGround),
+            image: DecorationImage(
+              image: AssetImage('images/ic_background_image.png'),
+              fit: BoxFit.cover,
+            )),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: 40,
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color:
+                                  Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white.withOpacity(0.4)),
+                          child: TextField(
+                            controller: nameController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: (40 - 15) / 2,
                               ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white.withOpacity(0.4)),
-                                  child: TextField(
-                                    controller: phoneNoController,
-                                    keyboardType: TextInputType.text,
-                                    decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: (40 - 15) / 2,
-                                        ),
-                                        border: InputBorder.none,
-                                        hintText:
-                                            "Enter phone Number",
-                                        hintStyle: TextStyle(
-                                            color: Colors.black26,
-                                            fontSize: 15,
-                                            fontFamily: "ProximaNova")),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 15),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 5),
-                            ],
+                              border: InputBorder.none,
+                              hintText:
+                              "Enter a Name",
+                              hintStyle: TextStyle(
+                                  color: Colors.black26,
+                                  fontSize: 15,
+                                  fontFamily: "ProximaNova"),
+                            ),
+                            style: TextStyle(
+                                color: Colors.black, fontSize: 15),
                           ),
                         ),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                                onPressed: () {
-                                  nameController.clear();
-                                  phoneNoController.clear();
-                                  // _cartController.tableNumber = null;
-                                  setState(() {});
-                                },
-                                child: Text('Clear'))),
-                        SizedBox(height: 2),
-                        _cartController.tableNumber == null
-                            ? Container()
-                            : Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Table Number'),
-                                    Container(
-                                        margin: EdgeInsets.only(right: 8.0),
-                                        child: Text(_cartController.tableNumber
-                                            .toString())),
-                                  ],
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color:
+                                  Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white.withOpacity(0.4)),
+                          child: TextField(
+                            controller: phoneNoController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: (40 - 15) / 2,
                                 ),
-                              ),
-                        if (picked != null &&
-                            selectedDate != null &&
-                            scheduleMethod != ScheduleMethod.DELIVERNOW)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(DateFormat('yyyy-MM-dd hh:mm')
-                                  .format(selectedDate!)),
-                              Text(picked!.format(context)),
-                              GestureDetector(
-                                  onTap: () async {
-                                    await _selectDate(context);
-                                    if (selectedDate != null) {
-                                      await _selectTime(context);
-                                      if (picked != null) {
-                                        setState(() {});
-                                      } else {
-                                        Get.snackbar(
-                                            'ALERT', 'Please Select Time');
-                                      }
-                                    } else {
-                                      Get.snackbar(
-                                          'ALERT', 'Please Select Date');
-                                    }
-                                  },
-                                  child: Text("  Edit here",
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Colors.blue))),
-                            ],
+                                border: InputBorder.none,
+                                hintText:
+                                "Enter phone Number",
+                                hintStyle: TextStyle(
+                                    color: Colors.black26,
+                                    fontSize: 15,
+                                    fontFamily: "ProximaNova")),
+                            style: TextStyle(
+                                color: Colors.black, fontSize: 15),
                           ),
-
-                        SizedBox(
-                          height: ScreenConfig.blockHeight * 37,
-                          child: getCartData(),
                         ),
-
-                        ///Coupon Widget
-                        // getCouponWidget(),
-                        SizedBox(
-                          height: !_cartController.isPromocodeApplied
-                              ? ScreenConfig.blockHeight * 22
-                              : ScreenConfig.blockHeight * 23,
-                          child: getTotalAmountWidget(orderSettingModel),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 6.0, right: 6.0, bottom: 2.0, top: 0.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: RoundedCornerAppButton(
-                                    btnLabel: "Checkout",
-                                    onPressed: () {
-                                      if(_cartController.diningValue == true && _cartController.tableNumber != 0) {
-                                        if (scheduleMethod.index == 0) {
-                                          selectedDate = null;
-                                          picked = null;
-                                        }
-                                        print(selectedDate?.toString());
-                                        print(picked?.toString());
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PosPayment(
-                                                    notes: notesController.text,
-                                                    mobileNumber:
-                                                    phoneNoController.text,
-                                                    userName: nameController
-                                                        .text,
-                                                    venderId: _cartController
-                                                        .cartMaster!.vendorId,
-                                                    orderDeliveryType: () {
-                                                      if (_cartController
-                                                          .diningValue) {
-                                                        return 'DINING';
-                                                      } else {
-                                                        if (selectMethod
-                                                            .index ==
-                                                            0) {
-                                                          return "TAKEAWAY";
-                                                        } else {
-                                                          return "DELIVERY";
-                                                        }
-                                                      }
-                                                    }(),
-                                                    orderDate: DateFormat(
-                                                        'y-MM-dd')
-                                                        .format(DateTime.now())
-                                                        .toString(),
-                                                    orderTime: DateFormat(
-                                                        'hh:mm a')
-                                                        .format(DateTime.now())
-                                                        .toString(),
-                                                    totalAmount: _cartController
-                                                        .calculatedAmount,
-                                                    addressId: 0,
-                                                    orderDeliveryCharge:
-                                                    "${_cartController
-                                                        .deliveryCharge}",
-                                                    orderStatus: "PENDING",
-                                                    ordrePromoCode:
-                                                    _cartController
-                                                        .appliedCouponName,
-                                                    vendorDiscountAmount:
-                                                    _cartController
-                                                        .discountAmount,
-                                                    vendorDiscountId: int.parse(
-                                                        _cartController
-                                                            .strAppiedPromocodeId),
-                                                    strTaxAmount: _cartController
-                                                        .calculatedTax
-                                                        .toString(),
-                                                    allTax: [],
-                                                    subTotal: subTotal,
-                                                    deliveryDate:
-                                                    selectedDate?.toString(),
-                                                    deliveryTime:
-                                                    picked?.format(context),
-                                                    tableNumber: _cartController
-                                                        .tableNumber,
-                                                    customerName: '',
-                                                    customerPhone: '',
-                                                  )),
-                                        );
-                                        print("Test");
-                                      } else {
-                                        Get.snackbar("Error", "Please Re-Enter Table Number");
-                                      }
-                                    }),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 5),
+                    ],
                   ),
                 ),
-              ),
-            );
-          }
-          return Scaffold(
-              body: Center(
-            child: CircularProgressIndicator(
-              color: Color(Constants.colorTheme),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                        onPressed: () {
+                          nameController.clear();
+                          phoneNoController.clear();
+                          // _cartController.tableNumber = null;
+                          setState(() {});
+                        },
+                        child: Text('Clear'))),
+                SizedBox(height: 2),
+                _cartController.tableNumber == null
+                    ? Container()
+                    : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Table Number'),
+                      Container(
+                          margin: EdgeInsets.only(right: 8.0),
+                          child: Text(_cartController.tableNumber
+                              .toString())),
+                    ],
+                  ),
+                ),
+                if (picked != null &&
+                    selectedDate != null &&
+                    scheduleMethod != ScheduleMethod.DELIVERNOW)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(DateFormat('yyyy-MM-dd hh:mm')
+                          .format(selectedDate!)),
+                      Text(picked!.format(context)),
+                      GestureDetector(
+                          onTap: () async {
+                            await _selectDate(context);
+                            if (selectedDate != null) {
+                              await _selectTime(context);
+                              if (picked != null) {
+                                setState(() {});
+                              } else {
+                                Get.snackbar(
+                                    'ALERT', 'Please Select Time');
+                              }
+                            } else {
+                              Get.snackbar(
+                                  'ALERT', 'Please Select Date');
+                            }
+                          },
+                          child: Text("  Edit here",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.blue))),
+                    ],
+                  ),
+
+                SizedBox(
+                  height: ScreenConfig.blockHeight * 37,
+                  child: getCartData(),
+                ),
+
+                ///Coupon Widget
+                // getCouponWidget(),
+                SizedBox(
+                  height: !_cartController.isPromocodeApplied
+                      ? ScreenConfig.blockHeight * 22
+                      : ScreenConfig.blockHeight * 23,
+                  child: getTotalAmountWidget(),
+    //               child: FutureBuilder<BaseModel<OrderSettingModel>>(
+    // future: _cartController
+    //     .callOrderSetting(_cartController.cartMaster!.vendorId),
+    // builder: (context, snapshot) {
+    // if (snapshot.hasData) {
+    //   BaseModel<OrderSettingModel> orderSettingModel =
+    //   snapshot.data!;
+    //
+    //   ///Inclusive tax
+    //   if (orderSettingModel.data?.data!.taxType == 1) {
+    //     _cartController.calculatedTax =
+    //         _cartController.calculatedAmount *
+    //             double.parse(orderSettingModel.data!.data!.tax!) /
+    //             100;
+    //     totalAmount -= _cartController.calculatedTax;
+    //
+    //     ///Exclusive tax
+    //   } else if (orderSettingModel.data!.data!.taxType == 2) {
+    //     _cartController.calculatedTax =
+    //         _cartController.calculatedAmount *
+    //             double.parse(orderSettingModel.data!.data!.tax!) /
+    //             100;
+    //     _cartController.calculatedAmount +=
+    //         _cartController.calculatedTax;
+    //   }
+    //   return getTotalAmountWidget(orderSettingModel);
+    // }
+    // return SizedBox();
+    // }),
+                  ///
+                  ///if (orderSettingModel!.data?.data!.taxType == 1) {
+                  //          _cartController.calculatedTax =
+                  //              _cartController.calculatedAmount *
+                  //                  double.parse(orderSettingModel!.data!.data!.tax!) /
+                  //                  100;
+                  //          totalAmount -= _cartController.calculatedTax;
+                  //
+                  //          ///Exclusive tax
+                  //        } else if (orderSettingModel!.data!.data!.taxType == 2) {
+                  //          _cartController.calculatedTax =
+                  //              _cartController.calculatedAmount *
+                  //                  double.parse(orderSettingModel!.data!.data!.tax!) /
+                  //                  100;
+                  //          _cartController.calculatedAmount +=
+                  //              _cartController.calculatedTax;
+                  //        }
+
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 6.0, right: 6.0, bottom: 2.0, top: 0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: RoundedCornerAppButton(
+                            btnLabel: "Checkout",
+                            onPressed: () {
+                              if(_cartController.diningValue == true && _cartController.tableNumber != 0) {
+                                if (scheduleMethod.index == 0) {
+                                  selectedDate = null;
+                                  picked = null;
+                                }
+                                print(selectedDate?.toString());
+                                print(picked?.toString());
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PosPayment(
+                                            notes: notesController.text,
+                                            mobileNumber:
+                                            phoneNoController.text,
+                                            userName: nameController
+                                                .text,
+                                            venderId: _cartController
+                                                .cartMaster!.vendorId,
+                                            orderDeliveryType: () {
+                                              if (_cartController
+                                                  .diningValue) {
+                                                return 'DINING';
+                                              } else {
+                                                if (selectMethod
+                                                    .index ==
+                                                    0) {
+                                                  return "TAKEAWAY";
+                                                } else {
+                                                  return "DELIVERY";
+                                                }
+                                              }
+                                            }(),
+                                            orderDate: DateFormat(
+                                                'y-MM-dd')
+                                                .format(DateTime.now())
+                                                .toString(),
+                                            orderTime: DateFormat(
+                                                'hh:mm a')
+                                                .format(DateTime.now())
+                                                .toString(),
+                                            totalAmount: _cartController
+                                                .calculatedAmount,
+                                            addressId: 0,
+                                            orderDeliveryCharge:
+                                            "${_cartController
+                                                .deliveryCharge}",
+                                            orderStatus: "PENDING",
+                                            ordrePromoCode:
+                                            _cartController
+                                                .appliedCouponName,
+                                            vendorDiscountAmount:
+                                            _cartController
+                                                .discountAmount,
+                                            vendorDiscountId: int.parse(
+                                                _cartController
+                                                    .strAppiedPromocodeId),
+                                            strTaxAmount: _cartController
+                                                .calculatedTax
+                                                .toString(),
+                                            allTax: [],
+                                            subTotal: subTotal,
+                                            deliveryDate:
+                                            selectedDate?.toString(),
+                                            deliveryTime:
+                                            picked?.format(context),
+                                            tableNumber: _cartController
+                                                .tableNumber,
+                                            customerName: '',
+                                            customerPhone: '',
+                                          )),
+                                );
+                                print("Test");
+                              } else {
+                                Get.snackbar("Error", "Please Re-Enter Table Number");
+                              }
+                            }),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          ));
-        });
+          ),
+        ),
+      ),
+    );
+    // return FutureBuilder<BaseModel<OrderSettingModel>>(
+    //     future: callOrderSettingRef,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
+    //         print("Dining Cart SCREEN ${_cartController.cartMaster!.toMap()}");
+    //         _cartController.calculatedAmount = 0.0;
+    //         totalAmount = 0.0;
+    //
+    //         _cartController.calculatedTax = 0.0;
+    //         if (_cartController.cartMaster != null) {
+    //           for (int i = 0;
+    //               i < _cartController.cartMaster!.cart.length;
+    //               i++) {
+    //             totalAmount +=
+    //             _cartController.cartMaster!.cart[i].diningAmount!;
+    //             totalAmount = double.parse((totalAmount).toStringAsFixed(2));
+    //             _cartController.calculatedAmount = totalAmount;
+    //           }
+    //         }
+    //         if (_cartController.isPromocodeApplied) {
+    //           print("promo code applied");
+    //           if (_cartController.discountType == 'percentage') {
+    //             _cartController.discountAmount =
+    //                 totalAmount * _cartController.discount / 100;
+    //           } else {
+    //             _cartController.discountAmount =
+    //                 double.parse(_cartController.discount.toString());
+    //           }
+    //           _cartController.calculatedAmount -=
+    //               _cartController.discountAmount;
+    //           print(_cartController.discountAmount);
+    //         } else {
+    //           _cartController.discountAmount = 0.0;
+    //           _cartController.appliedCouponName = null;
+    //           _cartController.strAppiedPromocodeId = '0';
+    //         }
+    //         BaseModel<OrderSettingModel> orderSettingModel = snapshot.data!;
+    //         ///Inclusive tax
+    //         if (orderSettingModel.data?.data!.taxType == 1) {
+    //           _cartController.calculatedTax =
+    //               _cartController.calculatedAmount *
+    //                   double.parse(orderSettingModel.data!.data!.tax!) /
+    //                   100;
+    //           totalAmount -= _cartController.calculatedTax;
+    //
+    //           ///Exclusive tax
+    //         } else if (orderSettingModel.data!.data!.taxType == 2) {
+    //           _cartController.calculatedTax =
+    //               _cartController.calculatedAmount *
+    //                   double.parse(orderSettingModel.data!.data!.tax!) /
+    //                   100;
+    //           _cartController.calculatedAmount +=
+    //               _cartController.calculatedTax;
+    //         }
+    //         // if (orderSettingModel.data?.data!.taxType == 1) {
+    //         //   _cartController.calculatedTax = _cartController.calculatedAmount *
+    //         //       double.parse(orderSettingModel.data!.data!.tax!) /
+    //         //       100;
+    //         //   totalAmount -= _cartController.calculatedTax;
+    //         // }
+    //         // //2 for percentage
+    //         // else if (orderSettingModel.data!.data!.taxType == 2) {
+    //         //   _cartController.calculatedTax = _cartController.calculatedAmount *
+    //         //       double.parse(orderSettingModel.data!.data!.tax!);
+    //         //   _cartController.calculatedAmount += _cartController.calculatedTax;
+    //         // }
+    //
+    //         subTotal = totalAmount;
+    //         return Scaffold(
+    //           body: Container(
+    //             decoration: BoxDecoration(
+    //                 color: Color(Constants.colorScreenBackGround),
+    //                 image: DecorationImage(
+    //                   image: AssetImage('images/ic_background_image.png'),
+    //                   fit: BoxFit.cover,
+    //                 )),
+    //             child: SafeArea(
+    //               child: SingleChildScrollView(
+    //                 child: Column(
+    //                   children: [
+    //                     Container(
+    //                       height: 40,
+    //                       width: MediaQuery.of(context).size.width,
+    //                       child: Row(
+    //                         children: [
+    //                           SizedBox(width: 5),
+    //                           Expanded(
+    //                             child: Container(
+    //                               decoration: BoxDecoration(
+    //                                   border: Border.all(
+    //                                       color:
+    //                                           Theme.of(context).primaryColor),
+    //                                   borderRadius: BorderRadius.circular(10),
+    //                                   color: Colors.white.withOpacity(0.4)),
+    //                               child: TextField(
+    //                                 controller: nameController,
+    //                                 keyboardType: TextInputType.text,
+    //                                 decoration: InputDecoration(
+    //                                   contentPadding: EdgeInsets.symmetric(
+    //                                     horizontal: 10,
+    //                                     vertical: (40 - 15) / 2,
+    //                                   ),
+    //                                   border: InputBorder.none,
+    //                                   hintText:
+    //                                       "Enter a Name",
+    //                                   hintStyle: TextStyle(
+    //                                       color: Colors.black26,
+    //                                       fontSize: 15,
+    //                                       fontFamily: "ProximaNova"),
+    //                                 ),
+    //                                 style: TextStyle(
+    //                                     color: Colors.black, fontSize: 15),
+    //                               ),
+    //                             ),
+    //                           ),
+    //                           SizedBox(width: 10),
+    //                           Expanded(
+    //                             child: Container(
+    //                               decoration: BoxDecoration(
+    //                                   border: Border.all(
+    //                                       color:
+    //                                           Theme.of(context).primaryColor),
+    //                                   borderRadius: BorderRadius.circular(10),
+    //                                   color: Colors.white.withOpacity(0.4)),
+    //                               child: TextField(
+    //                                 controller: phoneNoController,
+    //                                 keyboardType: TextInputType.text,
+    //                                 decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.symmetric(
+    //                                       horizontal: 10,
+    //                                       vertical: (40 - 15) / 2,
+    //                                     ),
+    //                                     border: InputBorder.none,
+    //                                     hintText:
+    //                                         "Enter phone Number",
+    //                                     hintStyle: TextStyle(
+    //                                         color: Colors.black26,
+    //                                         fontSize: 15,
+    //                                         fontFamily: "ProximaNova")),
+    //                                 style: TextStyle(
+    //                                     color: Colors.black, fontSize: 15),
+    //                               ),
+    //                             ),
+    //                           ),
+    //                           SizedBox(width: 5),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     Align(
+    //                         alignment: Alignment.centerRight,
+    //                         child: TextButton(
+    //                             onPressed: () {
+    //                               nameController.clear();
+    //                               phoneNoController.clear();
+    //                               // _cartController.tableNumber = null;
+    //                               setState(() {});
+    //                             },
+    //                             child: Text('Clear'))),
+    //                     SizedBox(height: 2),
+    //                     _cartController.tableNumber == null
+    //                         ? Container()
+    //                         : Padding(
+    //                             padding: const EdgeInsets.all(16.0),
+    //                             child: Row(
+    //                               mainAxisAlignment:
+    //                                   MainAxisAlignment.spaceBetween,
+    //                               children: [
+    //                                 Text('Table Number'),
+    //                                 Container(
+    //                                     margin: EdgeInsets.only(right: 8.0),
+    //                                     child: Text(_cartController.tableNumber
+    //                                         .toString())),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                     if (picked != null &&
+    //                         selectedDate != null &&
+    //                         scheduleMethod != ScheduleMethod.DELIVERNOW)
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.center,
+    //                         children: [
+    //                           Text(DateFormat('yyyy-MM-dd hh:mm')
+    //                               .format(selectedDate!)),
+    //                           Text(picked!.format(context)),
+    //                           GestureDetector(
+    //                               onTap: () async {
+    //                                 await _selectDate(context);
+    //                                 if (selectedDate != null) {
+    //                                   await _selectTime(context);
+    //                                   if (picked != null) {
+    //                                     setState(() {});
+    //                                   } else {
+    //                                     Get.snackbar(
+    //                                         'ALERT', 'Please Select Time');
+    //                                   }
+    //                                 } else {
+    //                                   Get.snackbar(
+    //                                       'ALERT', 'Please Select Date');
+    //                                 }
+    //                               },
+    //                               child: Text("  Edit here",
+    //                                   style: TextStyle(
+    //                                       decoration: TextDecoration.underline,
+    //                                       color: Colors.blue))),
+    //                         ],
+    //                       ),
+    //
+    //                     SizedBox(
+    //                       height: ScreenConfig.blockHeight * 37,
+    //                       child: getCartData(),
+    //                     ),
+    //
+    //                     ///Coupon Widget
+    //                     // getCouponWidget(),
+    //                     SizedBox(
+    //                       height: !_cartController.isPromocodeApplied
+    //                           ? ScreenConfig.blockHeight * 22
+    //                           : ScreenConfig.blockHeight * 23,
+    //                       child: getTotalAmountWidget(orderSettingModel),
+    //                     ),
+    //                     Padding(
+    //                       padding: const EdgeInsets.only(
+    //                           left: 6.0, right: 6.0, bottom: 2.0, top: 0.0),
+    //                       child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                         children: [
+    //                           Expanded(
+    //                             child: RoundedCornerAppButton(
+    //                                 btnLabel: "Checkout",
+    //                                 onPressed: () {
+    //                                   if(_cartController.diningValue == true && _cartController.tableNumber != 0) {
+    //                                     if (scheduleMethod.index == 0) {
+    //                                       selectedDate = null;
+    //                                       picked = null;
+    //                                     }
+    //                                     print(selectedDate?.toString());
+    //                                     print(picked?.toString());
+    //                                     Navigator.push(
+    //                                       context,
+    //                                       MaterialPageRoute(
+    //                                           builder: (context) =>
+    //                                               PosPayment(
+    //                                                 notes: notesController.text,
+    //                                                 mobileNumber:
+    //                                                 phoneNoController.text,
+    //                                                 userName: nameController
+    //                                                     .text,
+    //                                                 venderId: _cartController
+    //                                                     .cartMaster!.vendorId,
+    //                                                 orderDeliveryType: () {
+    //                                                   if (_cartController
+    //                                                       .diningValue) {
+    //                                                     return 'DINING';
+    //                                                   } else {
+    //                                                     if (selectMethod
+    //                                                         .index ==
+    //                                                         0) {
+    //                                                       return "TAKEAWAY";
+    //                                                     } else {
+    //                                                       return "DELIVERY";
+    //                                                     }
+    //                                                   }
+    //                                                 }(),
+    //                                                 orderDate: DateFormat(
+    //                                                     'y-MM-dd')
+    //                                                     .format(DateTime.now())
+    //                                                     .toString(),
+    //                                                 orderTime: DateFormat(
+    //                                                     'hh:mm a')
+    //                                                     .format(DateTime.now())
+    //                                                     .toString(),
+    //                                                 totalAmount: _cartController
+    //                                                     .calculatedAmount,
+    //                                                 addressId: 0,
+    //                                                 orderDeliveryCharge:
+    //                                                 "${_cartController
+    //                                                     .deliveryCharge}",
+    //                                                 orderStatus: "PENDING",
+    //                                                 ordrePromoCode:
+    //                                                 _cartController
+    //                                                     .appliedCouponName,
+    //                                                 vendorDiscountAmount:
+    //                                                 _cartController
+    //                                                     .discountAmount,
+    //                                                 vendorDiscountId: int.parse(
+    //                                                     _cartController
+    //                                                         .strAppiedPromocodeId),
+    //                                                 strTaxAmount: _cartController
+    //                                                     .calculatedTax
+    //                                                     .toString(),
+    //                                                 allTax: [],
+    //                                                 subTotal: subTotal,
+    //                                                 deliveryDate:
+    //                                                 selectedDate?.toString(),
+    //                                                 deliveryTime:
+    //                                                 picked?.format(context),
+    //                                                 tableNumber: _cartController
+    //                                                     .tableNumber,
+    //                                                 customerName: '',
+    //                                                 customerPhone: '',
+    //                                               )),
+    //                                     );
+    //                                     print("Test");
+    //                                   } else {
+    //                                     Get.snackbar("Error", "Please Re-Enter Table Number");
+    //                                   }
+    //                                 }),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     )
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //         );
+    //       }
+    //       return Scaffold(
+    //           body: Center(
+    //         child: CircularProgressIndicator(
+    //           color: Color(Constants.colorTheme),
+    //         ),
+    //       ));
+    //     });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -596,18 +938,17 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        width: 18,
-                                        child: Text(
-                                          _cartController
-                                              .cartMaster!.cart[index].quantity
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: Constants.appFont),
-                                          textAlign: TextAlign.center,
-                                        ),
+                                      SizedBox(width: 2,),
+                                      Text(
+                                        _cartController
+                                            .cartMaster!.cart[index].quantity
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontFamily: Constants.appFont),
+                                        textAlign: TextAlign.center,
                                       ),
+                                      SizedBox(width: 2,),
                                       //increment section
                                       GestureDetector(
                                         onTap: () {
@@ -1192,7 +1533,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
     }
   }
 
-  getTotalAmountWidget(BaseModel<OrderSettingModel> orderSettingModel) {
+  getTotalAmountWidget() {
     if (_cartController.cartMaster != null ||
         _cartController.cartMaster!.cart.length > 0) {
       return Card(

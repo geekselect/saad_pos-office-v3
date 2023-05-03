@@ -1190,13 +1190,6 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   Widget build(BuildContext context) {
-    print("order main id on pos payemnet ${Constants.order_main_id}");
-    print("resturant Details...${callGetResturantDetailsRef}");
-    // _cartController.cartMaster!.cart.forEach((element) {
-    //   print("cart Details...${element.toMap()}");
-    // });
-    print("${json.encode(_cartController.cartMaster!.toMap())}");
-    print("cart Details 2...${_cartController.quantity}");
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         child: Form(
@@ -1662,7 +1655,7 @@ class _PosPaymentState extends State<PosPayment> {
                                               ? () {}
                                               : () => _updatePrice(3)),
                                     ],
-                                  )),
+                                  ),),
                               Expanded(
                                   flex: 1,
                                   child: () {
@@ -2188,10 +2181,7 @@ class _PosPaymentState extends State<PosPayment> {
                                       );
                                     }
                                   }()),
-
-                              ///COulumn
-
-                              ///
+                              ///Column
                               // SizedBox(
                               //   width: Get.width * 0.1,
                               //   child: Column(
@@ -2240,7 +2230,7 @@ class _PosPaymentState extends State<PosPayment> {
                               //     ],
                               //   ),
                               // ),
-                              ///Chenged
+                              ///Changed
                               // Align(
                               //   alignment: Alignment.topCenter,
                               //   child: SizedBox(
@@ -2255,7 +2245,6 @@ class _PosPaymentState extends State<PosPayment> {
                       SizedBox(
                         height: 30,
                       ),
-
                       //       Container(
                       //         child: Row(
                       //           children: [
@@ -2763,7 +2752,6 @@ class _PosPaymentState extends State<PosPayment> {
                               //                 : () => _updatePrice(3)),
                               //       ],
                               //     )),
-
                               ///COulumn
 
                               ///
