@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pos/model/apply_promocode_model.dart';
@@ -22,7 +23,7 @@ class CartController extends GetxController{
   CartMaster? cartMaster;
   RxBool refreshScreen=false.obs;
   List<PromoCodeListData> listPromoCode = [];
-
+  ScrollController scrollController = ScrollController();
   double discountAmount=0.0;
   RxInt taxType= 1.obs;
 
@@ -374,6 +375,13 @@ class CartController extends GetxController{
 
 
      cartMaster!.cart.add(cart);
+     SchedulerBinding.instance.addPostFrameCallback((_) {
+       scrollController.animateTo(
+         scrollController.position.maxScrollExtent,
+         duration: const Duration(milliseconds: 300),
+         curve: Curves.easeOut,
+       );
+     });
    }
    }
   void removeItem(Cart cart,int vendorId){

@@ -464,6 +464,7 @@ class _CartScreenState extends State<CartScreen> {
                   child: Text('Clear Cart'))),
           Flexible(
             child: ListView.builder(
+                controller: _cartController.scrollController,
                 physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: _cartController.cartMaster!.cart.length,
