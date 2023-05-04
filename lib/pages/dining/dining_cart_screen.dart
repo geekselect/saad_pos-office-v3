@@ -1660,7 +1660,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                 height: ScreenConfig.blockHeight,
               ),
               Container(
-                height: 30,
+                // height: 30,
                 // color: Colors.red,
                 decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).primaryColor),
@@ -1674,7 +1674,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 10,
-                        vertical: (45 - 15) / 2,
+                        // vertical: (45 - 15) / 2,
                       ),
                       border: InputBorder.none,
                       hintText: "Enter Notes",
