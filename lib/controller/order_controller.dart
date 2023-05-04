@@ -16,9 +16,11 @@ class OrderController extends GetxController {
   RxList<order.Data> orderList = <order.Data>[].obs;
 
   Future<void> getOrders(String apiName) async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     try {
       order.OrdersResponse ordersResponse;
-      Uri orderLink = Uri.parse('${Constants.vendorBaseLink}order/$apiName/${Constants.vendorId}');
+      Uri orderLink = Uri.parse('${Constants.vendorBaseLink}order/$apiName/${int.parse(vendorId.toString())}');
       print('get order link');
       print(orderLink);
       var response = await http.get(

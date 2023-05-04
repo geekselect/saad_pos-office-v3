@@ -15,7 +15,7 @@ class ApplicationToolbarWithClrBtn extends StatelessWidget with PreferredSizeWid
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
-        Get.offAll(PosMenu(isDining: false));
+        Get.offAll(()=> PosMenu(isDining: false));
       },),
       elevation: 0.0,
       title: Text(

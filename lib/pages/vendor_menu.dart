@@ -122,8 +122,11 @@ class _VendorMenuState extends State<VendorMenu>
   }
 
   Future<BookTableModel> getBookTable() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     return await RestClient(await RetroApi().dioData())
-        .getTables(Constants.vendorId);
+        .getTables(int.parse(vendorId.toString()));
   }
 
   // List<Widget> getCategoriesItemList(int index) {
@@ -580,6 +583,8 @@ class _VendorMenuState extends State<VendorMenu>
                                                                   return GestureDetector(
                                                                     onTap:
                                                                         () async {
+                                                                          final prefs = await SharedPreferences.getInstance();
+                                                                          String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
                                                                       _cartController.tableNumber = snapshot
                                                                           .data!
                                                                           .data
@@ -596,8 +601,7 @@ class _VendorMenuState extends State<VendorMenu>
                                                                                 dynamic>
                                                                             param =
                                                                             {
-                                                                          'vendor_id':
-                                                                              Constants.vendorId,
+                                                                          'vendor_id':int.parse(vendorId.toString()),
                                                                           'booked_table_number': snapshot
                                                                               .data!
                                                                               .data
@@ -767,6 +771,8 @@ class _VendorMenuState extends State<VendorMenu>
                                                         (builder, index) {
                                                       return GestureDetector(
                                                         onTap: () async {
+                                                          final prefs = await SharedPreferences.getInstance();
+                                                          String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
                                                           _cartController
                                                                   .tableNumber =
                                                               snapshot
@@ -784,9 +790,7 @@ class _VendorMenuState extends State<VendorMenu>
                                                               1) {
                                                             Map<String, dynamic>
                                                                 param = {
-                                                              'vendor_id':
-                                                                  Constants
-                                                                      .vendorId,
+                                                              'vendor_id':int.parse(vendorId.toString()),
                                                               'booked_table_number':
                                                                   snapshot
                                                                       .data!
@@ -1760,10 +1764,13 @@ class _VendorMenuState extends State<VendorMenu>
                       // }else{
                       //   print("Success is not true");
                       // }
-                      showModalBottomSheet(
+                      final prefs = await SharedPreferences.getInstance();
+
+                      String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+                       showModalBottomSheet(
                           isScrollControlled: true,
                           context: context,
-                          shape: RoundedRectangleBorder(
+                          shape:  RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(20),
                             ),
@@ -1775,7 +1782,7 @@ class _VendorMenuState extends State<VendorMenu>
                               child: HalfNHalf(
                                 category: _orderCustimizationController
                                     .response!.data!.menuCategory![index].type,
-                                vendorId: Constants.vendorId,
+                                vendorId: int.parse(vendorId.toString()),
                                 halfNHalfMenu: _orderCustimizationController
                                     .response!
                                     .data!

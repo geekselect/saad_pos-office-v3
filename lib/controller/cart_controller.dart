@@ -33,6 +33,7 @@ class CartController extends GetxController{
   String userName='';
 
   String userMobileNumber='';
+  String notes='';
 
   bool isPromocodeApplied=false;
 

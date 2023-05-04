@@ -881,7 +881,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await _orderCustimizationController.callGetRestaurantsDetails(5);
+        await _orderCustimizationController.callGetRestaurantsDetails();
         Get.off(() => PosMenu(
               isDining: _cartController.diningValue,
             ));
@@ -1349,7 +1349,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                 //         13),
                                                 //   ),
                                                 // ),
-                                                order.tableNo == 0
+                                                order.tableNo == 0 || order.tableNo == null
                                                     ? SizedBox()
                                                     : Padding(
                                                         padding:
@@ -2137,9 +2137,13 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                           : ElevatedButton(
                                                                               onPressed: () {
                                                                                 _cartController.cartMaster = CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
-                                                                                print("------${_cartController.cartMaster!.toMap()}------");
                                                                                 _cartController.cartMaster?.oldOrderId = order.id;
-                                                                                _cartController.tableNumber = order.tableNo!;
+                                                                                if(order.tableNo != null) {
+                                                                                  _cartController
+                                                                                      .tableNumber =
+                                                                                  order
+                                                                                      .tableNo!;
+                                                                                }
                                                                                 String colorCode = order.order_id.toString();
                                                                                 int colorInt = int.parse(colorCode.substring(1));
                                                                                 print("color int ${colorInt}");
@@ -2149,8 +2153,13 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                                 order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
                                                                                 order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
                                                                                 order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                                                print("_cartController.notes before ${_cartController.notes}");
+                                                                                print("order notes  before ${order.notes}");
+                                                                                order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
                                                                                 // Constants.order_main_id = order.order_id.toString()
                                                                                 print("server order id ${order.order_id.toString()}");
+                                                                                print("order notes ${order.notes}");
+                                                                                print("_cartController.notes after ${_cartController.notes}");
                                                                                 Get.to(() => PosMenu(isDining: _cartController.diningValue));
                                                                               },
                                                                               child: Text(

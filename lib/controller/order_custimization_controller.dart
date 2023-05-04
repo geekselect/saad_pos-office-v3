@@ -14,6 +14,7 @@ import 'package:pos/retrofit/api_header.dart';
 import 'package:pos/retrofit/base_model.dart';
 import 'package:pos/retrofit/server_error.dart';
 import 'package:pos/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderCustimizationController extends GetxController {
   RxString strRestaurantsName = ''.obs,
@@ -28,11 +29,12 @@ class OrderCustimizationController extends GetxController {
   List<singleVendorRetrieveSize.MenuSize> menuSizeList =
       <singleVendorRetrieveSize.MenuSize>[];
   DealsSizes? dealsSizes;
-  Future<BaseModel<SingleRestaurantsDetailsModel>> callGetRestaurantsDetails(
-      int? restaurantId) async {
+  Future<BaseModel<SingleRestaurantsDetailsModel>> callGetRestaurantsDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     try {
       response = await RestClient(await RetroApi().dioData()).singleVendor(
-        restaurantId,
+        int.parse(vendorId.toString()),
       );
       if (response!.success) {
         strRestaurantsType.value = response!.data!.vendor!.vendorType;
@@ -82,12 +84,14 @@ class OrderCustimizationController extends GetxController {
   }
 
   Future<BaseModel<singleVendorRetrieveSize.SingleVendorRetrieveSizes>>
-      getSingleVendorRetrieveSizesWithReturnValue(
-          int vendorID, halfNHalfMenuId) async {
+      getSingleVendorRetrieveSizesWithReturnValue( halfNHalfMenuId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+
     singleVendorRetrieveSize.SingleVendorRetrieveSizes response;
     try {
       response = await RestClient(await RetroApi().dioData())
-          .singleVendorRetrieveSizes(vendorID, halfNHalfMenuId);
+          .singleVendorRetrieveSizes(int.parse(vendorId.toString()), halfNHalfMenuId);
     } catch (e, stk) {
       print("Exception occurred: $e stackTrace: $stk");
       return BaseModel()..setException(ServerError.withError(error: e));

@@ -110,7 +110,6 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   void initState() {
-    print("Widget notes ${widget.notes!}");
     totalAmountController.text = widget.totalAmount.toString();
     // get();
 
@@ -126,8 +125,8 @@ class _PosPaymentState extends State<PosPayment> {
     // print("Kitchen TYPE ${kitchenPort.runtimeType}");
     // print("Delievery Type ${widget.orderDeliveryType}");
     callGetResturantDetailsRef = _orderCustimizationController
-        .callGetRestaurantsDetails(Constants.vendorId);
-    _printerController.getPrinterDetails(Constants.vendorId);
+        .callGetRestaurantsDetails();
+    _printerController.getPrinterDetails();
     _focusNode = FocusNode();
     super.initState();
   }
@@ -4315,15 +4314,11 @@ class _PosPaymentState extends State<PosPayment> {
   }
 
   Future<BaseModel<CommenRes>> placeOrder(int value) async {
-    print("test");
     CommenRes response;
     try {
       Constants.onLoading(context);
       Map<String, dynamic> body = {
-        // "order_id": Constants.order_main_id ?? '',
-        'notes': widget.notes == null || widget.notes!.isEmpty
-            ? null
-            : widget.notes.toString(),
+        'notes': widget.notes,
         'discounts': _selectedButton == -1
             ? null
             : _selectedButton == 0
@@ -4370,11 +4365,6 @@ class _PosPaymentState extends State<PosPayment> {
         Constants.toastMessage(response.data!);
         print("response id ${response.order_id}");
         print("response id type ${response.order_id.runtimeType}");
-
-        // print('Print ip pos result: ${_printerController.printerModel.value.ipPos}');
-        // print('Print ip posport result: ${_printerController.printerModel.value.portPos}');
-        // print('Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
-        // print('Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
         if (response.order_id == 0.toString()) {
           print("Number ${number.toString()}");
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -4463,7 +4453,7 @@ class _PosPaymentState extends State<PosPayment> {
             }
           }
         } else {}
-
+        widget.notes == '' ?  _cartController.notes = '' : widget.notes;
         widget.orderDeliveryType == "DINING"
             ? _cartController.diningValue = true
             : false;
@@ -4471,7 +4461,7 @@ class _PosPaymentState extends State<PosPayment> {
         _cartController.cartTotalQuantity.value = 0;
         _orderHistoryController.callGetOrderHistoryList(context);
 
-        if (value == 0 && widget.orderDeliveryType == 'DINING') {
+        if (value == 0 && widget.orderDeliveryType == 'DINING' ) {
           _cartController.userName = '';
           _cartController.userMobileNumber = '';
         }

@@ -56,12 +56,14 @@ class _CartScreenState extends State<CartScreen> {
   ScheduleMethod scheduleMethod = ScheduleMethod.DELIVERNOW;
   Future<BaseModel<OrderSettingModel>>? callOrderSettingRef;
   Future<BaseModel<StatusModel>>? statusRef;
+  ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     _cartController.diningValue = widget.isDining;
     if (_cartController.cartMaster?.oldOrderId != null) {
       nameController.text = _cartController.userName;
       phoneNoController.text = _cartController.userMobileNumber;
+      notesController.text = _cartController.notes;
     }
     if (_cartController.cartMaster != null) {
      _cartController

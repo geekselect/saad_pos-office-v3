@@ -44,7 +44,7 @@ class _HalfNHalfState extends State<HalfNHalf>  with TickerProviderStateMixin {
 
   @override
   void initState() {
-    ref=_orderCustimizationController.getSingleVendorRetrieveSizesWithReturnValue(Constants.vendorId, widget.halfNHalfMenu.id);
+    ref=_orderCustimizationController.getSingleVendorRetrieveSizesWithReturnValue(widget.halfNHalfMenu.id);
     _halfController = TabController(
         length: data.length, vsync: this);
     menu.clear();

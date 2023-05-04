@@ -12,14 +12,14 @@ import '../retrofit/api_client.dart';
 class CustomerDataController extends GetxController {
   Rx<CustomerDataModel> customerDataModel = CustomerDataModel().obs;
 
-  Future<BaseModel<CustomerDataModel>>? customerDataApiCall(
-      int vendorId) async {
+  Future<BaseModel<CustomerDataModel>>? customerDataApiCall() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.get(Constants.loginUserId);
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     CustomerDataModel response;
     try {
       response = await RestClient(await RetroApi().dioData())
-          .customerDataCall(vendorId, int.parse(id.toString()));
+          .customerDataCall(int.parse(vendorId.toString()), int.parse(id.toString()));
       print("data of reports ${response.toJson()}");
 
       customerDataModel.value = response;

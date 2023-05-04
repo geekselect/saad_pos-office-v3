@@ -56,6 +56,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   void initState() {
     nameController.text = _cartController.userName;
     phoneNoController.text = _cartController.userMobileNumber;
+    notesController.text = _cartController.notes;
     super.initState();
   }
 

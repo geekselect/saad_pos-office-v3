@@ -42,6 +42,7 @@ import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
 import 'package:pos/retrofit/server_error.dart';
 import 'package:pos/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../retrofit/base_model.dart';
 
@@ -255,13 +256,15 @@ class ReportController extends GetxController {
     posIp = box.read(Constants.posIp);
     posPort = box.read(Constants.posPort);
     callGetResturantDetailsRef = _orderCustimizationController
-        .callGetRestaurantsDetails(Constants.vendorId);
+        .callGetRestaurantsDetails();
   }
 
-  Future<BaseModel<ReportModel>>? reportsApiCall(int id) async {
+  Future<BaseModel<ReportModel>>? reportsApiCall() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     ReportModel response;
     try {
-      response = await RestClient(await RetroApi().dioData()).reportsCall(id);
+      response = await RestClient(await RetroApi().dioData()).reportsCall(int.parse(vendorId.toString()));
       print("data of reports ${response.toJson()}");
 
       reportModelData.value = response;

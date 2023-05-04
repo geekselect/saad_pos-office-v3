@@ -53,6 +53,7 @@ class _PosMenuState extends State<PosMenu> {
 
   void _reloadScreen() {
     setState(() {
+      _orderCustimizationController.callGetRestaurantsDetails();
       isLoading = true;
     });
 
@@ -70,14 +71,18 @@ class _PosMenuState extends State<PosMenu> {
   // int selectedMenuCategoryIndex = 0;
   int _selectedCategoryIndex = 0;
   bool runFirstTime = true;
-  Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
+  // Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   CartController _cartController = Get.find<CartController>();
   var _printerController = Get.put(PrinterController());
   List<SideBarGridTile> sidebarGridTileList = [];
 
+
+
   Future<BookTableModel> getBookTable() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     return await RestClient(await RetroApi().dioData())
-        .getTables(Constants.vendorId);
+        .getTables(int.parse(vendorId.toString()));
   }
 
   // int _getMenuItemCount( List<MenuCategory> _menuCategories) {
@@ -94,6 +99,7 @@ class _PosMenuState extends State<PosMenu> {
   //   }
   // }
 
+  String vendorIdMain = '';
   int _getMenuItemCount(List<MenuCategory> _menuCategories) {
     if (_selectedCategoryIndex == 0) {
       int total = 0;
@@ -130,6 +136,7 @@ class _PosMenuState extends State<PosMenu> {
 
   @override
   void initState() {
+    print("_cartController.notes Pos Menu ${_cartController.notes}");
     sidebarGridTileList = [
       SideBarGridTile(
         icon: Icons.card_travel,
@@ -149,6 +156,8 @@ class _PosMenuState extends State<PosMenu> {
         icon: Icons.table_bar,
         title: 'Table',
         onTap: () async {
+          final prefs = await SharedPreferences.getInstance();
+          String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
           bool value = true;
           if (value) {
             await Get.dialog(AlertDialog(
@@ -185,7 +194,7 @@ class _PosMenuState extends State<PosMenu> {
                                               .status ==
                                           1) {
                                         Map<String, dynamic> param = {
-                                          'vendor_id': Constants.vendorId,
+                                          'vendor_id': int.parse(vendorId.toString()),
                                           'booked_table_number': snapshot
                                               .data!
                                               .data
@@ -309,7 +318,7 @@ class _PosMenuState extends State<PosMenu> {
       ),
       SideBarGridTile(
         icon: Icons.person,
-        title: 'Customer',
+        title: 'Users',
         onTap: () {
           Get.to(() => CustomerDataScreen());
         },
@@ -342,18 +351,17 @@ class _PosMenuState extends State<PosMenu> {
     }
     print("table value after ${_cartController.tableNumber}");
 
-    callGetResturantDetailsRef = _orderCustimizationController
-        .callGetRestaurantsDetails(Constants.vendorId);
-    callGetResturantDetailsRef!.then((value) {
-    });
 
-    // callGetResturantDetailsRef!.then((value) {
-    //   List<SingleMenu> singleMenuList = value.data!.data!.menuCategory![0].singleMenu!;
-    //   setState(() {
-    //     _searchsingleMenuListList1 = singleMenuList;
-    //   });
-    // });
+    getApiCAll();
     super.initState();
+  }
+
+  getApiCAll() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    vendorIdMain = prefs.getString(Constants.vendorId.toString()) ?? '';
+    _orderCustimizationController
+        .callGetRestaurantsDetails();
   }
 
   String searchText = '';
@@ -436,7 +444,7 @@ class _PosMenuState extends State<PosMenu> {
             print("Desktop");
             return SafeArea(
               child: FutureBuilder<BaseModel<SingleRestaurantsDetailsModel>>(
-                future: callGetResturantDetailsRef,
+                future: _orderCustimizationController.callGetRestaurantsDetails(),
                 builder: (BuildContext context,
                     AsyncSnapshot<BaseModel<SingleRestaurantsDetailsModel>>
                         snapshot) {
@@ -622,10 +630,15 @@ class _PosMenuState extends State<PosMenu> {
                                                                                   itemBuilder: (builder, index) {
                                                                                     return GestureDetector(
                                                                                       onTap: () async {
+                                                                                        final prefs = await SharedPreferences.getInstance();
+
+                                                                                        // int vendorId = prefs.getInt(Constants.vendorId.toString()) ?? 0;
+                                                                                        String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+
                                                                                         _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
                                                                                         if (snapshot.data!.data.bookedTable[index].status == 1) {
                                                                                           Map<String, dynamic> param = {
-                                                                                            'vendor_id': Constants.vendorId,
+                                                                                            'vendor_id': '${int.parse(vendorId.toString())}',
                                                                                             'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
                                                                                           };
                                                                                           BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
@@ -1927,6 +1940,8 @@ class _PosMenuState extends State<PosMenu> {
                                                     ? SizedBox.shrink()
                                                     : GestureDetector(
                                                         onTap: () async {
+                                                          final prefs = await SharedPreferences.getInstance();
+                                                          String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
                                                           // TODO: && operator added
                                                           if (singleMenu!.menu!
                                                                       .price ==
@@ -2110,8 +2125,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                             .price!),
                                                                         quantity:
                                                                             1),
-                                                                    Constants
-                                                                        .vendorId,
+                                                                int.parse(vendorId.toString()),
                                                                     context);
                                                             _cartController
                                                                     .refreshScreen
@@ -2280,6 +2294,7 @@ class _PosMenuState extends State<PosMenu> {
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error.toString());
                   } else {
+                    print("Circle");
                     return Center(
                       child: CircularProgressIndicator(
                           color: Color(Constants.colorTheme)),
@@ -2292,7 +2307,7 @@ class _PosMenuState extends State<PosMenu> {
             print("Tablet");
             return SafeArea(
               child: FutureBuilder<BaseModel<SingleRestaurantsDetailsModel>>(
-                future: callGetResturantDetailsRef,
+                future: _orderCustimizationController.callGetRestaurantsDetails(),
                 builder: (BuildContext context,
                     AsyncSnapshot<BaseModel<SingleRestaurantsDetailsModel>>
                         snapshot) {
@@ -2458,10 +2473,12 @@ class _PosMenuState extends State<PosMenu> {
                                                                                   itemBuilder: (builder, index) {
                                                                                     return GestureDetector(
                                                                                       onTap: () async {
+                                                                                        final prefs = await SharedPreferences.getInstance();
+                                                                                        String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
                                                                                         _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
                                                                                         if (snapshot.data!.data.bookedTable[index].status == 1) {
                                                                                           Map<String, dynamic> param = {
-                                                                                            'vendor_id': Constants.vendorId,
+                                                                                            'vendor_id': int.parse(vendorId.toString()),
                                                                                             'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
                                                                                           };
                                                                                           BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
@@ -3551,6 +3568,8 @@ class _PosMenuState extends State<PosMenu> {
                                                     : GestureDetector(
                                                         onTap: () async {
                                                           // TODO: && operator added
+                                                          final prefs = await SharedPreferences.getInstance();
+                                                          String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
                                                           if (singleMenu!.menu!
                                                                       .price ==
                                                                   null ||
@@ -3730,8 +3749,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                             .price!),
                                                                         quantity:
                                                                             1),
-                                                                    Constants
-                                                                        .vendorId,
+                                                                   int.parse(vendorId.toString()),
                                                                     context);
                                                             _cartController
                                                                     .refreshScreen
@@ -3909,11 +3927,11 @@ class _PosMenuState extends State<PosMenu> {
             );
           } else {
             return FutureBuilder<BaseModel<SingleRestaurantsDetailsModel>>(
-                future: callGetResturantDetailsRef,
+                future: _orderCustimizationController.callGetRestaurantsDetails(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return VendorMenu(
-                      vendorId: Constants.vendorId,
+                      vendorId: int.parse(vendorIdMain.toString()),
                       isDininig: widget.isDining,
                     );
                   }
@@ -3957,6 +3975,9 @@ class _PosMenuState extends State<PosMenu> {
             return GestureDetector(
               onTap: () async {
                 // TODO: && operator added
+                final prefs = await SharedPreferences.getInstance();
+                String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+
                 if (singleMenu.price == null ||
                     singleMenu.menuAddon!.isNotEmpty) {
                   List<MenuSize> tempList = [];
@@ -4063,7 +4084,7 @@ class _PosMenuState extends State<PosMenu> {
                           size: null,
                           totalAmount: double.parse(singleMenu.price!),
                           quantity: 1),
-                      Constants.vendorId,
+                      int.parse(vendorId.toString()),
                       context);
                   _cartController.refreshScreen.value =
                       toggleBoolValue(_cartController.refreshScreen.value);
@@ -4171,7 +4192,7 @@ class _PosMenuState extends State<PosMenu> {
                               width: width * 0.5,
                               child: HalfNHalf(
                                 category: menuCategoryType,
-                                vendorId: Constants.vendorId,
+                                vendorId: int.parse(vendorIdMain.toString()),
                                 halfNHalfMenu: halfNHalfMenu,
                               ),
                             );

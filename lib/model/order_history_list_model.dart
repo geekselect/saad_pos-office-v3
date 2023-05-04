@@ -32,6 +32,7 @@ class OrderHistoryData {
   dynamic payment_type;
   dynamic user_name;
   dynamic mobile;
+  dynamic notes;
   String? amount;
   int? vendorId;
   String? orderStatus;
@@ -56,6 +57,7 @@ class OrderHistoryData {
       this.payment_type,
       this.user_name,
       this.mobile,
+      this.notes,
       this.vendorId,
       this.orderStatus,
       this.deliveryPersonId,
@@ -77,6 +79,7 @@ class OrderHistoryData {
     order_id = json['order_id'];
     user_name = json['user_name'];
     mobile = json['mobile'];
+    notes = json['notes'];
     payment_type = json['payment_type'];
     amount = json['amount'];
     vendorId = json['vendor_id'];
@@ -115,6 +118,7 @@ class OrderHistoryData {
     data['payment_type'] = this.payment_type;
     data['user_name'] = this.user_name;
     data['mobile'] = this.mobile;
+    data['notes'] = notes;
     data['amount'] = this.amount;
     data['vendor_id'] = this.vendorId;
     data['order_status'] = this.orderStatus;

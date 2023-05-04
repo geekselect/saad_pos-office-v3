@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config/Palette.dart';
 import '../../constant/app_strings.dart';
@@ -257,8 +258,10 @@ class _PrinterConfigState extends State<PrinterConfig> {
             // box.write(
             //     Constants.kitchenIp, kitchenIpEditingController.text ??= '');
             // box.write(Constants.kitchenPort, intValueKitchenPort);
+            final prefs = await SharedPreferences.getInstance();
 
-            await _printerController.updatePrinterDetails(Constants.vendorId!);
+            String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+            await _printerController.updatePrinterDetails(int.parse(vendorId.toString()));
             Get.back();
             Get.snackbar('INFORMATION', 'Successfully updated');
           },

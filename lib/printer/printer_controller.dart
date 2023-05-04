@@ -7,6 +7,7 @@ import 'package:pos/retrofit/api_header.dart';
 import 'package:pos/retrofit/base_model.dart';
 import 'package:pos/retrofit/server_error.dart';
 import 'package:pos/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PrinterController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -20,7 +21,7 @@ class PrinterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getPrinterDetails(Constants.vendorId);
+    getPrinterDetails();
   }
 
   // Future callGetRestaurantsDetails(int? vendorId) async {
@@ -39,11 +40,14 @@ class PrinterController extends GetxController {
   //   return BaseModel()..data = response;
   // }
 
-  Future<BaseModel<PrinterModel>> getPrinterDetails(int? vendorId) async {
+  Future<BaseModel<PrinterModel>> getPrinterDetails() async {
     PrinterModel response;
+    final prefs = await SharedPreferences.getInstance();
+
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     try {
       response = await RestClient(await RetroApi().dioData()).printerData(
-        vendorId,
+        int.parse(vendorId.toString()),
       );
       printerModel.value = response;
       posIpEditingController.text = printerModel.value.ipPos ?? '';

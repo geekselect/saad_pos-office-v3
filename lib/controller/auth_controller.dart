@@ -159,7 +159,7 @@ class AuthController extends GetxController {
         'email_id': email,
         'password': password,
         'provider': 'LOCAL',
-        'vendor_id': Constants.vendorId.toString(),
+        // 'vendor_id': Constants.vendorId.toString(),
         'device_token': '',
       };
       print(body);
@@ -179,6 +179,7 @@ class AuthController extends GetxController {
               Constants.loginUserId, loginModel.data!.id!.toString());
 
           sharedPreferences?.setBool(Constants.isLoggedIn, true);
+          sharedPreferences?.setString(Constants.vendorId.toString(), loginModel.data!.vendor_id!.toString());
           AuthController.sharedPreferences = sharedPreferences;
           //Constants.onLoading(context);
           // await _orderCustimizationController.callGetRestaurantsDetails(Constants.vendorId);
@@ -220,7 +221,7 @@ class AuthController extends GetxController {
         body: {
           'email_id': email,
           'password': password,
-          'vendor_id': Constants.vendorId.toString(),
+          // 'vendor_id': Constants.vendorId.toString(),
           'deviceToken': '',
         },
       );
@@ -234,6 +235,7 @@ class AuthController extends GetxController {
             Constants.vendorBearerToken, vendor.data!.token!);
         sharedPreferences!.setString(Constants.vendorName, vendor.data!.name!);
         sharedPreferences?.setBool(Constants.isKitchenLoggedIn, true);
+        sharedPreferences?.setString(Constants.vendorId.toString(), vendor.data!.id!.toString());
 
         OrderController orderController = Get.find<OrderController>();
         Constants.hideDialog(context);

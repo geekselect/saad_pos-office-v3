@@ -1463,7 +1463,7 @@ class Reports extends StatelessWidget {
 
             // Future that needs to be resolved
             // inorder to display something on the Canvas
-            future: _reportController.reportsApiCall(Constants.vendorId),
+            future: _reportController.reportsApiCall(),
           )),
     );
   }

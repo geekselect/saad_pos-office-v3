@@ -20,7 +20,7 @@ class CustomerDataScreen extends StatelessWidget {
         onBtnPress: () {},
       ),
       body: FutureBuilder<BaseModel<CustomerDataModel>>(
-        future: customerDataController.customerDataApiCall(Constants.vendorId),
+        future: customerDataController.customerDataApiCall(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // show a CircularProgressIndicator while data is being fetched
