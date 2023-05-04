@@ -60,7 +60,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Future<void> checkNewOrders() async {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
-
+    print("vendor id order screen ${vendorId}");
     DatabaseReference ref = FirebaseDatabase.instance.ref("vendor/${int.parse(vendorId.toString())}");
     ref.onChildChanged.listen((event) async {
       print("data is updated");
