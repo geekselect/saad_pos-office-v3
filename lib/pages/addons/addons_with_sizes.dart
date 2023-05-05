@@ -251,7 +251,8 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                           setState(() {
 
                           });
-                        }, btnMinusOnPressed: (){
+                        },
+                        btnMinusOnPressed: (){
                       Set set=Set();
                       double totalAmount=double.parse(widget.data[initPosition].price.toString());
                       double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
@@ -544,7 +545,7 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(menuSize.itemSize!.name!),
-              Text(menuSize.price!),
+              _cartController.diningValue == true ? Text(menuSize.sizeDiningPrice!) : Text(menuSize.price!),
             ],
           ),
         ),

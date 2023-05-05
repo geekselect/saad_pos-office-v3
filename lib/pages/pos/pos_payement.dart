@@ -35,8 +35,6 @@ class PosPayment extends StatefulWidget {
       ordrePromoCode,
       orderDeliveryType,
       strTaxAmount,
-      customerName,
-      customerPhone,
       orderDeliveryCharge;
   final String? deliveryTime;
   final String? deliveryDate;
@@ -54,8 +52,6 @@ class PosPayment extends StatefulWidget {
     this.notes,
     this.userName,
     this.mobileNumber,
-    required this.customerName,
-    required this.customerPhone,
     required this.totalAmount,
     required this.venderId,
     required this.addressId,
@@ -106,6 +102,7 @@ class _PosPaymentState extends State<PosPayment> {
       Get.find<OrderCustimizationController>();
   dynamic number;
   dynamic orderId;
+  dynamic date;
   FocusNode _focusNode = FocusNode();
 
   @override
@@ -275,11 +272,11 @@ class _PosPaymentState extends State<PosPayment> {
     printer.text("Order Id ${orderId.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
-    if (widget.customerName!.isNotEmpty && widget.customerPhone!.isNotEmpty) {
-      printer.text('Customer Name : ${widget.customerName}',
+    if (widget.userName!.isNotEmpty && widget.mobileNumber!.isNotEmpty) {
+      printer.text('Customer Name : ${widget.userName}',
           styles: PosStyles(align: PosAlign.left));
 
-      printer.text('Customer Phone No : ${widget.customerPhone}',
+      printer.text('Customer Phone No : ${widget.mobileNumber}',
           styles: PosStyles(align: PosAlign.left));
     }
 
@@ -761,11 +758,11 @@ class _PosPaymentState extends State<PosPayment> {
           linesAfter: 1);
     }
 
-    if (widget.customerName!.isNotEmpty && widget.customerPhone!.isNotEmpty) {
-      printer.text('Customer Name : ${widget.customerName}',
+    if (widget.userName!.isNotEmpty && widget.mobileNumber!.isNotEmpty) {
+      printer.text('Customer Name : ${widget.userName}',
           styles: PosStyles(align: PosAlign.left));
 
-      printer.text('Customer Phone No : ${widget.customerPhone}',
+      printer.text('Customer Phone No : ${widget.mobileNumber}',
           styles: PosStyles(align: PosAlign.left));
     }
 
@@ -4464,6 +4461,7 @@ class _PosPaymentState extends State<PosPayment> {
         if (value == 0 && widget.orderDeliveryType == 'DINING' ) {
           _cartController.userName = '';
           _cartController.userMobileNumber = '';
+          _cartController.notes = '';
         }
         // Future.delayed(Duration(seconds: 3), () {
         Get.offAll(

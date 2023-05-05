@@ -387,8 +387,6 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                             picked?.format(context),
                                             tableNumber: _cartController
                                                 .tableNumber,
-                                            customerName: '',
-                                            customerPhone: '',
                                           )),
                                 );
                                 print("Test");

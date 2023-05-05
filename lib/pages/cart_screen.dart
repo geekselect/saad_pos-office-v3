@@ -306,12 +306,6 @@ class _CartScreenState extends State<CartScreen> {
                                                   tableNumber:
                                                   _cartController
                                                       .tableNumber,
-                                                  customerName:
-                                                  nameController
-                                                      .text,
-                                                  customerPhone:
-                                                  phoneNoController
-                                                      .text,
                                                 )),
                                       );
                                     }),

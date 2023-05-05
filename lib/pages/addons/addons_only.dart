@@ -512,8 +512,6 @@ class _AddonsOnlyState extends State<AddonsOnly> {
   Widget build(BuildContext context) {
     ScreenConfig().init(context);
     set.clear();
-
-
     return Scaffold(
       body: SafeArea(
           child: SizedBox(

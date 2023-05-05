@@ -312,8 +312,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                               GestureDetector(
                                 onTap: ()async{
                                   Get.to(PosPayment(
-                                    customerPhone: widget.customerPhone,
-                                      customerName: widget.customerName,
+                                    userName: widget.customerPhone,
+                                      mobileNumber: widget.customerName,
                                       totalAmount: widget.orderAmount??0.0,
                                       venderId: widget.venderId,
                                       addressId:widget.addressId,

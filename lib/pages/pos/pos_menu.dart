@@ -2045,6 +2045,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                 .menuAddon!
                                                                 .isNotEmpty) {
                                                               print("ADDONS Only Dialog");
+
                                                               showDialog(
                                                                   context:
                                                                       context,
@@ -2199,46 +2200,50 @@ class _PosMenuState extends State<PosMenu> {
                                                                   fontSize: 17,
                                                                 ),
                                                               ),
-                                                              Text(
-                                                                "Normal ${singleMenu.menu!.price}" ??
-                                                                    "Price In Addons",
-                                                                overflow:
+                                                              singleMenu.menu!.price.toString() =='null' && singleMenu.menu!.diningPrice == null ? Text("Customizable", style: TextStyle(
+                                                                color: Theme.of(context).primaryColor
+                                                              ),) : Column(children: [
+                                                                Text(
+                                                                  "Normal ${singleMenu.menu!.price}" ??
+                                                                      "Price In Addons",
+                                                                  overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                                  maxLines: 1,
+                                                                  style:
+                                                                  const TextStyle(
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                    color: Colors
+                                                                        .red,
+                                                                    fontSize: 13,
+                                                                    overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                maxLines: 1,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontSize: 14,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              Text(
-                                                                "Dining ${singleMenu.menu!.diningPrice}" ??
-                                                                    "0.0",
-                                                                overflow:
+                                                                Text(
+                                                                  "Dining ${singleMenu.menu!.diningPrice}" ??
+                                                                      "0.0",
+                                                                  overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                                  maxLines: 1,
+                                                                  style:
+                                                                  const TextStyle(
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                    color: Colors
+                                                                        .red,
+                                                                    fontSize: 13,
+                                                                    overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                maxLines: 1,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontSize: 14,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
+                                                                  ),
                                                                 ),
-                                                              ),
+                                                              ],),
                                                               const SizedBox(
                                                                 height: 5,
                                                               )

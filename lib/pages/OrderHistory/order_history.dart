@@ -16,7 +16,6 @@ import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
-import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/common_res.dart';
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/model/vendor/common_response.dart';
@@ -34,9 +33,7 @@ import 'package:pos/screen_animation_utils/transitions.dart';
 import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../constant/app_strings.dart';
-import '../order_review_screen.dart';
-import '../vendor_menu.dart';
+import '../../model/cart_master.dart' as cart;
 
 enum FilterType { TakeAway, DineIn, None }
 
@@ -107,37 +104,19 @@ class _OrderHistoryState extends State<OrderHistory> {
     if (res == PosPrintResult.success) {
       // DEMO RECEIPT
       if (order != null) {
-        print("--------POS PRint-------");
-        print(
-            'Print ip pos result: ${_printerController.printerModel.value.ipPos}');
-        print(
-            'Print ip posport result: ${_printerController.printerModel.value.portPos}');
-        print(
-            'Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
-        print(
-            'Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
-        print("---------------");
-        print('Print ip kitchen result: ${printerIp}');
-        print('Print ip kitchenport result: ${port}');
-        print("---------------");
         printPOSReceipt(printer, order);
       } else {
         print('Failed to fetch restaurant details');
       }
-      // TEST PRINT
-      // await testReceipt(printer);
       printer.disconnect();
     }
-
-    // final snackBar =
-    //     SnackBar(content: Text(res.msg, textAlign: TextAlign.center));
-    // ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
   }
 
   printPOSReceipt(
     NetworkPrinter printer,
     OrderHistoryData order,
   ) {
+    print("order print ${order.toJson()}");
     // // Print image
     // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -162,17 +141,17 @@ class _OrderHistoryState extends State<OrderHistory> {
     printer.text("Order Id ${order.order_id.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
-    if (order.user!.name.isNotEmpty && order.user!.phone.isNotEmpty) {
-      printer.text('Customer Name : ${order.user!.name}',
+    if (order.user_name.isNotEmpty && order.mobile.isNotEmpty) {
+      printer.text('Customer Name : ${order.user_name}',
           styles: PosStyles(align: PosAlign.left));
 
-      printer.text('Customer Phone No : ${order.user!.phone}',
+      printer.text('Customer Phone No : ${order.mobile}',
           styles: PosStyles(align: PosAlign.left));
     }
 
     // printer.text('${order.time} ${widget.orderTime}',
     //     styles: PosStyles(align: PosAlign.left));
-    printer.text('${order.time}', styles: PosStyles(align: PosAlign.left));
+    printer.text('${order.date} ${order.time}', styles: PosStyles(align: PosAlign.left));
 
     // printer.text('Customer Name : ${restaurantDetails.data!.data!.vendor!.name}',
     //     styles: PosStyles(align: PosAlign.center));
@@ -209,6 +188,9 @@ class _OrderHistoryState extends State<OrderHistory> {
     Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
     OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
     for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
+      String category = orderData.cart![itemIndex].category!;
+      cart.MenuCategoryCartMaster? menuCategory = orderData.cart![itemIndex].menuCategory;
+      List<Menu> menu = orderData.cart![itemIndex].menu!;
       var price;
       if(order.deliveryType == 'DINING') {
         price =  orderData.cart![
@@ -219,17 +201,75 @@ class _OrderHistoryState extends State<OrderHistory> {
         itemIndex]
             .totalAmount;
       }
-      printer.row([
-        PosColumn(text: orderData.cart![itemIndex].quantity.toString(), width: 1),
-        PosColumn(
-          text: orderData.cart![itemIndex].menu!.first.name.toString(),
-          width: 9,
-        ),
-        PosColumn(
-            text: price.toString(),
-            width: 2,
-            styles: PosStyles(align: PosAlign.right)),
-      ]);
+
+      if (category == 'SINGLE') {
+       Cart cartItem = orderData.cart![itemIndex];
+        // printer.row([
+        //   PosColumn(
+        //       text: "-SINGLE-",
+        //       width: 12,
+        //       styles: PosStyles(
+        //           width: PosTextSize.size1,
+        //           height: PosTextSize.size1,
+        //           align: PosAlign.center))
+        // ]);
+
+        // var price;
+        // if(_cartController.diningValue) {
+        //   price =  cart[
+        //   itemIndex]
+        //       .diningAmount;
+        // } else {
+        //   price =  cart[
+        //   itemIndex]
+        //       .totalAmount;
+        // }
+
+        for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+          Menu menuItem = menu[menuIndex];
+            printer.row([
+              PosColumn(text: orderData.cart![itemIndex].quantity.toString(), width: 1),
+              PosColumn(
+                text: orderData.cart![itemIndex].menu!.first.name.toString() +
+                    (orderData.cart![itemIndex].size != null
+                        ? '(${orderData.cart![itemIndex].size['size_name']})'
+                        : ''),
+                width: 9,
+              ),
+              PosColumn(
+                  text: price.toString(),
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          for (int addonIndex = 0;
+          addonIndex < menuItem.addons!.length;
+          addonIndex++) {
+            Addon addonItem = menuItem.addons![addonIndex];
+            if (addonIndex == 0) {
+              printer.row([
+                PosColumn(
+                    text: "-ADDONS-",
+                    width: 12,
+                    styles: PosStyles(
+                        width: PosTextSize.size1,
+                        height: PosTextSize.size1,
+                        align: PosAlign.center))
+              ]);
+            }
+            printer.row([
+              PosColumn(text: '', width: 1),
+              PosColumn(text: addonItem.name, width: 9),
+              // PosColumn(
+              // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+              PosColumn(
+                  text: addonItem.price.toString(),
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          }
+        }
+      }
+
 
       ///Addons
       // for (int addonIndex = 0; addonIndex < order; addonIndex++) {
@@ -537,6 +577,16 @@ class _OrderHistoryState extends State<OrderHistory> {
           )),
     ]);
 
+    printer.hr();
+
+    if (order.notes != null ||
+        order.notes.isNotEmpty ||
+        order.notes != '') {
+      printer.text(
+        "Instructions: ${order.notes}",
+      );
+    }
+
     printer.hr(ch: '=', linesAfter: 1);
 
     printer.feed(2);
@@ -620,6 +670,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   Future<void> _getOrders() async {
     orderHistoryRef = _orderHistoryController.refreshOrderHistory(context);
     final value = await orderHistoryRef;
+
     if (value!.data!.data!.isNotEmpty) {
       setState(() {
         _totalOrders.addAll(value.data!.data!);
@@ -2136,7 +2187,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                           ? Container()
                                                                           : ElevatedButton(
                                                                               onPressed: () {
-                                                                                _cartController.cartMaster = CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                                                _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
                                                                                 _cartController.cartMaster?.oldOrderId = order.id;
                                                                                 if(order.tableNo != null) {
                                                                                   _cartController
@@ -2364,7 +2415,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                           : Expanded(
                                                                               child: ElevatedButton(
                                                                                 onPressed: () {
-                                                                                  _cartController.cartMaster = CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                                                  _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
                                                                                   _cartController.cartMaster?.oldOrderId = order.id;
                                                                                   _cartController.tableNumber = order.tableNo!;
                                                                                   String colorCode = order.order_id.toString();

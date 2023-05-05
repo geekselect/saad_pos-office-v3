@@ -218,7 +218,7 @@ class Menu {
   String? image;
   double? totalAmount;
   dynamic diningAmount;
-  List<dynamic>? addons;
+  List<Addon>? addons;
   dynamic dealsItems;
 
   Menu({
@@ -237,7 +237,7 @@ class Menu {
     image: json["image"],
     totalAmount: json["total_amount"]?.toDouble(),
     diningAmount: json["dining_amount"],
-    addons: json["addons"] == null ? [] : List<dynamic>.from(json["addons"]!.map((x) => x)),
+    addons: json["addons"] == null ? [] : List<Addon>.from(json["addons"]!.map((x) => Addon.fromMap(x))),
     dealsItems: json["deals_items"],
   );
 
@@ -249,6 +249,77 @@ class Menu {
     "dining_amount": diningAmount,
     "addons": addons == null ? [] : List<dynamic>.from(addons!.map((x) => x)),
     "deals_items": dealsItems,
+  };
+}
+
+class Addon {
+  Addon({
+    required this.id,
+    required this.name,
+    required this.price,
+    this.diningPrice,
+  });
+
+  int id;
+  String name;
+  dynamic price;
+  dynamic diningPrice;
+
+  factory Addon.fromMap(Map<String, dynamic> json) => Addon(
+    id: json["id"],
+    name: json["name"],
+    price: json["price"],
+    diningPrice: json['dining_price'],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "id": id,
+    "name": name ,
+    "price":price,
+    'dining_price':diningPrice,
+  };
+}
+
+class Size {
+  Size({
+    required this.id,
+    required this.sizeName,
+  });
+
+  int id;
+  String sizeName;
+
+  factory Size.fromMap(Map<String, dynamic> json) => Size(
+    id: json["id"],
+    sizeName: json["size_name"] == null ? null : json["size_name"],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "id": id,
+    "size_name": sizeName,
+  };
+}
+class MenuCategory {
+  MenuCategory({
+    required this.name,
+    required this.image,
+    required this.id,
+  });
+
+  String name;
+  String image;
+  int id;
+
+  factory MenuCategory.fromMap(Map<String, dynamic> json) => MenuCategory(
+    name: json["name"],
+    image: json["image"],
+    id: json["id"],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "name": name,
+    "image": image,
+    "id": id,
   };
 }
 
