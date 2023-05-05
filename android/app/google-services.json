@@ -84,7 +84,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:502253922422:android:df634604fab4dd13701757",
         "android_client_info": {
-          "package_name": "com.ozpos.pospos"
+          "package_name": "com.ozpos.posgeeks"
         }
       },
       "oauth_client": [
@@ -92,7 +92,7 @@
           "client_id": "502253922422-l2njv18ugdp96feh6vsvicqvn0igg5il.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ozpos.pospos",
+            "package_name": "com.ozpos.posgeeks",
             "certificate_hash": "670ebe90f1f74f1571ab47fa709951933fedd566"
           }
         },

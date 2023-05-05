@@ -1,4 +1,4 @@
-package com.ozpos.pospos;
+package com.ozpos.posgeeks;
 
 import io.flutter.embedding.android.FlutterActivity;
 
