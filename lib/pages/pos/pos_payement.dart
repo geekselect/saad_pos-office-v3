@@ -87,6 +87,8 @@ class _PosPaymentState extends State<PosPayment> {
       Get.find<OrderHistoryController>();
   PrinterController _printerController = Get.find<PrinterController>();
 
+
+
   // String? kitchenIp;
   // int? kitchenPort;
   // String? posIp;
@@ -101,6 +103,7 @@ class _PosPaymentState extends State<PosPayment> {
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
   dynamic number;
+  dynamic discount = 0;
   dynamic orderId;
   dynamic date;
   FocusNode _focusNode = FocusNode();
@@ -1083,6 +1086,7 @@ class _PosPaymentState extends State<PosPayment> {
         _selectedButton = -1;
         // Restore original total price and clear text field
         totalAmountController.text = widget.totalAmount.toStringAsFixed(2);
+        discount = 0;
       } else {
         if (_selectedButton != -1 && _selectedButton != 3) {
           // Subtract the previous discount from original total price
@@ -1091,6 +1095,8 @@ class _PosPaymentState extends State<PosPayment> {
           // Save the discounted total as the new original total price
           widget.totalAmount = discountedTotal;
           totalAmountController.text = widget.totalAmount.toStringAsFixed(2);
+
+
         } else {
           // Save the original total price
           widget.totalAmount = double.parse(totalAmountController.text);
@@ -1100,6 +1106,7 @@ class _PosPaymentState extends State<PosPayment> {
         double discountedPrice = widget.totalAmount -
             (widget.totalAmount * getDiscountPercentage(_selectedButton));
         totalAmountController.text = discountedPrice.toStringAsFixed(2);
+        discount = widget.totalAmount * getDiscountPercentage(_selectedButton);
       }
     });
   }
@@ -1295,11 +1302,11 @@ class _PosPaymentState extends State<PosPayment> {
                                 onChanged: (String? val) {
                                   calculateChanged();
                                 },
-                                validator: (String? value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please Enter Amount';
-                                  }
-                                },
+                                // validator: (String? value) {
+                                //   // if (value!.isEmpty) {
+                                //   //   return 'Please Enter Amount';
+                                //   // }
+                                // },
                                 focusNode: _focusNode,
                                 controller: receivedController,
                               ),
@@ -2392,11 +2399,11 @@ class _PosPaymentState extends State<PosPayment> {
                                 onChanged: (String? val) {
                                   calculateChanged();
                                 },
-                                validator: (String? value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please Enter Amount';
-                                  }
-                                },
+                                // validator: (String? value) {
+                                //   if (value!.isEmpty) {
+                                //     return 'Please Enter Amount';
+                                //   }
+                                // },
                                 focusNode: _focusNode,
                                 controller: receivedController,
                               ),
@@ -4319,11 +4326,11 @@ class _PosPaymentState extends State<PosPayment> {
         'discounts': _selectedButton == -1
             ? null
             : _selectedButton == 0
-                ? 5
+                ? discount
                 : _selectedButton == 1
-                    ? 10
+                    ? discount
                     : _selectedButton == 2
-                        ? 15
+                        ? discount
                         : null,
         'vendor_id': widget.venderId.toString(),
         'date': widget.orderDate,

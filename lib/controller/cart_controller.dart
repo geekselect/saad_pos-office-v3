@@ -17,6 +17,7 @@ import 'package:pos/retrofit/server_error.dart';
 // import 'package:pos/screen_animation_utils/transitions.dart';
 // import 'package:pos/screens/bottom_navigation/dashboard_screen.dart';
 import 'package:pos/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screen_animation_utils/transitions.dart';
 class CartController extends GetxController{
@@ -25,7 +26,7 @@ class CartController extends GetxController{
   List<PromoCodeListData> listPromoCode = [];
   ScrollController scrollController = ScrollController();
   double discountAmount=0.0;
-  RxInt taxType= 1.obs;
+  int taxType= 0;
 
   String appliedCouponPercentage='';
 
@@ -44,7 +45,7 @@ class CartController extends GetxController{
   RxInt quantity=0.obs;
   String? discountType;
   int discount=0;
-  double calculatedTax=0.0;
+  double calculatedTax = 0.0;
   double calculatedAmount=0.0;
   OrderSettingModel? orderSettingModel;
   double deliveryCharge=0.0;
@@ -52,6 +53,8 @@ class CartController extends GetxController{
   RxInt cartTotalQuantity=0.obs;
   bool diningValue = false;
   int? tableNumber;
+  @override
+
   bool checkMenuExistInCart(String menuCategory,int menuId){
     if (cartMaster!=null) {
       for (Cart cart in cartMaster!.cart){
@@ -163,9 +166,11 @@ class CartController extends GetxController{
     }
     return BaseModel()..data = response;
   }
-  Future<BaseModel<OrderSettingModel>> callOrderSetting(int id) async {
+  Future<BaseModel<OrderSettingModel>> callOrderSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     try {
-      orderSettingModel = await RestClient(await RetroApi().dioData()).orderSetting(id);
+      orderSettingModel = await RestClient(await RetroApi().dioData()).orderSetting(int.parse(vendorId));
       if (orderSettingModel!.success!) {
 
       } else {
@@ -260,6 +265,7 @@ class CartController extends GetxController{
     // calculatedAmount-=discountAmount;
     //totalPrice = totalPrice - discountAmount;
   }
+
   void addItem(Cart cart,int vendorId,BuildContext context)async{
    if(cartMaster==null){
      print("cartMaster null");

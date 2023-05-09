@@ -65,7 +65,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
     _cartController.calculatedAmount = 0.0;
     totalAmount = 0.0;
 
-    _cartController.calculatedTax = 0.0;
+    // _cartController.calculatedTax = 0.0;
     if (_cartController.cartMaster != null) {
       for (int i = 0;
       i < _cartController.cartMaster!.cart.length;
@@ -93,18 +93,18 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
       _cartController.appliedCouponName = null;
       _cartController.strAppiedPromocodeId = '0';
     }
-    if (_cartController.taxType.value == 1) {
+    if (_cartController.taxType == 1) {
       _cartController.calculatedTax =
           _cartController.calculatedAmount *
-              double.parse(_cartController.taxType.value.toString()) /
+              double.parse(_cartController.taxType.toString()) /
               100;
       totalAmount -= _cartController.calculatedTax;
 
       ///Exclusive tax
-    } else if (_cartController.taxType.value == 2) {
+    } else if (_cartController.taxType == 2) {
       _cartController.calculatedTax =
           _cartController.calculatedAmount *
-              double.parse(_cartController.taxType.value.toString()) /
+              double.parse(_cartController.taxType.toString()) /
               100;
       _cartController.calculatedAmount +=
           _cartController.calculatedTax;

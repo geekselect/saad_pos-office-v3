@@ -65,15 +65,18 @@ class _CartScreenState extends State<CartScreen> {
       phoneNoController.text = _cartController.userMobileNumber;
       notesController.text = _cartController.notes;
     }
-    if (_cartController.cartMaster != null) {
+    // if (_cartController.cartMaster != null) {
      _cartController
-          .callOrderSetting(_cartController.cartMaster!.vendorId).then((value) {
-       _cartController.taxType.value = value.data?.data!.taxType ?? 1;
+          .callOrderSetting().then((value) {
+       _cartController.taxType = value.data!.data!.taxType!;
+       _cartController.calculatedTax = double.parse( value.data!.data!.tax!.toString());
+       print("tex ${_cartController.calculatedTax}");
+       print("tex type ${_cartController.taxType}");
      });
       statusRef = _orderCustimizationController
-          .status(_cartController.cartMaster!.vendorId);
+          .status();
 
-    }
+    // }
     super.initState();
   }
 
@@ -81,13 +84,10 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     _cartController.calculatedAmount = 0.0;
     totalAmount = 0.0;
-
-    _cartController.calculatedTax = 0.0;
     if (_cartController.cartMaster != null) {
       for (int i = 0;
       i < _cartController.cartMaster!.cart.length;
       i++) {
-
         totalAmount +=
             _cartController.cartMaster!.cart[i].totalAmount;
         totalAmount =
@@ -111,21 +111,31 @@ class _CartScreenState extends State<CartScreen> {
       _cartController.appliedCouponName = null;
       _cartController.strAppiedPromocodeId = '0';
     }
-    if (_cartController.taxType.value == 1) {
-      _cartController.calculatedTax =
-          _cartController.calculatedAmount *
-              double.parse(_cartController.taxType.value.toString()) /
-              100;
-      totalAmount -= _cartController.calculatedTax;
+    if (_cartController.taxType != 1) {
+      double taxAmount =   ((totalAmount - _cartController.discount) * (_cartController.calculatedTax / 100));
+      _cartController.calculatedAmount = totalAmount + taxAmount;
+      // _cartController.calculatedAmount = totalAmount;
+
+      // double discountedTotal = double.parse(totalAmountController.text) -
+      //     discountAmount;
+      // _cartController.calculatedTax =
+      //     _cartController.calculatedAmount *
+      //         double.parse(_cartController.taxType.toString()) /
+      //         100;
+      // totalAmount -= _cartController.calculatedTax;
 
       ///Exclusive tax
-    } else if (_cartController.taxType.value == 2) {
-      _cartController.calculatedTax =
-          _cartController.calculatedAmount *
-              double.parse(_cartController.taxType.value.toString()) /
-              100;
-      _cartController.calculatedAmount +=
-          _cartController.calculatedTax;
+    } else  {
+      double taxAmount =  (totalAmount - _cartController.discount) - ((totalAmount) - (_cartController.discount) / (1+ (_cartController.calculatedTax / 100)));
+      _cartController.calculatedAmount = totalAmount + taxAmount;
+      var subTotalAmount = ((totalAmount - _cartController.discount) / (1+ (_cartController.calculatedTax / 100)));
+      totalAmount = subTotalAmount;
+      // _cartController.calculatedTax =
+      //     _cartController.calculatedAmount *
+      //         double.parse(_cartController.taxType.toString()) /
+      //         100;
+      // _cartController.calculatedAmount +=
+      //     _cartController.calculatedTax;
     }
     subTotal = totalAmount;
     ScreenConfig().init(context);
@@ -368,16 +378,7 @@ class _CartScreenState extends State<CartScreen> {
       return Column(
         children: [
           // selectMethod == DeliveryMethod.TAKEAWAY?
-          Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () {
-                    nameController.clear();
-                    phoneNoController.clear();
-                    // _cartController.tableNumber = null;
-                    setState(() {});
-                  },
-                  child: Text('Clear'))),
+
           SizedBox(height: 2),
           Container(
             height: 40,
@@ -444,18 +445,43 @@ class _CartScreenState extends State<CartScreen> {
           ),
           // : SizedBox(),
           Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () {
-                    _cartController.cartMaster?.cart.clear();
-                    _cartController.userName = '';
-                    _cartController.userMobileNumber = '';
-                    nameController.clear();
-                    phoneNoController.clear();
-                    // _cartController.tableNumber = null;
-                    setState(() {});
-                  },
-                  child: Text('Clear Cart'))),
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      nameController.clear();
+                      phoneNoController.clear();
+                      // _cartController.tableNumber = null;
+                      setState(() {});
+                    },
+                    child: Text('Clear Name'),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      _cartController.cartMaster?.cart.clear();
+                      _cartController.userName = '';
+                      _cartController.userMobileNumber = '';
+                      nameController.clear();
+                      phoneNoController.clear();
+                      // _cartController.tableNumber = null;
+                      setState(() {});
+                    },
+                    child: Text('Clear Cart'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+
+
           Flexible(
             child: ListView.builder(
                 controller: _cartController.scrollController,

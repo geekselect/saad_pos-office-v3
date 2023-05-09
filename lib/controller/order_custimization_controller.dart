@@ -54,11 +54,13 @@ class OrderCustimizationController extends GetxController {
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<StatusModel>> status(int? vendorId) async {
+  Future<BaseModel<StatusModel>> status() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     StatusModel? response;
     try {
       response = await RestClient(await RetroApi().dioData()).status(
-        vendorId,
+        int.parse(vendorId),
       );
       if (response.success) {
         return BaseModel()..data = response;

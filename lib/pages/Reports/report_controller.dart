@@ -340,19 +340,19 @@ class ReportController extends GetxController {
     //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
     printer.hr();
     printer.row([
-      PosColumn(text: 'Sold Item Names', width: 9),
+      PosColumn(text: 'Sold Item Names', width: 7),
       PosColumn(
           text: 'Total Quantity',
-          width: 3,
+          width: 5,
           styles: PosStyles(align: PosAlign.right)),
     ]);
     for (int index = 0; index < reportModelData.value.orders!.length; index++) {
       Order reportDetailOrderModel = reportModelData.value.orders![index];
       printer.row([
-        PosColumn(text: reportDetailOrderModel.itemName.toString(), width: 4),
+        PosColumn(text: reportDetailOrderModel.itemName.toString(), width: 10),
         PosColumn(
             text: reportDetailOrderModel.quantity.toString(),
-            width: 8,
+            width: 2,
             styles: PosStyles(align: PosAlign.right)),
       ]);
     }
@@ -447,6 +447,13 @@ class ReportController extends GetxController {
       PosColumn(text: 'Todays Total Dining', width: 8),
       PosColumn(
           text: reportModelData.value.todaysTotalDining.toString(),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+    printer.row([
+      PosColumn(text: 'Todays Total Discounts', width: 8),
+      PosColumn(
+          text: reportModelData.value.todaysTotalDiscounts!.toStringAsFixed(2),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);

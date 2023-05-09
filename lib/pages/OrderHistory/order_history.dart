@@ -141,7 +141,7 @@ class _OrderHistoryState extends State<OrderHistory> {
     printer.text("Order Id ${order.order_id.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
-    if (order.user_name.isNotEmpty && order.mobile.isNotEmpty) {
+    if (order.user_name != null  && order.mobile != null) {
       printer.text('Customer Name : ${order.user_name}',
           styles: PosStyles(align: PosAlign.left));
 
@@ -579,9 +579,627 @@ class _OrderHistoryState extends State<OrderHistory> {
 
     printer.hr();
 
-    if (order.notes != null ||
-        order.notes.isNotEmpty ||
-        order.notes != '') {
+
+    if (order.notes != null) {
+      printer.text(
+        "Instructions: ${order.notes}",
+      );
+    }
+
+    printer.hr(ch: '=', linesAfter: 1);
+
+    printer.feed(2);
+    printer.text('Thank you!',
+        styles: PosStyles(align: PosAlign.center, bold: true));
+
+    // Print QR Code from image
+    // try {
+    //   const String qrData = 'example.com';
+    //   const double qrSize = 200;
+    //   final uiImg = await QrPainter(
+    //     data: qrData,
+    //     version: QrVersions.auto,
+    //     gapless: false,
+    //   ).toImageData(qrSize);
+    //   final dir = await getTemporaryDirectory();
+    //   final pathName = '${dir.path}/qr_tmp.png';
+    //   final qrFile = File(pathName);
+    //   final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
+    //   final img = decodeImage(imgFile.readAsBytesSync());
+
+    //   printer.image(img);
+    // } catch (e) {
+    //   print(e);
+    // }
+
+    // Print QR Code using native function
+    // printer.qrcode('example.com');
+
+    printer.feed(1);
+    printer.cut();
+    printer.beep();
+  }
+
+  void testPrintKitchen(String printerIp, int port, BuildContext ctx,
+      OrderHistoryData order) async {
+    // TODO Don't forget to choose printer's paper size
+    const PaperSize paper = PaperSize.mm80;
+    final profile = await CapabilityProfile.load();
+    final printer = NetworkPrinter(paper, profile);
+    final PosPrintResult res = await printer.connect(
+      printerIp,
+      port: port,
+    );
+    Get.snackbar("", res.msg);
+
+    if (res == PosPrintResult.success) {
+      // DEMO RECEIPT
+      printKitchenReceipt(printer, order);
+
+      printer.disconnect();
+    } else {
+      print("--------NO-------");
+      print("--------$printerIp-------");
+      print("--------$port-------");
+    }
+  }
+
+  printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order) {
+    Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
+    OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
+    List<Cart> cart = orderData.cart!;
+
+    printer.text("*** Kitchen ***",
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    if (order.tableNo != null && order.tableNo != 0) {
+      printer.text('Table Number : ${order.tableNo}',
+          styles: PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ),
+          linesAfter: 1);
+    }
+
+    printer.text("Order Id ${order.order_id.toString()}",
+        styles: PosStyles(align: PosAlign.left));
+
+    if (order.user_name != null  && order.mobile != null) {
+      printer.text('Customer Name : ${order.user_name}',
+          styles: PosStyles(align: PosAlign.left));
+
+      printer.text('Customer Phone No : ${order.mobile}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('${order.date} ${order.time}', styles: PosStyles(align: PosAlign.left));
+
+    if (order.payment_type.toString() == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : INCOMPLETE PAYMENT',
+          styles: PosStyles(align: PosAlign.left));
+    } else {
+      printer.text('Payment Status : ${order.payment_type.toString()}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+
+    printer.text('Order Type :  ${order.deliveryType.toString()}',
+        styles: PosStyles(align: PosAlign.left));
+
+    printer.hr();
+    printer.row([
+      PosColumn(text: 'Qty', width: 2),
+      PosColumn(text: 'Item', width: 10),
+    ]);
+    for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
+      String category = orderData.cart![itemIndex].category!;
+      List<Menu> menu = orderData.cart![itemIndex].menu!;
+
+      if (category == 'SINGLE') {
+        Cart cartItem = orderData.cart![itemIndex];
+        // printer.row([
+        //   PosColumn(
+        //       text: "-SINGLE-",
+        //       width: 12,
+        //       styles: PosStyles(
+        //           width: PosTextSize.size1,
+        //           height: PosTextSize.size1,
+        //           align: PosAlign.center))
+        // ]);
+
+        // var price;
+        // if(_cartController.diningValue) {
+        //   price =  cart[
+        //   itemIndex]
+        //       .diningAmount;
+        // } else {
+        //   price =  cart[
+        //   itemIndex]
+        //       .totalAmount;
+        // }
+
+        for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+          Menu menuItem = menu[menuIndex];
+          printer.row([
+            PosColumn(text: orderData.cart![itemIndex].quantity.toString(), width: 2),
+            PosColumn(
+              text: orderData.cart![itemIndex].menu!.first.name.toString() +
+                  (orderData.cart![itemIndex].size != null
+                      ? '(${orderData.cart![itemIndex].size['size_name']})'
+                      : ''),
+              width: 10,
+            ),
+          ]);
+          for (int addonIndex = 0;
+          addonIndex < menuItem.addons!.length;
+          addonIndex++) {
+            Addon addonItem = menuItem.addons![addonIndex];
+            if (addonIndex == 0) {
+              printer.row([
+                PosColumn(
+                    text: "-ADDONS-",
+                    width: 12,
+                    styles: PosStyles(
+                        width: PosTextSize.size1,
+                        height: PosTextSize.size1,
+                        align: PosAlign.center))
+              ]);
+            }
+            printer.row([
+              PosColumn(text: '', width: 2),
+              PosColumn(text: addonItem.name, width: 10),
+            ]);
+          }
+        }
+      }
+
+
+      ///Addons
+      // for (int addonIndex = 0; addonIndex < order; addonIndex++) {
+      //   AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //   if (addonIndex == 0) {
+      //     printer.row([
+      //       PosColumn(
+      //           text: "-ADDONS-",
+      //           width: 12,
+      //           styles: PosStyles(
+      //               width: PosTextSize.size1,
+      //               height: PosTextSize.size1,
+      //               align: PosAlign.center))
+      //     ]);
+      //   }
+      //   printer.row([
+      //     PosColumn(text: '', width: 1),
+      //     PosColumn(text: addonItem.name, width: 9),
+      //     // PosColumn(
+      //     // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     PosColumn(
+      //         text: addonItem.price.toString(),
+      //         width: 2,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      // }
+
+      ///Chening deals and half and half
+      //if (category == 'SINGLE') {
+      //         Cart cartItem = cart[itemIndex];
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-SINGLE-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //
+      //         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //           MenuCartMaster menuItem = menu[menuIndex];
+      //           printer.row([
+      //             PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //             PosColumn(
+      //               text: menu[menuIndex].name +
+      //                   (cart[itemIndex].size != null
+      //                       ? '(${cart[itemIndex].size?.sizeName})'
+      //                       : ''),
+      //               width: 9,
+      //             ),
+      //             PosColumn(
+      //                 text: cartItem.totalAmount.toString(),
+      //                 width: 2,
+      //                 styles: PosStyles(align: PosAlign.right)),
+      //           ]);
+      //           for (int addonIndex = 0;
+      //               addonIndex < menuItem.addons.length;
+      //               addonIndex++) {
+      //             AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //             if (addonIndex == 0) {
+      //               printer.row([
+      //                 PosColumn(
+      //                     text: "-ADDONS-",
+      //                     width: 12,
+      //                     styles: PosStyles(
+      //                         width: PosTextSize.size1,
+      //                         height: PosTextSize.size1,
+      //                         align: PosAlign.center))
+      //               ]);
+      //             }
+      //             printer.row([
+      //               PosColumn(text: '', width: 1),
+      //               PosColumn(text: addonItem.name, width: 9),
+      //               // PosColumn(
+      //               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //               PosColumn(
+      //                   text: addonItem.price.toString(),
+      //                   width: 2,
+      //                   styles: PosStyles(align: PosAlign.right)),
+      //             ]);
+      //           }
+      //         }
+      //       } else if (category == 'HALF_N_HALF') {
+      //         Cart cartItem = cart[itemIndex];
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-HALF & HALF-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //         printer.row([
+      //           PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //           PosColumn(
+      //               text: menuCategory!.name +
+      //                   (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //               width: 9,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1, height: PosTextSize.size1)),
+      //           // PosColumn(
+      //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //           PosColumn(
+      //               text: cartItem.totalAmount.toString(),
+      //               width: 2,
+      //               styles: PosStyles(align: PosAlign.right)),
+      //         ]);
+      //
+      //         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //           MenuCartMaster menuItem = menu[menuIndex];
+      //           printer.row([
+      //             PosColumn(
+      //                 text: ' ${menuIndex == 0 ? '-1st Half-' : "-2nd Half-"}',
+      //                 width: 12,
+      //                 styles: PosStyles(
+      //                     width: PosTextSize.size1,
+      //                     height: PosTextSize.size1,
+      //                     align: PosAlign.center))
+      //           ]);
+      //           printer.row([
+      //             PosColumn(text: '', width: 1),
+      //             PosColumn(text: menuItem.name + '', width: 9),
+      //             // PosColumn(
+      //             // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //             PosColumn(
+      //                 text: '', width: 2, styles: PosStyles(align: PosAlign.right)),
+      //           ]);
+      //
+      //           for (int addonIndex = 0;
+      //               addonIndex < menuItem.addons.length;
+      //               addonIndex++) {
+      //             AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //             if (addonIndex == 0) {
+      //               printer.row([
+      //                 PosColumn(
+      //                     text: "-ADDONS-",
+      //                     width: 12,
+      //                     styles: PosStyles(
+      //                         width: PosTextSize.size1,
+      //                         height: PosTextSize.size1,
+      //                         align: PosAlign.center))
+      //               ]);
+      //             }
+      //             printer.row([
+      //               PosColumn(text: '', width: 1),
+      //               PosColumn(text: addonItem.name, width: 9),
+      //               // PosColumn(
+      //               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //               PosColumn(
+      //                   text: addonItem.price.toString(),
+      //                   width: 2,
+      //                   styles: PosStyles(align: PosAlign.right)),
+      //             ]);
+      //           }
+      //         }
+      //       } else if (category == 'DEALS') {
+      //         Cart cartItem = cart[itemIndex];
+      //
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-DEALS-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //         printer.row([
+      //           PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //           PosColumn(
+      //               text: menuCategory!.name +
+      //                   (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //               width: 9,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1, height: PosTextSize.size1)),
+      //           // PosColumn(
+      //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //           PosColumn(
+      //               text: cartItem.totalAmount.toString(),
+      //               width: 2,
+      //               styles: PosStyles(align: PosAlign.right)),
+      //         ]);
+      //         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //           MenuCartMaster menuItem = menu[menuIndex];
+      //           DealsItems dealsItems = menu[menuIndex].dealsItems!;
+      //           printer.row([
+      //             PosColumn(
+      //                 text: "-${menuItem.name}(${dealsItems.name})-",
+      //                 width: 12,
+      //                 styles: PosStyles(
+      //                     width: PosTextSize.size1,
+      //                     height: PosTextSize.size1,
+      //                     align: PosAlign.center))
+      //           ]);
+      //           for (int addonIndex = 0;
+      //               addonIndex < menuItem.addons.length;
+      //               addonIndex++) {
+      //             AddonCartMaster addonItem = menuItem.addons[addonIndex];
+      //             if (addonIndex == 0) {
+      //               printer.row([
+      //                 PosColumn(width: 1),
+      //                 PosColumn(
+      //                     text: "        -ADDONS-",
+      //                     width: 9,
+      //                     styles: PosStyles(
+      //                         width: PosTextSize.size1,
+      //                         height: PosTextSize.size1,
+      //                         align: PosAlign.center)),
+      //                 PosColumn(width: 2),
+      //               ]);
+      //             }
+      //             printer.row([
+      //               PosColumn(text: '', width: 1),
+      //               PosColumn(text: addonItem.name, width: 9),
+      //               // PosColumn(
+      //               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //               PosColumn(
+      //                   text: addonItem.price.toString(),
+      //                   width: 2,
+      //                   styles: PosStyles(align: PosAlign.right)),
+      //             ]);
+      //           }
+      //         }
+      //       }
+    }
+    // for (int itemIndex = 0; itemIndex < cart.length; itemIndex++) {
+    //   String category = cart[itemIndex].category;
+    //   MenuCategoryCartMaster? menuCategory = cart[itemIndex].menuCategory;
+    //   List<MenuCartMaster> menu = cart[itemIndex].menu;
+    //   if (category == 'SINGLE') {
+    //     Cart cartItem = cart[itemIndex];
+    //
+    //     for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+    //       MenuCartMaster menuItem = menu[menuIndex];
+    //       printer.row([
+    //         PosColumn(
+    //             text: cartItem.quantity.toString(),
+    //             width: 2,
+    //             styles: PosStyles(bold: true)),
+    //         PosColumn(
+    //             text: menu[menuIndex].name +
+    //                 (cart[itemIndex].size != null
+    //                     ? '(${cart[itemIndex].size?.sizeName})'
+    //                     : ''),
+    //             width: 10,
+    //             styles: PosStyles(
+    //                 width: PosTextSize.size1,
+    //                 height: PosTextSize.size1,
+    //                 align: PosAlign.left,
+    //                 bold: true)),
+    //       ]);
+    //       for (int addonIndex = 0;
+    //       addonIndex < menuItem.addons.length;
+    //       addonIndex++) {
+    //         AddonCartMaster addonItem = menuItem.addons[addonIndex];
+    //         if (addonIndex == 0) {
+    //           printer.row([
+    //             PosColumn(
+    //                 text: "-ADDONS-",
+    //                 width: 12,
+    //                 styles: PosStyles(
+    //                     width: PosTextSize.size1,
+    //                     height: PosTextSize.size1,
+    //                     align: PosAlign.center))
+    //           ]);
+    //         }
+    //         printer.row([
+    //           PosColumn(text: '', width: 2),
+    //           PosColumn(text: addonItem.name, width: 10),
+    //           // PosColumn(
+    //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+    //         ]);
+    //       }
+    //     }
+    //   } else if (category == 'HALF_N_HALF') {
+    //     Cart cartItem = cart[itemIndex];
+    //     printer.row([
+    //       PosColumn(
+    //           text: "-HALF & HALF-",
+    //           width: 12,
+    //           styles: PosStyles(
+    //               width: PosTextSize.size1,
+    //               height: PosTextSize.size1,
+    //               align: PosAlign.center))
+    //     ]);
+    //     printer.row([
+    //       PosColumn(text: cartItem.quantity.toString(), width: 1),
+    //       PosColumn(
+    //           text: menuCategory!.name +
+    //               (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+    //           width: 9,
+    //           styles: PosStyles(
+    //               width: PosTextSize.size1, height: PosTextSize.size1)),
+    //       // PosColumn(
+    //       // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+    //       PosColumn(
+    //           text: cartItem.totalAmount.toString(),
+    //           width: 2,
+    //           styles: PosStyles(align: PosAlign.right)),
+    //     ]);
+    //     for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+    //       MenuCartMaster menuItem = menu[menuIndex];
+    //       printer.row([
+    //         PosColumn(
+    //             text: ' ${menuIndex == 0 ? '-1st Half-' : "-2nd Half-"}',
+    //             width: 12,
+    //             styles: PosStyles(
+    //                 width: PosTextSize.size1,
+    //                 height: PosTextSize.size1,
+    //                 align: PosAlign.center))
+    //       ]);
+    //       printer.row([
+    //         PosColumn(text: '', width: 1),
+    //         PosColumn(text: menuItem.name + '', width: 9),
+    //         // PosColumn(
+    //         // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+    //         PosColumn(
+    //             text: '', width: 2, styles: PosStyles(align: PosAlign.right)),
+    //       ]);
+    //
+    //       for (int addonIndex = 0;
+    //       addonIndex < menuItem.addons.length;
+    //       addonIndex++) {
+    //         AddonCartMaster addonItem = menuItem.addons[addonIndex];
+    //         if (addonIndex == 0) {
+    //           printer.row([
+    //             PosColumn(
+    //                 text: "-ADDONS-",
+    //                 width: 12,
+    //                 styles: PosStyles(
+    //                     width: PosTextSize.size1,
+    //                     height: PosTextSize.size1,
+    //                     align: PosAlign.center))
+    //           ]);
+    //         }
+    //         printer.row([
+    //           PosColumn(text: '', width: 1),
+    //           PosColumn(text: addonItem.name, width: 9),
+    //           // PosColumn(
+    //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+    //           PosColumn(
+    //               text: addonItem.price.toString(),
+    //               width: 2,
+    //               styles: PosStyles(align: PosAlign.right)),
+    //         ]);
+    //       }
+    //     }
+    //   } else if (category == 'DEALS') {
+    //     Cart cartItem = cart[itemIndex];
+    //
+    //     printer.row([
+    //       PosColumn(
+    //           text: "-DEALS-",
+    //           width: 12,
+    //           styles: PosStyles(
+    //               width: PosTextSize.size1,
+    //               height: PosTextSize.size1,
+    //               align: PosAlign.center))
+    //     ]);
+    //     printer.row([
+    //       PosColumn(text: cartItem.quantity.toString(), width: 1),
+    //       PosColumn(
+    //           text: menuCategory!.name +
+    //               (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+    //           width: 9,
+    //           styles: PosStyles(
+    //               width: PosTextSize.size1, height: PosTextSize.size1)),
+    //       // PosColumn(
+    //       // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+    //       PosColumn(
+    //           text: cartItem.totalAmount.toString(),
+    //           width: 2,
+    //           styles: PosStyles(align: PosAlign.right)),
+    //     ]);
+    //     for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+    //       MenuCartMaster menuItem = menu[menuIndex];
+    //       DealsItems dealsItems = menu[menuIndex].dealsItems!;
+    //       printer.row([
+    //         PosColumn(
+    //             text: "-${menuItem.name}(${dealsItems.name})-",
+    //             width: 12,
+    //             styles: PosStyles(
+    //                 width: PosTextSize.size1,
+    //                 height: PosTextSize.size1,
+    //                 align: PosAlign.center))
+    //       ]);
+    //       for (int addonIndex = 0;
+    //       addonIndex < menuItem.addons.length;
+    //       addonIndex++) {
+    //         AddonCartMaster addonItem = menuItem.addons[addonIndex];
+    //         if (addonIndex == 0) {
+    //           printer.row([
+    //             PosColumn(width: 1),
+    //             PosColumn(
+    //                 text: "        -ADDONS-",
+    //                 width: 9,
+    //                 styles: PosStyles(
+    //                     width: PosTextSize.size1,
+    //                     height: PosTextSize.size1,
+    //                     align: PosAlign.center)),
+    //             PosColumn(width: 2),
+    //           ]);
+    //         }
+    //         printer.row([
+    //           PosColumn(text: '', width: 1),
+    //           PosColumn(text: addonItem.name, width: 9),
+    //           // PosColumn(
+    //           // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+    //           PosColumn(
+    //               text: addonItem.price.toString(),
+    //               width: 2,
+    //               styles: PosStyles(align: PosAlign.right)),
+    //         ]);
+    //       }
+    //     }
+    //   }
+    // }
+    // printer.hr();
+
+    // printer.row([
+    //   PosColumn(
+    //       text: 'TOTAL',
+    //       width: 6,
+    //       styles: PosStyles(
+    //         height: PosTextSize.size2,
+    //         width: PosTextSize.size2,
+    //       )),
+    //   PosColumn(
+    //       text: "$currencySymbol${totalAmountController.text}",
+    //       width: 6,
+    //       styles: PosStyles(
+    //         align: PosAlign.right,
+    //         height: PosTextSize.size2,
+    //         width: PosTextSize.size2,
+    //       )),
+    // ]);
+    printer.hr();
+
+    if (order.notes != null) {
       printer.text(
         "Instructions: ${order.notes}",
       );
@@ -1042,6 +1660,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                           itemBuilder: (BuildContext context, int index) {
                             // build the list item here
                             final order = _getFilteredOrders()[index];
+                            print("-----${order.toJson()}-----");
                             Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
                             OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
                             return Column(
@@ -1124,6 +1743,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                       right: 16,
                                       bottom: 20),
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       // (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING' || _orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE')?
                                       //
@@ -1218,6 +1838,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Expanded(
                                                         child: Text(
@@ -1232,53 +1853,192 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                           ),
                                                         ),
                                                       ),
-
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(right: 4),
-                                                        child: ElevatedButton(
-                                                          onPressed: () {
-                                                            if ((_printerController
-                                                                .printerModel
-                                                                .value
-                                                                .ipPos !=
-                                                                null && _printerController
-                                                                .printerModel
-                                                                .value
-                                                                .ipPos!.isNotEmpty) && (_printerController
-                                                                .printerModel
-                                                                .value
-                                                                .portPos !=
-                                                                null && _printerController
-                                                                .printerModel
-                                                                .value
-                                                                .portPos!.isNotEmpty)) {
-                                                              testPrintPOS(
-                                                                  _printerController
-                                                                      .printerModel
-                                                                      .value
-                                                                      .ipPos!,
-                                                                  int.parse(_printerController
-                                                                      .printerModel
-                                                                      .value
-                                                                      .portPos
-                                                                      .toString()),
-                                                                  context,
-                                                                  order);
-                                                            } else {
-                                                              Get.snackbar(
-                                                                  "Error",
-                                                                  "Please add printer ip and port");
-                                                            }
-                                                          },
-                                                          child: Text(
-                                                            "Print Order",
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                              fontSize: 18,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
+                            constraints.maxWidth > 650 ? Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if ((_printerController
+                                            .printerModel
+                                            .value
+                                            .ipPos !=
+                                            null && _printerController
+                                            .printerModel
+                                            .value
+                                            .ipPos!.isNotEmpty) &&
+                                            (_printerController
+                                                .printerModel
+                                                .value
+                                                .portPos !=
+                                                null && _printerController
+                                                .printerModel
+                                                .value
+                                                .portPos!.isNotEmpty)) {
+                                          testPrintPOS(
+                                              _printerController
+                                                  .printerModel
+                                                  .value
+                                                  .ipPos!,
+                                              int.parse(_printerController
+                                                  .printerModel
+                                                  .value
+                                                  .portPos
+                                                  .toString()),
+                                              context,
+                                              order);
+                                        } else {
+                                          Get.snackbar(
+                                              "Error",
+                                              "Please add printer ip and port");
+                                        }
+                                      },
+                                      child: Text(
+                                        "POS Print",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if ((_printerController
+                                            .printerModel
+                                            .value
+                                            .ipKitchen !=
+                                            null && _printerController
+                                            .printerModel
+                                            .value
+                                            .ipKitchen!.isNotEmpty) &&
+                                            (_printerController
+                                                .printerModel
+                                                .value
+                                                .portKitchen !=
+                                                null && _printerController
+                                                .printerModel
+                                                .value
+                                                .portKitchen!.isNotEmpty)) {
+                                          testPrintKitchen(
+                                              _printerController.printerModel
+                                                  .value.ipKitchen!,
+                                              int.parse(_printerController
+                                                  .printerModel.value
+                                                  .portKitchen
+                                                  .toString()),
+                                              context,
+                                              order);
+                                        } else {
+                                          Get.snackbar(
+                                              "Error",
+                                              "Please add kitchen printer ip and port");
+                                        }
+                                      },
+                                      child: Text(
+                                        "Kitchen Print",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ) : Padding(
+                                padding: const EdgeInsets.only(right: 4),
+                                child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if ((_printerController
+                                          .printerModel
+                                          .value
+                                          .ipPos !=
+                                          null && _printerController
+                                          .printerModel
+                                          .value
+                                          .ipPos!.isNotEmpty) &&
+                                          (_printerController
+                                              .printerModel
+                                              .value
+                                              .portPos !=
+                                              null && _printerController
+                                              .printerModel
+                                              .value
+                                              .portPos!.isNotEmpty)) {
+                                        testPrintPOS(
+                                            _printerController
+                                                .printerModel
+                                                .value
+                                                .ipPos!,
+                                            int.parse(_printerController
+                                                .printerModel
+                                                .value
+                                                .portPos
+                                                .toString()),
+                                            context,
+                                            order);
+                                      } else {
+                                        Get.snackbar(
+                                            "Error",
+                                            "Please add printer ip and port");
+                                      }
+                                    },
+                                    child: Text(
+                                      "POS Print",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if ((_printerController
+                                          .printerModel
+                                          .value
+                                          .ipKitchen !=
+                                          null && _printerController
+                                          .printerModel
+                                          .value
+                                          .ipKitchen!.isNotEmpty) &&
+                                          (_printerController
+                                              .printerModel
+                                              .value
+                                              .portKitchen !=
+                                              null && _printerController
+                                              .printerModel
+                                              .value
+                                              .portKitchen!.isNotEmpty)) {
+                                        testPrintKitchen(
+                                            _printerController.printerModel
+                                                .value.ipKitchen!,
+                                            int.parse(_printerController
+                                                .printerModel.value
+                                                .portKitchen
+                                                .toString()),
+                                            context,
+                                            order);
+                                      } else {
+                                        Get.snackbar(
+                                            "Error",
+                                            "Please add kitchen printer ip and port");
+                                      }
+                                    },
+                                    child: Text(
+                                      "Kitchen Print",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                            ),
+                              )
                                                     ],
                                                   ),
 
@@ -1427,71 +2187,431 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                       .setHeight(5),
                                                 ),
                                                 ListView.builder(
-                                                    padding: EdgeInsets.zero,
-                                                    physics:
-                                                        ClampingScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    scrollDirection:
-                                                        Axis.vertical,
                                                     itemCount: orderData.cart!.length,
-                                                    itemBuilder:
-                                                        (BuildContext context,
-                                                            int innerindex) {
-                                                          var price;
+                                                    shrinkWrap: true,
+                                                    itemBuilder: (context,itemIndex){
+                                                      String category=orderData.cart![itemIndex].category!;
+                                                      MenuCategory? menuCategory=orderData.cart![itemIndex].menuCategory;
+                                                      List<Menu> menu=orderData.cart![itemIndex].menu!;
+                                                      var price;
                                                       if(order.deliveryType == 'DINING') {
-                                                         price =  orderData.cart![
-                                                        innerindex]
+                                                        price =  orderData.cart![
+                                                        itemIndex]
                                                             .diningAmount;
                                                       } else {
                                                         price =  orderData.cart![
-                                                        innerindex]
+                                                        itemIndex]
                                                             .totalAmount;
                                                       }
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    10,
-                                                                vertical: 1),
-                                                        child: Column(
+                                                      if(category=='SINGLE'){
+                                                        return ListView.builder(
+                                                            shrinkWrap: true,
+                                                            itemCount: menu.length,
+                                                            physics: NeverScrollableScrollPhysics(),
+                                                            itemBuilder: (context,menuIndex){
+                                                              Menu menuItem= menu[menuIndex];
+                                                              return Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Flexible(
+                                                                    fit: FlexFit.loose,
+                                                                    child:  Padding(
+                                                                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Row(
+                                                                            children: [
+                                                                              Text('${menu[menuIndex].name!}${orderData.cart![itemIndex].size!=null?' ( ${orderData.cart![itemIndex].size['size_name']}) ':''} x ${orderData.cart![itemIndex].quantity}  ',
+                                                                                  style: TextStyle(color: Color(Constants.colorTheme),fontWeight: FontWeight.w900, fontSize: 14)),
+                                                                              // Container(
+                                                                              //   height: 20,
+                                                                              //   width: 60,
+                                                                              //   decoration: BoxDecoration(
+                                                                              //       color: Color(Constants.colorTheme),
+                                                                              //       borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                              //   ),
+                                                                              //   child: Center(
+                                                                              //     child: Text('SINGLE',
+                                                                              //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
+                                                                              //   ),
+                                                                              // ),
+                                                                            ],
+                                                                          ),
+                                                                          Text(price.toString())
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Flexible(
+                                                                    fit: FlexFit.loose,
+                                                                    child: ListView.builder(
+                                                                        shrinkWrap: true,
+                                                                        physics: NeverScrollableScrollPhysics(),
+
+                                                                        itemCount: menuItem.addons!.length,
+                                                                        padding: EdgeInsets.only(left: 25),
+                                                                        itemBuilder: (context,addonIndex){
+                                                                          Addon addonItem=menuItem.addons![addonIndex];
+                                                                          return Padding(
+                                                                            padding: const EdgeInsets.only(top: 5.0),
+                                                                            child: Row(
+                                                                              children: [
+                                                                                Text(addonItem.name+' '),
+                                                                                Container(
+                                                                                  height: 20,
+                                                                                  padding: EdgeInsets.all(3.0),
+                                                                                  decoration: BoxDecoration(
+                                                                                      color: Colors.black,
+                                                                                      borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                                  ),
+                                                                                  child: Center(
+                                                                                    child: Text('ADDONS',
+                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          );
+
+                                                                        }),
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                                                      else if(category=='HALF_N_HALF'){
+                                                        return Column(
+                                                          mainAxisSize: MainAxisSize.min,
                                                           children: [
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Row(
+                                                            Flexible(
+                                                              fit: FlexFit.loose,
+                                                              child:Padding(
+                                                                padding: const EdgeInsets.only(top: 20.0,left: 15.0),
+                                                                child: Row(
                                                                   children: [
-                                                                    Text(
-                                                                      orderData.cart![innerindex].menu!.first.name.toString(),
-                                                                      style: TextStyle(
-                                                                          fontFamily:
-                                                                              Constants.appFont,
-                                                                          fontSize: 12),
+                                                                    Text(menuCategory!.name
+                                                                        +(orderData.cart![itemIndex].size!=null?' ( ${orderData.cart![itemIndex].size?.sizeName}) ':'')
+                                                                        +' x ${orderData.cart![itemIndex].quantity}  '
+                                                                        ,style: TextStyle(color: Color(Constants.colorTheme),fontWeight: FontWeight.w900, fontSize: 16)
                                                                     ),
-                                                                    Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.only(left: 5),
-                                                                      child: Text(
-                                                          ' X ${orderData.cart![innerindex].quantity.toString()}',
-                                                                          style: TextStyle(color: Color(Constants.colorTheme), fontFamily: Constants.appFont, fontSize: 12)),
-                                                                    ),
+                                                                    Container(
+                                                                      height: 20,
+                                                                      decoration: BoxDecoration(
+                                                                          color: Color(Constants.colorTheme),
+                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                      ),
+                                                                      child: Center(
+                                                                        child: Text(' HALF & HALF ',
+                                                                            style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)
+                                                                        ),
+                                                                      ),
+                                                                    )
                                                                   ],
                                                                 ),
-                                                                Text(price.toString())
-                                                              ],
-                                                            ),
+                                                              ),),
+                                                            Flexible(
+                                                              fit: FlexFit.loose,
+                                                              child: ListView.builder(
+                                                                  shrinkWrap: true,
+                                                                  padding: EdgeInsets.only(left: 25),
+                                                                  physics: NeverScrollableScrollPhysics(),
+                                                                  itemCount: menu.length,
+                                                                  itemBuilder: (context,menuIndex){
+                                                                    Menu menuItem= menu[menuIndex];
+                                                                    return Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Flexible(
+                                                                            fit: FlexFit.loose,
+                                                                            child:Padding(
+                                                                              padding: const EdgeInsets.only(top: 5.0),
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Text(menuItem.name!+' ',style: TextStyle(fontWeight: FontWeight.w900),),
+                                                                                  if(menuIndex==0)
+                                                                                    Container(
+                                                                                      height: 20,
+                                                                                      padding: EdgeInsets.all(3.0),
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: Color(Constants.colorTheme),
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                                      ),
+                                                                                      child: Center(
+                                                                                        child: Text('First Half'.toUpperCase(),
+                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),),
+                                                                                      ),
+                                                                                    )
+                                                                                  else
+                                                                                    Container(
+                                                                                      height: 20,
+                                                                                      padding: EdgeInsets.all(3.0),
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: Color(Constants.colorTheme),
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                                      ),
 
+                                                                                      child: Center(
+                                                                                        child: Text('Second Half'.toUpperCase(),
+                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),),
+                                                                                      ),
+                                                                                    )
+                                                                                ],
+                                                                              ),
+                                                                            )
+                                                                        ),
+                                                                        Flexible(
+                                                                          fit: FlexFit.loose,
+                                                                          child: ListView.builder(
+                                                                              shrinkWrap: true,
+                                                                              physics: NeverScrollableScrollPhysics(),
+                                                                              padding: EdgeInsets.only(left: 16,top: 5.0,),
+                                                                              itemCount:menuItem.addons!.length,
+                                                                              itemBuilder: (context,addonIndex) {
+                                                                                Addon addonItem=menuItem.addons![addonIndex];
+                                                                                return Padding(
+                                                                                  padding: const EdgeInsets.only(bottom: 5.0),
+                                                                                  child: Row(children: [
+                                                                                    Text(addonItem.name+' '),
+                                                                                    Container(
+                                                                                      height: 20,
+                                                                                      padding: EdgeInsets.all(3.0),
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: Colors.black,
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                                      ),
+                                                                                      child: Center(
+                                                                                        child: Text('ADDONS',
+                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],),
+                                                                                );
+                                                                              }
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    );
+
+                                                                  }),
+                                                            ),
                                                           ],
-                                                        ),
-                                                      );
-                                                    }),
+                                                        );
+                                                      }else if(category=='DEALS'){
+                                                        return Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Flexible(
+                                                              fit: FlexFit.loose,
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.only(top: 20.0,left: 15.0),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Text(menuCategory!.name
+                                                                        +'  x ${orderData.cart![itemIndex].quantity} '
+                                                                        ,style: TextStyle(color: Color(Constants.colorTheme),fontWeight: FontWeight.w900, fontSize: 16)
+                                                                    ),
+                                                                    Container(
+                                                                        height: 20,
+                                                                        padding: EdgeInsets.all(3.0),
+                                                                        decoration: BoxDecoration(
+                                                                            color: Color(Constants.colorTheme),
+                                                                            borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                        ),
+                                                                        child: Center(child: Text('DEALS',style: TextStyle(color: Colors.white,fontWeight:FontWeight.w500 , fontSize: 14))))
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Flexible(
+                                                              fit: FlexFit.loose,
+                                                              child: ListView.builder(
+                                                                  shrinkWrap: true,
+                                                                  padding: EdgeInsets.only(left: 25,top: 5.0),
+                                                                  physics: NeverScrollableScrollPhysics(),
+                                                                  itemCount: menu.length,
+                                                                  itemBuilder: (context,menuIndex){
+                                                                    Menu menuItem= menu[menuIndex];
+                                                                    // DealsItems dealsItems=menu[menuIndex].dealsItems!;
+                                                                    return Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        // Flexible(
+                                                                        //     fit: FlexFit.loose,
+                                                                        //     child:Row(
+                                                                        //       children: [
+                                                                        //         Text(menuItem.name! +' ',style: TextStyle(fontWeight: FontWeight.w900),),
+                                                                        //         Container(
+                                                                        //             height: 20,
+                                                                        //             padding: EdgeInsets.all(3.0),
+                                                                        //             decoration: BoxDecoration(
+                                                                        //                 color: Color(Constants.colorTheme),
+                                                                        //                 borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                        //             ),
+                                                                        //             child: Center(child: Text('${dealsItems.name} ',style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),)))
+                                                                        //       ],
+                                                                        //     )
+                                                                        // ),
+                                                                        Flexible(
+                                                                          fit: FlexFit.loose,
+                                                                          child: ListView.builder(
+                                                                              shrinkWrap: true,
+                                                                              physics: NeverScrollableScrollPhysics(),
+                                                                              padding: EdgeInsets.only(left: 24,top: 5.0,),
+                                                                              itemCount:menuItem.addons!.length,
+                                                                              itemBuilder: (context,addonIndex) {
+                                                                                Addon addonItem=menuItem.addons![addonIndex];
+                                                                                return Padding(
+                                                                                  padding: const EdgeInsets.only(bottom: 5.0),
+                                                                                  child: Row(children: [
+                                                                                    Text(addonItem.name+' '),
+                                                                                    Container(
+                                                                                      height: 20,
+                                                                                      padding: EdgeInsets.all(3.0),
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: Colors.black,
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                                      ),
+                                                                                      child: Center(
+                                                                                        child: Text('ADDONS',
+                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),),
+                                                                                      ),
+                                                                                    )
+                                                                                  ],),
+                                                                                );
+                                                                              }
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    );
+
+                                                                  }),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      }
+                                                      return Container();
+                                                    })
+                                                // ListView.builder(
+                                                //     padding: EdgeInsets.zero,
+                                                //     physics:
+                                                //         ClampingScrollPhysics(),
+                                                //     shrinkWrap: true,
+                                                //     scrollDirection:
+                                                //         Axis.vertical,
+                                                //     itemCount: orderData.cart!.length,
+                                                //     itemBuilder:
+                                                //         (BuildContext context,
+                                                //             int innerindex) {
+                                                //           var price;
+                                                //       if(order.deliveryType == 'DINING') {
+                                                //          price =  orderData.cart![
+                                                //         innerindex]
+                                                //             .diningAmount;
+                                                //       } else {
+                                                //         price =  orderData.cart![
+                                                //         innerindex]
+                                                //             .totalAmount;
+                                                //       }
+                                                //       return Padding(
+                                                //         padding:
+                                                //             const EdgeInsets
+                                                //                     .symmetric(
+                                                //                 horizontal:
+                                                //                     10,
+                                                //                 vertical: 1),
+                                                //         child: Column(
+                                                //           children: [
+                                                //             Row(
+                                                //               mainAxisAlignment:
+                                                //                   MainAxisAlignment
+                                                //                       .spaceBetween,
+                                                //               children: [
+                                                //                 Row(
+                                                //                   children: [
+                                                //                     Text(
+                                                //                       orderData.cart![innerindex].menu!.first.name.toString(),
+                                                //                       style: TextStyle(
+                                                //                           fontFamily:
+                                                //                               Constants.appFont,
+                                                //                           fontSize: 12),
+                                                //                     ),
+                                                //                     Padding(
+                                                //                       padding:
+                                                //                           const EdgeInsets.only(left: 5),
+                                                //                       child: Text(
+                                                //           ' X ${orderData.cart![innerindex].quantity.toString()}',
+                                                //                           style: TextStyle(color: Color(Constants.colorTheme), fontFamily: Constants.appFont, fontSize: 12)),
+                                                //                     ),
+                                                //                   ],
+                                                //                 ),
+                                                //                 Text(price.toString())
+                                                //               ],
+                                                //             ),
+                                                //
+                                                //           ],
+                                                //         ),
+                                                //       );
+                                                //     }),
                                               ],
                                             ),
                                           ),
                                         ],
                                       ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      order.notes == null  ? SizedBox() :
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal : 8.0,),
+                                        child: RichText(
+                                          text: TextSpan(
+                                              text:
+                                              'Instructions : ',
+                                              style: TextStyle(
+                                                  color: Colors
+                                                      .black,
+                                                  fontFamily:
+                                                  Constants
+                                                      .appFont,
+                                                  fontSize:
+                                                  14,
+                                              fontWeight: FontWeight.bold
+                                              ),
+                                              children: <
+                                                  TextSpan>[
+                                                TextSpan(
+                                                  text: '${order.notes}',
+                                                  style: TextStyle(
+                                                      color: Colors
+                                                          .black,
+                                                      fontFamily:
+                                                      Constants
+                                                          .appFont,
+                                                      fontSize:
+                                                      14,
+                                                      fontWeight: FontWeight.normal
+                                                  ),
+                                                )
+                                              ]),
+                                        ),
+                                      ),
+
+                                      //
+                                      // Text(
+                                      //   'Instructions : ${order.notes} ',
+                                      //   style: TextStyle(
+                                      //       color: Colors
+                                      //           .black,
+                                      //       fontFamily:
+                                      //       Constants
+                                      //           .appFont,
+                                      //       fontSize:
+                                      //       14),
+                                      //
+                                      // ),
                                       Padding(
                                         padding: const EdgeInsets.only(
                                             left: 5, right: 5, top: 10),
@@ -1508,278 +2628,326 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                     CrossAxisAlignment
                                                         .stretch,
                                                 children: [
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 10),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        RichText(
-                                                          text: TextSpan(
-                                                              text:
-                                                                  'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.amount} ',
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                         Text(
+                                                              'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.sub_total} ',
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .black,
                                                                   fontFamily:
-                                                                      Constants
-                                                                          .appFont,
+                                                                  Constants
+                                                                      .appFont,
                                                                   fontSize:
-                                                                      14),
-                                                              children: <
-                                                                  TextSpan>[
-                                                                TextSpan(
-                                                                  text: order.payment_type == "POS CASH" ||
-                                                                          order.payment_type ==
-                                                                              "POS CARD" ||
-                                                                          order.payment_type ==
-                                                                              "POS CASH TAKEAWAY" ||
-                                                                          order.payment_type ==
-                                                                              "POS CARD TAKEAWAY"
-                                                                      ? '( Paid )'
-                                                                      : '( Unpaid )',
+                                                                  14),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                              'Total Tax : ${order.tax} ',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontFamily:
+                                                                  Constants
+                                                                      .appFont,
+                                                                  fontSize:
+                                                                  14),
+
+                                                        ),
+                                                        order.discounts == null  ? SizedBox() : SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        order.discounts == null  ? SizedBox() : Text(
+                                                              'Discounts : ${order.discounts} ',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontFamily:
+                                                                  Constants
+                                                                      .appFont,
+                                                                  fontSize:
+                                                                  14),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            RichText(
+                                                              text: TextSpan(
+                                                                  text:
+                                                                      'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.amount} ',
                                                                   style: TextStyle(
                                                                       color: Colors
-                                                                          .red
-                                                                          .shade500,
+                                                                          .black,
                                                                       fontFamily:
                                                                           Constants
                                                                               .appFont,
                                                                       fontSize:
-                                                                          16),
-                                                                )
-                                                              ]),
-                                                        ),
-                                                        RichText(
-                                                          text: TextSpan(
-                                                            children: [
-                                                              WidgetSpan(
-                                                                child:
-                                                                    Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      right:
-                                                                          5),
-                                                                  child: SvgPicture
-                                                                      .asset(
-                                                                    (() {
-                                                                          if (_orderHistoryController.listOrderHistory[index].addressId !=
-                                                                              null) {
-                                                                            if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
-                                                                              return 'images/ic_pending.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
-                                                                              return 'images/ic_accept.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
-                                                                              return 'images/ic_accept.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
-                                                                              return 'images/ic_cancel.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
-                                                                              return 'images/ic_pickup.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
-                                                                              return 'images/ic_completed.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
-                                                                              return 'images/ic_cancel.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
-                                                                              return 'images/ic_completed.svg';
-                                                                            } else {
-                                                                              return 'images/ic_accept.svg';
-                                                                            }
-                                                                          } else {
-                                                                            if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
-                                                                              return 'images/ic_pending.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
-                                                                              return 'images/ic_accept.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
-                                                                              return 'images/ic_pickup.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
-                                                                              return 'images/ic_completed.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
-                                                                              return 'images/ic_cancel.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
-                                                                              return 'images/ic_cancel.svg';
-                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
-                                                                              return 'images/ic_completed.svg';
-                                                                            }
-                                                                          }
-                                                                        }()) ??
-                                                                        '',
-                                                                    color:
+                                                                          14),
+                                                                  children: <
+                                                                      TextSpan>[
+                                                                    TextSpan(
+                                                                      text: order.payment_type == "POS CASH" ||
+                                                                              order.payment_type ==
+                                                                                  "POS CARD" ||
+                                                                              order.payment_type ==
+                                                                                  "POS CASH TAKEAWAY" ||
+                                                                              order.payment_type ==
+                                                                                  "POS CARD TAKEAWAY"
+                                                                          ? '( Paid )'
+                                                                          : '( Unpaid )',
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .red
+                                                                              .shade500,
+                                                                          fontFamily:
+                                                                              Constants
+                                                                                  .appFont,
+                                                                          fontSize:
+                                                                              16),
+                                                                    )
+                                                                  ]),
+                                                            ),
+                                                            RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  WidgetSpan(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          right:
+                                                                              5),
+                                                                      child: SvgPicture
+                                                                          .asset(
                                                                         (() {
-                                                                      // your code here
-                                                                      // _orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING' ? 'Ordered on ${_orderHistoryController.listOrderHistory[index].date}, ${_orderHistoryController.listOrderHistory[index].time}' : 'Delivered on October 10,2020, 09:23pm',
-                                                                      if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                          'PENDING') {
-                                                                        return Color(
-                                                                            Constants.colorOrderPending);
-                                                                      } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                          'ACCEPT') {
-                                                                        return Color(
-                                                                            Constants.colorBlack);
-                                                                      } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                          'PICKUP') {
-                                                                        return Color(
-                                                                            Constants.colorOrderPickup);
-                                                                      }
-                                                                    }()),
-                                                                    width: 15,
-                                                                    height: ScreenUtil()
-                                                                        .setHeight(
-                                                                            15),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                  text: (() {
-                                                                    if (_orderHistoryController
-                                                                            .listOrderHistory[index]
-                                                                            .deliveryType ==
-                                                                        'TAKEAWAY') {
-                                                                      if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                          'READY TO PICKUP') {
-                                                                        return 'Waiting For User To Pickup';
-                                                                      }
-                                                                    } else {
-                                                                      if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'READY TO PICKUP' ||
-                                                                          _orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'ACCEPT') {
-                                                                        return 'Waiting For Driver To Pickup';
-                                                                      }
-                                                                    }
-                                                                    return _orderHistoryController
-                                                                        .listOrderHistory[
-                                                                            index]
-                                                                        .orderStatus;
-                                                                    // if (_orderHistoryController.listOrderHistory[index].addressId != null) {
-                                                                    //
-                                                                    //   if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
-                                                                    //     return Languages.of(context)!.labelOrderPending;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
-                                                                    //     return Languages.of(context)!.labelOrderAccepted;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
-                                                                    //     return Languages.of(context)!.labelOrderAccepted;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
-                                                                    //     return Languages.of(context)!.labelOrderRejected;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
-                                                                    //     return 'PREPARING FOOD';
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
-                                                                    //     return 'READY TO PICKUP';
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
-                                                                    //     return Languages.of(context)!.labelOrderPickedUp;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
-                                                                    //     return Languages.of(context)!.labelDeliveredSuccess;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
-                                                                    //     return Languages.of(context)!.labelOrderCanceled;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
-                                                                    //     return Languages.of(context)!.labelOrderCompleted;
-                                                                    //   }
-                                                                    // } else {
-                                                                    //   if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
-                                                                    //     return Languages.of(context)!.labelOrderPending;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
-                                                                    //     return Languages.of(context)!.labelOrderAccepted;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
-                                                                    //     return Languages.of(context)!.labelOrderAccepted;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
-                                                                    //     return 'PREPARING FOOD';
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
-                                                                    //     return 'READY TO PICKUP';
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
-                                                                    //     return Languages.of(context)!.labelOrderRejected;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
-                                                                    //     return Languages.of(context)!.labelOrderCompleted;
-                                                                    //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
-                                                                    //     return Languages.of(context)!.labelOrderCanceled;
-                                                                    //   }
-                                                                    // }
-                                                                  }()),
-                                                                  style: TextStyle(
-                                                                      color: (() {
-                                                                        if (_orderHistoryController.listOrderHistory[index].addressId !=
-                                                                            null) {
+                                                                              if (_orderHistoryController.listOrderHistory[index].addressId !=
+                                                                                  null) {
+                                                                                if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
+                                                                                  return 'images/ic_pending.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
+                                                                                  return 'images/ic_accept.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
+                                                                                  return 'images/ic_accept.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
+                                                                                  return 'images/ic_cancel.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
+                                                                                  return 'images/ic_pickup.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
+                                                                                  return 'images/ic_completed.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
+                                                                                  return 'images/ic_cancel.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
+                                                                                  return 'images/ic_completed.svg';
+                                                                                } else {
+                                                                                  return 'images/ic_accept.svg';
+                                                                                }
+                                                                              } else {
+                                                                                if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
+                                                                                  return 'images/ic_pending.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
+                                                                                  return 'images/ic_accept.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
+                                                                                  return 'images/ic_pickup.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
+                                                                                  return 'images/ic_completed.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
+                                                                                  return 'images/ic_cancel.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
+                                                                                  return 'images/ic_cancel.svg';
+                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
+                                                                                  return 'images/ic_completed.svg';
+                                                                                }
+                                                                              }
+                                                                            }()) ??
+                                                                            '',
+                                                                        color:
+                                                                            (() {
+                                                                          // your code here
+                                                                          // _orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING' ? 'Ordered on ${_orderHistoryController.listOrderHistory[index].date}, ${_orderHistoryController.listOrderHistory[index].time}' : 'Delivered on October 10,2020, 09:23pm',
                                                                           if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'PENDING') {
-                                                                            return Color(Constants.colorOrderPending);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'APPROVE') {
-                                                                            return Color(Constants.colorBlack);
+                                                                            return Color(
+                                                                                Constants.colorOrderPending);
                                                                           } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'ACCEPT') {
-                                                                            return Color(Constants.colorBlack);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'REJECT') {
-                                                                            return Color(Constants.colorLike);
+                                                                            return Color(
+                                                                                Constants.colorBlack);
                                                                           } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'PICKUP') {
-                                                                            return Color(Constants.colorOrderPickup);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'DELIVERED') {
-                                                                            // return Color(0xffffffff);
-
-                                                                            return Color(Constants.colorTheme);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'CANCEL') {
-                                                                            return Color(Constants.colorTheme);
-                                                                            // return Color(0xffffffff);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'COMPLETE') {
-                                                                            return Color(Constants.colorTheme);
-                                                                            // return Color(0xffffffff);
-                                                                          } else {
-                                                                            // return Color(0xffffffff);
-                                                                            return Color(Constants.colorTheme);
+                                                                            return Color(
+                                                                                Constants.colorOrderPickup);
+                                                                          }
+                                                                        }()),
+                                                                        width: 15,
+                                                                        height: ScreenUtil()
+                                                                            .setHeight(
+                                                                                15),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                      text: (() {
+                                                                        if (_orderHistoryController
+                                                                                .listOrderHistory[index]
+                                                                                .deliveryType ==
+                                                                            'TAKEAWAY') {
+                                                                          if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                              'READY TO PICKUP') {
+                                                                            return 'Waiting For User To Pickup';
                                                                           }
                                                                         } else {
                                                                           if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'PENDING') {
-                                                                            return Color(Constants.colorOrderPending);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'APPROVE') {
-                                                                            return Color(Constants.colorBlack);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'ACCEPT') {
-                                                                            return Color(Constants.colorBlack);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'REJECT') {
-                                                                            return Color(Constants.colorLike);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'PREPARING FOOD') {
-                                                                            return Color(Constants.colorOrderPickup);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'READY TO PICKUP') {
-                                                                            // return Color(0xffffffff);
-
-                                                                            return Color(Constants.colorTheme);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'CANCEL') {
-                                                                            // return Color(0xffffffff);
-                                                                            return Color(Constants.colorTheme);
-                                                                          } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                              'COMPLETE') {
-                                                                            return Color(Constants.colorTheme);
-                                                                            // return Color(0xffffffff);
-                                                                          } else {
-                                                                            // return Color(0xffffffff);
-                                                                            return Color(Constants.colorTheme);
+                                                                                  'READY TO PICKUP' ||
+                                                                              _orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'ACCEPT') {
+                                                                            return 'Waiting For Driver To Pickup';
                                                                           }
                                                                         }
+                                                                        return _orderHistoryController
+                                                                            .listOrderHistory[
+                                                                                index]
+                                                                            .orderStatus;
+                                                                        // if (_orderHistoryController.listOrderHistory[index].addressId != null) {
+                                                                        //
+                                                                        //   if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
+                                                                        //     return Languages.of(context)!.labelOrderPending;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
+                                                                        //     return Languages.of(context)!.labelOrderAccepted;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
+                                                                        //     return Languages.of(context)!.labelOrderAccepted;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
+                                                                        //     return Languages.of(context)!.labelOrderRejected;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
+                                                                        //     return 'PREPARING FOOD';
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
+                                                                        //     return 'READY TO PICKUP';
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
+                                                                        //     return Languages.of(context)!.labelOrderPickedUp;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
+                                                                        //     return Languages.of(context)!.labelDeliveredSuccess;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
+                                                                        //     return Languages.of(context)!.labelOrderCanceled;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
+                                                                        //     return Languages.of(context)!.labelOrderCompleted;
+                                                                        //   }
+                                                                        // } else {
+                                                                        //   if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
+                                                                        //     return Languages.of(context)!.labelOrderPending;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
+                                                                        //     return Languages.of(context)!.labelOrderAccepted;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
+                                                                        //     return Languages.of(context)!.labelOrderAccepted;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
+                                                                        //     return 'PREPARING FOOD';
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
+                                                                        //     return 'READY TO PICKUP';
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
+                                                                        //     return Languages.of(context)!.labelOrderRejected;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
+                                                                        //     return Languages.of(context)!.labelOrderCompleted;
+                                                                        //   } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
+                                                                        //     return Languages.of(context)!.labelOrderCanceled;
+                                                                        //   }
+                                                                        // }
                                                                       }()),
-                                                                      fontFamily: Constants.appFont,
-                                                                      fontSize: 12)),
-                                                            ],
-                                                          ),
-                                                        )
+                                                                      style: TextStyle(
+                                                                          color: (() {
+                                                                            if (_orderHistoryController.listOrderHistory[index].addressId !=
+                                                                                null) {
+                                                                              if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'PENDING') {
+                                                                                return Color(Constants.colorOrderPending);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'APPROVE') {
+                                                                                return Color(Constants.colorBlack);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'ACCEPT') {
+                                                                                return Color(Constants.colorBlack);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'REJECT') {
+                                                                                return Color(Constants.colorLike);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'PICKUP') {
+                                                                                return Color(Constants.colorOrderPickup);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'DELIVERED') {
+                                                                                // return Color(0xffffffff);
+
+                                                                                return Color(Constants.colorTheme);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'CANCEL') {
+                                                                                return Color(Constants.colorTheme);
+                                                                                // return Color(0xffffffff);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'COMPLETE') {
+                                                                                return Color(Constants.colorTheme);
+                                                                                // return Color(0xffffffff);
+                                                                              } else {
+                                                                                // return Color(0xffffffff);
+                                                                                return Color(Constants.colorTheme);
+                                                                              }
+                                                                            } else {
+                                                                              if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'PENDING') {
+                                                                                return Color(Constants.colorOrderPending);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'APPROVE') {
+                                                                                return Color(Constants.colorBlack);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'ACCEPT') {
+                                                                                return Color(Constants.colorBlack);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'REJECT') {
+                                                                                return Color(Constants.colorLike);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'PREPARING FOOD') {
+                                                                                return Color(Constants.colorOrderPickup);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'READY TO PICKUP') {
+                                                                                // return Color(0xffffffff);
+
+                                                                                return Color(Constants.colorTheme);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'CANCEL') {
+                                                                                // return Color(0xffffffff);
+                                                                                return Color(Constants.colorTheme);
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
+                                                                                  'COMPLETE') {
+                                                                                return Color(Constants.colorTheme);
+                                                                                // return Color(0xffffffff);
+                                                                              } else {
+                                                                                // return Color(0xffffffff);
+                                                                                return Color(Constants.colorTheme);
+                                                                              }
+                                                                            }
+                                                                          }()),
+                                                                          fontFamily: Constants.appFont,
+                                                                          fontSize: 12)),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
                                                       ],
                                                     ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5,
                                                   ),
                                                   // Row(
                                                   //   mainAxisAlignment:

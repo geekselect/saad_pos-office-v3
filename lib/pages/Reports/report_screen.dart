@@ -1088,7 +1088,7 @@ class Reports extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Container(
-                        height: 50,
+                        // height: 50,
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
@@ -1119,6 +1119,15 @@ class Reports extends StatelessWidget {
                                 Text(_reportController
                                     .reportModelData.value.todaysTotalDining
                                     .toString()),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Todays total Discounts"),
+                                Text(_reportController
+                                    .reportModelData.value.todaysTotalDiscounts
+                                    !.toStringAsFixed(2)),
                               ],
                             ),
                           ],

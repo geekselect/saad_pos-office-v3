@@ -196,6 +196,7 @@ class ReportModel {
     this.payments,
     this.todaysTotalOrders,
     this.todaysTotalTakeaway,
+    this.todaysTotalDiscounts,
     this.todaysTotalDining,
     this.orders,
   });
@@ -203,6 +204,7 @@ class ReportModel {
   Payments? payments;
   int? todaysTotalOrders;
   int? todaysTotalTakeaway;
+  double? todaysTotalDiscounts;
   int? todaysTotalDining;
   List<Order>? orders;
 
@@ -212,6 +214,7 @@ class ReportModel {
             : Payments.fromJson(json["payments"]),
         todaysTotalOrders: json["Todays total orders"],
         todaysTotalTakeaway: json["Todays total Takeaway"],
+        todaysTotalDiscounts: json["Todays total discounts"],
         todaysTotalDining: json["Todays total dining"],
         orders: json["orders"] == null
             ? []
@@ -222,6 +225,7 @@ class ReportModel {
         "payments": payments?.toJson(),
         "Todays total orders": todaysTotalOrders,
         "Todays total Takeaway": todaysTotalTakeaway,
+        "Todays total discounts": todaysTotalDiscounts,
         "Todays total dining": todaysTotalDining,
         "orders": orders == null
             ? []
