@@ -21,5 +21,8 @@ C:\Users\Ahmad Zahid\Downloads\Ozpos-pos-main\Ozpos-pos-main\build\web
 build release command by nasir
 flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
 
+build playstore release command by nasir
+flutter build appbundle  
+
 
 
