@@ -25,4 +25,7 @@ build playstore release command by nasir
 flutter build appbundle  
 
 
+git remote remove origin
+
+
 
