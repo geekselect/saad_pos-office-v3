@@ -12,6 +12,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pos/controller/auth_controller.dart';
+import 'package:pos/controller/auto_printer_controller.dart';
 import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
@@ -83,7 +84,6 @@ class _OrderHistoryState extends State<OrderHistory> {
     _getOrders();
     initAsync();
 
-
     super.initState();
   }
 
@@ -113,9 +113,9 @@ class _OrderHistoryState extends State<OrderHistory> {
   }
 
   printPOSReceipt(
-    NetworkPrinter printer,
-    OrderHistoryData order,
-  ) {
+      NetworkPrinter printer,
+      OrderHistoryData order,
+      ) {
     print("order print ${order.toJson()}");
     // // Print image
     // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
@@ -141,7 +141,7 @@ class _OrderHistoryState extends State<OrderHistory> {
     printer.text("Order Id ${order.order_id.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
-    if (order.user_name != null  && order.mobile != null) {
+    if (order.user_name != null && order.mobile != null) {
       printer.text('Customer Name : ${order.user_name}',
           styles: PosStyles(align: PosAlign.left));
 
@@ -151,7 +151,8 @@ class _OrderHistoryState extends State<OrderHistory> {
 
     // printer.text('${order.time} ${widget.orderTime}',
     //     styles: PosStyles(align: PosAlign.left));
-    printer.text('${order.date} ${order.time}', styles: PosStyles(align: PosAlign.left));
+    printer.text('${order.date} ${order.time}',
+        styles: PosStyles(align: PosAlign.left));
 
     // printer.text('Customer Name : ${restaurantDetails.data!.data!.vendor!.name}',
     //     styles: PosStyles(align: PosAlign.center));
@@ -189,21 +190,18 @@ class _OrderHistoryState extends State<OrderHistory> {
     OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
     for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
       String category = orderData.cart![itemIndex].category!;
-      cart.MenuCategoryCartMaster? menuCategory = orderData.cart![itemIndex].menuCategory;
+      cart.MenuCategoryCartMaster? menuCategory =
+          orderData.cart![itemIndex].menuCategory;
       List<Menu> menu = orderData.cart![itemIndex].menu!;
       var price;
-      if(order.deliveryType == 'DINING') {
-        price =  orderData.cart![
-        itemIndex]
-            .diningAmount;
+      if (order.deliveryType == 'DINING') {
+        price = orderData.cart![itemIndex].diningAmount;
       } else {
-        price =  orderData.cart![
-        itemIndex]
-            .totalAmount;
+        price = orderData.cart![itemIndex].totalAmount;
       }
 
       if (category == 'SINGLE') {
-       Cart cartItem = orderData.cart![itemIndex];
+        Cart cartItem = orderData.cart![itemIndex];
         // printer.row([
         //   PosColumn(
         //       text: "-SINGLE-",
@@ -227,20 +225,21 @@ class _OrderHistoryState extends State<OrderHistory> {
 
         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
           Menu menuItem = menu[menuIndex];
-            printer.row([
-              PosColumn(text: orderData.cart![itemIndex].quantity.toString(), width: 1),
-              PosColumn(
-                text: orderData.cart![itemIndex].menu!.first.name.toString() +
-                    (orderData.cart![itemIndex].size != null
-                        ? '(${orderData.cart![itemIndex].size['size_name']})'
-                        : ''),
-                width: 9,
-              ),
-              PosColumn(
-                  text: price.toString(),
-                  width: 2,
-                  styles: PosStyles(align: PosAlign.right)),
-            ]);
+          printer.row([
+            PosColumn(
+                text: orderData.cart![itemIndex].quantity.toString(), width: 1),
+            PosColumn(
+              text: orderData.cart![itemIndex].menu!.first.name.toString() +
+                  (orderData.cart![itemIndex].size != null
+                      ? '(${orderData.cart![itemIndex].size['size_name']})'
+                      : ''),
+              width: 9,
+            ),
+            PosColumn(
+                text: price.toString(),
+                width: 2,
+                styles: PosStyles(align: PosAlign.right)),
+          ]);
           for (int addonIndex = 0;
           addonIndex < menuItem.addons!.length;
           addonIndex++) {
@@ -269,7 +268,6 @@ class _OrderHistoryState extends State<OrderHistory> {
           }
         }
       }
-
 
       ///Addons
       // for (int addonIndex = 0; addonIndex < order; addonIndex++) {
@@ -561,6 +559,42 @@ class _OrderHistoryState extends State<OrderHistory> {
 
     printer.row([
       PosColumn(
+          text: 'SubTotal',
+          width: 6,
+          styles: PosStyles(
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: "${order.sub_total}",
+          width: 6,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    printer.row([
+      PosColumn(
+          text: 'Tax',
+          width: 6,
+          styles: PosStyles(
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: "${order.tax}",
+          width: 6,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    printer.row([
+      PosColumn(
           text: 'TOTAL',
           width: 6,
           styles: PosStyles(
@@ -578,7 +612,6 @@ class _OrderHistoryState extends State<OrderHistory> {
     ]);
 
     printer.hr();
-
 
     if (order.notes != null) {
       printer.text(
@@ -670,7 +703,7 @@ class _OrderHistoryState extends State<OrderHistory> {
     printer.text("Order Id ${order.order_id.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
-    if (order.user_name != null  && order.mobile != null) {
+    if (order.user_name != null && order.mobile != null) {
       printer.text('Customer Name : ${order.user_name}',
           styles: PosStyles(align: PosAlign.left));
 
@@ -678,7 +711,8 @@ class _OrderHistoryState extends State<OrderHistory> {
           styles: PosStyles(align: PosAlign.left));
     }
 
-    printer.text('${order.date} ${order.time}', styles: PosStyles(align: PosAlign.left));
+    printer.text('${order.date} ${order.time}',
+        styles: PosStyles(align: PosAlign.left));
 
     if (order.payment_type.toString() == "INCOMPLETE ORDER") {
       printer.text('Payment Status : INCOMPLETE PAYMENT',
@@ -687,7 +721,6 @@ class _OrderHistoryState extends State<OrderHistory> {
       printer.text('Payment Status : ${order.payment_type.toString()}',
           styles: PosStyles(align: PosAlign.left));
     }
-
 
     printer.text('Order Type :  ${order.deliveryType.toString()}',
         styles: PosStyles(align: PosAlign.left));
@@ -727,7 +760,8 @@ class _OrderHistoryState extends State<OrderHistory> {
         for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
           Menu menuItem = menu[menuIndex];
           printer.row([
-            PosColumn(text: orderData.cart![itemIndex].quantity.toString(), width: 2),
+            PosColumn(
+                text: orderData.cart![itemIndex].quantity.toString(), width: 2),
             PosColumn(
               text: orderData.cart![itemIndex].menu!.first.name.toString() +
                   (orderData.cart![itemIndex].size != null
@@ -758,7 +792,6 @@ class _OrderHistoryState extends State<OrderHistory> {
           }
         }
       }
-
 
       ///Addons
       // for (int addonIndex = 0; addonIndex < order; addonIndex++) {
@@ -1239,6 +1272,9 @@ class _OrderHistoryState extends State<OrderHistory> {
     printer.beep();
   }
 
+  AutoPrinterController _autoPrinterController =
+  Get.find<AutoPrinterController>();
+
   // void _applyFilter(FilterType filterType) {
   //   setState(() {
   //     _filterType = filterType;
@@ -1256,6 +1292,10 @@ class _OrderHistoryState extends State<OrderHistory> {
   // }
 
   initAsync() async {
+    print(
+        'auto print order history screen ${_autoPrinterController.autoPrint.value}');
+    print(
+        'auto print kitchen order history screen ${_autoPrinterController.autoPrintKitchen.value}');
     firebaseListener = _firebaseRef
         .child('orders')
         .child((await SharedPreferences.getInstance())
@@ -1552,8 +1592,8 @@ class _OrderHistoryState extends State<OrderHistory> {
       onWillPop: () async {
         await _orderCustimizationController.callGetRestaurantsDetails();
         Get.off(() => PosMenu(
-              isDining: _cartController.diningValue,
-            ));
+          isDining: _cartController.diningValue,
+        ));
         return Future.value(true);
       },
       child: Scaffold(
@@ -1615,22 +1655,48 @@ class _OrderHistoryState extends State<OrderHistory> {
                                 : Colors.white),
                       ],
                     ),
-                    Container(
-                      width: 180,
-                      margin: EdgeInsets.only(right: 10),
-                      child: TextField(
-                        style: TextStyle(color: Colors.black),
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                            labelText: 'Search',
-                            labelStyle: TextStyle(color: Colors.black)
-                            // border: OutlineInputBorder(),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            await completeOrders().then((value) {
+                              Get.to(() => PosMenu(isDining: false));
+                            });
+                          },
+                          style: ButtonStyle(
+                            // set the height to 50
+                            fixedSize:
+                            MaterialStateProperty.all<Size>(Size(200, 50)),
+                          ),
+                          child: Text(
+                            'Complete All Orders',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontFamily: Constants.appFont),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Container(
+                          width: 180,
+                          margin: EdgeInsets.only(right: 10),
+                          child: TextField(
+                            style: TextStyle(color: Colors.black),
+                            onChanged: (value) {
+                              setState(() {
+                                _searchQuery = value;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                                labelText: 'Search',
+                                labelStyle: TextStyle(color: Colors.black)
+                              // border: OutlineInputBorder(),
                             ),
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
                     // ElevatedButton(
                     //   onPressed: () => _applyFilter(FilterType.TakeAway),
@@ -1654,77 +1720,79 @@ class _OrderHistoryState extends State<OrderHistory> {
                       } else if (snapshot.hasData) {
                         return ListView.builder(
                           padding:
-                              EdgeInsets.only(bottom: 100, left: 10, right: 10),
+                          EdgeInsets.only(bottom: 100, left: 10, right: 10),
                           scrollDirection: Axis.vertical,
                           itemCount: _getFilteredOrders().length,
                           itemBuilder: (BuildContext context, int index) {
                             // build the list item here
                             final order = _getFilteredOrders()[index];
                             print("-----${order.toJson()}-----");
-                            Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
-                            OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
+                            Map<String, dynamic> jsonMap =
+                            jsonDecode(order.orderData!);
+                            OrderDataModel orderData =
+                            OrderDataModel.fromJson(jsonMap);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Padding(
                                   padding:
-                                      const EdgeInsets.only(top: 10, right: 10),
+                                  const EdgeInsets.only(top: 10, right: 10),
                                   child: Text(
                                     (() {
-                                          if (order.addressId != null) {
-                                            if (order.orderStatus ==
-                                                'PENDING') {
-                                              return '${'Ordered On'} ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'ACCEPT') {
-                                              return '${'Accepted On'} ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'APPROVE') {
-                                              return '${'Approve On'} ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'REJECT') {
-                                              return '${'Rejected On'} ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'PICKUP') {
-                                              return '${'Pickedup On'} ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'DELIVERED') {
-                                              return '${'Delivered On'} ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'CANCEL') {
-                                              return 'Canceled On ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'COMPLETE') {
-                                              return 'Delivered On ${order.date}, ${order.time}';
-                                            }
-                                          } else {
-                                            if (order.orderStatus ==
-                                                'PENDING') {
-                                              return 'Ordered On ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'ACCEPT') {
-                                              return 'Accepted On ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'APPROVE') {
-                                              return 'Approve On ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'REJECT') {
-                                              return 'Rejected On ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'PREPARE_FOR_ORDER') {
-                                              return 'PREPARE FOR ORDER ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'READY_FOR_ORDER') {
-                                              return 'READY FOR ORDER ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'CANCEL') {
-                                              return 'Canceled On ${order.date}, ${order.time}';
-                                            } else if (order.orderStatus ==
-                                                'COMPLETE') {
-                                              return 'Delivered On ${order.date}, ${order.time}';
-                                            }
-                                          }
-                                        }()) ??
+                                      if (order.addressId != null) {
+                                        if (order.orderStatus ==
+                                            'PENDING') {
+                                          return '${'Ordered On'} ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'ACCEPT') {
+                                          return '${'Accepted On'} ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'APPROVE') {
+                                          return '${'Approve On'} ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'REJECT') {
+                                          return '${'Rejected On'} ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'PICKUP') {
+                                          return '${'Pickedup On'} ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'DELIVERED') {
+                                          return '${'Delivered On'} ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'CANCEL') {
+                                          return 'Canceled On ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'COMPLETE') {
+                                          return 'Delivered On ${order.date}, ${order.time}';
+                                        }
+                                      } else {
+                                        if (order.orderStatus ==
+                                            'PENDING') {
+                                          return 'Ordered On ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'ACCEPT') {
+                                          return 'Accepted On ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'APPROVE') {
+                                          return 'Approve On ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'REJECT') {
+                                          return 'Rejected On ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'PREPARE_FOR_ORDER') {
+                                          return 'PREPARE FOR ORDER ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'READY_FOR_ORDER') {
+                                          return 'READY FOR ORDER ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'CANCEL') {
+                                          return 'Canceled On ${order.date}, ${order.time}';
+                                        } else if (order.orderStatus ==
+                                            'COMPLETE') {
+                                          return 'Delivered On ${order.date}, ${order.time}';
+                                        }
+                                      }
+                                    }()) ??
                                         '',
                                     style: TextStyle(
                                         color: Color(Constants.colorGray),
@@ -1738,12 +1806,10 @@ class _OrderHistoryState extends State<OrderHistory> {
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
                                   margin: EdgeInsets.only(
-                                      top: 20,
-                                      left: 16,
-                                      right: 16,
-                                      bottom: 20),
+                                      top: 20, left: 16, right: 16, bottom: 20),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                     children: [
                                       // (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING' || _orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE')?
                                       //
@@ -1787,7 +1853,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                       // ):Container(),
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           // Padding(
                                           //   padding:
@@ -1828,17 +1894,19 @@ class _OrderHistoryState extends State<OrderHistory> {
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.only(
-                                                          left: 10, top: 10),
+                                                  const EdgeInsets.only(
+                                                      left: 10, top: 10),
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
                                                     children: [
                                                       Expanded(
                                                         child: Text(
@@ -1853,192 +1921,163 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                           ),
                                                         ),
                                                       ),
-                            constraints.maxWidth > 650 ? Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if ((_printerController
-                                            .printerModel
-                                            .value
-                                            .ipPos !=
-                                            null && _printerController
-                                            .printerModel
-                                            .value
-                                            .ipPos!.isNotEmpty) &&
-                                            (_printerController
-                                                .printerModel
-                                                .value
-                                                .portPos !=
-                                                null && _printerController
-                                                .printerModel
-                                                .value
-                                                .portPos!.isNotEmpty)) {
-                                          testPrintPOS(
-                                              _printerController
-                                                  .printerModel
-                                                  .value
-                                                  .ipPos!,
-                                              int.parse(_printerController
-                                                  .printerModel
-                                                  .value
-                                                  .portPos
-                                                  .toString()),
-                                              context,
-                                              order);
-                                        } else {
-                                          Get.snackbar(
-                                              "Error",
-                                              "Please add printer ip and port");
-                                        }
-                                      },
-                                      child: Text(
-                                        "POS Print",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if ((_printerController
-                                            .printerModel
-                                            .value
-                                            .ipKitchen !=
-                                            null && _printerController
-                                            .printerModel
-                                            .value
-                                            .ipKitchen!.isNotEmpty) &&
-                                            (_printerController
-                                                .printerModel
-                                                .value
-                                                .portKitchen !=
-                                                null && _printerController
-                                                .printerModel
-                                                .value
-                                                .portKitchen!.isNotEmpty)) {
-                                          testPrintKitchen(
-                                              _printerController.printerModel
-                                                  .value.ipKitchen!,
-                                              int.parse(_printerController
-                                                  .printerModel.value
-                                                  .portKitchen
-                                                  .toString()),
-                                              context,
-                                              order);
-                                        } else {
-                                          Get.snackbar(
-                                              "Error",
-                                              "Please add kitchen printer ip and port");
-                                        }
-                                      },
-                                      child: Text(
-                                        "Kitchen Print",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ) : Padding(
-                                padding: const EdgeInsets.only(right: 4),
-                                child: Column(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      if ((_printerController
-                                          .printerModel
-                                          .value
-                                          .ipPos !=
-                                          null && _printerController
-                                          .printerModel
-                                          .value
-                                          .ipPos!.isNotEmpty) &&
-                                          (_printerController
-                                              .printerModel
-                                              .value
-                                              .portPos !=
-                                              null && _printerController
-                                              .printerModel
-                                              .value
-                                              .portPos!.isNotEmpty)) {
-                                        testPrintPOS(
-                                            _printerController
-                                                .printerModel
-                                                .value
-                                                .ipPos!,
-                                            int.parse(_printerController
-                                                .printerModel
-                                                .value
-                                                .portPos
-                                                .toString()),
-                                            context,
-                                            order);
-                                      } else {
-                                        Get.snackbar(
-                                            "Error",
-                                            "Please add printer ip and port");
-                                      }
-                                    },
-                                    child: Text(
-                                      "POS Print",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      if ((_printerController
-                                          .printerModel
-                                          .value
-                                          .ipKitchen !=
-                                          null && _printerController
-                                          .printerModel
-                                          .value
-                                          .ipKitchen!.isNotEmpty) &&
-                                          (_printerController
-                                              .printerModel
-                                              .value
-                                              .portKitchen !=
-                                              null && _printerController
-                                              .printerModel
-                                              .value
-                                              .portKitchen!.isNotEmpty)) {
-                                        testPrintKitchen(
-                                            _printerController.printerModel
-                                                .value.ipKitchen!,
-                                            int.parse(_printerController
-                                                .printerModel.value
-                                                .portKitchen
-                                                .toString()),
-                                            context,
-                                            order);
-                                      } else {
-                                        Get.snackbar(
-                                            "Error",
-                                            "Please add kitchen printer ip and port");
-                                      }
-                                    },
-                                    child: Text(
-                                      "Kitchen Print",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                            ),
-                              )
+                                                      constraints.maxWidth > 650
+                                                          ? Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .only(
+                                                                right: 4),
+                                                            child:
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () {
+                                                                if (_autoPrinterController
+                                                                    .autoPrint
+                                                                    .value ==
+                                                                    true) {
+                                                                  if ((_printerController.printerModel.value.ipPos != null && _printerController.printerModel.value.ipPos!.isNotEmpty) &&
+                                                                      (_printerController.printerModel.value.portPos != null &&
+                                                                          _printerController.printerModel.value.portPos!.isNotEmpty)) {
+                                                                    testPrintPOS(
+                                                                        _printerController.printerModel.value.ipPos!,
+                                                                        int.parse(_printerController.printerModel.value.portPos.toString()),
+                                                                        context,
+                                                                        order);
+                                                                  } else {
+                                                                    Get.snackbar(
+                                                                        "Error",
+                                                                        "Please add printer ip and port");
+                                                                  }
+                                                                }
+                                                              },
+                                                              child: Text(
+                                                                "POS Print",
+                                                                textAlign:
+                                                                TextAlign
+                                                                    .center,
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                  18,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .only(
+                                                                right: 4),
+                                                            child:
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () {
+                                                                if (_autoPrinterController
+                                                                    .autoPrintKitchen
+                                                                    .value ==
+                                                                    true) {
+                                                                  if ((_printerController.printerModel.value.ipKitchen != null && _printerController.printerModel.value.ipKitchen!.isNotEmpty) &&
+                                                                      (_printerController.printerModel.value.portKitchen != null &&
+                                                                          _printerController.printerModel.value.portKitchen!.isNotEmpty)) {
+                                                                    testPrintKitchen(
+                                                                        _printerController.printerModel.value.ipKitchen!,
+                                                                        int.parse(_printerController.printerModel.value.portKitchen.toString()),
+                                                                        context,
+                                                                        order);
+                                                                  } else {
+                                                                    Get.snackbar(
+                                                                        "Error",
+                                                                        "Please add kitchen printer ip and port");
+                                                                  }
+                                                                }
+                                                              },
+                                                              child: Text(
+                                                                "Kitchen Print",
+                                                                textAlign:
+                                                                TextAlign
+                                                                    .center,
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                  18,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                          : Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .only(
+                                                            right: 4),
+                                                        child: Column(
+                                                          children: [
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () {
+                                                                if ((_printerController.printerModel.value.ipPos != null &&
+                                                                    _printerController
+                                                                        .printerModel.value.ipPos!.isNotEmpty) &&
+                                                                    (_printerController.printerModel.value.portPos != null &&
+                                                                        _printerController.printerModel.value.portPos!.isNotEmpty)) {
+                                                                  testPrintPOS(
+                                                                      _printerController.printerModel.value.ipPos!,
+                                                                      int.parse(_printerController.printerModel.value.portPos.toString()),
+                                                                      context,
+                                                                      order);
+                                                                } else {
+                                                                  Get.snackbar(
+                                                                      "Error",
+                                                                      "Please add printer ip and port");
+                                                                }
+                                                              },
+                                                              child: Text(
+                                                                "POS Print",
+                                                                textAlign:
+                                                                TextAlign
+                                                                    .center,
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                  18,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            ElevatedButton(
+                                                              onPressed:
+                                                                  () {
+                                                                if ((_printerController.printerModel.value.ipKitchen != null &&
+                                                                    _printerController
+                                                                        .printerModel.value.ipKitchen!.isNotEmpty) &&
+                                                                    (_printerController.printerModel.value.portKitchen != null &&
+                                                                        _printerController.printerModel.value.portKitchen!.isNotEmpty)) {
+                                                                  testPrintKitchen(
+                                                                      _printerController.printerModel.value.ipKitchen!,
+                                                                      int.parse(_printerController.printerModel.value.portKitchen.toString()),
+                                                                      context,
+                                                                      order);
+                                                                } else {
+                                                                  Get.snackbar(
+                                                                      "Error",
+                                                                      "Please add kitchen printer ip and port");
+                                                                }
+                                                              },
+                                                              child: Text(
+                                                                "Kitchen Print",
+                                                                textAlign:
+                                                                TextAlign
+                                                                    .center,
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                  18,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
 
@@ -2160,70 +2199,99 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                 //         13),
                                                 //   ),
                                                 // ),
-                                                order.tableNo == 0 || order.tableNo == null
+                                                order.tableNo == 0 ||
+                                                    order.tableNo == null
                                                     ? SizedBox()
                                                     : Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 3,
-                                                                left: 10,
-                                                                right: 5),
-                                                        child: Text(
-                                                          "Table No ${order.tableNo.toString()}" ??
-                                                              '',
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  Constants
-                                                                      .appFontBold,
-                                                              fontSize: 16),
-                                                        ),
-                                                      ),
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      top: 3,
+                                                      left: 10,
+                                                      right: 5),
+                                                  child: Text(
+                                                    "Table No ${order.tableNo.toString()}" ??
+                                                        '',
+                                                    overflow: TextOverflow
+                                                        .ellipsis,
+                                                    style: TextStyle(
+                                                        fontFamily: Constants
+                                                            .appFontBold,
+                                                        fontSize: 16),
+                                                  ),
+                                                ),
                                                 SizedBox(
-                                                  height: ScreenUtil()
-                                                      .setHeight(5),
+                                                  height:
+                                                  ScreenUtil().setHeight(5),
                                                 ),
                                                 ListView.builder(
-                                                    itemCount: orderData.cart!.length,
+                                                    itemCount:
+                                                    orderData.cart!.length,
                                                     shrinkWrap: true,
-                                                    itemBuilder: (context,itemIndex){
-                                                      String category=orderData.cart![itemIndex].category!;
-                                                      MenuCategory? menuCategory=orderData.cart![itemIndex].menuCategory;
-                                                      List<Menu> menu=orderData.cart![itemIndex].menu!;
+                                                    itemBuilder:
+                                                        (context, itemIndex) {
+                                                      String category =
+                                                      orderData
+                                                          .cart![itemIndex]
+                                                          .category!;
+                                                      MenuCategory?
+                                                      menuCategory =
+                                                          orderData
+                                                              .cart![itemIndex]
+                                                              .menuCategory;
+                                                      List<Menu> menu =
+                                                      orderData
+                                                          .cart![itemIndex]
+                                                          .menu!;
                                                       var price;
-                                                      if(order.deliveryType == 'DINING') {
-                                                        price =  orderData.cart![
-                                                        itemIndex]
+                                                      if (order.deliveryType ==
+                                                          'DINING') {
+                                                        price = orderData
+                                                            .cart![itemIndex]
                                                             .diningAmount;
                                                       } else {
-                                                        price =  orderData.cart![
-                                                        itemIndex]
+                                                        price = orderData
+                                                            .cart![itemIndex]
                                                             .totalAmount;
                                                       }
-                                                      if(category=='SINGLE'){
+                                                      if (category ==
+                                                          'SINGLE') {
                                                         return ListView.builder(
                                                             shrinkWrap: true,
-                                                            itemCount: menu.length,
-                                                            physics: NeverScrollableScrollPhysics(),
-                                                            itemBuilder: (context,menuIndex){
-                                                              Menu menuItem= menu[menuIndex];
+                                                            itemCount:
+                                                            menu.length,
+                                                            physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                            itemBuilder:
+                                                                (context,
+                                                                menuIndex) {
+                                                              Menu menuItem =
+                                                              menu[
+                                                              menuIndex];
                                                               return Column(
-                                                                mainAxisSize: MainAxisSize.min,
+                                                                mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
                                                                 children: [
                                                                   Flexible(
-                                                                    fit: FlexFit.loose,
-                                                                    child:  Padding(
-                                                                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
-                                                                      child: Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    fit: FlexFit
+                                                                        .loose,
+                                                                    child:
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                          10.0,
+                                                                          vertical:
+                                                                          3),
+                                                                      child:
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                        MainAxisAlignment.spaceBetween,
                                                                         children: [
                                                                           Row(
                                                                             children: [
-                                                                              Text('${menu[menuIndex].name!}${orderData.cart![itemIndex].size!=null?' ( ${orderData.cart![itemIndex].size['size_name']}) ':''} x ${orderData.cart![itemIndex].quantity}  ',
-                                                                                  style: TextStyle(color: Color(Constants.colorTheme),fontWeight: FontWeight.w900, fontSize: 14)),
+                                                                              Text('${menu[menuIndex].name!}${orderData.cart![itemIndex].size != null ? ' ( ${orderData.cart![itemIndex].size['size_name']}) ' : ''} x ${orderData.cart![itemIndex].quantity}  ', style: TextStyle(color: Color(Constants.colorTheme), fontWeight: FontWeight.w900, fontSize: 14)),
                                                                               // Container(
                                                                               //   height: 20,
                                                                               //   width: 60,
@@ -2238,205 +2306,273 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                               // ),
                                                                             ],
                                                                           ),
-                                                                          Text(price.toString())
+                                                                          Text(price
+                                                                              .toString())
                                                                         ],
                                                                       ),
                                                                     ),
                                                                   ),
                                                                   Flexible(
-                                                                    fit: FlexFit.loose,
+                                                                    fit: FlexFit
+                                                                        .loose,
                                                                     child: ListView.builder(
                                                                         shrinkWrap: true,
                                                                         physics: NeverScrollableScrollPhysics(),
-
                                                                         itemCount: menuItem.addons!.length,
                                                                         padding: EdgeInsets.only(left: 25),
-                                                                        itemBuilder: (context,addonIndex){
-                                                                          Addon addonItem=menuItem.addons![addonIndex];
+                                                                        itemBuilder: (context, addonIndex) {
+                                                                          Addon
+                                                                          addonItem =
+                                                                          menuItem.addons![addonIndex];
                                                                           return Padding(
-                                                                            padding: const EdgeInsets.only(top: 5.0),
-                                                                            child: Row(
+                                                                            padding:
+                                                                            const EdgeInsets.only(top: 5.0),
+                                                                            child:
+                                                                            Row(
                                                                               children: [
-                                                                                Text(addonItem.name+' '),
+                                                                                Text(addonItem.name + ' '),
                                                                                 Container(
                                                                                   height: 20,
                                                                                   padding: EdgeInsets.all(3.0),
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: Colors.black,
-                                                                                      borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                                                  ),
+                                                                                  decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
                                                                                   child: Center(
-                                                                                    child: Text('ADDONS',
-                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),),
+                                                                                    child: Text(
+                                                                                      'ADDONS',
+                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                                    ),
                                                                                   ),
                                                                                 )
                                                                               ],
                                                                             ),
                                                                           );
-
                                                                         }),
                                                                   )
                                                                 ],
                                                               );
                                                             });
-                                                      }
-                                                      else if(category=='HALF_N_HALF'){
+                                                      } else if (category ==
+                                                          'HALF_N_HALF') {
                                                         return Column(
-                                                          mainAxisSize: MainAxisSize.min,
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
                                                           children: [
                                                             Flexible(
-                                                              fit: FlexFit.loose,
-                                                              child:Padding(
-                                                                padding: const EdgeInsets.only(top: 20.0,left: 15.0),
+                                                              fit:
+                                                              FlexFit.loose,
+                                                              child: Padding(
+                                                                padding: const EdgeInsets
+                                                                    .only(
+                                                                    top: 20.0,
+                                                                    left: 15.0),
                                                                 child: Row(
                                                                   children: [
-                                                                    Text(menuCategory!.name
-                                                                        +(orderData.cart![itemIndex].size!=null?' ( ${orderData.cart![itemIndex].size?.sizeName}) ':'')
-                                                                        +' x ${orderData.cart![itemIndex].quantity}  '
-                                                                        ,style: TextStyle(color: Color(Constants.colorTheme),fontWeight: FontWeight.w900, fontSize: 16)
-                                                                    ),
+                                                                    Text(
+                                                                        menuCategory!.name +
+                                                                            (orderData.cart![itemIndex].size != null
+                                                                                ? ' ( ${orderData.cart![itemIndex].size?.sizeName}) '
+                                                                                : '') +
+                                                                            ' x ${orderData.cart![itemIndex].quantity}  ',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                            Color(Constants.colorTheme),
+                                                                            fontWeight: FontWeight.w900,
+                                                                            fontSize: 16)),
                                                                     Container(
-                                                                      height: 20,
+                                                                      height:
+                                                                      20,
                                                                       decoration: BoxDecoration(
-                                                                          color: Color(Constants.colorTheme),
-                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                                      ),
-                                                                      child: Center(
-                                                                        child: Text(' HALF & HALF ',
-                                                                            style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)
-                                                                        ),
+                                                                          color: Color(Constants
+                                                                              .colorTheme),
+                                                                          borderRadius:
+                                                                          BorderRadius.all(Radius.circular(4.0))),
+                                                                      child:
+                                                                      Center(
+                                                                        child: Text(
+                                                                            ' HALF & HALF ',
+                                                                            style: TextStyle(
+                                                                                color: Colors.white,
+                                                                                fontWeight: FontWeight.w300,
+                                                                                fontSize: 16)),
                                                                       ),
                                                                     )
                                                                   ],
                                                                 ),
-                                                              ),),
+                                                              ),
+                                                            ),
                                                             Flexible(
-                                                              fit: FlexFit.loose,
-                                                              child: ListView.builder(
-                                                                  shrinkWrap: true,
-                                                                  padding: EdgeInsets.only(left: 25),
-                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                  itemCount: menu.length,
-                                                                  itemBuilder: (context,menuIndex){
-                                                                    Menu menuItem= menu[menuIndex];
+                                                              fit:
+                                                              FlexFit.loose,
+                                                              child: ListView
+                                                                  .builder(
+                                                                  shrinkWrap:
+                                                                  true,
+                                                                  padding: EdgeInsets.only(
+                                                                      left:
+                                                                      25),
+                                                                  physics:
+                                                                  NeverScrollableScrollPhysics(),
+                                                                  itemCount:
+                                                                  menu
+                                                                      .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                      menuIndex) {
+                                                                    Menu
+                                                                    menuItem =
+                                                                    menu[menuIndex];
                                                                     return Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      mainAxisSize:
+                                                                      MainAxisSize.min,
+                                                                      crossAxisAlignment:
+                                                                      CrossAxisAlignment.start,
                                                                       children: [
                                                                         Flexible(
                                                                             fit: FlexFit.loose,
-                                                                            child:Padding(
+                                                                            child: Padding(
                                                                               padding: const EdgeInsets.only(top: 5.0),
                                                                               child: Row(
                                                                                 children: [
-                                                                                  Text(menuItem.name!+' ',style: TextStyle(fontWeight: FontWeight.w900),),
-                                                                                  if(menuIndex==0)
+                                                                                  Text(
+                                                                                    menuItem.name! + ' ',
+                                                                                    style: TextStyle(fontWeight: FontWeight.w900),
+                                                                                  ),
+                                                                                  if (menuIndex == 0)
                                                                                     Container(
                                                                                       height: 20,
                                                                                       padding: EdgeInsets.all(3.0),
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: Color(Constants.colorTheme),
-                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                                                      ),
+                                                                                      decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: BorderRadius.all(Radius.circular(4.0))),
                                                                                       child: Center(
-                                                                                        child: Text('First Half'.toUpperCase(),
-                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),),
+                                                                                        child: Text(
+                                                                                          'First Half'.toUpperCase(),
+                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                                                                                        ),
                                                                                       ),
                                                                                     )
                                                                                   else
                                                                                     Container(
                                                                                       height: 20,
                                                                                       padding: EdgeInsets.all(3.0),
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: Color(Constants.colorTheme),
-                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                                                      ),
-
+                                                                                      decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: BorderRadius.all(Radius.circular(4.0))),
                                                                                       child: Center(
-                                                                                        child: Text('Second Half'.toUpperCase(),
-                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),),
+                                                                                        child: Text(
+                                                                                          'Second Half'.toUpperCase(),
+                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                                                                                        ),
                                                                                       ),
                                                                                     )
                                                                                 ],
                                                                               ),
-                                                                            )
-                                                                        ),
+                                                                            )),
                                                                         Flexible(
                                                                           fit: FlexFit.loose,
                                                                           child: ListView.builder(
                                                                               shrinkWrap: true,
                                                                               physics: NeverScrollableScrollPhysics(),
-                                                                              padding: EdgeInsets.only(left: 16,top: 5.0,),
-                                                                              itemCount:menuItem.addons!.length,
-                                                                              itemBuilder: (context,addonIndex) {
-                                                                                Addon addonItem=menuItem.addons![addonIndex];
+                                                                              padding: EdgeInsets.only(
+                                                                                left: 16,
+                                                                                top: 5.0,
+                                                                              ),
+                                                                              itemCount: menuItem.addons!.length,
+                                                                              itemBuilder: (context, addonIndex) {
+                                                                                Addon addonItem = menuItem.addons![addonIndex];
                                                                                 return Padding(
                                                                                   padding: const EdgeInsets.only(bottom: 5.0),
-                                                                                  child: Row(children: [
-                                                                                    Text(addonItem.name+' '),
-                                                                                    Container(
-                                                                                      height: 20,
-                                                                                      padding: EdgeInsets.all(3.0),
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: Colors.black,
-                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      Text(addonItem.name + ' '),
+                                                                                      Container(
+                                                                                        height: 20,
+                                                                                        padding: EdgeInsets.all(3.0),
+                                                                                        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                                                                                        child: Center(
+                                                                                          child: Text(
+                                                                                            'ADDONS',
+                                                                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                                          ),
+                                                                                        ),
                                                                                       ),
-                                                                                      child: Center(
-                                                                                        child: Text('ADDONS',
-                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],),
+                                                                                    ],
+                                                                                  ),
                                                                                 );
-                                                                              }
-                                                                          ),
+                                                                              }),
                                                                         )
                                                                       ],
                                                                     );
-
                                                                   }),
                                                             ),
                                                           ],
                                                         );
-                                                      }else if(category=='DEALS'){
+                                                      } else if (category ==
+                                                          'DEALS') {
                                                         return Column(
-                                                          mainAxisSize: MainAxisSize.min,
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
                                                           children: [
                                                             Flexible(
-                                                              fit: FlexFit.loose,
+                                                              fit:
+                                                              FlexFit.loose,
                                                               child: Padding(
-                                                                padding: const EdgeInsets.only(top: 20.0,left: 15.0),
+                                                                padding: const EdgeInsets
+                                                                    .only(
+                                                                    top: 20.0,
+                                                                    left: 15.0),
                                                                 child: Row(
                                                                   children: [
-                                                                    Text(menuCategory!.name
-                                                                        +'  x ${orderData.cart![itemIndex].quantity} '
-                                                                        ,style: TextStyle(color: Color(Constants.colorTheme),fontWeight: FontWeight.w900, fontSize: 16)
-                                                                    ),
+                                                                    Text(
+                                                                        menuCategory!.name +
+                                                                            '  x ${orderData.cart![itemIndex].quantity} ',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                            Color(Constants.colorTheme),
+                                                                            fontWeight: FontWeight.w900,
+                                                                            fontSize: 16)),
                                                                     Container(
-                                                                        height: 20,
-                                                                        padding: EdgeInsets.all(3.0),
+                                                                        height:
+                                                                        20,
+                                                                        padding:
+                                                                        EdgeInsets.all(
+                                                                            3.0),
                                                                         decoration: BoxDecoration(
-                                                                            color: Color(Constants.colorTheme),
-                                                                            borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                                        ),
-                                                                        child: Center(child: Text('DEALS',style: TextStyle(color: Colors.white,fontWeight:FontWeight.w500 , fontSize: 14))))
+                                                                            color: Color(Constants
+                                                                                .colorTheme),
+                                                                            borderRadius: BorderRadius.all(Radius.circular(
+                                                                                4.0))),
+                                                                        child: Center(
+                                                                            child:
+                                                                            Text('DEALS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14))))
                                                                   ],
                                                                 ),
                                                               ),
                                                             ),
                                                             Flexible(
-                                                              fit: FlexFit.loose,
-                                                              child: ListView.builder(
-                                                                  shrinkWrap: true,
-                                                                  padding: EdgeInsets.only(left: 25,top: 5.0),
-                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                  itemCount: menu.length,
-                                                                  itemBuilder: (context,menuIndex){
-                                                                    Menu menuItem= menu[menuIndex];
+                                                              fit:
+                                                              FlexFit.loose,
+                                                              child: ListView
+                                                                  .builder(
+                                                                  shrinkWrap:
+                                                                  true,
+                                                                  padding: EdgeInsets.only(
+                                                                      left:
+                                                                      25,
+                                                                      top:
+                                                                      5.0),
+                                                                  physics:
+                                                                  NeverScrollableScrollPhysics(),
+                                                                  itemCount:
+                                                                  menu
+                                                                      .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                      menuIndex) {
+                                                                    Menu
+                                                                    menuItem =
+                                                                    menu[menuIndex];
                                                                     // DealsItems dealsItems=menu[menuIndex].dealsItems!;
                                                                     return Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      mainAxisSize:
+                                                                      MainAxisSize.min,
+                                                                      crossAxisAlignment:
+                                                                      CrossAxisAlignment.start,
                                                                       children: [
                                                                         // Flexible(
                                                                         //     fit: FlexFit.loose,
@@ -2459,34 +2595,36 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                           child: ListView.builder(
                                                                               shrinkWrap: true,
                                                                               physics: NeverScrollableScrollPhysics(),
-                                                                              padding: EdgeInsets.only(left: 24,top: 5.0,),
-                                                                              itemCount:menuItem.addons!.length,
-                                                                              itemBuilder: (context,addonIndex) {
-                                                                                Addon addonItem=menuItem.addons![addonIndex];
+                                                                              padding: EdgeInsets.only(
+                                                                                left: 24,
+                                                                                top: 5.0,
+                                                                              ),
+                                                                              itemCount: menuItem.addons!.length,
+                                                                              itemBuilder: (context, addonIndex) {
+                                                                                Addon addonItem = menuItem.addons![addonIndex];
                                                                                 return Padding(
                                                                                   padding: const EdgeInsets.only(bottom: 5.0),
-                                                                                  child: Row(children: [
-                                                                                    Text(addonItem.name+' '),
-                                                                                    Container(
-                                                                                      height: 20,
-                                                                                      padding: EdgeInsets.all(3.0),
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: Colors.black,
-                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                                                                      ),
-                                                                                      child: Center(
-                                                                                        child: Text('ADDONS',
-                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),),
-                                                                                      ),
-                                                                                    )
-                                                                                  ],),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      Text(addonItem.name + ' '),
+                                                                                      Container(
+                                                                                        height: 20,
+                                                                                        padding: EdgeInsets.all(3.0),
+                                                                                        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                                                                                        child: Center(
+                                                                                          child: Text(
+                                                                                            'ADDONS',
+                                                                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                                          ),
+                                                                                        ),
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
                                                                                 );
-                                                                              }
-                                                                          ),
+                                                                              }),
                                                                         )
                                                                       ],
                                                                     );
-
                                                                   }),
                                                             ),
                                                           ],
@@ -2563,37 +2701,35 @@ class _OrderHistoryState extends State<OrderHistory> {
                                       SizedBox(
                                         height: 5,
                                       ),
-                                      order.notes == null  ? SizedBox() :
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal : 8.0,),
+                                      order.notes == null
+                                          ? SizedBox()
+                                          : Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                          horizontal: 8.0,
+                                        ),
                                         child: RichText(
                                           text: TextSpan(
-                                              text:
-                                              'Instructions : ',
+                                              text: 'Instructions : ',
                                               style: TextStyle(
-                                                  color: Colors
-                                                      .black,
+                                                  color: Colors.black,
                                                   fontFamily:
-                                                  Constants
-                                                      .appFont,
-                                                  fontSize:
-                                                  14,
-                                              fontWeight: FontWeight.bold
-                                              ),
-                                              children: <
-                                                  TextSpan>[
+                                                  Constants.appFont,
+                                                  fontSize: 14,
+                                                  fontWeight:
+                                                  FontWeight.bold),
+                                              children: <TextSpan>[
                                                 TextSpan(
                                                   text: '${order.notes}',
                                                   style: TextStyle(
-                                                      color: Colors
-                                                          .black,
+                                                      color: Colors.black,
                                                       fontFamily:
                                                       Constants
                                                           .appFont,
-                                                      fontSize:
-                                                      14,
-                                                      fontWeight: FontWeight.normal
-                                                  ),
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .normal),
                                                 )
                                               ]),
                                         ),
@@ -2625,100 +2761,98 @@ class _OrderHistoryState extends State<OrderHistory> {
                                               flex: 5,
                                               child: Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .stretch,
+                                                CrossAxisAlignment.stretch,
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets
                                                         .symmetric(
                                                         horizontal: 10),
                                                     child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .start,
                                                       children: [
                                                         SizedBox(
                                                           height: 5,
                                                         ),
-                                                         Text(
-                                                              'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.sub_total} ',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontFamily:
-                                                                  Constants
-                                                                      .appFont,
-                                                                  fontSize:
-                                                                  14),
+                                                        Text(
+                                                          'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.sub_total} ',
+                                                          style: TextStyle(
+                                                              color:
+                                                              Colors.black,
+                                                              fontFamily:
+                                                              Constants
+                                                                  .appFont,
+                                                              fontSize: 14),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
-                                                              'Total Tax : ${order.tax} ',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontFamily:
-                                                                  Constants
-                                                                      .appFont,
-                                                                  fontSize:
-                                                                  14),
-
+                                                          'Total Tax : ${order.tax} ',
+                                                          style: TextStyle(
+                                                              color:
+                                                              Colors.black,
+                                                              fontFamily:
+                                                              Constants
+                                                                  .appFont,
+                                                              fontSize: 14),
                                                         ),
-                                                        order.discounts == null  ? SizedBox() : SizedBox(
+                                                        order.discounts == null
+                                                            ? SizedBox()
+                                                            : SizedBox(
                                                           height: 5,
                                                         ),
-                                                        order.discounts == null  ? SizedBox() : Text(
-                                                              'Discounts : ${order.discounts} ',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontFamily:
-                                                                  Constants
-                                                                      .appFont,
-                                                                  fontSize:
-                                                                  14),
+                                                        order.discounts == null
+                                                            ? SizedBox()
+                                                            : Text(
+                                                          'Discounts : ${order.discounts} ',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black,
+                                                              fontFamily:
+                                                              Constants
+                                                                  .appFont,
+                                                              fontSize:
+                                                              14),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
                                                         Row(
                                                           mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                           children: [
                                                             RichText(
                                                               text: TextSpan(
                                                                   text:
-                                                                      'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.amount} ',
+                                                                  'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.amount} ',
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .black,
                                                                       fontFamily:
-                                                                          Constants
-                                                                              .appFont,
+                                                                      Constants
+                                                                          .appFont,
                                                                       fontSize:
-                                                                          14),
+                                                                      14),
                                                                   children: <
                                                                       TextSpan>[
                                                                     TextSpan(
                                                                       text: order.payment_type == "POS CASH" ||
-                                                                              order.payment_type ==
-                                                                                  "POS CARD" ||
-                                                                              order.payment_type ==
-                                                                                  "POS CASH TAKEAWAY" ||
-                                                                              order.payment_type ==
-                                                                                  "POS CARD TAKEAWAY"
+                                                                          order.payment_type == "POS CARD" ||
+                                                                          order.payment_type == "POS CASH TAKEAWAY" ||
+                                                                          order.payment_type == "POS CARD TAKEAWAY"
                                                                           ? '( Paid )'
                                                                           : '( Unpaid )',
                                                                       style: TextStyle(
                                                                           color: Colors
                                                                               .red
                                                                               .shade500,
-                                                                          fontFamily:
-                                                                              Constants
-                                                                                  .appFont,
+                                                                          fontFamily: Constants
+                                                                              .appFont,
                                                                           fontSize:
-                                                                              16),
+                                                                          16),
                                                                     )
                                                                   ]),
                                                             ),
@@ -2727,100 +2861,92 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                 children: [
                                                                   WidgetSpan(
                                                                     child:
-                                                                        Padding(
+                                                                    Padding(
                                                                       padding: const EdgeInsets
-                                                                              .only(
+                                                                          .only(
                                                                           right:
-                                                                              5),
+                                                                          5),
                                                                       child: SvgPicture
                                                                           .asset(
                                                                         (() {
-                                                                              if (_orderHistoryController.listOrderHistory[index].addressId !=
-                                                                                  null) {
-                                                                                if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
-                                                                                  return 'images/ic_pending.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
-                                                                                  return 'images/ic_accept.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
-                                                                                  return 'images/ic_accept.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
-                                                                                  return 'images/ic_cancel.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
-                                                                                  return 'images/ic_pickup.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
-                                                                                  return 'images/ic_completed.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
-                                                                                  return 'images/ic_cancel.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
-                                                                                  return 'images/ic_completed.svg';
-                                                                                } else {
-                                                                                  return 'images/ic_accept.svg';
-                                                                                }
-                                                                              } else {
-                                                                                if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
-                                                                                  return 'images/ic_pending.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
-                                                                                  return 'images/ic_accept.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
-                                                                                  return 'images/ic_pickup.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
-                                                                                  return 'images/ic_completed.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
-                                                                                  return 'images/ic_cancel.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
-                                                                                  return 'images/ic_cancel.svg';
-                                                                                } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
-                                                                                  return 'images/ic_completed.svg';
-                                                                                }
-                                                                              }
-                                                                            }()) ??
+                                                                          if (_orderHistoryController.listOrderHistory[index].addressId != null) {
+                                                                            if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
+                                                                              return 'images/ic_pending.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
+                                                                              return 'images/ic_accept.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
+                                                                              return 'images/ic_accept.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
+                                                                              return 'images/ic_cancel.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
+                                                                              return 'images/ic_pickup.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
+                                                                              return 'images/ic_completed.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
+                                                                              return 'images/ic_cancel.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
+                                                                              return 'images/ic_completed.svg';
+                                                                            } else {
+                                                                              return 'images/ic_accept.svg';
+                                                                            }
+                                                                          } else {
+                                                                            if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
+                                                                              return 'images/ic_pending.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
+                                                                              return 'images/ic_accept.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
+                                                                              return 'images/ic_pickup.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
+                                                                              return 'images/ic_completed.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
+                                                                              return 'images/ic_cancel.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
+                                                                              return 'images/ic_cancel.svg';
+                                                                            } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
+                                                                              return 'images/ic_completed.svg';
+                                                                            }
+                                                                          }
+                                                                        }()) ??
                                                                             '',
                                                                         color:
-                                                                            (() {
+                                                                        (() {
                                                                           // your code here
                                                                           // _orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING' ? 'Ordered on ${_orderHistoryController.listOrderHistory[index].date}, ${_orderHistoryController.listOrderHistory[index].time}' : 'Delivered on October 10,2020, 09:23pm',
                                                                           if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'PENDING') {
-                                                                            return Color(
-                                                                                Constants.colorOrderPending);
+                                                                            return Color(Constants.colorOrderPending);
                                                                           } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'ACCEPT') {
-                                                                            return Color(
-                                                                                Constants.colorBlack);
+                                                                            return Color(Constants.colorBlack);
                                                                           } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'PICKUP') {
-                                                                            return Color(
-                                                                                Constants.colorOrderPickup);
+                                                                            return Color(Constants.colorOrderPickup);
                                                                           }
                                                                         }()),
-                                                                        width: 15,
-                                                                        height: ScreenUtil()
-                                                                            .setHeight(
-                                                                                15),
+                                                                        width:
+                                                                        15,
+                                                                        height:
+                                                                        ScreenUtil().setHeight(15),
                                                                       ),
                                                                     ),
                                                                   ),
                                                                   TextSpan(
-                                                                      text: (() {
-                                                                        if (_orderHistoryController
-                                                                                .listOrderHistory[index]
-                                                                                .deliveryType ==
+                                                                      text:
+                                                                      (() {
+                                                                        if (_orderHistoryController.listOrderHistory[index].deliveryType ==
                                                                             'TAKEAWAY') {
                                                                           if (_orderHistoryController.listOrderHistory[index].orderStatus ==
                                                                               'READY TO PICKUP') {
                                                                             return 'Waiting For User To Pickup';
                                                                           }
                                                                         } else {
-                                                                          if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'READY TO PICKUP' ||
-                                                                              _orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'ACCEPT') {
+                                                                          if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP' ||
+                                                                              _orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
                                                                             return 'Waiting For Driver To Pickup';
                                                                           }
                                                                         }
                                                                         return _orderHistoryController
-                                                                            .listOrderHistory[
-                                                                                index]
+                                                                            .listOrderHistory[index]
                                                                             .orderStatus;
                                                                         // if (_orderHistoryController.listOrderHistory[index].addressId != null) {
                                                                         //
@@ -2869,32 +2995,24 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                           color: (() {
                                                                             if (_orderHistoryController.listOrderHistory[index].addressId !=
                                                                                 null) {
-                                                                              if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'PENDING') {
+                                                                              if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
                                                                                 return Color(Constants.colorOrderPending);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'APPROVE') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
                                                                                 return Color(Constants.colorBlack);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'ACCEPT') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
                                                                                 return Color(Constants.colorBlack);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'REJECT') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
                                                                                 return Color(Constants.colorLike);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'PICKUP') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PICKUP') {
                                                                                 return Color(Constants.colorOrderPickup);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'DELIVERED') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'DELIVERED') {
                                                                                 // return Color(0xffffffff);
 
                                                                                 return Color(Constants.colorTheme);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'CANCEL') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
                                                                                 return Color(Constants.colorTheme);
                                                                                 // return Color(0xffffffff);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'COMPLETE') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
                                                                                 return Color(Constants.colorTheme);
                                                                                 // return Color(0xffffffff);
                                                                               } else {
@@ -2902,32 +3020,24 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                                 return Color(Constants.colorTheme);
                                                                               }
                                                                             } else {
-                                                                              if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'PENDING') {
+                                                                              if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PENDING') {
                                                                                 return Color(Constants.colorOrderPending);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'APPROVE') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'APPROVE') {
                                                                                 return Color(Constants.colorBlack);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'ACCEPT') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'ACCEPT') {
                                                                                 return Color(Constants.colorBlack);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'REJECT') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'REJECT') {
                                                                                 return Color(Constants.colorLike);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'PREPARING FOOD') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'PREPARING FOOD') {
                                                                                 return Color(Constants.colorOrderPickup);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'READY TO PICKUP') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'READY TO PICKUP') {
                                                                                 // return Color(0xffffffff);
 
                                                                                 return Color(Constants.colorTheme);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'CANCEL') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'CANCEL') {
                                                                                 // return Color(0xffffffff);
                                                                                 return Color(Constants.colorTheme);
-                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus ==
-                                                                                  'COMPLETE') {
+                                                                              } else if (_orderHistoryController.listOrderHistory[index].orderStatus == 'COMPLETE') {
                                                                                 return Color(Constants.colorTheme);
                                                                                 // return Color(0xffffffff);
                                                                               } else {
@@ -3290,457 +3400,462 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                   //Order Cancel
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                    const EdgeInsets.all(
+                                                        8.0),
                                                     child:
-                                                        constraints.maxWidth >
-                                                                600
-                                                            ? Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
+                                                    constraints.maxWidth >
+                                                        600
+                                                        ? Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        ///Complete this order button start
+                                                        order.orderStatus != 'COMPLETE' &&
+                                                            order.deliveryType ==
+                                                                'TAKEAWAY' &&
+                                                            order.deliveryType !=
+                                                                'DINING' &&
+                                                            (order.payment_type == 'POS CASH' ||
+                                                                order.payment_type == 'POS CARD')
+                                                            ? ElevatedButton(
+                                                          onPressed:
+                                                              () async {
+                                                            await getTakeAwayValue(order.id!).then((value) {
+                                                              print("value ${value.data}");
+                                                              Get.to(() => PosMenu(isDining: false));
+                                                            });
+                                                          },
+                                                          child:
+                                                          RichText(
+                                                            textAlign:
+                                                            TextAlign.center,
+                                                            text:
+                                                            TextSpan(
+                                                              children: [
+                                                                WidgetSpan(
+                                                                  child: Padding(
+                                                                    padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                                    child: SvgPicture.asset(
+                                                                      'images/ic_completed.svg',
+                                                                      width: ScreenUtil().setWidth(20),
+                                                                      //color: Color(Constants.colorRate),
+                                                                      height: ScreenUtil().setHeight(20),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: 'Complete this order',
+                                                                  style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                            : Container(),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+
+                                                        ///Complete this order button end
+
+                                                        ///Edit Order Button Start
+                                                        order.payment_type ==
+                                                            "INCOMPLETE ORDER"
+                                                            ? order.orderStatus ==
+                                                            'CANCEL'
+                                                            ? Container()
+                                                            : ElevatedButton(
+                                                          onPressed: () {
+                                                            _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                            _cartController.cartMaster?.oldOrderId = order.id;
+                                                            if (order.tableNo != null) {
+                                                              _cartController.tableNumber = order.tableNo!;
+                                                            }
+                                                            String colorCode = order.order_id.toString();
+                                                            int colorInt = int.parse(colorCode.substring(1));
+                                                            print("color int ${colorInt}");
+                                                            SharedPreferences.getInstance().then((value) {
+                                                              value.setInt(Constants.order_main_id.toString(), colorInt);
+                                                            });
+                                                            order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+                                                            order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
+                                                            order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                            print("_cartController.notes before ${_cartController.notes}");
+                                                            print("order notes  before ${order.notes}");
+                                                            order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
+                                                            // Constants.order_main_id = order.order_id.toString()
+                                                            print("server order id ${order.order_id.toString()}");
+                                                            print("order notes ${order.notes}");
+                                                            print("_cartController.notes after ${_cartController.notes}");
+                                                            Get.to(() => PosMenu(isDining: _cartController.diningValue));
+                                                          },
+                                                          child: Text(
+                                                            "Edit this order",
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
+                                                        )
+                                                            : Container(),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+
+                                                        ///End Edit Order Button
+
+                                                        /// Cancel Order Button Start
+                                                        order.orderStatus ==
+                                                            'PENDING' ||
+                                                            order.orderStatus ==
+                                                                'APPROVE'
+                                                            ? ElevatedButton(
+                                                          // style: ElevatedButton
+                                                          //     .styleFrom(
+                                                          //   primary: Colors.white,
+                                                          //   shape: RoundedRectangleBorder(
+                                                          //       borderRadius: BorderRadius.only(
+                                                          //           bottomLeft: Radius
+                                                          //               .circular(
+                                                          //                   20),
+                                                          //           bottomRight: Radius
+                                                          //               .circular(
+                                                          //                   20)),
+                                                          //       side: BorderSide
+                                                          //           .none),
+                                                          // ),
+                                                          onPressed:
+                                                              () async {
+                                                            await showCancelOrderDialog(order.id);
+                                                            setState(() {
+                                                              orderHistoryRef = _orderHistoryController.refreshOrderHistory(context);
+                                                            });
+                                                          },
+                                                          child:
+                                                          RichText(
+                                                            textAlign:
+                                                            TextAlign.center,
+                                                            text:
+                                                            TextSpan(
+                                                              children: [
+                                                                WidgetSpan(
+                                                                  child: Padding(
+                                                                    padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                                    child: SvgPicture.asset(
+                                                                      'images/ic_cancel.svg',
+                                                                      width: ScreenUtil().setWidth(20),
+                                                                      //color: Color(Constants.colorRate),
+                                                                      height: ScreenUtil().setHeight(20),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: 'Cancel this order',
+                                                                  style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      // color: Color(Constants
+                                                                      //     .colorLike),
+                                                                      fontSize: 18,
+                                                                      fontFamily: Constants.appFont),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                        // ? Column(
+                                                        //     children: [
+                                                        //       Container(
+                                                        //         // height: ScreenUtil()
+                                                        //         //     .setHeight(50),
+                                                        //         // width: double.minPositive,
+                                                        //         child:
+                                                        //             ElevatedButton(
+                                                        //           // style: ElevatedButton
+                                                        //           //     .styleFrom(
+                                                        //           //   primary: Colors.white,
+                                                        //           //   shape: RoundedRectangleBorder(
+                                                        //           //       borderRadius: BorderRadius.only(
+                                                        //           //           bottomLeft: Radius
+                                                        //           //               .circular(
+                                                        //           //                   20),
+                                                        //           //           bottomRight: Radius
+                                                        //           //               .circular(
+                                                        //           //                   20)),
+                                                        //           //       side: BorderSide
+                                                        //           //           .none),
+                                                        //           // ),
+                                                        //           onPressed:
+                                                        //               () async {
+                                                        //             await showCancelOrderDialog(
+                                                        //                 order.id);
+                                                        //             setState(
+                                                        //                 () {
+                                                        //               orderHistoryRef =
+                                                        //                   _orderHistoryController.refreshOrderHistory(context);
+                                                        //             });
+                                                        //           },
+                                                        //           child:
+                                                        //               RichText(
+                                                        //             text:
+                                                        //                 TextSpan(
+                                                        //               children: [
+                                                        //                 WidgetSpan(
+                                                        //                   child: Padding(
+                                                        //                     padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                        //                     child: SvgPicture.asset(
+                                                        //                       'images/ic_cancel.svg',
+                                                        //                       width: ScreenUtil().setWidth(20),
+                                                        //                       //color: Color(Constants.colorRate),
+                                                        //                       height: ScreenUtil().setHeight(20),
+                                                        //                     ),
+                                                        //                   ),
+                                                        //                 ),
+                                                        //                 TextSpan(
+                                                        //                   text: 'Cancel this order',
+                                                        //                   style: TextStyle(
+                                                        //                       color: Colors.white,
+                                                        //                       // color: Color(Constants
+                                                        //                       //     .colorLike),
+                                                        //                       fontSize: 18,
+                                                        //                       fontFamily: Constants.appFont),
+                                                        //                 ),
+                                                        //               ],
+                                                        //             ),
+                                                        //           ),
+                                                        //         ),
+                                                        //       ),
+                                                        //     ],
+                                                        //   )
+                                                            : Container(),
+
+                                                        ///CAncel Order button End
+                                                      ],
+                                                    )
+                                                        : Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        ///Complete this order button start
+                                                        order.orderStatus != 'COMPLETE' &&
+                                                            order.deliveryType ==
+                                                                'TAKEAWAY' &&
+                                                            order.deliveryType !=
+                                                                'DINING' &&
+                                                            (order.payment_type == 'POS CASH' ||
+                                                                order.payment_type == 'POS CARD')
+                                                            ? Expanded(
+                                                          child:
+                                                          ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              await getTakeAwayValue(order.id!).then((value) {
+                                                                print("value ${value.data}");
+                                                                Get.to(() => PosMenu(isDining: false));
+                                                              });
+                                                            },
+                                                            child:
+                                                            RichText(
+                                                              textAlign: TextAlign.center,
+                                                              text: TextSpan(
                                                                 children: [
-                                                                  ///Complete this order button start
-                                                                  order.orderStatus != 'COMPLETE' &&
-                                                                          order.deliveryType ==
-                                                                              'TAKEAWAY' &&
-                                                                          order.deliveryType !=
-                                                                              'DINING' &&
-                                                                          (order.payment_type == 'POS CASH' ||
-                                                                              order.payment_type == 'POS CARD')
-                                                                      ? ElevatedButton(
-                                                                          onPressed:
-                                                                              () async {
-                                                                            await getTakeAwayValue(order.id!).then((value) {
-                                                                              print("value ${value.data}");
-                                                                              Get.to(() => PosMenu(isDining: false));
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              RichText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: TextSpan(
-                                                                              children: [
-                                                                                WidgetSpan(
-                                                                                  child: Padding(
-                                                                                    padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                                    child: SvgPicture.asset(
-                                                                                      'images/ic_completed.svg',
-                                                                                      width: ScreenUtil().setWidth(20),
-                                                                                      //color: Color(Constants.colorRate),
-                                                                                      height: ScreenUtil().setHeight(20),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                TextSpan(
-                                                                                  text: 'Complete this order',
-                                                                                  style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      : Container(),
-                                                                  SizedBox(
-                                                                    width: 5,
+                                                                  WidgetSpan(
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                                      child: SvgPicture.asset(
+                                                                        'images/ic_completed.svg',
+                                                                        width: ScreenUtil().setWidth(20),
+                                                                        //color: Color(Constants.colorRate),
+                                                                        height: ScreenUtil().setHeight(20),
+                                                                      ),
+                                                                    ),
                                                                   ),
-
-                                                                  ///Complete this order button end
-
-                                                                  ///Edit Order Button Start
-                                                                  order.payment_type ==
-                                                                          "INCOMPLETE ORDER"
-                                                                      ? order.orderStatus ==
-                                                                              'CANCEL'
-                                                                          ? Container()
-                                                                          : ElevatedButton(
-                                                                              onPressed: () {
-                                                                                _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
-                                                                                _cartController.cartMaster?.oldOrderId = order.id;
-                                                                                if(order.tableNo != null) {
-                                                                                  _cartController
-                                                                                      .tableNumber =
-                                                                                  order
-                                                                                      .tableNo!;
-                                                                                }
-                                                                                String colorCode = order.order_id.toString();
-                                                                                int colorInt = int.parse(colorCode.substring(1));
-                                                                                print("color int ${colorInt}");
-                                                                                SharedPreferences.getInstance().then((value) {
-                                                                                  value.setInt(Constants.order_main_id.toString(), colorInt);
-                                                                                });
-                                                                                order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
-                                                                                order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
-                                                                                order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
-                                                                                print("_cartController.notes before ${_cartController.notes}");
-                                                                                print("order notes  before ${order.notes}");
-                                                                                order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
-                                                                                // Constants.order_main_id = order.order_id.toString()
-                                                                                print("server order id ${order.order_id.toString()}");
-                                                                                print("order notes ${order.notes}");
-                                                                                print("_cartController.notes after ${_cartController.notes}");
-                                                                                Get.to(() => PosMenu(isDining: _cartController.diningValue));
-                                                                              },
-                                                                              child: Text(
-                                                                                "Edit this order",
-                                                                                textAlign: TextAlign.center,
-                                                                                style: TextStyle(
-                                                                                  fontSize: 18,
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                      : Container(),
-                                                                  SizedBox(
-                                                                    width: 5,
+                                                                  TextSpan(
+                                                                    text: 'Complete this order',
+                                                                    style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
                                                                   ),
-
-                                                                  ///End Edit Order Button
-
-                                                                  /// Cancel Order Button Start
-                                                                  order.orderStatus ==
-                                                                              'PENDING' ||
-                                                                          order.orderStatus ==
-                                                                              'APPROVE'
-                                                                      ? ElevatedButton(
-                                                                          // style: ElevatedButton
-                                                                          //     .styleFrom(
-                                                                          //   primary: Colors.white,
-                                                                          //   shape: RoundedRectangleBorder(
-                                                                          //       borderRadius: BorderRadius.only(
-                                                                          //           bottomLeft: Radius
-                                                                          //               .circular(
-                                                                          //                   20),
-                                                                          //           bottomRight: Radius
-                                                                          //               .circular(
-                                                                          //                   20)),
-                                                                          //       side: BorderSide
-                                                                          //           .none),
-                                                                          // ),
-                                                                          onPressed:
-                                                                              () async {
-                                                                            await showCancelOrderDialog(order.id);
-                                                                            setState(() {
-                                                                              orderHistoryRef = _orderHistoryController.refreshOrderHistory(context);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              RichText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: TextSpan(
-                                                                              children: [
-                                                                                WidgetSpan(
-                                                                                  child: Padding(
-                                                                                    padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                                    child: SvgPicture.asset(
-                                                                                      'images/ic_cancel.svg',
-                                                                                      width: ScreenUtil().setWidth(20),
-                                                                                      //color: Color(Constants.colorRate),
-                                                                                      height: ScreenUtil().setHeight(20),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                TextSpan(
-                                                                                  text: 'Cancel this order',
-                                                                                  style: TextStyle(
-                                                                                      color: Colors.white,
-                                                                                      // color: Color(Constants
-                                                                                      //     .colorLike),
-                                                                                      fontSize: 18,
-                                                                                      fontFamily: Constants.appFont),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      // ? Column(
-                                                                      //     children: [
-                                                                      //       Container(
-                                                                      //         // height: ScreenUtil()
-                                                                      //         //     .setHeight(50),
-                                                                      //         // width: double.minPositive,
-                                                                      //         child:
-                                                                      //             ElevatedButton(
-                                                                      //           // style: ElevatedButton
-                                                                      //           //     .styleFrom(
-                                                                      //           //   primary: Colors.white,
-                                                                      //           //   shape: RoundedRectangleBorder(
-                                                                      //           //       borderRadius: BorderRadius.only(
-                                                                      //           //           bottomLeft: Radius
-                                                                      //           //               .circular(
-                                                                      //           //                   20),
-                                                                      //           //           bottomRight: Radius
-                                                                      //           //               .circular(
-                                                                      //           //                   20)),
-                                                                      //           //       side: BorderSide
-                                                                      //           //           .none),
-                                                                      //           // ),
-                                                                      //           onPressed:
-                                                                      //               () async {
-                                                                      //             await showCancelOrderDialog(
-                                                                      //                 order.id);
-                                                                      //             setState(
-                                                                      //                 () {
-                                                                      //               orderHistoryRef =
-                                                                      //                   _orderHistoryController.refreshOrderHistory(context);
-                                                                      //             });
-                                                                      //           },
-                                                                      //           child:
-                                                                      //               RichText(
-                                                                      //             text:
-                                                                      //                 TextSpan(
-                                                                      //               children: [
-                                                                      //                 WidgetSpan(
-                                                                      //                   child: Padding(
-                                                                      //                     padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                      //                     child: SvgPicture.asset(
-                                                                      //                       'images/ic_cancel.svg',
-                                                                      //                       width: ScreenUtil().setWidth(20),
-                                                                      //                       //color: Color(Constants.colorRate),
-                                                                      //                       height: ScreenUtil().setHeight(20),
-                                                                      //                     ),
-                                                                      //                   ),
-                                                                      //                 ),
-                                                                      //                 TextSpan(
-                                                                      //                   text: 'Cancel this order',
-                                                                      //                   style: TextStyle(
-                                                                      //                       color: Colors.white,
-                                                                      //                       // color: Color(Constants
-                                                                      //                       //     .colorLike),
-                                                                      //                       fontSize: 18,
-                                                                      //                       fontFamily: Constants.appFont),
-                                                                      //                 ),
-                                                                      //               ],
-                                                                      //             ),
-                                                                      //           ),
-                                                                      //         ),
-                                                                      //       ),
-                                                                      //     ],
-                                                                      //   )
-                                                                      : Container(),
-
-                                                                  ///CAncel Order button End
-                                                                ],
-                                                              )
-                                                            : Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  ///Complete this order button start
-                                                                  order.orderStatus != 'COMPLETE' &&
-                                                                          order.deliveryType ==
-                                                                              'TAKEAWAY' &&
-                                                                          order.deliveryType !=
-                                                                              'DINING' &&
-                                                                          (order.payment_type == 'POS CASH' ||
-                                                                              order.payment_type == 'POS CARD')
-                                                                      ? Expanded(
-                                                                          child:
-                                                                              ElevatedButton(
-                                                                            onPressed: () async {
-                                                                              await getTakeAwayValue(order.id!).then((value) {
-                                                                                print("value ${value.data}");
-                                                                                Get.to(() => PosMenu(isDining: false));
-                                                                              });
-                                                                            },
-                                                                            child: RichText(
-                                                                              textAlign: TextAlign.center,
-                                                                              text: TextSpan(
-                                                                                children: [
-                                                                                  WidgetSpan(
-                                                                                    child: Padding(
-                                                                                      padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                                      child: SvgPicture.asset(
-                                                                                        'images/ic_completed.svg',
-                                                                                        width: ScreenUtil().setWidth(20),
-                                                                                        //color: Color(Constants.colorRate),
-                                                                                        height: ScreenUtil().setHeight(20),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  TextSpan(
-                                                                                    text: 'Complete this order',
-                                                                                    style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      : Container(),
-                                                                  SizedBox(
-                                                                    width: 5,
-                                                                  ),
-
-                                                                  ///Complete this order button end
-
-                                                                  ///Edit Order Button Start
-                                                                  order.payment_type ==
-                                                                          "INCOMPLETE ORDER"
-                                                                      ? order.orderStatus ==
-                                                                              'CANCEL'
-                                                                          ? Container()
-                                                                          : Expanded(
-                                                                              child: ElevatedButton(
-                                                                                onPressed: () {
-                                                                                  _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
-                                                                                  _cartController.cartMaster?.oldOrderId = order.id;
-                                                                                  _cartController.tableNumber = order.tableNo!;
-                                                                                  String colorCode = order.order_id.toString();
-                                                                                  int colorInt = int.parse(colorCode.substring(1));
-                                                                                  print("color int ${colorInt}");
-                                                                                  SharedPreferences.getInstance().then((value) {
-                                                                                    value.setInt(Constants.order_main_id.toString(), colorInt);
-                                                                                  });
-                                                                                  order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
-                                                                                  order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
-                                                                                  order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
-                                                                                  // Constants.order_main_id = order.order_id.toString()
-                                                                                  print("server order id ${order.order_id.toString()}");
-                                                                                  Get.to(() => PosMenu(isDining: _cartController.diningValue));
-                                                                                },
-                                                                                child: Text(
-                                                                                  "Edit this order",
-                                                                                  textAlign: TextAlign.center,
-                                                                                  style: TextStyle(
-                                                                                    fontSize: 18,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                      : Container(),
-                                                                  SizedBox(
-                                                                    width: 5,
-                                                                  ),
-
-                                                                  ///End Edit Order Button
-
-                                                                  /// Cancel Order Button Start
-                                                                  order.orderStatus ==
-                                                                              'PENDING' ||
-                                                                          order.orderStatus ==
-                                                                              'APPROVE'
-                                                                      ? Expanded(
-                                                                          child:
-                                                                              ElevatedButton(
-                                                                            // style: ElevatedButton
-                                                                            //     .styleFrom(
-                                                                            //   primary: Colors.white,
-                                                                            //   shape: RoundedRectangleBorder(
-                                                                            //       borderRadius: BorderRadius.only(
-                                                                            //           bottomLeft: Radius
-                                                                            //               .circular(
-                                                                            //                   20),
-                                                                            //           bottomRight: Radius
-                                                                            //               .circular(
-                                                                            //                   20)),
-                                                                            //       side: BorderSide
-                                                                            //           .none),
-                                                                            // ),
-                                                                            onPressed: () async {
-                                                                              await showCancelOrderDialog(order.id);
-                                                                              setState(() {
-                                                                                orderHistoryRef = _orderHistoryController.refreshOrderHistory(context);
-                                                                              });
-                                                                            },
-                                                                            child: RichText(
-                                                                              textAlign: TextAlign.center,
-                                                                              text: TextSpan(
-                                                                                children: [
-                                                                                  WidgetSpan(
-                                                                                    child: Padding(
-                                                                                      padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                                      child: SvgPicture.asset(
-                                                                                        'images/ic_cancel.svg',
-                                                                                        width: ScreenUtil().setWidth(20),
-                                                                                        //color: Color(Constants.colorRate),
-                                                                                        height: ScreenUtil().setHeight(20),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  TextSpan(
-                                                                                    text: 'Cancel this order',
-                                                                                    style: TextStyle(
-                                                                                        color: Colors.white,
-                                                                                        // color: Color(Constants
-                                                                                        //     .colorLike),
-                                                                                        fontSize: 18,
-                                                                                        fontFamily: Constants.appFont),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      // ? Column(
-                                                                      //     children: [
-                                                                      //       Container(
-                                                                      //         // height: ScreenUtil()
-                                                                      //         //     .setHeight(50),
-                                                                      //         // width: double.minPositive,
-                                                                      //         child:
-                                                                      //             ElevatedButton(
-                                                                      //           // style: ElevatedButton
-                                                                      //           //     .styleFrom(
-                                                                      //           //   primary: Colors.white,
-                                                                      //           //   shape: RoundedRectangleBorder(
-                                                                      //           //       borderRadius: BorderRadius.only(
-                                                                      //           //           bottomLeft: Radius
-                                                                      //           //               .circular(
-                                                                      //           //                   20),
-                                                                      //           //           bottomRight: Radius
-                                                                      //           //               .circular(
-                                                                      //           //                   20)),
-                                                                      //           //       side: BorderSide
-                                                                      //           //           .none),
-                                                                      //           // ),
-                                                                      //           onPressed:
-                                                                      //               () async {
-                                                                      //             await showCancelOrderDialog(
-                                                                      //                 order.id);
-                                                                      //             setState(
-                                                                      //                 () {
-                                                                      //               orderHistoryRef =
-                                                                      //                   _orderHistoryController.refreshOrderHistory(context);
-                                                                      //             });
-                                                                      //           },
-                                                                      //           child:
-                                                                      //               RichText(
-                                                                      //             text:
-                                                                      //                 TextSpan(
-                                                                      //               children: [
-                                                                      //                 WidgetSpan(
-                                                                      //                   child: Padding(
-                                                                      //                     padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                      //                     child: SvgPicture.asset(
-                                                                      //                       'images/ic_cancel.svg',
-                                                                      //                       width: ScreenUtil().setWidth(20),
-                                                                      //                       //color: Color(Constants.colorRate),
-                                                                      //                       height: ScreenUtil().setHeight(20),
-                                                                      //                     ),
-                                                                      //                   ),
-                                                                      //                 ),
-                                                                      //                 TextSpan(
-                                                                      //                   text: 'Cancel this order',
-                                                                      //                   style: TextStyle(
-                                                                      //                       color: Colors.white,
-                                                                      //                       // color: Color(Constants
-                                                                      //                       //     .colorLike),
-                                                                      //                       fontSize: 18,
-                                                                      //                       fontFamily: Constants.appFont),
-                                                                      //                 ),
-                                                                      //               ],
-                                                                      //             ),
-                                                                      //           ),
-                                                                      //         ),
-                                                                      //       ),
-                                                                      //     ],
-                                                                      //   )
-                                                                      : Container(),
-
-                                                                  ///CAncel Order button End
                                                                 ],
                                                               ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                            : Container(),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+
+                                                        ///Complete this order button end
+
+                                                        ///Edit Order Button Start
+                                                        order.payment_type ==
+                                                            "INCOMPLETE ORDER"
+                                                            ? order.orderStatus ==
+                                                            'CANCEL'
+                                                            ? Container()
+                                                            : Expanded(
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                              _cartController.cartMaster?.oldOrderId = order.id;
+                                                              _cartController.tableNumber = order.tableNo!;
+                                                              String colorCode = order.order_id.toString();
+                                                              int colorInt = int.parse(colorCode.substring(1));
+                                                              print("color int ${colorInt}");
+                                                              SharedPreferences.getInstance().then((value) {
+                                                                value.setInt(Constants.order_main_id.toString(), colorInt);
+                                                              });
+                                                              order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+                                                              order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
+                                                              order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                              // Constants.order_main_id = order.order_id.toString()
+                                                              print("server order id ${order.order_id.toString()}");
+                                                              Get.to(() => PosMenu(isDining: _cartController.diningValue));
+                                                            },
+                                                            child: Text(
+                                                              "Edit this order",
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                            : Container(),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+
+                                                        ///End Edit Order Button
+
+                                                        /// Cancel Order Button Start
+                                                        order.orderStatus ==
+                                                            'PENDING' ||
+                                                            order.orderStatus ==
+                                                                'APPROVE'
+                                                            ? Expanded(
+                                                          child:
+                                                          ElevatedButton(
+                                                            // style: ElevatedButton
+                                                            //     .styleFrom(
+                                                            //   primary: Colors.white,
+                                                            //   shape: RoundedRectangleBorder(
+                                                            //       borderRadius: BorderRadius.only(
+                                                            //           bottomLeft: Radius
+                                                            //               .circular(
+                                                            //                   20),
+                                                            //           bottomRight: Radius
+                                                            //               .circular(
+                                                            //                   20)),
+                                                            //       side: BorderSide
+                                                            //           .none),
+                                                            // ),
+                                                            onPressed:
+                                                                () async {
+                                                              await showCancelOrderDialog(order.id);
+                                                              setState(() {
+                                                                orderHistoryRef = _orderHistoryController.refreshOrderHistory(context);
+                                                              });
+                                                            },
+                                                            child:
+                                                            RichText(
+                                                              textAlign: TextAlign.center,
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  WidgetSpan(
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                                      child: SvgPicture.asset(
+                                                                        'images/ic_cancel.svg',
+                                                                        width: ScreenUtil().setWidth(20),
+                                                                        //color: Color(Constants.colorRate),
+                                                                        height: ScreenUtil().setHeight(20),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: 'Cancel this order',
+                                                                    style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        // color: Color(Constants
+                                                                        //     .colorLike),
+                                                                        fontSize: 18,
+                                                                        fontFamily: Constants.appFont),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                        // ? Column(
+                                                        //     children: [
+                                                        //       Container(
+                                                        //         // height: ScreenUtil()
+                                                        //         //     .setHeight(50),
+                                                        //         // width: double.minPositive,
+                                                        //         child:
+                                                        //             ElevatedButton(
+                                                        //           // style: ElevatedButton
+                                                        //           //     .styleFrom(
+                                                        //           //   primary: Colors.white,
+                                                        //           //   shape: RoundedRectangleBorder(
+                                                        //           //       borderRadius: BorderRadius.only(
+                                                        //           //           bottomLeft: Radius
+                                                        //           //               .circular(
+                                                        //           //                   20),
+                                                        //           //           bottomRight: Radius
+                                                        //           //               .circular(
+                                                        //           //                   20)),
+                                                        //           //       side: BorderSide
+                                                        //           //           .none),
+                                                        //           // ),
+                                                        //           onPressed:
+                                                        //               () async {
+                                                        //             await showCancelOrderDialog(
+                                                        //                 order.id);
+                                                        //             setState(
+                                                        //                 () {
+                                                        //               orderHistoryRef =
+                                                        //                   _orderHistoryController.refreshOrderHistory(context);
+                                                        //             });
+                                                        //           },
+                                                        //           child:
+                                                        //               RichText(
+                                                        //             text:
+                                                        //                 TextSpan(
+                                                        //               children: [
+                                                        //                 WidgetSpan(
+                                                        //                   child: Padding(
+                                                        //                     padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                        //                     child: SvgPicture.asset(
+                                                        //                       'images/ic_cancel.svg',
+                                                        //                       width: ScreenUtil().setWidth(20),
+                                                        //                       //color: Color(Constants.colorRate),
+                                                        //                       height: ScreenUtil().setHeight(20),
+                                                        //                     ),
+                                                        //                   ),
+                                                        //                 ),
+                                                        //                 TextSpan(
+                                                        //                   text: 'Cancel this order',
+                                                        //                   style: TextStyle(
+                                                        //                       color: Colors.white,
+                                                        //                       // color: Color(Constants
+                                                        //                       //     .colorLike),
+                                                        //                       fontSize: 18,
+                                                        //                       fontFamily: Constants.appFont),
+                                                        //                 ),
+                                                        //               ],
+                                                        //             ),
+                                                        //           ),
+                                                        //         ),
+                                                        //       ),
+                                                        //     ],
+                                                        //   )
+                                                            : Container(),
+
+                                                        ///CAncel Order button End
+                                                      ],
+                                                    ),
                                                   ),
 
                                                   // order.orderStatus !=
@@ -3958,7 +4073,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                   //   }
                                                   // }()),
                                                   if (order.orderStatus !=
-                                                          'COMPLETE' &&
+                                                      'COMPLETE' &&
                                                       order.orderStatus !=
                                                           'CANCEL' &&
                                                       order.deliveryType ==
@@ -3974,12 +4089,12 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                   .colorTheme),
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius: BorderRadius.only(
-                                                                  bottomLeft:
-                                                                      Radius.circular(
-                                                                          20),
-                                                                  bottomRight:
-                                                                      Radius.circular(
-                                                                          20)),
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                      20),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                      20)),
                                                               side: BorderSide
                                                                   .none),
                                                         ),
@@ -3991,13 +4106,12 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             children: [
                                                               TextSpan(
                                                                 text:
-                                                                    'Live Order',
+                                                                'Live Order',
                                                                 style:
-                                                                    TextStyle(
+                                                                TextStyle(
                                                                   color: Colors
                                                                       .white,
-                                                                  fontSize:
-                                                                      18,
+                                                                  fontSize: 18,
                                                                 ),
                                                               ),
                                                             ],
@@ -5178,11 +5292,11 @@ class _OrderHistoryState extends State<OrderHistory> {
 
   Widget delieveryTypeButton(
       {required void Function()? onTap,
-      required IconData icon,
-      required String title,
-      required TextStyle style,
-      required Color buttonColor,
-      required Color color}) {
+        required IconData icon,
+        required String title,
+        required TextStyle style,
+        required Color buttonColor,
+        required Color color}) {
     return GestureDetector(
         onTap: onTap,
         child: Container(
@@ -5220,6 +5334,15 @@ class _OrderHistoryState extends State<OrderHistory> {
       "old_takaway_id": id,
       "order_status": "COMPLETE"
     };
+    return await RestClient(await RetroApi().dioData())
+        .completeSpecificTakeawayOrder(_data);
+  }
+
+  Future<CommenRes> completeOrders() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+    String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
+    final _data = <String, dynamic>{"vendor_id": vendorId, "user_id": userId};
     return await RestClient(await RetroApi().dioData())
         .completeTakeawayOrder(_data);
   }

@@ -8,6 +8,7 @@ import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/book_table_model.dart';
 import 'package:pos/model/booked_order_model.dart';
+import 'package:pos/controller/auto_printer_controller.dart';
 import 'package:pos/model/cart_master.dart' as cart;
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/OrderHistory/new_button_check_file.dart';
@@ -64,6 +65,7 @@ class _PosMenuState extends State<PosMenu> {
       });
     });
   }
+  AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
 
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
@@ -136,6 +138,8 @@ class _PosMenuState extends State<PosMenu> {
 
   @override
   void initState() {
+    print('auto print ${_autoPrinterController.autoPrint.value}');
+    print('auto print kitchen ${_autoPrinterController.autoPrintKitchen.value}');
     print("_cartController.notes Pos Menu ${_cartController.notes}");
     sidebarGridTileList = [
       SideBarGridTile(
@@ -332,8 +336,15 @@ class _PosMenuState extends State<PosMenu> {
         icon: Icons.logout,
         title: 'Logout',
         onTap: () async {
+          if(_cartController.cartMaster != null){
+            _cartController.cartMaster!.cart.clear();
+          }
           SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
           sharedPrefs.remove(Constants.isLoggedIn);
+          _autoPrinterController.autoPrint.value = true;
+          _autoPrinterController.autoPrintKitchen.value = true;
+          sharedPrefs.setBool('autoPrintPOS', _autoPrinterController.autoPrint.value);
+          sharedPrefs.setBool('autoPrintKitchen', _autoPrinterController.autoPrint.value);
           Get.offAll(() => SelectionScreen());
         },
       ),

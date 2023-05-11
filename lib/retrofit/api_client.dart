@@ -121,6 +121,9 @@ abstract class RestClient {
   Future<CommenRes> favorite(@Body() Map<String, String> map);
 
   @POST("takwawaycom")
+  Future<CommenRes> completeSpecificTakeawayOrder(@Body() Map<String, dynamic> map);
+
+  @POST("completeTakeawayOrder")
   Future<CommenRes> completeTakeawayOrder(@Body() Map<String, dynamic> map);
 
   @POST("book_order")

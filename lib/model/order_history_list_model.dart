@@ -291,8 +291,8 @@ class Addon {
   };
 }
 
-class Size {
-  Size({
+class AddonSize {
+  AddonSize({
     required this.id,
     required this.sizeName,
   });
@@ -300,7 +300,7 @@ class Size {
   int id;
   String sizeName;
 
-  factory Size.fromMap(Map<String, dynamic> json) => Size(
+  factory AddonSize.fromMap(Map<String, dynamic> json) => AddonSize(
     id: json["id"],
     sizeName: json["size_name"] == null ? null : json["size_name"],
   );

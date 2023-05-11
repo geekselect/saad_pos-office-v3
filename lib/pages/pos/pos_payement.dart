@@ -14,6 +14,7 @@ import 'package:pos/widgets/number_btn.dart';
 import 'package:pos/widgets/shortcut_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
+import '../../controller/auto_printer_controller.dart';
 import '../../controller/cart_controller.dart';
 import '../../controller/order_history_controller.dart';
 import '../../model/common_res.dart';
@@ -76,6 +77,9 @@ class PosPayment extends StatefulWidget {
 }
 
 class _PosPaymentState extends State<PosPayment> {
+
+
+
   String input = "";
   String? orderPaymentType;
   String output = "";
@@ -86,6 +90,7 @@ class _PosPaymentState extends State<PosPayment> {
   OrderHistoryController _orderHistoryController =
       Get.find<OrderHistoryController>();
   PrinterController _printerController = Get.find<PrinterController>();
+  AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
 
 
 
@@ -1674,6 +1679,20 @@ class _PosPaymentState extends State<PosPayment> {
                                         widget.orderDeliveryType == 'DINING') {
                                       return Column(
                                         children: [
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
+                                            value: _autoPrinterController.autoPrintKitchen.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrintKitchen(value);
+                                            },
+                                          )),
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
+                                            value: _autoPrinterController.autoPrint.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrint(value);
+                                            },
+                                          )),
                                           NumberButton(
                                               value: 'Pay Later',
                                               btnColor:
@@ -1709,6 +1728,20 @@ class _PosPaymentState extends State<PosPayment> {
                                         widget.orderDeliveryType == 'DINING') {
                                       return Column(
                                         children: [
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
+                                            value: _autoPrinterController.autoPrintKitchen.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrintKitchen(value);
+                                            },
+                                          )),
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
+                                            value: _autoPrinterController.autoPrint.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrint(value);
+                                            },
+                                          )),
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
@@ -1846,6 +1879,20 @@ class _PosPaymentState extends State<PosPayment> {
                                             'TAKEAWAY') {
                                       return Column(
                                         children: [
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
+                                            value: _autoPrinterController.autoPrintKitchen.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrintKitchen(value);
+                                            },
+                                          )),
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
+                                            value: _autoPrinterController.autoPrint.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrint(value);
+                                            },
+                                          )),
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
@@ -2041,6 +2088,20 @@ class _PosPaymentState extends State<PosPayment> {
                                           //             FontWeight.normal),
                                           //   ),
                                           // ),
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
+                                            value: _autoPrinterController.autoPrintKitchen.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrintKitchen(value);
+                                            },
+                                          )),
+                                          Obx(() => SwitchListTile(
+                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
+                                            value: _autoPrinterController.autoPrint.value,
+                                            onChanged: (bool value) {
+                                              _autoPrinterController.saveAutoPrint(value);
+                                            },
+                                          )),
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
@@ -4384,76 +4445,88 @@ class _PosPaymentState extends State<PosPayment> {
           });
         }
         if (value == 0) {
-          if (_printerController.printerModel.value.portPos != null) {
-            print("POS ADDED");
-            if (_printerController.printerModel.value.ipPos == '' &&
-                    _printerController.printerModel.value.portPos == '' ||
-                _printerController.printerModel.value.ipPos == null &&
-                    _printerController.printerModel.value.portPos == null) {
-              print("pos ip empty");
-            } else {
-              print("pos ip not empty");
-              print("test pos ip not empty");
-              print("Cart ${_cartController.cartMaster!.toMap()}");
-              testPrintPOS(
-                  _printerController.printerModel.value.ipPos!,
-                  int.parse(
-                      _printerController.printerModel.value.portPos.toString()),
-                  context,
-                  _cartController.cartMaster!);
+          if(_autoPrinterController.autoPrint.value == true) {
+            if (_printerController.printerModel.value.portPos != null) {
+              print("POS ADDED");
+              if (_printerController.printerModel.value.ipPos == '' &&
+                  _printerController.printerModel.value.portPos == '' ||
+                  _printerController.printerModel.value.ipPos == null &&
+                      _printerController.printerModel.value.portPos == null) {
+                print("pos ip empty");
+              } else {
+                print("pos ip not empty");
+                print("test pos ip not empty");
+                print("Cart ${_cartController.cartMaster!.toMap()}");
+                testPrintPOS(
+                    _printerController.printerModel.value.ipPos!,
+                    int.parse(
+                        _printerController.printerModel.value.portPos
+                            .toString()),
+                    context,
+                    _cartController.cartMaster!);
+              }
             }
           }
         } else if (value == 1) {
-          if (_printerController.printerModel.value.portKitchen != null) {
-            print("kitchen Added");
-            if (_printerController.printerModel.value.ipKitchen == '' &&
-                    _printerController.printerModel.value.portKitchen == '' ||
-                _printerController.printerModel.value.ipKitchen == null &&
-                    _printerController.printerModel.value.portKitchen == null) {
-              print("kitchen ip empty");
-            } else {
-              print(" kitchen ip not empty");
-              testPrintKitchen(
-                  _printerController.printerModel.value.ipKitchen!,
-                  int.parse(_printerController.printerModel.value.portKitchen
-                      .toString()),
-                  context,
-                  _cartController.cartMaster!);
+          if(_autoPrinterController.autoPrintKitchen.value == true) {
+            if (_printerController.printerModel.value.portKitchen != null) {
+              print("kitchen Added");
+              if (_printerController.printerModel.value.ipKitchen == '' &&
+                  _printerController.printerModel.value.portKitchen == '' ||
+                  _printerController.printerModel.value.ipKitchen == null &&
+                      _printerController.printerModel.value.portKitchen ==
+                          null) {
+                print("kitchen ip empty");
+              } else {
+                print(" kitchen ip not empty");
+                testPrintKitchen(
+                    _printerController.printerModel.value.ipKitchen!,
+                    int.parse(_printerController.printerModel.value.portKitchen
+                        .toString()),
+                    context,
+                    _cartController.cartMaster!);
+              }
             }
           }
         } else if (value == 2) {
-          if (_printerController.printerModel.value.portPos != null) {
-            print("POS ADDED");
-            if (_printerController.printerModel.value.ipPos == '' &&
-                    _printerController.printerModel.value.portPos == '' ||
-                _printerController.printerModel.value.ipPos == null &&
-                    _printerController.printerModel.value.portPos == null) {
-              print("pos ip empty");
-            } else {
-              print("pos ip not empty");
-              testPrintPOS(
-                  _printerController.printerModel.value.ipPos!,
-                  int.parse(
-                      _printerController.printerModel.value.portPos.toString()),
-                  context,
-                  _cartController.cartMaster!);
+          if(_autoPrinterController.autoPrint.value == true) {
+            if (_printerController.printerModel.value.portPos != null) {
+              print("POS ADDED");
+              if (_printerController.printerModel.value.ipPos == '' &&
+                  _printerController.printerModel.value.portPos == '' ||
+                  _printerController.printerModel.value.ipPos == null &&
+                      _printerController.printerModel.value.portPos == null) {
+                print("pos ip empty");
+              } else {
+                print("pos ip not empty");
+                testPrintPOS(
+                    _printerController.printerModel.value.ipPos!,
+                    int.parse(
+                        _printerController.printerModel.value.portPos
+                            .toString()),
+                    context,
+                    _cartController.cartMaster!);
+              }
             }
           }
-          if (_printerController.printerModel.value.portKitchen != null) {
-            print("kitchen Added");
-            if (_printerController.printerModel.value.ipKitchen == '' &&
-                    _printerController.printerModel.value.portKitchen == '' ||
-                _printerController.printerModel.value.ipKitchen == null &&
-                    _printerController.printerModel.value.portKitchen == null) {
-              print("kitchen ip empty");
-            } else {
-              print(" kitchen ip not empty");
-              testPrintKitchen(
-                  _printerController.printerModel.value.ipKitchen!,
-                  int.parse(_printerController.printerModel.value.portKitchen
-                      .toString()),
-                  context,
-                  _cartController.cartMaster!);
+          if(_autoPrinterController.autoPrintKitchen.value == true) {
+            if (_printerController.printerModel.value.portKitchen != null) {
+              print("kitchen Added");
+              if (_printerController.printerModel.value.ipKitchen == '' &&
+                  _printerController.printerModel.value.portKitchen == '' ||
+                  _printerController.printerModel.value.ipKitchen == null &&
+                      _printerController.printerModel.value.portKitchen ==
+                          null) {
+                print("kitchen ip empty");
+              } else {
+                print(" kitchen ip not empty");
+                testPrintKitchen(
+                    _printerController.printerModel.value.ipKitchen!,
+                    int.parse(_printerController.printerModel.value.portKitchen
+                        .toString()),
+                    context,
+                    _cartController.cartMaster!);
+              }
             }
           }
         } else {}

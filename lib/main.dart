@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pos/controller/auto_printer_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/pages/order/OrdersScreen.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
@@ -59,6 +60,7 @@ void main() async {
   Get.put(OrderHistoryController());
   Get.put(OrderController());
   Get.put(AuthController());
+  Get.put(AutoPrinterController());
   final prefs = await SharedPreferences.getInstance();
   runApp(LoginUiApp(
     sharedPreferences: prefs,

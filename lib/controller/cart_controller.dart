@@ -27,7 +27,7 @@ class CartController extends GetxController{
   ScrollController scrollController = ScrollController();
   double discountAmount=0.0;
   int taxType= 0;
-
+  double taxAmountNew = 0.0;
   String appliedCouponPercentage='';
 
   String? appliedCouponName='';

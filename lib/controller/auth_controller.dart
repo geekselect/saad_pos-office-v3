@@ -177,7 +177,7 @@ class AuthController extends GetxController {
               Constants.headerToken, loginModel.data!.token!);
           sharedPreferences?.setString(
               Constants.loginUserId, loginModel.data!.id!.toString());
-
+          print("login Model ${loginModel.toJson()}");
           sharedPreferences?.setBool(Constants.isLoggedIn, true);
           sharedPreferences?.setString(Constants.vendorId.toString(), loginModel.data!.vendor_id!.toString());
           AuthController.sharedPreferences = sharedPreferences;
