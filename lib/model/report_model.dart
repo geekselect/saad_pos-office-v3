@@ -202,10 +202,10 @@ class ReportModel {
   });
 
   Payments? payments;
-  int? todaysTotalOrders;
-  int? todaysTotalTakeaway;
-  double? todaysTotalDiscounts;
-  int? todaysTotalDining;
+  dynamic todaysTotalOrders;
+  dynamic todaysTotalTakeaway;
+  dynamic todaysTotalDiscounts;
+  dynamic todaysTotalDining;
   List<Order>? orders;
 
   factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
