@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:pos/controller/cart_controller.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/book_table_model.dart';
 import 'package:pos/model/booked_order_model.dart';
@@ -65,6 +66,8 @@ class _PosMenuState extends State<PosMenu> {
       });
     });
   }
+  final DiningCartController _diningCartController = Get.find<DiningCartController>();
+
   AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
 
   final OrderCustimizationController _orderCustimizationController =
@@ -138,9 +141,9 @@ class _PosMenuState extends State<PosMenu> {
 
   @override
   void initState() {
+    print('dining value pos ${_cartController.diningValue}');
     print('auto print ${_autoPrinterController.autoPrint.value}');
     print('auto print kitchen ${_autoPrinterController.autoPrintKitchen.value}');
-    print("_cartController.notes Pos Menu ${_cartController.notes}");
     sidebarGridTileList = [
       SideBarGridTile(
         icon: Icons.card_travel,
@@ -194,6 +197,25 @@ class _PosMenuState extends State<PosMenu> {
                                           .data
                                           .bookedTable[index]
                                           .bookedTableNumber;
+                                      // if (bookOrderModel.data!.mobile !=
+                                      //     null &&
+                                      //     bookOrderModel.data!.userName!
+                                      //         .isNotEmpty) {
+                                      //   _diningCartController
+                                      //       .diningUserMobileNumber =
+                                      //   bookOrderModel.data!.mobile!;
+                                      // }
+                                      // print(bookOrderModel.data!.mobile);
+                                      //
+                                      // if (bookOrderModel.data!.notes !=
+                                      //     null &&
+                                      //     bookOrderModel.data!.userName!
+                                      //         .isNotEmpty) {
+                                      //   _diningCartController
+                                      //       .diningNotes =
+                                      //   bookOrderModel.data!.notes!;
+                                      // }
+                                      // print(bookOrderModel.data!.notes);
                                       if (snapshot.data!.data.bookedTable[index]
                                               .status ==
                                           1) {
@@ -211,27 +233,12 @@ class _PosMenuState extends State<PosMenu> {
                                                     param, context);
                                         BookedOrderModel bookOrderModel =
                                             baseModel.data!;
+                                        print("------------------");
+                                        print("CHECK DATA ${snapshot.data?.data.bookedTable[index].toJson()}");
+                                        print("------------------");
+
                                         if (bookOrderModel.success!) {
-                                          print('order');
-                                          print("****************");
-                                          if (bookOrderModel.data!.userName !=
-                                              null) {
-                                            _cartController.userName =
-                                                bookOrderModel.data!.userName!;
-                                          }
-                                          print(bookOrderModel.data!.userName);
-                                          print("****************");
-
-                                          print("----------------");
-                                          if (bookOrderModel.data!.mobile !=
-                                              null) {
-                                            _cartController.userMobileNumber =
-                                                bookOrderModel.data!.mobile!;
-                                          }
-                                          print(bookOrderModel.data!.mobile);
-                                          print("----------------");
-
-                                          print(bookOrderModel.data!.orderId);
+                                          print("ANNN  ${bookOrderModel.toJson()}");
                                           _cartController.cartMaster =
                                               cm.CartMaster.fromMap(jsonDecode(
                                                   bookOrderModel
@@ -239,11 +246,24 @@ class _PosMenuState extends State<PosMenu> {
                                           _cartController
                                                   .cartMaster?.oldOrderId =
                                               bookOrderModel.data!.orderId;
+                                          _diningCartController.diningUserName = bookOrderModel.data!.userName!;
+                                          _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
+                                          _diningCartController.diningNotes = bookOrderModel.data!.notes!;
+                                          _diningCartController.nameController.text =  _diningCartController.diningUserName;
+                                          _diningCartController.phoneNoController.text =  _diningCartController.diningUserMobileNumber;
+                                          _diningCartController.notesController.text =  _diningCartController.diningNotes;
                                           Navigator.pop(context);
                                         } else {
                                           print(baseModel.error);
                                         }
                                       } else {
+                                        print("new table select");
+                                        _diningCartController.diningUserName = '';
+                                        _diningCartController.diningUserMobileNumber = '';
+                                        _diningCartController.diningNotes = '';
+                                        _diningCartController.nameController.text =  _diningCartController.diningUserName;
+                                        _diningCartController.phoneNoController.text =  _diningCartController.diningUserMobileNumber;
+                                        _diningCartController.notesController.text =  _diningCartController.diningNotes;
                                         Navigator.pop(context);
                                       }
                                     },
@@ -655,10 +675,14 @@ class _PosMenuState extends State<PosMenu> {
                                                                                           BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
                                                                                           BookedOrderModel bookOrderModel = baseModel.data!;
                                                                                           if (bookOrderModel.success!) {
-                                                                                            print('order');
-                                                                                            print(bookOrderModel.data!.orderId);
                                                                                             _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
                                                                                             _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                                                                                            _diningCartController.diningUserName = bookOrderModel.data!.userName!;
+                                                                                            _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
+                                                                                            _diningCartController.diningNotes = bookOrderModel.data!.notes!;
+                                                                                            _diningCartController.nameController.text =  _diningCartController.diningUserName;
+                                                                                            _diningCartController.phoneNoController.text =  _diningCartController.diningUserMobileNumber;
+                                                                                            _diningCartController.notesController.text =  _diningCartController.diningNotes;
                                                                                             Navigator.pop(context);
                                                                                           } else {
                                                                                             print(bookOrderModel.toJson());
@@ -716,12 +740,15 @@ class _PosMenuState extends State<PosMenu> {
                                                     _cartController
                                                             .isPromocodeApplied =
                                                         false;
+                                                    _cartController.userMobileNumber = '';
+                                                    _cartController.userName = '';
+                                                    _cartController.notes = '';
+                                                    _cartController.nameController.text =  _cartController.userName;
+                                                    _cartController.phoneNoController.text =  _cartController.userMobileNumber;
+                                                    _cartController.notesController.text =  _cartController.notes;
                                                   });
                                                 } else {
-                                                  print("else Block");
-                                                  print(
-                                                      "${_cartController.tableNumber}");
-                                                  print("else Block End");
+                                                  print("new table select");
                                                   setState(() {
                                                     if (_cartController
                                                             .cartMaster
@@ -734,6 +761,13 @@ class _PosMenuState extends State<PosMenu> {
                                                         .tableNumber = null;
                                                     _cartController
                                                         .diningValue = false;
+                                                    _diningCartController.diningUserName = '';
+                                                    _diningCartController.diningUserMobileNumber = '';
+                                                    _diningCartController.diningNotes = '';
+                                                    _diningCartController.nameController.text =  _diningCartController.diningUserName;
+                                                    _diningCartController.phoneNoController.text =  _diningCartController.diningUserMobileNumber;
+                                                    _diningCartController.notesController.text =  _diningCartController.diningNotes;
+
                                                   });
                                                 }
                                               },
@@ -2503,16 +2537,22 @@ class _PosMenuState extends State<PosMenu> {
                                                                                             print('order');
                                                                                             print("****************");
                                                                                             if (bookOrderModel.data!.userName != null) {
-                                                                                              _cartController.userName = bookOrderModel.data!.userName!;
+                                                                                              _diningCartController.diningUserName = bookOrderModel.data!.userName!;
                                                                                             }
                                                                                             print(bookOrderModel.data!.userName);
                                                                                             print("****************");
 
                                                                                             print("----------------");
                                                                                             if (bookOrderModel.data!.mobile != null) {
-                                                                                              _cartController.userMobileNumber = bookOrderModel.data!.mobile!;
+                                                                                              _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
                                                                                             }
                                                                                             print(bookOrderModel.data!.mobile);
+                                                                                            if (bookOrderModel.data!.notes !=
+                                                                                                null) {
+                                                                                              _diningCartController.diningNotes =
+                                                                                              bookOrderModel.data!.notes!;
+                                                                                            }
+                                                                                            print(bookOrderModel.data!.notes);
                                                                                             print("----------------");
                                                                                             print(bookOrderModel.data!.orderId);
                                                                                             _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));

@@ -10,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/pages/order/OrdersScreen.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
@@ -57,6 +58,7 @@ void main() async {
   await GetStorage.init();
   Get.put(OrderCustimizationController());
   Get.put(CartController());
+  Get.put(DiningCartController());
   Get.put(OrderHistoryController());
   Get.put(OrderController());
   Get.put(AuthController());

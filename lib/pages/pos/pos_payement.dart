@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
 
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/cart_master.dart';
@@ -29,13 +30,13 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 
 class PosPayment extends StatefulWidget {
   double totalAmount;
+  double strTaxAmount;
   final int? venderId, addressId, vendorDiscountId, tableNumber;
   final String? orderDate,
       orderTime,
       orderStatus,
       ordrePromoCode,
       orderDeliveryType,
-      strTaxAmount,
       orderDeliveryCharge;
   final String? deliveryTime;
   final String? deliveryDate;
@@ -92,6 +93,7 @@ class _PosPaymentState extends State<PosPayment> {
   PrinterController _printerController = Get.find<PrinterController>();
   AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
 
+  final DiningCartController _diningCartController = Get.find<DiningCartController>();
 
 
   // String? kitchenIp;
@@ -570,7 +572,7 @@ class _PosPaymentState extends State<PosPayment> {
             width: PosTextSize.size1,
           )),
       PosColumn(
-          text: "$currencySymbol${widget.subTotal}",
+          text: "$currencySymbol${widget.subTotal!.toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -588,7 +590,7 @@ class _PosPaymentState extends State<PosPayment> {
             width: PosTextSize.size1,
           )),
       PosColumn(
-          text: "$currencySymbol${widget.strTaxAmount}",
+          text: "$currencySymbol${widget.strTaxAmount.toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -609,7 +611,7 @@ class _PosPaymentState extends State<PosPayment> {
             )),
         PosColumn(
             text:
-                "$currencySymbol${widget.totalAmount - double.parse(totalAmountController.text)}",
+                "$currencySymbol${((widget.totalAmount) - (double.parse(totalAmountController.text))).toStringAsFixed(2)}",
             width: 6,
             styles: PosStyles(
               align: PosAlign.right,
@@ -639,8 +641,8 @@ class _PosPaymentState extends State<PosPayment> {
 
     printer.hr();
 
-    if (widget.notes != null ||
-        widget.notes!.isNotEmpty ||
+    if (widget.notes != null &&
+        widget.notes!.isNotEmpty &&
         widget.notes != '') {
       printer.text(
         "Instructions: ${widget.notes!}",
@@ -1021,8 +1023,8 @@ class _PosPaymentState extends State<PosPayment> {
     // ]);
     printer.hr();
 
-    if (widget.notes != null ||
-        widget.notes!.isNotEmpty ||
+    if (widget.notes != null &&
+        widget.notes!.isNotEmpty &&
         widget.notes != '') {
       printer.text(
         "Instructions: ${widget.notes!}",
@@ -4415,8 +4417,8 @@ class _PosPaymentState extends State<PosPayment> {
         'promocode_price': widget.vendorDiscountAmount != 0
             ? widget.vendorDiscountAmount.toString()
             : '',
-        'tax': widget.strTaxAmount,
-        'sub_total': widget.subTotal!.toString(),
+        'tax': widget.strTaxAmount.toStringAsFixed(2),
+        'sub_total': widget.subTotal!.toStringAsFixed(2),
         'table_no': widget.tableNumber?.toString(),
         // 'user_id': widget.tableNumber?.toString(),
         'old_order_id': _cartController.cartMaster!.oldOrderId?.toString(),
@@ -4530,7 +4532,27 @@ class _PosPaymentState extends State<PosPayment> {
             }
           }
         } else {}
-        widget.notes == '' ?  _cartController.notes = '' : widget.notes;
+        if(widget.orderDeliveryType == "DINING"){
+          widget.notes == '' ?  _diningCartController.diningNotes = '' : widget.notes;
+          widget.userName == '' ?  _diningCartController.diningUserName = '' : widget.userName;
+          widget.mobileNumber == '' ?  _diningCartController.diningUserMobileNumber = '' : widget.mobileNumber;
+        } else {
+          widget.notes == '' ?  _cartController.notes = '' : widget.notes;
+          widget.userName == '' ?  _cartController.userName = '' : widget.userName;
+          widget.mobileNumber == '' ?  _cartController.userMobileNumber = '' : widget.mobileNumber;
+        }
+        _diningCartController.diningNotes = '';
+        _diningCartController.diningUserName = '';
+        _diningCartController.diningUserMobileNumber = '';
+        _cartController.notes = '';
+        _cartController.userName = '';
+        _cartController.userMobileNumber = '';
+        _diningCartController.phoneNoController.clear();
+        _diningCartController.nameController.clear();
+        _diningCartController.notesController.clear();
+        _cartController.phoneNoController.clear();
+        _cartController.nameController.clear();
+        _cartController.notesController.clear();
         widget.orderDeliveryType == "DINING"
             ? _cartController.diningValue = true
             : false;
@@ -4538,11 +4560,6 @@ class _PosPaymentState extends State<PosPayment> {
         _cartController.cartTotalQuantity.value = 0;
         _orderHistoryController.callGetOrderHistoryList(context);
 
-        if (value == 0 && widget.orderDeliveryType == 'DINING' ) {
-          _cartController.userName = '';
-          _cartController.userMobileNumber = '';
-          _cartController.notes = '';
-        }
         // Future.delayed(Duration(seconds: 3), () {
         Get.offAll(
           () => PosMenu(isDining: false),

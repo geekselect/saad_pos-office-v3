@@ -14,6 +14,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pos/controller/auth_controller.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
 import 'package:pos/controller/cart_controller.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
@@ -48,6 +49,10 @@ class OrderHistory extends StatefulWidget {
 }
 
 class _OrderHistoryState extends State<OrderHistory> {
+  // AutoPrinterController _autoPrinterController =
+  // Get.find<AutoPrinterController>();
+  final DiningCartController _diningCartController= Get.find<DiningCartController>();
+
   PrinterController _printerController = Get.find<PrinterController>();
   OrderHistoryController _orderHistoryController =
       Get.find<OrderHistoryController>();
@@ -566,7 +571,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size1,
           )),
       PosColumn(
-          text: "${order.sub_total}",
+          text: "${double.parse(order.sub_total).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -584,7 +589,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size1,
           )),
       PosColumn(
-          text: "${order.tax}",
+          text: "${double.parse(order.tax).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -602,7 +607,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size2,
           )),
       PosColumn(
-          text: "${order.amount}",
+          text: "${double.parse(order.amount!).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -1272,8 +1277,7 @@ class _OrderHistoryState extends State<OrderHistory> {
     printer.beep();
   }
 
-  AutoPrinterController _autoPrinterController =
-  Get.find<AutoPrinterController>();
+
 
   // void _applyFilter(FilterType filterType) {
   //   setState(() {
@@ -1292,10 +1296,6 @@ class _OrderHistoryState extends State<OrderHistory> {
   // }
 
   initAsync() async {
-    print(
-        'auto print order history screen ${_autoPrinterController.autoPrint.value}');
-    print(
-        'auto print kitchen order history screen ${_autoPrinterController.autoPrintKitchen.value}');
     firebaseListener = _firebaseRef
         .child('orders')
         .child((await SharedPreferences.getInstance())
@@ -1655,6 +1655,49 @@ class _OrderHistoryState extends State<OrderHistory> {
                                 : Colors.white),
                       ],
                     ),
+                    constraints.maxWidth > 650 ? Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            await completeOrders().then((value) {
+                              Get.to(() => PosMenu(isDining: false));
+                            });
+                          },
+                          style: ButtonStyle(
+                            // set the height to 50
+                            fixedSize:
+                            MaterialStateProperty.all<Size>(Size(200, 50)) ,
+                          ),
+                          child: Text(
+                            'Complete All Orders',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontFamily: Constants.appFont),
+                          ),
+                        ),
+                         SizedBox(
+                          width: 8,
+                        ),
+                        Container(
+                          width: 180,
+                          margin: EdgeInsets.only(right: 10),
+                          child: TextField(
+                            style: TextStyle(color: Colors.black),
+                            onChanged: (value) {
+                              setState(() {
+                                _searchQuery = value;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                                labelText: 'Search',
+                                labelStyle: TextStyle(color: Colors.black)
+                              // border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ) :
                     Row(
                       children: [
                         ElevatedButton(
@@ -1666,21 +1709,23 @@ class _OrderHistoryState extends State<OrderHistory> {
                           style: ButtonStyle(
                             // set the height to 50
                             fixedSize:
-                            MaterialStateProperty.all<Size>(Size(200, 50)),
+                            MaterialStateProperty.all<Size>(Size(110, 50)) ,
                           ),
                           child: Text(
-                            'Complete All Orders',
+
+                            'Complete Orders',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontFamily: Constants.appFont),
                           ),
                         ),
-                        SizedBox(
+                         SizedBox(
                           width: 8,
                         ),
                         Container(
-                          width: 180,
+                          width: 70,
                           margin: EdgeInsets.only(right: 10),
                           child: TextField(
                             style: TextStyle(color: Colors.black),
@@ -1932,10 +1977,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             ElevatedButton(
                                                               onPressed:
                                                                   () {
-                                                                if (_autoPrinterController
-                                                                    .autoPrint
-                                                                    .value ==
-                                                                    true) {
+
                                                                   if ((_printerController.printerModel.value.ipPos != null && _printerController.printerModel.value.ipPos!.isNotEmpty) &&
                                                                       (_printerController.printerModel.value.portPos != null &&
                                                                           _printerController.printerModel.value.portPos!.isNotEmpty)) {
@@ -1949,7 +1991,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                         "Error",
                                                                         "Please add printer ip and port");
                                                                   }
-                                                                }
+
                                                               },
                                                               child: Text(
                                                                 "POS Print",
@@ -1972,10 +2014,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             ElevatedButton(
                                                               onPressed:
                                                                   () {
-                                                                if (_autoPrinterController
-                                                                    .autoPrintKitchen
-                                                                    .value ==
-                                                                    true) {
+
                                                                   if ((_printerController.printerModel.value.ipKitchen != null && _printerController.printerModel.value.ipKitchen!.isNotEmpty) &&
                                                                       (_printerController.printerModel.value.portKitchen != null &&
                                                                           _printerController.printerModel.value.portKitchen!.isNotEmpty)) {
@@ -1989,7 +2028,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                         "Error",
                                                                         "Please add kitchen printer ip and port");
                                                                   }
-                                                                }
+
                                                               },
                                                               child: Text(
                                                                 "Kitchen Print",
@@ -2776,7 +2815,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                           height: 5,
                                                         ),
                                                         Text(
-                                                          'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.sub_total} ',
+                                                          'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${double.parse(order.sub_total).toStringAsFixed(2)} ',
                                                           style: TextStyle(
                                                               color:
                                                               Colors.black,
@@ -2789,7 +2828,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                           height: 5,
                                                         ),
                                                         Text(
-                                                          'Total Tax : ${order.tax} ',
+                                                          'Total Tax : ${double.parse(order.tax).toStringAsFixed(2)} ',
                                                           style: TextStyle(
                                                               color:
                                                               Colors.black,
@@ -2806,7 +2845,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                         order.discounts == null
                                                             ? SizedBox()
                                                             : Text(
-                                                          'Discounts : ${order.discounts} ',
+                                                          'Discounts : ${double.parse(order.discounts).toStringAsFixed(2)} ',
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .black,
@@ -2827,7 +2866,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             RichText(
                                                               text: TextSpan(
                                                                   text:
-                                                                  'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${order.amount} ',
+                                                                  'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${double.parse(order.amount!).toStringAsFixed(2)} ',
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .black,
@@ -3478,16 +3517,23 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             SharedPreferences.getInstance().then((value) {
                                                               value.setInt(Constants.order_main_id.toString(), colorInt);
                                                             });
+                                                            if(order.deliveryType == "TAKEAWAY"){
+                                                              order.user_name == null || order.user_name == '' ? _cartController.userName = '' : _cartController.userName = order.user_name;
+                                                              order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                              order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
+                                                              _cartController.nameController.text =  _cartController.userName;
+                                                              _cartController.phoneNoController.text =  _cartController.userMobileNumber;
+                                                              _cartController.notesController.text =  _cartController.notes;
+                                                            } else {
+                                                              order.user_name == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.user_name;
+                                                              order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile;
+                                                              order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes;
+                                                              _diningCartController.nameController.text =  _diningCartController.diningUserName;
+                                                              _diningCartController.phoneNoController.text =  _diningCartController.diningUserMobileNumber;
+                                                              _diningCartController.notesController.text =  _diningCartController.diningNotes;
+                                                            }
                                                             order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
-                                                            order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
-                                                            order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
-                                                            print("_cartController.notes before ${_cartController.notes}");
-                                                            print("order notes  before ${order.notes}");
-                                                            order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
-                                                            // Constants.order_main_id = order.order_id.toString()
-                                                            print("server order id ${order.order_id.toString()}");
-                                                            print("order notes ${order.notes}");
-                                                            print("_cartController.notes after ${_cartController.notes}");
+
                                                             Get.to(() => PosMenu(isDining: _cartController.diningValue));
                                                           },
                                                           child: Text(
@@ -3698,7 +3744,11 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             onPressed: () {
                                                               _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
                                                               _cartController.cartMaster?.oldOrderId = order.id;
-                                                              _cartController.tableNumber = order.tableNo!;
+                                                              if(order.deliveryType == "TAKEAWAY") {}else {
+                                                                _cartController
+                                                                    .tableNumber =
+                                                                order.tableNo!;
+                                                              }
                                                               String colorCode = order.order_id.toString();
                                                               int colorInt = int.parse(colorCode.substring(1));
                                                               print("color int ${colorInt}");
@@ -3706,10 +3756,15 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                 value.setInt(Constants.order_main_id.toString(), colorInt);
                                                               });
                                                               order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
-                                                              order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
-                                                              order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
-                                                              // Constants.order_main_id = order.order_id.toString()
-                                                              print("server order id ${order.order_id.toString()}");
+                                                              if(order.deliveryType == "TAKEAWAY"){
+                                                                order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
+                                                                order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                                order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
+                                                              } else {
+                                                                order.user_name == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.user_name;
+                                                                order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile;
+                                                                order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes;
+                                                              }
                                                               Get.to(() => PosMenu(isDining: _cartController.diningValue));
                                                             },
                                                             child: Text(

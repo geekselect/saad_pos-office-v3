@@ -321,7 +321,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                       tableNumber: widget.tableNumber,
                                       orderDate: widget.orderDate, orderTime: widget.orderTime,
                                       orderStatus: widget.orderStatus, ordrePromoCode: widget.ordrePromoCode, orderDeliveryType: widget.orderDeliveryType,
-                                      strTaxAmount: widget.strTaxAmount, orderDeliveryCharge: widget.orderDeliveryCharge,
+                                      strTaxAmount: double.parse(widget.strTaxAmount.toString()), orderDeliveryCharge: widget.orderDeliveryCharge,
                                       deliveryTime: widget.deliveryTime, deliveryDate:widget.deliveryDate,
                                       vendorDiscountAmount: widget.vendorDiscountAmount, subTotal: widget.subTotal, allTax: widget.allTax));
                                   // await showDialog(context: context, builder: (context){

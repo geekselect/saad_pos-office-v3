@@ -3305,6 +3305,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/pages/pos/pos_payement.dart';
 import '../../config/screen_config.dart';
 import '../../controller/auth_controller.dart';
@@ -3329,9 +3330,8 @@ class DiningCartScreen extends StatefulWidget {
 }
 
 class _DiningCartScreenState extends State<DiningCartScreen> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneNoController = TextEditingController();
-  TextEditingController notesController = TextEditingController();
+  final DiningCartController _diningCartController= Get.find<DiningCartController>();
+
   CartController _cartController = Get.find<CartController>();
   DateTime? selectedDate;
   TimeOfDay? picked;
@@ -3349,15 +3349,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   // BaseModel<OrderSettingModel>? orderSettingModel;
   AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
 
-  @override
-  void initState() {
-    print('auto print ${_autoPrinterController.autoPrint.value}');
-    print('auto print kitchen ${_autoPrinterController.autoPrintKitchen.value}');
-    nameController.text = _cartController.userName;
-    phoneNoController.text = _cartController.userMobileNumber;
-    notesController.text = _cartController.notes;
-    super.initState();
-  }
+
 
 
 
@@ -3481,7 +3473,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white.withOpacity(0.4)),
                           child: TextField(
-                            controller: nameController,
+                            controller: _diningCartController.nameController,
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
@@ -3511,7 +3503,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white.withOpacity(0.4)),
                           child: TextField(
-                            controller: phoneNoController,
+                            controller: _diningCartController.phoneNoController,
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.symmetric(
@@ -3538,8 +3530,8 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                         onPressed: () {
-                          nameController.clear();
-                          phoneNoController.clear();
+                          _diningCartController.nameController.clear();
+                          _diningCartController.phoneNoController.clear();
                           // _cartController.tableNumber = null;
                           setState(() {});
                         },
@@ -3675,10 +3667,10 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           PosPayment(
-                                            notes: notesController.text,
+                                            notes: _diningCartController.notesController.text,
                                             mobileNumber:
-                                            phoneNoController.text,
-                                            userName: nameController
+                                            _diningCartController.phoneNoController.text,
+                                            userName: _diningCartController.nameController
                                                 .text,
                                             venderId: _cartController
                                                 .cartMaster!.vendorId,
@@ -3721,8 +3713,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                                 _cartController
                                                     .strAppiedPromocodeId),
                                             strTaxAmount: _cartController
-                                                .calculatedTax
-                                                .toString(),
+                                                .calculatedTax,
                                             allTax: [],
                                             subTotal: subTotal,
                                             deliveryDate:
@@ -4130,12 +4121,12 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
             child: TextButton(
                 onPressed: () {
                   _cartController.cartMaster?.cart.clear();
-                  _cartController.userName = '';
-                  _cartController.userMobileNumber = '';
-                  _cartController.notes = '';
-                  nameController.clear();
-                  phoneNoController.clear();
-                  notesController.clear();
+                  _diningCartController.diningUserName = '';
+                  _diningCartController.diningUserMobileNumber = '';
+                  _diningCartController.diningNotes = '';
+                  _diningCartController.nameController.clear();
+                  _diningCartController.phoneNoController.clear();
+                  _diningCartController.notesController.clear();
                   _cartController.tableNumber = null;
                   setState(() {});
                 },
@@ -5007,7 +4998,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                 child: TextFormField(
                   // minLines: 2,
                   // maxLines: 3,
-                  controller: notesController,
+                  controller: _diningCartController.notesController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(

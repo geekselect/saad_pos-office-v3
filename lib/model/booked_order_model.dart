@@ -29,6 +29,7 @@ class Data {
   Data({
     this.orderId,
     this.orderData,
+    this.notes,
     this.userName,
     this.mobile,
   });
@@ -37,18 +38,21 @@ class Data {
   String? orderData;
   String? userName;
   String? mobile;
+  String? notes;
 
   factory Data.fromMap(Map<String, dynamic> json) => Data(
     orderId: json["order_id"],
     orderData: json["order_data"],
     userName: json["user_name"],
     mobile: json["mobile"],
+    notes: json["notes"],
   );
 
   Map<String, dynamic> toMap() => {
     "order_id": orderId,
     "order_data": orderData,
     "user_name": userName,
+    "notes": notes,
     "mobile": mobile,
   };
 }

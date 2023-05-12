@@ -173,6 +173,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           itemBuilder: (context, orderIndex) {
                             orderResponse.Data order =
                                 _orderController.orderList[orderIndex];
+
                             CartMaster cartMaster = CartMaster.fromMap(
                                 jsonDecode(order.orderData!));
                             int addonsHeight = 0;
@@ -425,130 +426,254 @@ class _OrderScreenState extends State<OrderScreen> {
                                               top: 10),
 
                                           child: ListView.builder(
-                                            itemCount: order.orderItems!.length,
+                                            itemCount: cart.length,
                                             shrinkWrap: true,
                                             physics:
                                                 NeverScrollableScrollPhysics(),
                                             scrollDirection: Axis.vertical,
                                             itemBuilder: (context, index1) {
-                                              Cart cartItem = cart[index1];
-                                              String category =
-                                                  cartItem.category;
+                                              String category = cart[index1]
+                                                  .category;
                                               MenuCategoryCartMaster?
-                                                  menuCategory =
-                                                  cartItem.menuCategory;
-                                              List<MenuCartMaster> menu =
-                                                  cartItem.menu;
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          order
-                                                              .orderItems![
-                                                                  index1]
-                                                              .itemName!,
-                                                          style: TextStyle(
-                                                              color: Palette
-                                                                  .loginhead,
-                                                              fontFamily:
-                                                                  "ProximaNova",
-                                                              fontSize: 14),
-                                                        ),
-                                                        Text(
-                                                          ' x ${order.orderItems![index1].qty}',
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  colorTheme),
-                                                              fontFamily:
-                                                                  "ProximaBold",
-                                                              fontSize: 14),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    () {
-                                                      if (category ==
-                                                          'SINGLE') {
-                                                        return ListView.builder(
-                                                            shrinkWrap: true,
-                                                            itemCount:
-                                                                menu.length,
-                                                            physics:
-                                                                NeverScrollableScrollPhysics(),
-                                                            itemBuilder:
-                                                                (context,
-                                                                    menuIndex) {
-                                                              MenuCartMaster
-                                                                  menuItem =
-                                                                  menu[
-                                                                      menuIndex];
-                                                              return Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
+                                              menuCategory = cart[index1]
+                                                      .menuCategory;
+                                              List<MenuCartMaster> menu = cart[index1]
+                                                  .menu;
+                                              var price;
+                                              if (order.deliveryType ==
+                                                  'DINING') {
+                                                price = cart[index1]
+                                                    .diningAmount;
+                                              } else {
+                                                price = cart[index1]
+                                                    .totalAmount;
+                                              }
+                                              if (category ==
+                                                  'SINGLE') {
+                                                return ListView.builder(
+                                                    shrinkWrap: true,
+                                                    itemCount:
+                                                    menu.length,
+                                                    physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                    itemBuilder:
+                                                        (context,
+                                                        menuIndex) {
+                                                      MenuCartMaster menuItem =
+                                                      menu[
+                                                      menuIndex];
+                                                      return Column(
+                                                        mainAxisSize:
+                                                        MainAxisSize
+                                                            .min,
+                                                        children: [
+                                                          Flexible(
+                                                            fit: FlexFit
+                                                                .loose,
+                                                            child:
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                  10.0,
+                                                                  vertical:
+                                                                  3),
+                                                              child:
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.spaceBetween,
                                                                 children: [
-                                                                  Flexible(
-                                                                    fit: FlexFit
-                                                                        .loose,
-                                                                    child: ListView.builder(
-                                                                        shrinkWrap: true,
-                                                                        physics: NeverScrollableScrollPhysics(),
-                                                                        itemCount: menuItem.addons.length,
-                                                                        padding: EdgeInsets.only(left: 5),
-                                                                        itemBuilder: (context, addonIndex) {
-                                                                          AddonCartMaster
-                                                                              addonItem =
-                                                                              menuItem.addons[addonIndex];
-                                                                          return Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.only(top: 5.0),
-                                                                            child:
-                                                                                Row(
-                                                                              children: [
-                                                                                Text(addonItem.name + ' '),
-                                                                                Container(
-                                                                                  height: 20,
-                                                                                  padding: EdgeInsets.all(3.0),
-                                                                                  decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
-                                                                                  child: Center(
-                                                                                    child: Text(
-                                                                                      'ADDONS',
-                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
-                                                                                    ),
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                          );
-                                                                        }),
-                                                                  )
+                                                                  Row(
+                                                                    children: [
+                                                                      Text('${menu[menuIndex].name}${cart[index1].size != null ? ' ( ${cart![index1].size!.sizeName}) ' : ''} x ${cart[index1].quantity}  ', style: TextStyle(color: Color(Constants.colorTheme), fontWeight: FontWeight.w900, fontSize: 14)),
+                                                                      // Container(
+                                                                      //   height: 20,
+                                                                      //   width: 60,
+                                                                      //   decoration: BoxDecoration(
+                                                                      //       color: Color(Constants.colorTheme),
+                                                                      //       borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                                                      //   ),
+                                                                      //   child: Center(
+                                                                      //     child: Text('SINGLE',
+                                                                      //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
+                                                                      //   ),
+                                                                      // ),
+                                                                    ],
+                                                                  ),
+                                                                  Text(price
+                                                                      .toString())
                                                                 ],
-                                                              );
-                                                            });
-                                                      } else {
-                                                        return Container();
-                                                      }
-                                                    }(),
-                                                    Visibility(
-                                                      child: Text(
-                                                        '(${order.orderItems![index1].itemName})',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Palette.switchs,
-                                                            fontFamily:
-                                                                "ProximaNova",
-                                                            fontSize: 12),
-                                                      ),
-                                                      visible: false,
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Flexible(
+                                                            fit: FlexFit
+                                                                .loose,
+                                                            child: ListView.builder(
+                                                                shrinkWrap: true,
+                                                                physics: NeverScrollableScrollPhysics(),
+                                                                itemCount: menuItem.addons.length,
+                                                                padding: EdgeInsets.only(left: 25),
+                                                                itemBuilder: (context, addonIndex) {
+                                                                  AddonCartMaster
+                                                                  addonItem =
+                                                                  menuItem.addons[addonIndex];
+                                                                  return Padding(
+                                                                    padding:
+                                                                    const EdgeInsets.only(top: 5.0),
+                                                                    child:
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(addonItem.name + ' '),
+                                                                        Container(
+                                                                          height: 20,
+                                                                          padding: EdgeInsets.all(3.0),
+                                                                          decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                                                                          child: Center(
+                                                                            child: Text(
+                                                                              'ADDONS',
+                                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                }),
+                                                          )
+                                                        ],
+                                                      );
+                                                    });
+                                              }
+                                              // Cart cartItem = cart[index1];
+                                              // String category =
+                                              //     cartItem.category;
+                                              // MenuCategoryCartMaster?
+                                              //     menuCategory =
+                                              //     cartItem.menuCategory;
+                                              // List<MenuCartMaster> menu =
+                                              //     cartItem.menu;
+                                              // var price;
+                                              // if (order.deliveryType ==
+                                              //     'DINING') {
+                                              //   price = cart[index1]
+                                              //       .diningAmount;
+                                              // } else {
+                                              //   price = cart[index1]
+                                              //       .totalAmount;
+                                              // }
+
+//                                               return Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.all(5.0),
+//                                                 child: Column(
+//                                                   crossAxisAlignment:
+//                                                       CrossAxisAlignment.start,
+//                                                   children: [
+//                                                     Row(
+//                                                       children: [
+//                                                         Text(
+//                                                           cart[
+//                                                                   index1]
+//                                                               .itemName!,
+//                                                           style: TextStyle(
+//                                                               color: Palette
+//                                                                   .loginhead,
+//                                                               fontFamily:
+//                                                                   "ProximaNova",
+//                                                               fontSize: 14),
+//                                                         ),
+//                                                         Text(
+//                                                           ' x ${order.orderItems![index1].qty}',
+//                                                           style: TextStyle(
+//                                                               color: Color(
+//                                                                   colorTheme),
+//                                                               fontFamily:
+//                                                                   "ProximaBold",
+//                                                               fontSize: 14),
+//                                                         ),
+//                                                       ],
+//                                                     ),
+//                                                     () {
+//                                                       if (category ==
+//                                                           'SINGLE') {
+//                                                         return ListView.builder(
+//                                                             shrinkWrap: true,
+//                                                             itemCount:
+//                                                                 menu.length,
+//                                                             physics:
+//                                                                 NeverScrollableScrollPhysics(),
+//                                                             itemBuilder:
+//                                                                 (context,
+//                                                                     menuIndex) {
+//                                                               MenuCartMaster
+//                                                                   menuItem =
+//                                                                   menu[
+//                                                                       menuIndex];
+//                                                               return Column(
+//                                                                 mainAxisSize:
+//                                                                     MainAxisSize
+//                                                                         .min,
+//                                                                 children: [
+//
+//                                                                   Flexible(
+//                                                                     fit: FlexFit
+//                                                                         .loose,
+//                                                                     child: ListView.builder(
+//                                                                         shrinkWrap: true,
+//                                                                         physics: NeverScrollableScrollPhysics(),
+//                                                                         itemCount: menuItem.addons.length,
+//                                                                         padding: EdgeInsets.only(left: 5),
+//                                                                         itemBuilder: (context, addonIndex) {
+//                                                                           AddonCartMaster
+//                                                                               addonItem =
+//                                                                               menuItem.addons[addonIndex];
+//                                                                           return Padding(
+//                                                                             padding:
+//                                                                                 const EdgeInsets.only(top: 5.0),
+//                                                                             child:
+//                                                                                 Row(
+//                                                                               children: [
+//                                                                                 Text(addonItem.name + ' '),
+//                                                                                 Container(
+//                                                                                   height: 20,
+//                                                                                   padding: EdgeInsets.all(3.0),
+//                                                                                   decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
+//                                                                                   child: Center(
+//                                                                                     child: Text(
+//                                                                                       'ADDONS',
+//                                                                                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+//                                                                                     ),
+//                                                                                   ),
+//                                                                                 )
+//                                                                               ],
+//                                                                             ),
+//                                                                           );
+//                                                                         }),
+//                                                                   )
+// ...................
+//                                                                 ],
+//                                                               );
+//                                                             });
+//                                                       } else {
+//                                                         return Container();
+//                                                       }
+//                                                     }(),
+//                                                     Visibility(
+//                                                       child: Text(
+//                                                         '(${order.orderItems![index1].itemName})',
+//                                                         style: TextStyle(
+//                                                             color:
+//                                                                 Palette.switchs,
+//                                                             fontFamily:
+//                                                                 "ProximaNova",
+//                                                             fontSize: 12),
+//                                                       ),
+//                                                       visible: false,
+//                                                     ),
+//                                                   ],
+//                                                 ),
+//                                               );
                                             },
                                           ),
                                         ),

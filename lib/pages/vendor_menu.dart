@@ -8,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:pos/config/screen_config.dart';
 import 'package:pos/controller/cart_controller.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/cart_master.dart' as cm;
 import 'package:pos/model/single_restaurants_details_model.dart';
@@ -45,6 +46,7 @@ class VendorMenu extends StatefulWidget {
 
 class _VendorMenuState extends State<VendorMenu>
     with SingleTickerProviderStateMixin {
+  final DiningCartController _diningCartController= Get.find<DiningCartController>();
   OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
   TabController? _tabController;
@@ -822,8 +824,8 @@ class _VendorMenuState extends State<VendorMenu>
                                                                       .data!
                                                                       .userName !=
                                                                   null) {
-                                                                _cartController
-                                                                        .userName =
+                                                                _diningCartController
+                                                                        .diningUserName =
                                                                     bookOrderModel
                                                                         .data!
                                                                         .userName!;
@@ -841,12 +843,12 @@ class _VendorMenuState extends State<VendorMenu>
                                                                       .data!
                                                                       .mobile !=
                                                                   null) {
-                                                                _cartController
-                                                                        .userMobileNumber =
+                                                                _diningCartController.diningUserMobileNumber =
                                                                     bookOrderModel
                                                                         .data!
                                                                         .mobile!;
                                                               }
+
                                                               print(
                                                                   bookOrderModel
                                                                       .data!
@@ -1950,7 +1952,7 @@ class _VendorMenuState extends State<VendorMenu>
                   ),
                 ),
                 Text(
-                  ' ${singleMenu.menu!.displayDiscountPrice}',
+                  ' ${singleMenu.menu!.price}',
                   style: TextStyle(
                     fontFamily: "digital",
                     color: Color(Constants.colorTheme),

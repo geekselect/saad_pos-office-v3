@@ -29,6 +29,9 @@ class CartController extends GetxController{
   int taxType= 0;
   double taxAmountNew = 0.0;
   String appliedCouponPercentage='';
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneNoController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
 
   String? appliedCouponName='';
 

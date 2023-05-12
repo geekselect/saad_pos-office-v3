@@ -1729,9 +1729,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   CartController _cartController = Get.find<CartController>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneNoController = TextEditingController();
-  TextEditingController notesController = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? picked;
   BaseModel<OrderSettingModel>? orderSettingModel;
@@ -1754,11 +1751,6 @@ class _CartScreenState extends State<CartScreen> {
     print('auto print cart screen ${_autoPrinterController.autoPrint.value}');
     print('auto print kitchen cart screen ${_autoPrinterController.autoPrintKitchen.value}');
     _cartController.diningValue = widget.isDining;
-    if (_cartController.cartMaster?.oldOrderId != null) {
-      nameController.text = _cartController.userName;
-      phoneNoController.text = _cartController.userMobileNumber;
-      notesController.text = _cartController.notes;
-    }
     // if (_cartController.cartMaster != null) {
     _cartController
         .callOrderSetting().then((value) {
@@ -1953,13 +1945,13 @@ class _CartScreenState extends State<CartScreen> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 PosPayment(
-                                                  notes: notesController
+                                                  notes: _cartController.notesController
                                                       .text,
                                                   mobileNumber:
-                                                  phoneNoController
+                                                  _cartController.phoneNoController
                                                       .text,
                                                   userName:
-                                                  nameController
+                                                  _cartController.nameController
                                                       .text,
                                                   venderId:
                                                   _cartController
@@ -2009,7 +2001,7 @@ class _CartScreenState extends State<CartScreen> {
                                                       .strAppiedPromocodeId),
                                                   strTaxAmount:
                                                   _cartController
-                                                      .calculatedTax.toStringAsFixed(2),
+                                                      .calculatedTax,
                                                   allTax: [],
                                                   subTotal: subTotal,
                                                   deliveryDate:
@@ -2098,7 +2090,7 @@ class _CartScreenState extends State<CartScreen> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.white.withOpacity(0.4)),
                     child: TextFormField(
-                      controller: nameController,
+                      controller: _cartController.nameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
@@ -2125,7 +2117,7 @@ class _CartScreenState extends State<CartScreen> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.white.withOpacity(0.4)),
                     child: TextFormField(
-                      controller: phoneNoController,
+                      controller: _cartController.phoneNoController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -2159,8 +2151,8 @@ class _CartScreenState extends State<CartScreen> {
                     onPressed: () {
                       _cartController.userName = '';
                       _cartController.userMobileNumber = '';
-                      nameController.clear();
-                      phoneNoController.clear();
+                      _cartController.nameController.clear();
+                      _cartController.phoneNoController.clear();
                       // _cartController.tableNumber = null;
                       setState(() {});
                     },
@@ -2175,9 +2167,9 @@ class _CartScreenState extends State<CartScreen> {
                       _cartController.userName = '';
                       _cartController.userMobileNumber = '';
                       _cartController.notes = '';
-                      nameController.clear();
-                      phoneNoController.clear();
-                      notesController.clear();
+                      _cartController.nameController.clear();
+                      _cartController.phoneNoController.clear();
+                      _cartController.notesController.clear();
                       // _cartController.tableNumber = null;
                       setState(() {});
                     },
@@ -3281,7 +3273,7 @@ class _CartScreenState extends State<CartScreen> {
                 child: TextFormField(
                   // minLines: 1,
                   // maxLines: 3,
-                  controller: notesController,
+                  controller: _cartController.notesController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(

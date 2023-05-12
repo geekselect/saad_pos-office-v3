@@ -122,6 +122,39 @@ class _NoAddonsState extends State<NoAddons> {
                         cart, widget.menu.vendorId);
 
                   }, btnFloatOnPressed: ()async{
+                    //
+                    // _cartController
+                    //     .addItem(
+                    //    Cart(
+                    //         diningAmount: double.parse(
+                    //             widget
+                    //                 .menu
+                    //                 .diningPrice!),
+                    //         category:
+                    //         "SINGLE",
+                    //         menu: [
+                    //           MenuCartMaster(
+                    //             name:
+                    //             widget.menu.name,
+                    //             totalAmount:
+                    //             double.parse(widget.menu.price!),
+                    //             id: widget.menu.id,
+                    //             addons: [],
+                    //             image:
+                    //             widget.menu.image,
+                    //           )
+                    //         ],
+                    //         size:
+                    //         null,
+                    //         totalAmount: double.parse(widget
+                    //             .menu
+                    //             .price!),
+                    //         quantity:
+                    //         1),
+                    //     int.parse(widget.menu.vendorId.toString()),
+                    //     context);
+
+                    ///Previous
                     Cart cart=Cart(
                         category: widget.category,
                         menu:[ MenuCartMaster(
