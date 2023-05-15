@@ -10,6 +10,7 @@ import 'package:pos/model/is_address_selected.dart';
 import 'package:pos/model/msg_response_model.dart';
 import 'package:pos/model/order_setting_api_model.dart';
 import 'package:pos/model/report_model.dart';
+import 'package:pos/model/reports_by_date_model.dart';
 import 'package:pos/model/single_vendor_model.dart';
 import 'package:pos/model/vendor_banner_model.dart';
 import 'package:pos/model/vendor_item_model.dart';
@@ -188,10 +189,14 @@ abstract class RestClient {
   //     @Path() int? id,
   //     );
   ///End
-  @GET("todays-orders-pluse/{id}")
+  @GET("possalesingleuser/{id}/{user_id}")
   Future reportsCall(
     @Path() int? id,
+    @Path() int? user_id,
   );
+
+  @POST("possalebydate")
+  Future<ReportByDateModel> reportsApiByDate(@Body() Map<String, dynamic> map);
 
   @GET("Pos-User-record/{vendorId}/{user_id}")
   Future customerDataCall(@Path() int? vendorId, int user_id);

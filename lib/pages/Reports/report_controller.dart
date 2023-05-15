@@ -262,10 +262,11 @@ class ReportController extends GetxController {
   Future<BaseModel<ReportModel>>? reportsApiCall() async {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+    String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
     ReportModel response;
     try {
-      response = await RestClient(await RetroApi().dioData()).reportsCall(int.parse(vendorId.toString()));
-      print("data of reports ${response.toJson()}");
+      response = await RestClient(await RetroApi().dioData()).reportsCall(int.parse(vendorId.toString()), int.parse(userId.toString()));
+      print("data of reports by Date screen ${response.toJson()}");
 
       reportModelData.value = response;
     } catch (error, stacktrace) {
@@ -365,13 +366,13 @@ class ReportController extends GetxController {
       PosColumn(
           text: 'Amount', width: 3, styles: PosStyles(align: PosAlign.right)),
     ]);
-    for (int index = 0;
-        index < reportModelData.value.payments!.posCash!.name!.length;
-        index++) {
+    // for (int index = 0;
+    //     index < reportModelData.value.payments!.posCash!.name!.length;
+    //     index++) {
       // Payments reportDetailModel = reportModelData.value.payments!.posCash.name;
       printer.row([
         PosColumn(
-            text: reportModelData.value.payments!.posCash!.name![0].toString(),
+            text: reportModelData.value.payments!.posCash!.name!.toString(),
             width: 4),
         PosColumn(
             text: "Pos Cash Amount",
@@ -383,14 +384,14 @@ class ReportController extends GetxController {
             width: 3,
             styles: PosStyles(align: PosAlign.right)),
       ]);
-    }
-    for (int index = 0;
-        index < reportModelData.value.payments!.posCard!.name!.length;
-        index++) {
+    // }
+    // for (int index = 0;
+    //     index < reportModelData.value.payments!.posCard!.name!.length;
+    //     index++) {
       // ReportDetailModel reportDetailModel = posCashdata.value.data!;
       printer.row([
         PosColumn(
-            text: reportModelData.value.payments!.posCard!.name![0].toString(),
+            text: reportModelData.value.payments!.posCard!.name!.toString(),
             width: 4),
         PosColumn(
             text: "Pos Card Amount",
@@ -402,7 +403,7 @@ class ReportController extends GetxController {
             width: 3,
             styles: PosStyles(align: PosAlign.right)),
       ]);
-    }
+    // }
 
     ///For Pos cash and pos card
     // for (int index = 0; index < posCashdata.value.data!.names!.length; index++) {
@@ -432,28 +433,28 @@ class ReportController extends GetxController {
     printer.row([
       PosColumn(text: 'Todays Total Order', width: 8),
       PosColumn(
-          text: reportModelData.value.todaysTotalOrders.toString(),
+          text: reportModelData.value.totalOrders.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
     printer.row([
       PosColumn(text: 'Todays Total Takeaway', width: 8),
       PosColumn(
-          text: reportModelData.value.todaysTotalTakeaway.toString(),
+          text: reportModelData.value.totalTakeaway.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
     printer.row([
       PosColumn(text: 'Todays Total Dining', width: 8),
       PosColumn(
-          text: reportModelData.value.todaysTotalDining.toString(),
+          text: reportModelData.value.totalDining.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
     printer.row([
       PosColumn(text: 'Todays Total Discounts', width: 8),
       PosColumn(
-          text: reportModelData.value.todaysTotalDiscounts!.toStringAsFixed(2),
+          text: reportModelData.value.totalDiscounts!.toStringAsFixed(2),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);

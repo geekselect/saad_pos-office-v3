@@ -184,117 +184,109 @@
 //
 //     final reportModel = reportModelFromJson(jsonString);
 
+// To parse this JSON data, do
+//
+//     final reportModel = reportModelFromJson(jsonString);
+
 import 'dart:convert';
 
-ReportModel reportModelFromJson(String str) =>
-    ReportModel.fromJson(json.decode(str));
+ReportModel reportModelFromJson(String str) => ReportModel.fromJson(json.decode(str));
 
 String reportModelToJson(ReportModel data) => json.encode(data.toJson());
 
 class ReportModel {
+  Payments? payments;
+  int? totalOrders;
+  int? totalTakeaway;
+  int? totalDining;
+  double? totalDiscounts;
+  List<Order>? orders;
+
   ReportModel({
     this.payments,
-    this.todaysTotalOrders,
-    this.todaysTotalTakeaway,
-    this.todaysTotalDiscounts,
-    this.todaysTotalDining,
+    this.totalOrders,
+    this.totalTakeaway,
+    this.totalDining,
+    this.totalDiscounts,
     this.orders,
   });
 
-  Payments? payments;
-  dynamic todaysTotalOrders;
-  dynamic todaysTotalTakeaway;
-  dynamic todaysTotalDiscounts;
-  dynamic todaysTotalDining;
-  List<Order>? orders;
-
   factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
-        payments: json["payments"] == null
-            ? null
-            : Payments.fromJson(json["payments"]),
-        todaysTotalOrders: json["Todays total orders"],
-        todaysTotalTakeaway: json["Todays total Takeaway"],
-        todaysTotalDiscounts: json["Todays total discounts"],
-        todaysTotalDining: json["Todays total dining"],
-        orders: json["orders"] == null
-            ? []
-            : List<Order>.from(json["orders"]!.map((x) => Order.fromJson(x))),
-      );
+    payments: json["payments"] == null ? null : Payments.fromJson(json["payments"]),
+    totalOrders: json["Total Orders"],
+    totalTakeaway: json["Total Takeaway"],
+    totalDining: json["Total Dining"],
+    totalDiscounts: json["Total Discounts"]?.toDouble(),
+    orders: json["orders"] == null ? [] : List<Order>.from(json["orders"]!.map((x) => Order.fromJson(x))),
+  );
 
   Map<String, dynamic> toJson() => {
-        "payments": payments?.toJson(),
-        "Todays total orders": todaysTotalOrders,
-        "Todays total Takeaway": todaysTotalTakeaway,
-        "Todays total discounts": todaysTotalDiscounts,
-        "Todays total dining": todaysTotalDining,
-        "orders": orders == null
-            ? []
-            : List<dynamic>.from(orders!.map((x) => x.toJson())),
-      };
+    "payments": payments?.toJson(),
+    "Total Orders": totalOrders,
+    "Total Takeaway": totalTakeaway,
+    "Total Dining": totalDining,
+    "Total Discounts": totalDiscounts,
+    "orders": orders == null ? [] : List<dynamic>.from(orders!.map((x) => x.toJson())),
+  };
 }
 
 class Order {
+  String? itemName;
+  int? quantity;
+
   Order({
     this.itemName,
     this.quantity,
   });
 
-  String? itemName;
-  int? quantity;
-
   factory Order.fromJson(Map<String, dynamic> json) => Order(
-        itemName: json["item_name"],
-        quantity: json["quantity"],
-      );
+    itemName: json["item_name"],
+    quantity: json["quantity"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "item_name": itemName,
-        "quantity": quantity,
-      };
+    "item_name": itemName,
+    "quantity": quantity,
+  };
 }
 
 class Payments {
+  PosCa? posCash;
+  PosCa? posCard;
+
   Payments({
     this.posCash,
     this.posCard,
   });
 
-  PaymentType? posCash;
-  PaymentType? posCard;
-
   factory Payments.fromJson(Map<String, dynamic> json) => Payments(
-        posCash: json["Pos cash"] == null
-            ? null
-            : PaymentType.fromJson(json["Pos cash"]),
-        posCard: json["Pos card"] == null
-            ? null
-            : PaymentType.fromJson(json["Pos card"]),
-      );
+    posCash: json["Pos cash"] == null ? null : PosCa.fromJson(json["Pos cash"]),
+    posCard: json["Pos card"] == null ? null : PosCa.fromJson(json["Pos card"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "Pos cash": posCash?.toJson(),
-        "Pos card": posCard?.toJson(),
-      };
+    "Pos cash": posCash?.toJson(),
+    "Pos card": posCard?.toJson(),
+  };
 }
 
-class PaymentType {
-  PaymentType({
+class PosCa {
+  String? name;
+  double? amount;
+
+  PosCa({
     this.name,
     this.amount,
   });
 
-  List<String>? name;
-  double? amount;
-
-  factory PaymentType.fromJson(Map<String, dynamic> json) => PaymentType(
-        name: json["name"] == null
-            ? []
-            : List<String>.from(json["name"]!.map((x) => x)),
-        amount: json["amount"]?.toDouble(),
-      );
+  factory PosCa.fromJson(Map<String, dynamic> json) => PosCa(
+    name: json["name"],
+    amount: json["amount"]?.toDouble(),
+  );
 
   Map<String, dynamic> toJson() => {
-        "name": name == null ? [] : List<dynamic>.from(name!.map((x) => x)),
-        "amount": amount,
-      };
+    "name": name,
+    "amount": amount,
+  };
 }
+

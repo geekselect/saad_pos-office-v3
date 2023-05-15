@@ -1752,13 +1752,7 @@ class _CartScreenState extends State<CartScreen> {
     print('auto print kitchen cart screen ${_autoPrinterController.autoPrintKitchen.value}');
     _cartController.diningValue = widget.isDining;
     // if (_cartController.cartMaster != null) {
-    _cartController
-        .callOrderSetting().then((value) {
-      _cartController.taxType = value.data!.data!.taxType!;
-      _cartController.taxAmountNew = double.parse( value.data!.data!.tax!.toString());
-      print("tex ${_cartController.calculatedTax}");
-      print("tex type ${_cartController.taxAmountNew}");
-    });
+
     statusRef = _orderCustimizationController
         .status();
 
@@ -2267,7 +2261,7 @@ class _CartScreenState extends State<CartScreen> {
                                   Flexible(
                                     child: Text(
                                       // '${cart.menu[0].totalAmount}',
-                                      '${_cartController.cartMaster!.cart[index].totalAmount}',
+                                      double.parse(_cartController.cartMaster!.cart[index].totalAmount.toString()).toStringAsFixed(2),
                                       style: TextStyle(
                                           color: Constants.yellowColor),
                                     ),

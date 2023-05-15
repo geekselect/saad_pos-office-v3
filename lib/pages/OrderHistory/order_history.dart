@@ -36,6 +36,7 @@ import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/cart_master.dart' as cart;
+import '../order/OrderDetailScreen.dart';
 
 enum FilterType { TakeAway, DineIn, None }
 
@@ -241,7 +242,7 @@ class _OrderHistoryState extends State<OrderHistory> {
               width: 9,
             ),
             PosColumn(
-                text: price.toString(),
+                text:  double.parse(price.toString()).toStringAsFixed(2),
                 width: 2,
                 styles: PosStyles(align: PosAlign.right)),
           ]);
@@ -266,7 +267,7 @@ class _OrderHistoryState extends State<OrderHistory> {
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
               PosColumn(
-                  text: addonItem.price.toString(),
+                  text: double.parse(addonItem.price.toString()).toStringAsFixed(2),
                   width: 2,
                   styles: PosStyles(align: PosAlign.right)),
             ]);
@@ -540,27 +541,7 @@ class _OrderHistoryState extends State<OrderHistory> {
     // ]);
 
     ///Discount
-    // if (order.amount != double.parse(totalAmountController.text)) {
-    //   printer.row([
-    //     PosColumn(
-    //         text:
-    //             'Discount ${_selectedButton == 0 ? "5%" : _selectedButton == 1 ? "10%" : _selectedButton == 2 ? "15%" : ''}',
-    //         width: 6,
-    //         styles: PosStyles(
-    //           height: PosTextSize.size1,
-    //           width: PosTextSize.size1,
-    //         )),
-    //     PosColumn(
-    //         text:
-    //             "$currencySymbol${widget.totalAmount - double.parse(totalAmountController.text)}",
-    //         width: 6,
-    //         styles: PosStyles(
-    //           align: PosAlign.right,
-    //           height: PosTextSize.size1,
-    //           width: PosTextSize.size1,
-    //         )),
-    //   ]);
-    // }
+
 
     printer.row([
       PosColumn(
@@ -571,7 +552,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size1,
           )),
       PosColumn(
-          text: "${double.parse(order.sub_total).toStringAsFixed(2)}",
+          text: "${double.parse(order.sub_total.toString()).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -589,7 +570,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size1,
           )),
       PosColumn(
-          text: "${double.parse(order.tax).toStringAsFixed(2)}",
+          text: "${double.parse(order.tax.toString()).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -597,6 +578,28 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size1,
           )),
     ]);
+
+    if (order.discounts != null) {
+      printer.row([
+        PosColumn(
+            text:
+            'Discount',
+            width: 6,
+            styles: PosStyles(
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+        PosColumn(
+            text:
+            "$currencySymbol${double.parse(order.discounts!.toString()).toStringAsFixed(2)}",
+            width: 6,
+            styles: PosStyles(
+              align: PosAlign.right,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+      ]);
+    }
 
     printer.row([
       PosColumn(
@@ -607,7 +610,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             width: PosTextSize.size2,
           )),
       PosColumn(
-          text: "${double.parse(order.amount!).toStringAsFixed(2)}",
+          text: "${double.parse(order.amount!.toString()).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -2345,8 +2348,8 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                                               // ),
                                                                             ],
                                                                           ),
-                                                                          Text(price
-                                                                              .toString())
+                                                                          Text(double.parse(price
+                                                                              .toString()).toStringAsFixed(2))
                                                                         ],
                                                                       ),
                                                                     ),
@@ -3742,12 +3745,35 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                             : Expanded(
                                                           child: ElevatedButton(
                                                             onPressed: () {
+                                                              // _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                              // _cartController.cartMaster?.oldOrderId = order.id;
+                                                              // if(order.deliveryType == "TAKEAWAY") {}else {
+                                                              //   _cartController
+                                                              //       .tableNumber =
+                                                              //   order.tableNo!;
+                                                              // }
+                                                              // String colorCode = order.order_id.toString();
+                                                              // int colorInt = int.parse(colorCode.substring(1));
+                                                              // print("color int ${colorInt}");
+                                                              // SharedPreferences.getInstance().then((value) {
+                                                              //   value.setInt(Constants.order_main_id.toString(), colorInt);
+                                                              // });
+                                                              // order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+                                                              // if(order.deliveryType == "TAKEAWAY"){
+                                                              //   order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
+                                                              //   order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                              //   order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
+                                                              // } else {
+                                                              //   order.user_name == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.user_name;
+                                                              //   order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile;
+                                                              //   order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes;
+                                                              // }
+                                                              // Get.to(() => PosMenu(isDining: _cartController.diningValue));
+
                                                               _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
                                                               _cartController.cartMaster?.oldOrderId = order.id;
-                                                              if(order.deliveryType == "TAKEAWAY") {}else {
-                                                                _cartController
-                                                                    .tableNumber =
-                                                                order.tableNo!;
+                                                              if (order.tableNo != null) {
+                                                                _cartController.tableNumber = order.tableNo!;
                                                               }
                                                               String colorCode = order.order_id.toString();
                                                               int colorInt = int.parse(colorCode.substring(1));
@@ -3755,16 +3781,23 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                               SharedPreferences.getInstance().then((value) {
                                                                 value.setInt(Constants.order_main_id.toString(), colorInt);
                                                               });
-                                                              order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
                                                               if(order.deliveryType == "TAKEAWAY"){
-                                                                order.user_name == null ? _cartController.userName = '' : _cartController.userName = order.user_name;
-                                                                order.mobile == null ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
+                                                                order.user_name == null || order.user_name == '' ? _cartController.userName = '' : _cartController.userName = order.user_name;
+                                                                order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile;
                                                                 order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes;
+                                                                _cartController.nameController.text =  _cartController.userName;
+                                                                _cartController.phoneNoController.text =  _cartController.userMobileNumber;
+                                                                _cartController.notesController.text =  _cartController.notes;
                                                               } else {
                                                                 order.user_name == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.user_name;
                                                                 order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile;
                                                                 order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes;
+                                                                _diningCartController.nameController.text =  _diningCartController.diningUserName;
+                                                                _diningCartController.phoneNoController.text =  _diningCartController.diningUserMobileNumber;
+                                                                _diningCartController.notesController.text =  _diningCartController.diningNotes;
                                                               }
+                                                              order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+
                                                               Get.to(() => PosMenu(isDining: _cartController.diningValue));
                                                             },
                                                             child: Text(

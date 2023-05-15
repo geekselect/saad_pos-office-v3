@@ -973,19 +973,17 @@ class Reports extends StatelessWidget {
                                 Expanded(
                                     child: Center(
                                         child: Text(_reportController
-                                                .reportModelData
-                                                .value
-                                                .payments!
-                                                .posCash!
-                                                .name!
-                                                .isNotEmpty
+                                            .reportModelData
+                                            .value
+                                            .payments!
+                                            .posCash!
+                                            .name != null
                                             ? _reportController
                                                 .reportModelData
                                                 .value
                                                 .payments!
                                                 .posCash!
                                                 .name!
-                                                .first
                                                 .toString()
                                             : "No data"))),
                                 const Expanded(
@@ -1005,11 +1003,14 @@ class Reports extends StatelessWidget {
                               children: [
                                 Expanded(
                                     child: Center(
-                                        child: Text(
-                                  _reportController.reportModelData.value
-                                          .payments!.posCard!.name!.isNotEmpty
+                                        child: Text(_reportController
+                                      .reportModelData
+                                      .value
+                                      .payments!
+                                      .posCard!
+                                      .name != null
                                       ? _reportController.reportModelData.value
-                                          .payments!.posCard!.name!.first
+                                          .payments!.posCard!.name!
                                           .toString()
                                       : "No data",
                                 ))),
@@ -1022,8 +1023,8 @@ class Reports extends StatelessWidget {
                                             .value
                                             .payments!
                                             .posCard!
-                                            .amount
-                                            .toString()))),
+                                            .amount!
+                                            .toStringAsFixed(2)))),
                               ],
                             )
                           ],
@@ -1056,20 +1057,30 @@ class Reports extends StatelessWidget {
                                       snapshot.data!.data!.orders![index];
                                   return Container(
                                     color: Colors.white,
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
+                                    margin: EdgeInsets.symmetric(vertical: 2, horizontal: 20),
                                     child: ListTile(
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      title: Text(
-                                        "Item Name: ${_reportController.reportModelOrderData.value.itemName.toString()}",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 18),
-                                      ),
-                                      subtitle: Text(
-                                        "Quantity ${_reportController.reportModelOrderData.value.quantity.toString()}",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 15),
+                                      dense: true,
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                      title: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              "Item Name: ${_reportController.reportModelOrderData.value.itemName.toString()}",
+                                              style: TextStyle(
+                                                  color: Colors.black, fontSize: 14),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              "Quantity : ${_reportController.reportModelOrderData.value.quantity.toString()}",
+                                              style: TextStyle(
+                                                  color: Colors.black, fontSize: 14),
+                                            ),
+                                          ),
+
+                                        ],
                                       ),
                                     ), // title: Text("List item $index")),
                                   );
@@ -1099,7 +1110,7 @@ class Reports extends StatelessWidget {
                               children: [
                                 const Text("Todays total orders"),
                                 Text(_reportController
-                                    .reportModelData.value.todaysTotalOrders
+                                    .reportModelData.value.totalOrders
                                     .toString()),
                               ],
                             ),
@@ -1108,7 +1119,7 @@ class Reports extends StatelessWidget {
                               children: [
                                 const Text("Todays total TakeAway"),
                                 Text(_reportController
-                                    .reportModelData.value.todaysTotalTakeaway
+                                    .reportModelData.value.totalTakeaway
                                     .toString()),
                               ],
                             ),
@@ -1117,7 +1128,7 @@ class Reports extends StatelessWidget {
                               children: [
                                 const Text("Todays total Dine in"),
                                 Text(_reportController
-                                    .reportModelData.value.todaysTotalDining
+                                    .reportModelData.value.totalDining
                                     .toString()),
                               ],
                             ),
@@ -1126,7 +1137,7 @@ class Reports extends StatelessWidget {
                               children: [
                                 const Text("Todays total Discounts"),
                                 Text(_reportController
-                                    .reportModelData.value.todaysTotalDiscounts
+                                    .reportModelData.value.totalDiscounts
                                     !.toStringAsFixed(2)),
                               ],
                             ),

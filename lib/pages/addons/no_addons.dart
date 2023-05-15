@@ -34,6 +34,7 @@ class _NoAddonsState extends State<NoAddons> {
             diningAmount: double.parse(widget.menu.diningPrice??'0.0'),
             quantity: 1),
         widget.menu.vendorId);
+    print(_cartController.quantity.value);
     super.initState();
   }
   @override

@@ -368,7 +368,7 @@ class _PosPaymentState extends State<PosPayment> {
                 width: 9,
               ),
               PosColumn(
-                  text: cartItem.diningAmount.toString(),
+                  text: double.parse(cartItem.diningAmount.toString()).toStringAsFixed(2),
                   width: 2,
                   styles: PosStyles(align: PosAlign.right)),
             ]);
@@ -384,8 +384,7 @@ class _PosPaymentState extends State<PosPayment> {
                 width: 9,
               ),
               PosColumn(
-                  text:  cartItem.totalAmount
-                      .toString(),
+                  text:  double.parse(cartItem.totalAmount.toString()).toStringAsFixed(2),
                   width: 2,
                   styles: PosStyles(align: PosAlign.right)),
             ]);
@@ -411,7 +410,7 @@ class _PosPaymentState extends State<PosPayment> {
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
               PosColumn(
-                  text: addonItem.price.toString(),
+                  text:  double.parse(addonItem.price.toString()).toStringAsFixed(2),
                   width: 2,
                   styles: PosStyles(align: PosAlign.right)),
             ]);
@@ -611,7 +610,7 @@ class _PosPaymentState extends State<PosPayment> {
             )),
         PosColumn(
             text:
-                "$currencySymbol${((widget.totalAmount) - (double.parse(totalAmountController.text))).toStringAsFixed(2)}",
+                "$currencySymbol${((widget.totalAmount) - (double.parse(totalAmountController.text.toString()))).toStringAsFixed(2)}",
             width: 6,
             styles: PosStyles(
               align: PosAlign.right,
@@ -630,7 +629,7 @@ class _PosPaymentState extends State<PosPayment> {
             width: PosTextSize.size2,
           )),
       PosColumn(
-          text: "$currencySymbol${totalAmountController.text}",
+          text: "$currencySymbol${double.parse(totalAmountController.text.toString()).toStringAsFixed(2)}",
           width: 6,
           styles: PosStyles(
             align: PosAlign.right,
@@ -1087,35 +1086,41 @@ class _PosPaymentState extends State<PosPayment> {
   int _selectedButton = -1;
 
   void _updatePrice(int buttonIndex) {
-    setState(() {
-      // If the same button is selected again, unselect it
-      if (_selectedButton == buttonIndex || _selectedButton == 3) {
-        _selectedButton = -1;
-        // Restore original total price and clear text field
-        totalAmountController.text = widget.totalAmount.toStringAsFixed(2);
-        discount = 0;
-      } else {
-        if (_selectedButton != -1 && _selectedButton != 3) {
-          // Subtract the previous discount from original total price
-          double discountedTotal = double.parse(totalAmountController.text) +
-              (widget.totalAmount * getDiscountPercentage(_selectedButton));
-          // Save the discounted total as the new original total price
-          widget.totalAmount = discountedTotal;
+    if (_cartController
+        .cartMaster?.oldOrderId ==
+        null &&
+        widget.orderDeliveryType == 'DINING') {
+      Get.snackbar("Message", 'Discounts available at the end of the order');
+    } else {
+      setState(() {
+        // If the same button is selected again, unselect it
+        if (_selectedButton == buttonIndex || _selectedButton == 3) {
+          _selectedButton = -1;
+          // Restore original total price and clear text field
           totalAmountController.text = widget.totalAmount.toStringAsFixed(2);
-
-
+          discount = 0;
         } else {
-          // Save the original total price
-          widget.totalAmount = double.parse(totalAmountController.text);
+          if (_selectedButton != -1 && _selectedButton != 3) {
+            // Subtract the previous discount from original total price
+            double discountedTotal = double.parse(totalAmountController.text) +
+                (widget.totalAmount * getDiscountPercentage(_selectedButton));
+            // Save the discounted total as the new original total price
+            widget.totalAmount = discountedTotal;
+            totalAmountController.text = widget.totalAmount.toStringAsFixed(2);
+          } else {
+            // Save the original total price
+            widget.totalAmount = double.parse(totalAmountController.text);
+          }
+          _selectedButton = buttonIndex;
+          // Apply the new discount to the total price
+          double discountedPrice = widget.totalAmount -
+              (widget.totalAmount * getDiscountPercentage(_selectedButton));
+          totalAmountController.text = discountedPrice.toStringAsFixed(2);
+          discount =
+              widget.totalAmount * getDiscountPercentage(_selectedButton);
         }
-        _selectedButton = buttonIndex;
-        // Apply the new discount to the total price
-        double discountedPrice = widget.totalAmount -
-            (widget.totalAmount * getDiscountPercentage(_selectedButton));
-        totalAmountController.text = discountedPrice.toStringAsFixed(2);
-        discount = widget.totalAmount * getDiscountPercentage(_selectedButton);
-      }
-    });
+      });
+    }
   }
 
   double getDiscountPercentage(int selectedButton) {

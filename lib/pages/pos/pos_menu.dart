@@ -15,6 +15,7 @@ import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/OrderHistory/new_button_check_file.dart';
 import 'package:pos/pages/OrderHistory/order_history.dart';
 import 'package:pos/pages/Reports/report_screen.dart';
+import 'package:pos/pages/ReportsByDate/reports_by_date_screen.dart';
 import 'package:pos/pages/addons/Half_n_half.dart';
 import 'package:pos/pages/addons/addons_only.dart';
 import 'package:pos/pages/addons/addons_with_sizes.dart';
@@ -141,6 +142,7 @@ class _PosMenuState extends State<PosMenu> {
 
   @override
   void initState() {
+
     print('dining value pos ${_cartController.diningValue}');
     print('auto print ${_autoPrinterController.autoPrint.value}');
     print('auto print kitchen ${_autoPrinterController.autoPrintKitchen.value}');
@@ -341,6 +343,13 @@ class _PosMenuState extends State<PosMenu> {
         },
       ),
       SideBarGridTile(
+        icon: Icons.report,
+        title: 'Full Reports',
+        onTap: () {
+          Get.to(() => ReportsByDate());
+        },
+      ),
+      SideBarGridTile(
         icon: Icons.person,
         title: 'Users',
         onTap: () {
@@ -381,7 +390,13 @@ class _PosMenuState extends State<PosMenu> {
       print("---------");
     }
     print("table value after ${_cartController.tableNumber}");
-
+    _cartController
+        .callOrderSetting().then((value) {
+      _cartController.taxType = value.data!.data!.taxType!;
+      _cartController.taxAmountNew = double.parse( value.data!.data!.tax!.toString());
+      print("calculated Tax ${_cartController.calculatedTax}");
+      print("tax ${_cartController.taxAmountNew}");
+    });
 
     getApiCAll();
     super.initState();
@@ -3986,10 +4001,20 @@ class _PosMenuState extends State<PosMenu> {
                 future: _orderCustimizationController.callGetRestaurantsDetails(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return VendorMenu(
-                      vendorId: int.parse(vendorIdMain.toString()),
-                      isDininig: widget.isDining,
-                    );
+                    SingleRestaurantsDetailsModel
+                    singleRestaurantsDetailsModel = snapshot.data!.data!;
+                    // singleRestaurantsDetailsModel.data.menuCategory.
+                    if (singleRestaurantsDetailsModel.success) {
+                      Vendor vendor =
+                      singleRestaurantsDetailsModel.data!.vendor!;
+                      List vendorNameList = vendor.name.split(' ');
+                      List<MenuCategory> _menuCategories =
+                      singleRestaurantsDetailsModel.data!.menuCategory!;
+                      return VendorMenu(
+                        vendorId: int.parse(vendorIdMain.toString()),
+                        isDininig: widget.isDining,
+                      );
+                    }
                   }
                   return SpinKitFadingCircle(
                     color: Color(Constants.colorTheme),

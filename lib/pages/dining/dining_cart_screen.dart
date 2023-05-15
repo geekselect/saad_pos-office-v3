@@ -3528,14 +3528,32 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                 ),
                 Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(
-                        onPressed: () {
-                          _diningCartController.nameController.clear();
-                          _diningCartController.phoneNoController.clear();
-                          // _cartController.tableNumber = null;
-                          setState(() {});
-                        },
-                        child: Text('Clear'))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              _diningCartController.nameController.clear();
+                              _diningCartController.phoneNoController.clear();
+                              // _cartController.tableNumber = null;
+                              setState(() {});
+                            },
+                            child: Text('Clear')),
+                        TextButton(
+                            onPressed: () {
+                              _cartController.cartMaster?.cart.clear();
+                              _diningCartController.diningUserName = '';
+                              _diningCartController.diningUserMobileNumber = '';
+                              _diningCartController.diningNotes = '';
+                              _diningCartController.nameController.clear();
+                              _diningCartController.phoneNoController.clear();
+                              _diningCartController.notesController.clear();
+                              _cartController.tableNumber = null;
+                              setState(() {});
+                            },
+                            child: Text('Clear Cart'))
+                      ],
+                    )),
                 SizedBox(height: 2),
                 _cartController.tableNumber == null
                     ? Container()
@@ -4116,21 +4134,6 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
 
     return Column(
       children: [
-        Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-                onPressed: () {
-                  _cartController.cartMaster?.cart.clear();
-                  _diningCartController.diningUserName = '';
-                  _diningCartController.diningUserMobileNumber = '';
-                  _diningCartController.diningNotes = '';
-                  _diningCartController.nameController.clear();
-                  _diningCartController.phoneNoController.clear();
-                  _diningCartController.notesController.clear();
-                  _cartController.tableNumber = null;
-                  setState(() {});
-                },
-                child: Text('Clear Cart'))),
         Flexible(
           child: ListView.builder(
               controller: _cartController.scrollController,
@@ -4210,7 +4213,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 ),
                                 Flexible(
                                   child: Text(
-                                    '${cart.diningAmount!}',
+                                    '${double.parse(cart.diningAmount!.toString()).toStringAsFixed(2)}',
                                     style: TextStyle(
                                         color: Constants.yellowColor),
                                   ),
