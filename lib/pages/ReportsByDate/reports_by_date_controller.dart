@@ -261,14 +261,14 @@ class ReportByDateController extends GetxController {
       printer.row([
         PosColumn(text: 'Sum Pos Cash', width: 8),
         PosColumn(
-            text: reportByDateModelData.value.sumPosCash!.toStringAsFixed(2),
+            text: double.parse(reportByDateModelData.value.sumPosCash.toString()).toStringAsFixed(2),
             width: 4,
             styles: PosStyles(align: PosAlign.right)),
       ]);
       printer.row([
         PosColumn(text: 'Sum Pos Card', width: 8),
         PosColumn(
-            text: reportByDateModelData.value.sumPosCard!.toStringAsFixed(2),
+            text: double.parse(reportByDateModelData.value.sumPosCard.toString()).toStringAsFixed(2),
             width: 4,
             styles: PosStyles(align: PosAlign.right)),
       ]);

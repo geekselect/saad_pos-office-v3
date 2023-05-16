@@ -13,8 +13,8 @@ class ReportByDateModel {
   DateTime? to;
   List<Datum>? data;
   List<TotalItemSold>? totalItemSold;
-  double? sumPosCash;
-  double? sumPosCard;
+  dynamic sumPosCash;
+  dynamic sumPosCard;
   int? sumTotalOrders;
   int? sumTotalTakeaway;
   int? sumTotalDining;
