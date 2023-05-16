@@ -135,7 +135,7 @@ class Order {
 
 class PosCa {
   String? name;
-  double? amount;
+  dynamic amount;
 
   PosCa({
     this.name,

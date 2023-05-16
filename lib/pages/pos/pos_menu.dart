@@ -343,7 +343,7 @@ class _PosMenuState extends State<PosMenu> {
         },
       ),
       SideBarGridTile(
-        icon: Icons.report,
+        icon: Icons.report_gmailerrorred,
         title: 'Full Reports',
         onTap: () {
           Get.to(() => ReportsByDate());
@@ -690,6 +690,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                                           BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
                                                                                           BookedOrderModel bookOrderModel = baseModel.data!;
                                                                                           if (bookOrderModel.success!) {
+                                                                                            print("ABC");
                                                                                             _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
                                                                                             _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
                                                                                             _diningCartController.diningUserName = bookOrderModel.data!.userName!;
@@ -700,6 +701,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                                             _diningCartController.notesController.text =  _diningCartController.diningNotes;
                                                                                             Navigator.pop(context);
                                                                                           } else {
+                                                                                            print("Error");
                                                                                             print(bookOrderModel.toJson());
                                                                                             // print(baseModel.error);
                                                                                           }

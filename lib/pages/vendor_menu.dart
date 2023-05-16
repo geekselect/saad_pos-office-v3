@@ -14,6 +14,7 @@ import 'package:pos/model/cart_master.dart' as cm;
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/OrderHistory/order_history.dart';
 import 'package:pos/pages/Reports/report_screen.dart';
+import 'package:pos/pages/ReportsByDate/reports_by_date_screen.dart';
 import 'package:pos/pages/cart_screen.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_item_categories.dart';
@@ -72,7 +73,7 @@ class _VendorMenuState extends State<VendorMenu>
         child: Material(
           color: Color(Constants.colorTheme),
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(12.0),
             child: Icon(
               icon,
               color: Colors.white,
@@ -967,6 +968,9 @@ class _VendorMenuState extends State<VendorMenu>
                           circleWidget(Icons.report, () {
                             Get.to(() => Reports());
                           }),
+                          circleWidget(Icons.report_gmailerrorred, () {
+                            Get.to(() => ReportsByDate());
+                          }),
                           circleWidget(Icons.logout, () async {
                             SharedPreferences sharedPrefs =
                                 await SharedPreferences.getInstance();
@@ -987,7 +991,7 @@ class _VendorMenuState extends State<VendorMenu>
                                       color: Color(Constants.colorTheme),
                                       // Button color
                                       child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(12.0),
                                         child: Icon(
                                           CupertinoIcons.shopping_cart,
                                           color: Colors.white,

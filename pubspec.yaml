@@ -73,6 +73,7 @@ dependencies:
   esc_pos_utils: ^1.0.0
   get_storage: ^2.0.3
   rename: ^2.1.1
+  syncfusion_flutter_datepicker: ^21.1.41
 
 dev_dependencies:
   flutter_test:

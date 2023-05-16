@@ -370,7 +370,7 @@ class ReportController extends GetxController {
     //     index < reportModelData.value.payments!.posCash!.name!.length;
     //     index++) {
       // Payments reportDetailModel = reportModelData.value.payments!.posCash.name;
-      printer.row([
+    reportModelData.value.payments!.posCash!.name != null ?  printer.row([
         PosColumn(
             text: reportModelData.value.payments!.posCash!.name!.toString(),
             width: 4),
@@ -383,13 +383,26 @@ class ReportController extends GetxController {
                 "${reportModelData.value.payments!.posCash!.amount!.toString()}",
             width: 3,
             styles: PosStyles(align: PosAlign.right)),
-      ]);
+      ]): printer.row([
+      PosColumn(
+          text: 'No data',
+          width: 4),
+      PosColumn(
+          text: "Pos Cash Amount",
+          width: 5,
+          styles: PosStyles(align: PosAlign.center)),
+      PosColumn(
+          text:
+          "${reportModelData.value.payments!.posCash!.amount!.toString()}",
+          width: 3,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
     // }
     // for (int index = 0;
     //     index < reportModelData.value.payments!.posCard!.name!.length;
     //     index++) {
       // ReportDetailModel reportDetailModel = posCashdata.value.data!;
-      printer.row([
+    reportModelData.value.payments!.posCard!.name != null ? printer.row([
         PosColumn(
             text: reportModelData.value.payments!.posCard!.name!.toString(),
             width: 4),
@@ -402,7 +415,20 @@ class ReportController extends GetxController {
                 "${reportModelData.value.payments!.posCard!.amount!.toString()}",
             width: 3,
             styles: PosStyles(align: PosAlign.right)),
-      ]);
+      ]) : printer.row([
+      PosColumn(
+          text: 'No data',
+          width: 4),
+      PosColumn(
+          text: "Pos Card Amount",
+          width: 5,
+          styles: PosStyles(align: PosAlign.center)),
+      PosColumn(
+          text:
+          "${reportModelData.value.payments!.posCard!.amount!.toString()}",
+          width: 3,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
     // }
 
     ///For Pos cash and pos card

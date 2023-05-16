@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://v4.ozfoodz.com.au/api/pos/';
+    baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
     // baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
   }
 
@@ -1086,7 +1086,6 @@ class _RestClient implements RestClient {
                 .compose(_dio.options, 'possalebydate',
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    print("value _result.data! ${_result.data!}");
     final value = ReportByDateModel.fromJson(_result.data!);
     return value;
   }

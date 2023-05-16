@@ -17,7 +17,7 @@ class SideBarGridTile extends StatelessWidget {
         child: Container(
           margin: EdgeInsets.all(4.0),
           height: 100,
-          width: 100,
+          width: 120,
           decoration: BoxDecoration(
             color: Color(Constants.colorTheme),
             borderRadius: BorderRadius.all(Radius.circular(16.0))
@@ -27,7 +27,8 @@ class SideBarGridTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(icon,color: Colors.white,),
-              Text(title,style: TextStyle(color: Colors.white,),)
+              Text(title,style: TextStyle(color: Colors.white,),
+              textAlign: TextAlign.center,)
             ],
           ),
         ));

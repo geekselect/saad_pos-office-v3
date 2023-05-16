@@ -13,10 +13,12 @@ import 'package:pos/retrofit/server_error.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../utils/base_model.dart';
+import '../../retrofit/base_model.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
 
 class ReportByDateController extends GetxController {
-  Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
+   Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   final OrderCustimizationController _orderCustimizationController =
   Get.find<OrderCustimizationController>();
   Rx<Order> reportModelOrderData = Order().obs;
@@ -27,17 +29,35 @@ class ReportByDateController extends GetxController {
   Rx<String> endDate = ''.obs;
   String? posIp;
   int? posPort;
+  RxBool isValue = false.obs;
 
+  RxString selectedDate = ''.obs;
 
-  void onStartDateSelected(DateTime date) {
-    final startDateStr = DateFormat('yyyy-MM-dd').format(date);
-    startDate.value = startDateStr;
+  RxString dateCount = ''.obs;
+
+  RxString range = ''.obs;
+
+  RxString rangeCount = ''.obs;
+
+  void onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+
+      if (args.value is PickerDateRange) {
+        startDate.value = DateFormat('yyyy-MM-dd').format(args.value.startDate);
+        endDate.value = DateFormat('yyyy-MM-dd').format(
+            args.value.endDate ?? args.value.startDate);
+        range.value =
+        '${DateFormat('yyyy-MM-dd').format(args.value.startDate)} -'
+            ' ${DateFormat('yyyy-MM-dd').format(
+            args.value.endDate ?? args.value.startDate)}';
+      } else if (args.value is DateTime) {
+        selectedDate.value = args.value.toString();
+      } else if (args.value is List<DateTime>) {
+        dateCount.value = args.value.length.toString();
+      } else {
+        rangeCount.value = args.value.length.toString();
+      }
   }
 
-  void onEndDateSelected(DateTime date) {
-    final endDateStr = DateFormat('yyyy-MM-dd').format(date);
-    endDate.value = endDateStr;
-  }
   final box = GetStorage();
   @override
   void onInit() {
@@ -47,8 +67,8 @@ class ReportByDateController extends GetxController {
     endDateSelect = false.obs;
     posIp = box.read(Constants.posIp);
     posPort = box.read(Constants.posPort);
-    // callGetResturantDetailsRef = _orderCustimizationController
-    //     .callGetRestaurantsDetails();
+    callGetResturantDetailsRef = _orderCustimizationController
+        .callGetRestaurantsDetails();
   }
 
   Future<BaseModel<ReportByDateModel>>? reportsApiByDateCall() async {
@@ -78,6 +98,7 @@ class ReportByDateController extends GetxController {
       String printerIp,
       int port,
       BuildContext ctx,
+      bool value
       ) async {
     // TODO Don't forget to choose printer's paper size
     const PaperSize paper = PaperSize.mm80;
@@ -96,11 +117,8 @@ class ReportByDateController extends GetxController {
       BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails =
       await callGetResturantDetailsRef;
       if (restaurantDetails != null) {
-        var newDate = DateFormat('hh:mm a').format(DateTime.now());
-        var date = DateTime.parse(DateTime.now().toString());
-        var formattedDate = "${date.day}-${date.month}-${date.year} ${newDate}";
-        print("date ${formattedDate}");
-        // printPOSReceipt(printer, restaurantDetails, formattedDate);
+
+        printPOSReceipt(printer, restaurantDetails, value);
         print(
             'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
       } else {
@@ -110,161 +128,180 @@ class ReportByDateController extends GetxController {
     }
   }
 
-  // printPOSReceipt(
-  //     NetworkPrinter printer,
-  //     BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails,
-  //     String date) {
-  //   // // Print image
-  //   // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
-  //   // final Uint8List bytes = data.buffer.asUint8List();
-  //   // final img.Image? image = img.decodeImage(bytes);
-  //   // printer.image(image!);
-  //   printer.text(restaurantDetails!.data!.data!.vendor!.name,
-  //       styles: PosStyles(
-  //         align: PosAlign.center,
-  //         height: PosTextSize.size2,
-  //         width: PosTextSize.size2,
-  //       ),
-  //       linesAfter: 1);
-  //
-  //   printer.text("${date}", styles: PosStyles(align: PosAlign.left));
-  //   // printer.text('New Braunfels, TX',
-  //   //     styles: PosStyles(align: PosAlign.center));
-  //
-  //   // printer.text(
-  //   //     "Phone : ${restaurantDetails.data!.data!.vendor!.contact.toString()}",
-  //   //     styles: PosStyles(align: PosAlign.left));
-  //
-  //   // printer.text('Web: www.example.com',
-  //   //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
-  //   printer.hr();
-  //   printer.row([
-  //     PosColumn(text: 'Sold Item Names', width: 7),
-  //     PosColumn(
-  //         text: 'Total Quantity',
-  //         width: 5,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   for (int index = 0; index < reportModelData.value.orders!.length; index++) {
-  //     Order reportDetailOrderModel = reportModelData.value.orders![index];
-  //     printer.row([
-  //       PosColumn(text: reportDetailOrderModel.itemName.toString(), width: 10),
-  //       PosColumn(
-  //           text: reportDetailOrderModel.quantity.toString(),
-  //           width: 2,
-  //           styles: PosStyles(align: PosAlign.right)),
-  //     ]);
-  //   }
-  //
-  //   printer.hr(ch: '=', linesAfter: 1);
-  //   printer.row([
-  //     PosColumn(text: 'User Name', width: 3),
-  //     PosColumn(
-  //         text: 'Type', width: 6, styles: PosStyles(align: PosAlign.center)),
-  //     PosColumn(
-  //         text: 'Amount', width: 3, styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   // for (int index = 0;
-  //   //     index < reportModelData.value.payments!.posCash!.name!.length;
-  //   //     index++) {
-  //   // Payments reportDetailModel = reportModelData.value.payments!.posCash.name;
-  //   printer.row([
-  //     PosColumn(
-  //         text: reportModelData.value.payments!.posCash!.name!.toString(),
-  //         width: 4),
-  //     PosColumn(
-  //         text: "Pos Cash Amount",
-  //         width: 5,
-  //         styles: PosStyles(align: PosAlign.center)),
-  //     PosColumn(
-  //         text:
-  //         "${reportModelData.value.payments!.posCash!.amount!.toString()}",
-  //         width: 3,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   // }
-  //   // for (int index = 0;
-  //   //     index < reportModelData.value.payments!.posCard!.name!.length;
-  //   //     index++) {
-  //   // ReportDetailModel reportDetailModel = posCashdata.value.data!;
-  //   printer.row([
-  //     PosColumn(
-  //         text: reportModelData.value.payments!.posCard!.name!.toString(),
-  //         width: 4),
-  //     PosColumn(
-  //         text: "Pos Card Amount",
-  //         width: 5,
-  //         styles: PosStyles(align: PosAlign.center)),
-  //     PosColumn(
-  //         text:
-  //         "${reportModelData.value.payments!.posCard!.amount!.toString()}",
-  //         width: 3,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   // }
-  //
-  //   ///For Pos cash and pos card
-  //   // for (int index = 0; index < posCashdata.value.data!.names!.length; index++) {
-  //   //   ReportDetailModel reportDetailModel = posCashdata.value.data!;
-  //   //   printer.row([
-  //   //     PosColumn(text: reportDetailModel.names![0].toString(), width: 4),
-  //   //     PosColumn(
-  //   //         text: "Pos Cash Amount : ${reportDetailModel.amount![0].toString()}",
-  //   //         width: 8,
-  //   //         styles: PosStyles(align: PosAlign.right)),
-  //   //   ]);
-  //   // }
-  //   // for (int index = 0; index < posCarddata.value.data!.names!.length; index++) {
-  //   //   ReportDetailModel reportDetailModel = posCarddata.value.data!;
-  //   //   printer.row([
-  //   //     PosColumn(text: reportDetailModel.names![0].toString(), width: 4),
-  //   //     PosColumn(
-  //   //         text: "Pos Card Amount : ${reportDetailModel.amount![0].toString()}",
-  //   //         width: 8,
-  //   //         styles: PosStyles(align: PosAlign.right)),
-  //   //   ]);
-  //   // }
-  //   ///End
-  //
-  //   printer.hr(ch: '=', linesAfter: 1);
-  //
-  //   printer.row([
-  //     PosColumn(text: 'Todays Total Order', width: 8),
-  //     PosColumn(
-  //         text: reportModelData.value.totalOrders.toString(),
-  //         width: 4,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   printer.row([
-  //     PosColumn(text: 'Todays Total Takeaway', width: 8),
-  //     PosColumn(
-  //         text: reportModelData.value.totalTakeaway.toString(),
-  //         width: 4,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   printer.row([
-  //     PosColumn(text: 'Todays Total Dining', width: 8),
-  //     PosColumn(
-  //         text: reportModelData.value.totalDining.toString(),
-  //         width: 4,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   printer.row([
-  //     PosColumn(text: 'Todays Total Discounts', width: 8),
-  //     PosColumn(
-  //         text: reportModelData.value.totalDiscounts!.toStringAsFixed(2),
-  //         width: 4,
-  //         styles: PosStyles(align: PosAlign.right)),
-  //   ]);
-  //
-  //   printer.hr(ch: '=', linesAfter: 1);
-  //
-  //   printer.feed(2);
-  //   printer.text('Thank you!',
-  //       styles: PosStyles(align: PosAlign.center, bold: true));
-  //
-  //   printer.feed(1);
-  //   printer.cut();
-  //   printer.beep();
-  // }
+  printPOSReceipt(
+      NetworkPrinter printer,
+      BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails,
+      bool value
+      ) {
+    printer.text(restaurantDetails!.data!.data!.vendor!.name,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.text("From ${DateFormat('yyyy-MM-dd').format(reportByDateModelData.value.from!)} to ${DateFormat('yyyy-MM-dd').format(reportByDateModelData.value.to!)}", styles: PosStyles(align: PosAlign.left));
+    printer.hr();
+    for (int index = 0; index < reportByDateModelData.value.data!.length; index++) {
+      Datum datum = reportByDateModelData.value.data![index];
+      printer.text("${DateFormat('yyyy-MM-dd').format(datum.date!)}", styles: PosStyles(
+        align: PosAlign.center,
+        height: PosTextSize.size2,
+        width: PosTextSize.size2,
+      ),);
+      datum.posCash!.name != null ?  printer.row([
+        PosColumn(text: "${datum.posCash!.name!} (Pos Cash)" , width: 10),
+        PosColumn(
+            text: double.parse(datum.posCash!.amount.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]) : printer.row([
+        PosColumn(text: "No Name" , width: 10),
+        PosColumn(
+            text: double.parse(datum.posCash!.amount.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      datum.posCard!.name != null ?  printer.row([
+        PosColumn(text: "${datum.posCard!.name!} (Pos Card)" , width: 10),
+        PosColumn(
+            text: double.parse(datum.posCard!.amount.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]) : printer.row([
+        PosColumn(text: "No Name" , width: 10),
+        PosColumn(
+            text: double.parse(datum.posCard!.amount.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: "Total TakeAway" , width: 10),
+        PosColumn(
+            text: datum.orderPlaced!.totalTakeaway.toString(),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: "Total Dining" , width: 10),
+        PosColumn(
+            text: datum.orderPlaced!.totalTotalDining.toString(),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: "Total Orders" , width: 10),
+        PosColumn(
+            text: datum.orderPlaced!.totalOrders.toString(),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      if (value == true) { printer.text('\n');}
+      if (value == true) {  printer.row([
+        PosColumn(text: 'Sold Items Names', width: 7, ),
+        PosColumn(
+            text: 'Sold Items Quantity',
+            width: 5,
+            styles: PosStyles(align: PosAlign.right)),
+      ]) ;}
+      if(value == true){
+        for (int i = 0; i < datum.orders!.length; i++) {
+          Order orderData = datum.orders![i];
+          printer.row([
+            PosColumn(text: orderData.itemName.toString(), width: 5),
+            PosColumn(
+                text: orderData.quantity.toString(),
+                width: 7,
+                styles: PosStyles(align: PosAlign.right)),
+          ]);
+        }
+      }
+      printer.hr();
+    }
+    if (value == true) {
+      printer.text("Total Items Sold",
+          styles: PosStyles(align: PosAlign.center, height: PosTextSize.size2,
+            width: PosTextSize.size2,));
+    }
+    if (value == true) {printer.row([
+      PosColumn(text: 'Total Items Names', width: 6),
+      PosColumn(
+          text: 'Total Items Quantity',
+          width: 6,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);}
+    if (value == true) {
+      for (int n = 0; n <
+          reportByDateModelData.value.totalItemSold!.length; n++) {
+        TotalItemSold totalItemSold = reportByDateModelData.value
+            .totalItemSold![n];
+        printer.row([
+          PosColumn(text: totalItemSold.itemName.toString(), width: 5),
+          PosColumn(
+              text: totalItemSold.quantity.toString(),
+              width: 7,
+              styles: PosStyles(align: PosAlign.right)),
+        ]);
+      }
+      printer.hr();
+    }
+
+      // value == true ? for (int n = 0; n <reportByDateModelData.value.totalItemSold!.length; n++) {
+      //   TotalItemSold totalItemSold = reportByDateModelData.value.totalItemSold![n];
+      //   printer.row([
+      //     PosColumn(text: totalItemSold.itemName.toString(), width: 5),
+      //     PosColumn(
+      //         text: totalItemSold.quantity.toString(),
+      //         width: 7,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      // } : printer.text('');
+
+      printer.row([
+        PosColumn(text: 'Sum Pos Cash', width: 8),
+        PosColumn(
+            text: reportByDateModelData.value.sumPosCash!.toStringAsFixed(2),
+            width: 4,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: 'Sum Pos Card', width: 8),
+        PosColumn(
+            text: reportByDateModelData.value.sumPosCard!.toStringAsFixed(2),
+            width: 4,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: 'Sum Total Takeaway', width: 8),
+        PosColumn(
+            text: reportByDateModelData.value.sumTotalTakeaway.toString(),
+            width: 4,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: 'Sum Total Dining', width: 8),
+        PosColumn(
+            text: reportByDateModelData.value.sumTotalDining.toString(),
+            width: 4,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: 'Sum Total Discounts', width: 8),
+        PosColumn(
+            text: reportByDateModelData.value.sumTotalOrders.toString(),
+            width: 4,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+
+      printer.hr(ch: '=', linesAfter: 1);
+
+      printer.feed(2);
+      printer.text('Thank you!',
+          styles: PosStyles(align: PosAlign.center, bold: true));
+
+      printer.feed(1);
+      printer.cut();
+      printer.beep();
+    }
 }
