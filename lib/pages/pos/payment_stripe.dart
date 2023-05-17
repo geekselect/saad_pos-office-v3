@@ -279,9 +279,7 @@ class _PaymentStripeState extends State<PaymentStripe> {
               transitionType: TransitionType.fade,
               curve: Curves.bounceInOut,
               reverseCurve: Curves.fastLinearToSlowEaseIn,
-              widget: OrderHistory(
-                isFromProfile: false,
-              ),
+              widget: OrderHistory(),
             ),
                 (Route<dynamic> route) => true);
       } else {

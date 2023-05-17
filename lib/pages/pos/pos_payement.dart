@@ -4563,7 +4563,7 @@ class _PosPaymentState extends State<PosPayment> {
             : false;
         _cartController.cartMaster = null;
         _cartController.cartTotalQuantity.value = 0;
-        _orderHistoryController.callGetOrderHistoryList(context);
+        _orderHistoryController.callGetOrderHistoryList();
 
         // Future.delayed(Duration(seconds: 3), () {
         Get.offAll(

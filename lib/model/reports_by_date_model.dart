@@ -18,6 +18,7 @@ class ReportByDateModel {
   int? sumTotalOrders;
   int? sumTotalTakeaway;
   int? sumTotalDining;
+  dynamic sumTotalDiscounts;
 
   ReportByDateModel({
     this.from,
@@ -29,6 +30,7 @@ class ReportByDateModel {
     this.sumTotalOrders,
     this.sumTotalTakeaway,
     this.sumTotalDining,
+    this.sumTotalDiscounts,
   });
 
   factory ReportByDateModel.fromJson(Map<String, dynamic> json) => ReportByDateModel(
@@ -41,6 +43,7 @@ class ReportByDateModel {
     sumTotalOrders: json["sumTotalOrders"],
     sumTotalTakeaway: json["sumTotalTakeaway"],
     sumTotalDining: json["sumTotalDining"],
+    sumTotalDiscounts: json["sumTotalDiscounts"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +56,7 @@ class ReportByDateModel {
     "sumTotalOrders": sumTotalOrders,
     "sumTotalTakeaway": sumTotalTakeaway,
     "sumTotalDining": sumTotalDining,
+    "sumTotalDiscounts": sumTotalDiscounts,
   };
 }
 
@@ -92,23 +96,27 @@ class OrderPlaced {
   int? totalOrders;
   int? totalTakeaway;
   int? totalTotalDining;
+  dynamic totalTotalDiscounts;
 
   OrderPlaced({
     this.totalOrders,
     this.totalTakeaway,
     this.totalTotalDining,
+    this.totalTotalDiscounts,
   });
 
   factory OrderPlaced.fromJson(Map<String, dynamic> json) => OrderPlaced(
     totalOrders: json["total orders"],
     totalTakeaway: json["total takeaway"],
     totalTotalDining: json["total total_dining"],
+    totalTotalDiscounts: json["total discounts"],
   );
 
   Map<String, dynamic> toJson() => {
     "total orders": totalOrders,
     "total takeaway": totalTakeaway,
     "total total_dining": totalTotalDining,
+    "total discounts": totalTotalDiscounts,
   };
 }
 

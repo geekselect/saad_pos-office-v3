@@ -191,6 +191,13 @@ class ReportByDateController extends GetxController {
             styles: PosStyles(align: PosAlign.right)),
       ]);
       printer.row([
+        PosColumn(text: "Total Discounts" , width: 10),
+        PosColumn(
+            text: datum.orderPlaced!.totalTotalDiscounts.toString(),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
         PosColumn(text: "Total Orders" , width: 10),
         PosColumn(
             text: datum.orderPlaced!.totalOrders.toString(),
@@ -287,12 +294,20 @@ class ReportByDateController extends GetxController {
             styles: PosStyles(align: PosAlign.right)),
       ]);
       printer.row([
-        PosColumn(text: 'Sum Total Discounts', width: 8),
+      PosColumn(text: 'Sum Total Discounts', width: 8),
+      PosColumn(
+          text: reportByDateModelData.value.sumTotalDiscounts.toString(),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+      printer.row([
+        PosColumn(text: 'Sum Total Orders', width: 8),
         PosColumn(
             text: reportByDateModelData.value.sumTotalOrders.toString(),
             width: 4,
             styles: PosStyles(align: PosAlign.right)),
       ]);
+
 
       printer.hr(ch: '=', linesAfter: 1);
 

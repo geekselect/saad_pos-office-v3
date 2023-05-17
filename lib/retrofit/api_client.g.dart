@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
+    baseUrl ??= 'https://v4.ozfoodz.com.au/api/pos/';
     // baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
   }
 

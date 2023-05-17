@@ -850,16 +850,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         _cartController.cartTotalQuantity.value=0;
         // ScopedModel.of<CartModel>(context, rebuildOnChange: true).clearCart();
         strPaymentToken = '';
-        _orderHistoryController.callGetOrderHistoryList(context);
+        _orderHistoryController.callGetOrderHistoryList();
         Get.offAll(VendorMenu(vendorId: 5,isDininig: false,));
         Navigator.of(context).pushAndRemoveUntil(
             Transitions(
               transitionType: TransitionType.fade,
               curve: Curves.bounceInOut,
               reverseCurve: Curves.fastLinearToSlowEaseIn,
-              widget: OrderHistory(
-                isFromProfile: false,
-              ),
+              widget: OrderHistory(),
             ),
                 (Route<dynamic> route) => true);
       } else {

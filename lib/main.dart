@@ -59,7 +59,6 @@ void main() async {
   Get.put(OrderCustimizationController());
   Get.put(CartController());
   Get.put(DiningCartController());
-  Get.put(OrderHistoryController());
   Get.put(OrderController());
   Get.put(AuthController());
   Get.put(AutoPrinterController());

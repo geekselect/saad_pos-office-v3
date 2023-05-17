@@ -151,7 +151,7 @@ class _PosMenuState extends State<PosMenu> {
         icon: Icons.card_travel,
         title: 'Order',
         onTap: () {
-          Get.to(() => OrderHistory(isFromProfile: false));
+          Get.to(() => OrderHistory());
         },
       ),
       SideBarGridTile(

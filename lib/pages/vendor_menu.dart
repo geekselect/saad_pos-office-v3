@@ -734,7 +734,7 @@ class _VendorMenuState extends State<VendorMenu>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           circleWidget(Icons.card_travel, () {
-                            Get.to(() => OrderHistory(isFromProfile: false));
+                            Get.to(() => OrderHistory());
                           }),
                           circleWidget(Icons.print, () {
                             Get.to(() => PrinterConfig());
