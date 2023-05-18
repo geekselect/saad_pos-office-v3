@@ -79,7 +79,7 @@ class PosPayment extends StatefulWidget {
 
 class _PosPaymentState extends State<PosPayment> {
 
-
+    bool paymentButtonSelect = false;
 
   String input = "";
   String? orderPaymentType;
@@ -1704,7 +1704,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'Pay Later',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 orderPaymentType =
                                                     'INCOMPLETE ORDER';
                                                 placeOrder(1);
@@ -1752,9 +1755,12 @@ class _PosPaymentState extends State<PosPayment> {
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
                                                 if (_formKey.currentState!
                                                     .validate()) {
+                                                  setState(() {
+                                                    paymentButtonSelect = true;
+                                                  });
                                                   orderPaymentType = 'POS CASH';
                                                   placeOrder(0);
                                                 }
@@ -1803,7 +1809,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'POS CARD',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 orderPaymentType = 'POS CARD';
                                                 placeOrder(0);
 
@@ -1852,7 +1861,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'Pay Later',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 orderPaymentType =
                                                     'INCOMPLETE ORDER';
                                                 placeOrder(1);
@@ -1903,9 +1915,13 @@ class _PosPaymentState extends State<PosPayment> {
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+
                                                 if (_formKey.currentState!
                                                     .validate()) {
+                                                  setState(() {
+                                                    paymentButtonSelect = true;
+                                                  });
                                                   orderPaymentType =
                                                       'POS CASH TAKEAWAY';
                                                   placeOrder(0);
@@ -1955,7 +1971,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'POS CARD',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 orderPaymentType =
                                                     'POS CARD TAKEAWAY';
                                                 placeOrder(0);
@@ -2005,7 +2024,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'Pay Later',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 print("Takeaway older id");
                                                 orderPaymentType =
                                                     'INCOMPLETE ORDER';
@@ -2112,9 +2134,13 @@ class _PosPaymentState extends State<PosPayment> {
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+
                                                 if (_formKey.currentState!
                                                     .validate()) {
+                                                  setState(() {
+                                                    paymentButtonSelect = true;
+                                                  });
                                                   orderPaymentType = 'POS CASH';
                                                   placeOrder(2);
                                                 }
@@ -2179,7 +2205,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'POS CARD',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 orderPaymentType = 'POS CARD';
                                                 placeOrder(2);
 
@@ -2226,7 +2255,10 @@ class _PosPaymentState extends State<PosPayment> {
                                               value: 'Pay Later',
                                               btnColor:
                                                   Color(Constants.colorTheme),
-                                              onTapped: () {
+                                              onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                setState(() {
+                                                  paymentButtonSelect = true;
+                                                });
                                                 print("Takeaway first older");
                                                 orderPaymentType =
                                                     'INCOMPLETE ORDER';

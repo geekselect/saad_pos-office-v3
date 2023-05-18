@@ -41,10 +41,8 @@ class OrderHistoryController extends GetxController {
   }
 
   Future<void> getOrders() async {
-    orderHistoryRef.value = callGetOrderHistoryList();
-    final value = await orderHistoryRef.value;
-
-    if (value!.data!.data!.isNotEmpty) {
+    final value = await callGetOrderHistoryList();
+    if (value.data!.data!.isNotEmpty) {
         totalOrders.addAll(value.data!.data!);
         for (final element in value.data!.data!) {
           if (element.deliveryType == "TAKEAWAY") {
@@ -56,6 +54,7 @@ class OrderHistoryController extends GetxController {
     } else {
       // handle error case
     }
+    update();
   }
 
   initAsync() async {
@@ -101,222 +100,219 @@ class OrderHistoryController extends GetxController {
       printer.disconnect();
     }
   }
+
   printPOSReceipt(
       NetworkPrinter printer,
       OrderHistoryData order,
-      ){}
-  // printPOSReceipt(
-  //     NetworkPrinter printer,
-  //     OrderHistoryData order,
-  //     ) {
-  //   printer.text(order.vendor!.name!,
-  //       styles: const PosStyles(
-  //         align: PosAlign.center,
-  //         height: PosTextSize.size2,
-  //         width: PosTextSize.size2,
-  //       ),
-  //       linesAfter: 1);
-  //
-  //   printer.text(order.vendor!.mapAddress.toString(),
-  //       styles: const PosStyles(align: PosAlign.center));
-  //
-  //   printer.text("Phone : ${order.vendor!.contact.toString()}",
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //   printer.text("Order Id ${order.order_id.toString()}",
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //   if (order.user_name != null && order.mobile != null) {
-  //     printer.text('Customer Name : ${order.user_name}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //
-  //     printer.text('Customer Phone No : ${order.mobile}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   }
-  //
-  //   printer.text('${order.date} ${order.time}',
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //   if (order.tableNo != null && order.tableNo != 0) {
-  //     printer.text('Table Number : ${order.tableNo}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   }
-  //
-  //   if (order.payment_type.toString() == "INCOMPLETE ORDER") {
-  //     printer.text('Payment Status : INCOMPLETE PAYMENT',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   } else {
-  //     printer.text('Payment Status : ${order.payment_type.toString()}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   }
-  //
-  //   printer.text('Order Type :  ${order.deliveryType.toString()}',
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //
-  //   printer.hr();
-  //   printer.row([
-  //     PosColumn(text: 'Qty', width: 1),
-  //     PosColumn(text: 'Item', width: 9),
-  //     PosColumn(
-  //         text: 'Total', width: 2, styles: const PosStyles(align: PosAlign.right)),
-  //   ]);
-  //   Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
-  //   OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
-  //   for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
-  //     String category = orderData.cart![itemIndex].category!;
-  //     List<Menu> menu = orderData.cart![itemIndex].menu!;
-  //     var price;
-  //     if (order.deliveryType == 'DINING') {
-  //       price = orderData.cart![itemIndex].diningAmount;
-  //     } else {
-  //       price = orderData.cart![itemIndex].totalAmount;
-  //     }
-  //
-  //     if (category == 'SINGLE') {
-  //       for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
-  //         Menu menuItem = menu[menuIndex];
-  //         printer.row([
-  //           PosColumn(
-  //               text: orderData.cart![itemIndex].quantity.toString(), width: 1),
-  //           PosColumn(
-  //             text: orderData.cart![itemIndex].menu!.first.name.toString() +
-  //                 (orderData.cart![itemIndex].size != null
-  //                     ? '(${orderData.cart![itemIndex].size['size_name']})'
-  //                     : ''),
-  //             width: 9,
-  //           ),
-  //           PosColumn(
-  //               text:  double.parse(price.toString()).toStringAsFixed(2),
-  //               width: 2,
-  //               styles: const PosStyles(align: PosAlign.right)),
-  //         ]);
-  //         for (int addonIndex = 0;
-  //         addonIndex < menuItem.addons!.length;
-  //         addonIndex++) {
-  //           Addon addonItem = menuItem.addons![addonIndex];
-  //           if (addonIndex == 0) {
-  //             printer.row([
-  //               PosColumn(
-  //                   text: "-ADDONS-",
-  //                   width: 12,
-  //                   styles: const PosStyles(
-  //                       width: PosTextSize.size1,
-  //                       height: PosTextSize.size1,
-  //                       align: PosAlign.center))
-  //             ]);
-  //           }
-  //           printer.row([
-  //             PosColumn(text: '', width: 1),
-  //             PosColumn(text: addonItem.name, width: 9),
-  //             // PosColumn(
-  //             // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
-  //             PosColumn(
-  //                 text: double.parse(addonItem.price.toString()).toStringAsFixed(2),
-  //                 width: 2,
-  //                 styles: const PosStyles(align: PosAlign.right)),
-  //           ]);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   printer.hr();
-  //
-  //
-  //   printer.row([
-  //     PosColumn(
-  //         text: 'SubTotal',
-  //         width: 6,
-  //         styles: const PosStyles(
-  //           height: PosTextSize.size1,
-  //           width: PosTextSize.size1,
-  //         )),
-  //     PosColumn(
-  //         text: double.parse(order.sub_total.toString()).toStringAsFixed(2),
-  //         width: 6,
-  //         styles: const PosStyles(
-  //           align: PosAlign.right,
-  //           height: PosTextSize.size1,
-  //           width: PosTextSize.size1,
-  //         )),
-  //   ]);
-  //
-  //   printer.row([
-  //     PosColumn(
-  //         text: 'Tax',
-  //         width: 6,
-  //         styles: const PosStyles(
-  //           height: PosTextSize.size1,
-  //           width: PosTextSize.size1,
-  //         )),
-  //     PosColumn(
-  //         text: double.parse(order.tax.toString()).toStringAsFixed(2),
-  //         width: 6,
-  //         styles: const PosStyles(
-  //           align: PosAlign.right,
-  //           height: PosTextSize.size1,
-  //           width: PosTextSize.size1,
-  //         )),
-  //   ]);
-  //
-  //   if (order.discounts != null) {
-  //     printer.row([
-  //       PosColumn(
-  //           text:
-  //           'Discount',
-  //           width: 6,
-  //           styles: const PosStyles(
-  //             height: PosTextSize.size1,
-  //             width: PosTextSize.size1,
-  //           )),
-  //       PosColumn(
-  //           text:
-  //           "$currencySymbol${double.parse(order.discounts!.toString()).toStringAsFixed(2)}",
-  //           width: 6,
-  //           styles: const PosStyles(
-  //             align: PosAlign.right,
-  //             height: PosTextSize.size1,
-  //             width: PosTextSize.size1,
-  //           )),
-  //     ]);
-  //   }
-  //
-  //   printer.row([
-  //     PosColumn(
-  //         text: 'TOTAL',
-  //         width: 6,
-  //         styles: const PosStyles(
-  //           height: PosTextSize.size2,
-  //           width: PosTextSize.size2,
-  //         )),
-  //     PosColumn(
-  //         text: double.parse(order.amount!.toString()).toStringAsFixed(2),
-  //         width: 6,
-  //         styles: const PosStyles(
-  //           align: PosAlign.right,
-  //           height: PosTextSize.size2,
-  //           width: PosTextSize.size2,
-  //         )),
-  //   ]);
-  //
-  //   printer.hr();
-  //
-  //   if (order.notes != null) {
-  //     printer.text(
-  //       "Instructions: ${order.notes}",
-  //     );
-  //   }
-  //
-  //   printer.hr(ch: '=', linesAfter: 1);
-  //
-  //   printer.feed(2);
-  //   printer.text('Thank you!',
-  //       styles: const PosStyles(align: PosAlign.center, bold: true));
-  //
-  //   printer.feed(1);
-  //   printer.cut();
-  //   printer.beep();
-  // }
+      ) {
+    printer.text(order.vendorName!,
+        styles: const PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.text(order.vendorAddress.toString(),
+        styles: const PosStyles(align: PosAlign.center));
+
+    printer.text("Phone : ${order.vendorContact.toString()}",
+        styles: const PosStyles(align: PosAlign.left));
+
+    printer.text("Order Id ${order.orderId.toString()}",
+        styles: const PosStyles(align: PosAlign.left));
+
+    if (order.datumUserName != null && order.mobile != null) {
+      printer.text('Customer Name : ${order.datumUserName}',
+          styles: const PosStyles(align: PosAlign.left));
+
+      printer.text('Customer Phone No : ${order.mobile}',
+          styles: const PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('${order.date} ${order.time}',
+        styles: const PosStyles(align: PosAlign.left));
+
+    if (order.tableNo != null && order.tableNo != 0) {
+      printer.text('Table Number : ${order.tableNo}',
+          styles: const PosStyles(align: PosAlign.left));
+    }
+
+    if (order.paymentType.toString() == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : INCOMPLETE PAYMENT',
+          styles: const PosStyles(align: PosAlign.left));
+    } else {
+      printer.text('Payment Status : ${order.paymentType.toString()}',
+          styles: const PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('Order Type :  ${order.deliveryType.toString()}',
+        styles: const PosStyles(align: PosAlign.left));
+
+
+    printer.hr();
+    printer.row([
+      PosColumn(text: 'Qty', width: 1),
+      PosColumn(text: 'Item', width: 9),
+      PosColumn(
+          text: 'Total', width: 2, styles: const PosStyles(align: PosAlign.right)),
+    ]);
+    Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
+    OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
+    for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
+      String category = orderData.cart![itemIndex].category!;
+      List<Menu> menu = orderData.cart![itemIndex].menu!;
+      var price;
+      if (order.deliveryType == 'DINING') {
+        price = orderData.cart![itemIndex].diningAmount;
+      } else {
+        price = orderData.cart![itemIndex].totalAmount;
+      }
+
+      if (category == 'SINGLE') {
+        for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+          Menu menuItem = menu[menuIndex];
+          printer.row([
+            PosColumn(
+                text: orderData.cart![itemIndex].quantity.toString(), width: 1),
+            PosColumn(
+              text: orderData.cart![itemIndex].menu!.first.name.toString() +
+                  (orderData.cart![itemIndex].size != null
+                      ? '(${orderData.cart![itemIndex].size['size_name']})'
+                      : ''),
+              width: 9,
+            ),
+            PosColumn(
+                text:  double.parse(price.toString()).toStringAsFixed(2),
+                width: 2,
+                styles: const PosStyles(align: PosAlign.right)),
+          ]);
+          for (int addonIndex = 0;
+          addonIndex < menuItem.addons!.length;
+          addonIndex++) {
+            Addon addonItem = menuItem.addons![addonIndex];
+            if (addonIndex == 0) {
+              printer.row([
+                PosColumn(
+                    text: "-ADDONS-",
+                    width: 12,
+                    styles: const PosStyles(
+                        width: PosTextSize.size1,
+                        height: PosTextSize.size1,
+                        align: PosAlign.center))
+              ]);
+            }
+            printer.row([
+              PosColumn(text: '', width: 1),
+              PosColumn(text: addonItem.name, width: 9),
+              // PosColumn(
+              // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+              PosColumn(
+                  text: double.parse(addonItem.price.toString()).toStringAsFixed(2),
+                  width: 2,
+                  styles: const PosStyles(align: PosAlign.right)),
+            ]);
+          }
+        }
+      }
+    }
+    printer.hr();
+
+
+    printer.row([
+      PosColumn(
+          text: 'SubTotal',
+          width: 6,
+          styles: const PosStyles(
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: double.parse(order.subTotal.toString()).toStringAsFixed(2),
+          width: 6,
+          styles: const PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    printer.row([
+      PosColumn(
+          text: 'Tax',
+          width: 6,
+          styles: const PosStyles(
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: double.parse(order.tax.toString()).toStringAsFixed(2),
+          width: 6,
+          styles: const PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    if (order.discounts != null) {
+      printer.row([
+        PosColumn(
+            text:
+            'Discount',
+            width: 6,
+            styles: const PosStyles(
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+        PosColumn(
+            text:
+            "$currencySymbol${double.parse(order.discounts!.toString()).toStringAsFixed(2)}",
+            width: 6,
+            styles: const PosStyles(
+              align: PosAlign.right,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+      ]);
+    }
+
+    printer.row([
+      PosColumn(
+          text: 'TOTAL',
+          width: 6,
+          styles: const PosStyles(
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          )),
+      PosColumn(
+          text: double.parse(order.amount!.toString()).toStringAsFixed(2),
+          width: 6,
+          styles: const PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          )),
+    ]);
+
+    printer.hr();
+
+    if (order.notes != null) {
+      printer.text(
+        "Instructions: ${order.notes}",
+      );
+    }
+
+    printer.hr(ch: '=', linesAfter: 1);
+
+    printer.feed(2);
+    printer.text('Thank you!',
+        styles: const PosStyles(align: PosAlign.center, bold: true));
+
+    printer.feed(1);
+    printer.cut();
+    printer.beep();
+  }
 
   void testPrintKitchen(String printerIp, int port, BuildContext ctx,
       OrderHistoryData order) async {
@@ -334,133 +330,133 @@ class OrderHistoryController extends GetxController {
     }
   }
 
-  printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order){}
-  //
-  // printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order) {
-  //   Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
-  //   OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
-  //
-  //
-  //   printer.text("*** Kitchen ***",
-  //       styles: const PosStyles(
-  //         align: PosAlign.center,
-  //         height: PosTextSize.size2,
-  //         width: PosTextSize.size2,
-  //       ),
-  //       linesAfter: 1);
-  //
-  //   if (order.tableNo != null && order.tableNo != 0) {
-  //     printer.text('Table Number : ${order.tableNo}',
-  //         styles: const PosStyles(
-  //           align: PosAlign.center,
-  //           height: PosTextSize.size2,
-  //           width: PosTextSize.size2,
-  //         ),
-  //         linesAfter: 1);
-  //   }
-  //
-  //   printer.text("Order Id ${order.order_id.toString()}",
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //   if (order.user_name != null && order.mobile != null) {
-  //     printer.text('Customer Name : ${order.user_name}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //
-  //     printer.text('Customer Phone No : ${order.mobile}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   }
-  //
-  //   printer.text('${order.date} ${order.time}',
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //   if (order.payment_type.toString() == "INCOMPLETE ORDER") {
-  //     printer.text('Payment Status : INCOMPLETE PAYMENT',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   } else {
-  //     printer.text('Payment Status : ${order.payment_type.toString()}',
-  //         styles: const PosStyles(align: PosAlign.left));
-  //   }
-  //
-  //   printer.text('Order Type :  ${order.deliveryType.toString()}',
-  //       styles: const PosStyles(align: PosAlign.left));
-  //
-  //   printer.hr();
-  //   printer.row([
-  //     PosColumn(text: 'Qty', width: 2),
-  //     PosColumn(text: 'Item', width: 10),
-  //   ]);
-  //   for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
-  //     String category = orderData.cart![itemIndex].category!;
-  //     List<Menu> menu = orderData.cart![itemIndex].menu!;
-  //     if (category == 'SINGLE') {
-  //       for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
-  //         Menu menuItem = menu[menuIndex];
-  //         printer.row([
-  //           PosColumn(
-  //               text: orderData.cart![itemIndex].quantity.toString(), width: 2),
-  //           PosColumn(
-  //             text: orderData.cart![itemIndex].menu!.first.name.toString() +
-  //                 (orderData.cart![itemIndex].size != null
-  //                     ? '(${orderData.cart![itemIndex].size['size_name']})'
-  //                     : ''),
-  //             width: 10,
-  //           ),
-  //         ]);
-  //         for (int addonIndex = 0;
-  //         addonIndex < menuItem.addons!.length;
-  //         addonIndex++) {
-  //           Addon addonItem = menuItem.addons![addonIndex];
-  //           if (addonIndex == 0) {
-  //             printer.row([
-  //               PosColumn(
-  //                   text: "-ADDONS-",
-  //                   width: 12,
-  //                   styles: const PosStyles(
-  //                       width: PosTextSize.size1,
-  //                       height: PosTextSize.size1,
-  //                       align: PosAlign.center))
-  //             ]);
-  //           }
-  //           printer.row([
-  //             PosColumn(text: '', width: 2),
-  //             PosColumn(text: addonItem.name, width: 10),
-  //           ]);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   printer.hr();
-  //
-  //   if (order.notes != null) {
-  //     printer.text(
-  //       "Instructions: ${order.notes}",
-  //     );
-  //   }
-  //
-  //   printer.hr(ch: '=', linesAfter: 1);
-  //
-  //   printer.feed(2);
-  //   printer.text('Thank you!',
-  //       styles: const PosStyles(align: PosAlign.center, bold: true));
-  //
-  //
-  //   printer.feed(1);
-  //   printer.cut();
-  //   printer.beep();
-  // }
 
-  RxList<OrderHistoryData> getFilteredOrders() {
+
+  printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order) {
+    Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
+    OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
+
+
+    printer.text("*** Kitchen ***",
+        styles: const PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    if (order.tableNo != null && order.tableNo != 0) {
+      printer.text('Table Number : ${order.tableNo}',
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ),
+          linesAfter: 1);
+    }
+
+    printer.text("Order Id ${order.orderId.toString()}",
+        styles: const PosStyles(align: PosAlign.left));
+
+    if (order.datumUserName != null && order.mobile != null) {
+      printer.text('Customer Name : ${order.datumUserName}',
+          styles: const PosStyles(align: PosAlign.left));
+
+      printer.text('Customer Phone No : ${order.mobile}',
+          styles: const PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('${order.date} ${order.time}',
+        styles: const PosStyles(align: PosAlign.left));
+
+    if (order.paymentType.toString() == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : INCOMPLETE PAYMENT',
+          styles: const PosStyles(align: PosAlign.left));
+    } else {
+      printer.text('Payment Status : ${order.paymentType.toString()}',
+          styles: const PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('Order Type :  ${order.deliveryType.toString()}',
+        styles: const PosStyles(align: PosAlign.left));
+
+    printer.hr();
+    printer.row([
+      PosColumn(text: 'Qty', width: 2),
+      PosColumn(text: 'Item', width: 10),
+    ]);
+    for (int itemIndex = 0; itemIndex < orderData.cart!.length; itemIndex++) {
+      String category = orderData.cart![itemIndex].category!;
+      List<Menu> menu = orderData.cart![itemIndex].menu!;
+      if (category == 'SINGLE') {
+        for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+          Menu menuItem = menu[menuIndex];
+          printer.row([
+            PosColumn(
+                text: orderData.cart![itemIndex].quantity.toString(), width: 2),
+            PosColumn(
+              text: orderData.cart![itemIndex].menu!.first.name.toString() +
+                  (orderData.cart![itemIndex].size != null
+                      ? '(${orderData.cart![itemIndex].size['size_name']})'
+                      : ''),
+              width: 10,
+            ),
+          ]);
+          for (int addonIndex = 0;
+          addonIndex < menuItem.addons!.length;
+          addonIndex++) {
+            Addon addonItem = menuItem.addons![addonIndex];
+            if (addonIndex == 0) {
+              printer.row([
+                PosColumn(
+                    text: "-ADDONS-",
+                    width: 12,
+                    styles: const PosStyles(
+                        width: PosTextSize.size1,
+                        height: PosTextSize.size1,
+                        align: PosAlign.center))
+              ]);
+            }
+            printer.row([
+              PosColumn(text: '', width: 2),
+              PosColumn(text: addonItem.name, width: 10),
+            ]);
+          }
+        }
+      }
+    }
+    printer.hr();
+
+    if (order.notes != null) {
+      printer.text(
+        "Instructions: ${order.notes}",
+      );
+    }
+
+    printer.hr(ch: '=', linesAfter: 1);
+
+    printer.feed(2);
+    printer.text('Thank you!',
+        styles: const PosStyles(align: PosAlign.center, bold: true));
+
+
+    printer.feed(1);
+    printer.cut();
+    printer.beep();
+  }
+
+  List<OrderHistoryData> getFilteredOrders() {
     RxList<OrderHistoryData> filteredOrders = <OrderHistoryData>[].obs;
     if (filterType.value == FilterType.TakeAway) {
-      filteredOrders.value = takeAwayOrders.value;
+      filteredOrders.value = takeAwayOrders;
     } else if (filterType.value == FilterType.DineIn) {
-      filteredOrders.value = DineInOrders.value;
+      filteredOrders.value = DineInOrders;
     } else {
-      filteredOrders.value = totalOrders.value;
+      filteredOrders.value = totalOrders;
     }
 
     if (searchQuery.isNotEmpty) {
-      filteredOrders.value = filteredOrders.value
+      filteredOrders.value = filteredOrders
           .where((order) =>
       (order.userName != null &&
           order.userName!
@@ -471,7 +467,7 @@ class OrderHistoryController extends GetxController {
               .contains('#${searchQuery.value.toLowerCase()}')))
           .toList();
     }
-    return filteredOrders;
+    return filteredOrders.value;
   }
 
   final Rx<FilterType> filterType = FilterType.None.obs;
@@ -687,30 +683,53 @@ class OrderHistoryController extends GetxController {
         required TextStyle style,
         required Color buttonColor,
         required Color color}) {
-    return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          margin: EdgeInsets.all(4.0),
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-              color: buttonColor,
-              borderRadius: BorderRadius.all(Radius.circular(16.0))),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: color,
-              ),
-              Text(
-                title,
-                style: style,
-              )
-            ],
-          ),
-        ));
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: buttonColor
+      ),
+      onPressed: onTap,
+      child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: color,
+        ),
+        Text(
+          title,
+          style: style,
+        )
+      ],
+    ),);
+      //
+      //
+      //
+      //
+      // GestureDetector(
+      //   onTap: onTap,
+      //   child: Container(
+      //     margin: EdgeInsets.all(4.0),
+      //     height: 70,
+      //     width: 70,
+      //     decoration: BoxDecoration(
+      //         color: buttonColor,
+      //         borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      //     child: Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //       children: [
+      //         Icon(
+      //           icon,
+      //           color: color,
+      //         ),
+      //         Text(
+      //           title,
+      //           style: style,
+      //         )
+      //       ],
+      //     ),
+      //   ));
   }
 
   @override

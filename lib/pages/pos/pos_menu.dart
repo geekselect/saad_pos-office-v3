@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
+import 'package:pos/controller/order_history_controller.dart';
 import 'package:pos/model/book_table_model.dart';
 import 'package:pos/model/booked_order_model.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
@@ -81,7 +82,7 @@ class _PosMenuState extends State<PosMenu> {
   CartController _cartController = Get.find<CartController>();
   var _printerController = Get.put(PrinterController());
   List<SideBarGridTile> sidebarGridTileList = [];
-
+  final OrderHistoryController _orderHistoryMainController = Get.put(OrderHistoryController());
 
 
   Future<BookTableModel> getBookTable() async {

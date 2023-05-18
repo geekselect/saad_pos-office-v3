@@ -350,10 +350,10 @@ class ReportController extends GetxController {
     for (int index = 0; index < reportModelData.value.orders!.length; index++) {
       Order reportDetailOrderModel = reportModelData.value.orders![index];
       printer.row([
-        PosColumn(text: reportDetailOrderModel.itemName.toString(), width: 10),
+        PosColumn(text: reportDetailOrderModel.itemName.toString(), width: 11),
         PosColumn(
             text: reportDetailOrderModel.quantity.toString(),
-            width: 2,
+            width: 1,
             styles: PosStyles(align: PosAlign.right)),
       ]);
     }
@@ -397,11 +397,7 @@ class ReportController extends GetxController {
           width: 3,
           styles: PosStyles(align: PosAlign.right)),
     ]);
-    // }
-    // for (int index = 0;
-    //     index < reportModelData.value.payments!.posCard!.name!.length;
-    //     index++) {
-      // ReportDetailModel reportDetailModel = posCashdata.value.data!;
+
     reportModelData.value.payments!.posCard!.name != null ? printer.row([
         PosColumn(
             text: reportModelData.value.payments!.posCard!.name!.toString(),
