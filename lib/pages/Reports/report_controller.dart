@@ -486,17 +486,25 @@ class ReportController extends GetxController {
     printer.row([
       PosColumn(text: 'Todays Total Cancel Orders', width: 8),
       PosColumn(
-          text: reportModelData.value.totalCanceled!.toStringAsFixed(2),
+          text: reportModelData.value.totalCanceled!.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
     printer.row([
       PosColumn(text: 'Todays Total Incomplete Orders', width: 8),
       PosColumn(
-          text: reportModelData.value.totalIncomplete!.toStringAsFixed(2),
+          text: reportModelData.value.totalIncomplete!.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
+    printer.row([
+      PosColumn(text: 'Todays Total Cancelled Amount', width: 8),
+      PosColumn(
+          text: double.parse(reportModelData.value.totalCanceledAmount!.toString()).toStringAsFixed(2),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+
 
     printer.hr(ch: '=', linesAfter: 1);
 

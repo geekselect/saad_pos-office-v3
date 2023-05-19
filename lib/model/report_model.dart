@@ -304,12 +304,12 @@ String reportModelToJson(ReportModel data) => json.encode(data.toJson());
 
 class ReportModel {
   Payments? payments;
-  int? totalOrders;
-  int? totalTakeaway;
-  int? totalDining;
-  int? totalDiscounts;
-  int? totalCanceled;
-  double? totalCanceledAmount;
+  dynamic totalOrders;
+  dynamic totalTakeaway;
+  dynamic totalDining;
+  dynamic totalDiscounts;
+  dynamic totalCanceled;
+  dynamic totalCanceledAmount;
   List<CancelledOrdersDetail>? cancelledOrdersDetail;
   int? totalIncomplete;
   List<IncompleteOrdersDetail>? incompleteOrdersDetail;
@@ -336,7 +336,7 @@ class ReportModel {
     totalDining: json["Total Dining"],
     totalDiscounts: json["Total Discounts"],
     totalCanceled: json["Total Canceled"],
-    totalCanceledAmount: json["Total Canceled Amount"]?.toDouble(),
+    totalCanceledAmount: json["Total Canceled Amount"],
     cancelledOrdersDetail: json["Cancelled Orders Detail"] == null ? [] : List<CancelledOrdersDetail>.from(json["Cancelled Orders Detail"]!.map((x) => CancelledOrdersDetail.fromJson(x))),
     totalIncomplete: json["Total Incomplete"],
     incompleteOrdersDetail: json["Incomplete Orders Detail"] == null ? [] : List<IncompleteOrdersDetail>.from(json["Incomplete Orders Detail"]!.map((x) => IncompleteOrdersDetail.fromJson(x))),
