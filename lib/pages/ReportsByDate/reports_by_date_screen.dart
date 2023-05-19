@@ -468,9 +468,10 @@ class ReportsByDate extends StatelessWidget {
                                                     ),
                                                     SizedBox(height: 20),
                                                     Text(
-                                                      "Orders ${DateFormat(
-                                                          'yyyy-MM-dd').format(datum
-                                                          .date!)}",
+                                                      // "Orders ${DateFormat(
+                                                      //     'yyyy-MM-dd').format(datum
+                                                      //     .date!)}",
+                                                      "Orders",
                                                       style: TextStyle(
                                                           color: Colors.red
                                                               .shade400,

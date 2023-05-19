@@ -243,10 +243,13 @@ class ReportController extends GetxController {
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
   Rx<Order> reportModelOrderData = Order().obs;
+  Rx<CancelledOrdersDetail> reportModelCancelledOrdersData = CancelledOrdersDetail().obs;
+  Rx<IncompleteOrdersDetail> reportModelIncompleteOrdersData = IncompleteOrdersDetail().obs;
   Rx<ReportModel> reportModelData = ReportModel().obs;
 
   String? posIp;
   int? posPort;
+
 
   final box = GetStorage();
   @override
@@ -477,6 +480,20 @@ class ReportController extends GetxController {
       PosColumn(text: 'Todays Total Discounts', width: 8),
       PosColumn(
           text: reportModelData.value.totalDiscounts!.toStringAsFixed(2),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+    printer.row([
+      PosColumn(text: 'Todays Total Cancel Orders', width: 8),
+      PosColumn(
+          text: reportModelData.value.totalCanceled!.toStringAsFixed(2),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+    printer.row([
+      PosColumn(text: 'Todays Total Incomplete Orders', width: 8),
+      PosColumn(
+          text: reportModelData.value.totalIncomplete!.toStringAsFixed(2),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);

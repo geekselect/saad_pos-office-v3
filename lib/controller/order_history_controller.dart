@@ -1,3 +1,51 @@
+// import 'package:flutter/cupertino.dart';
+// import 'package:get/get.dart';
+// import 'package:pos/model/order_history_list_model.dart';
+// import 'package:pos/retrofit/api_client.dart';
+// import 'package:pos/retrofit/api_header.dart';
+// import 'package:pos/retrofit/base_model.dart';
+// import 'package:pos/retrofit/server_error.dart';
+// import 'package:pos/utils/constants.dart';
+// class OrderHistoryController extends GetxController{
+//   RxList<OrderHistoryData> listOrderHistory = <OrderHistoryData>[].obs;
+//
+//
+//   Future<BaseModel<OrderHistoryListModel>> callGetOrderHistoryList() async {
+//     OrderHistoryListModel response;
+//     try{
+//       response  = await  RestClient(await RetroApi().dioData()).showOrder();
+//       if (response.success!) {
+//         listOrderHistory.value=response.data!;
+//       } else {
+//         Constants.toastMessage('No Data');
+//       }
+//
+//     }catch (error, stacktrace) {
+//       print("Exception occurred: $error stackTrace: $stacktrace");
+//       return BaseModel()..setException(ServerError.withError(error: error));
+//     }
+//     return BaseModel()..data = response;
+//   }
+//
+//   Future<BaseModel<OrderHistoryListModel>> refreshOrderHistory(BuildContext context)async{
+//     OrderHistoryListModel response;
+//     try{
+//       response  = await  RestClient(await RetroApi().dioData()).showOrder();
+//       if (response.success!) {
+//         listOrderHistory.value=response.data!;
+//       } else {
+//         Constants.toastMessage('No Data');
+//       }
+//
+//     }catch (error, stacktrace) {
+//       print("Exception occurred: $error stackTrace: $stacktrace");
+//       return BaseModel()..setException(ServerError.withError(error: error));
+//     }
+//     return BaseModel()..data = response;
+//   }
+// }
+
+///Changes after
 import 'dart:async';
 import 'dart:convert';
 
@@ -23,15 +71,17 @@ enum FilterType { TakeAway, DineIn, None }
 
 class OrderHistoryController extends GetxController {
 
+
   Rx<Future<BaseModel<OrderHistoryListModel>>?> orderHistoryRef = Rx<Future<BaseModel<OrderHistoryListModel>>?>(null);
   RxList<OrderHistoryData> listOrderHistory = <OrderHistoryData>[].obs;
-  final DatabaseReference _firebaseRef = FirebaseDatabase.instance.ref();
+  final DatabaseReference firebaseRef = FirebaseDatabase.instance.ref();
   final TextEditingController _textOrderCancelReason = TextEditingController();
   StreamSubscription<DatabaseEvent>? firebaseListener;
   final RxString searchQuery = ''.obs;
-   RxList<OrderHistoryData> totalOrders = <OrderHistoryData>[].obs;
-  RxList<OrderHistoryData> takeAwayOrders = <OrderHistoryData>[].obs;
-  RxList<OrderHistoryData> DineInOrders = <OrderHistoryData>[].obs;
+   List<OrderHistoryData> totalOrders = <OrderHistoryData>[];
+  List<OrderHistoryData> takeAwayOrders = <OrderHistoryData>[];
+  List<OrderHistoryData> DineInOrders = <OrderHistoryData>[];
+  RxBool disableCompleteButton = false.obs;
 
   @override
   void onInit() {
@@ -41,6 +91,7 @@ class OrderHistoryController extends GetxController {
   }
 
   Future<void> getOrders() async {
+    print("get orders ");
     final value = await callGetOrderHistoryList();
     if (value.data!.data!.isNotEmpty) {
         totalOrders.addAll(value.data!.data!);
@@ -54,11 +105,10 @@ class OrderHistoryController extends GetxController {
     } else {
       // handle error case
     }
-    update();
   }
 
   initAsync() async {
-    firebaseListener = _firebaseRef
+   firebaseListener =  firebaseRef
         .child('orders')
         .child((await SharedPreferences.getInstance())
         .getString(Constants.loginUserId) ??
@@ -446,6 +496,22 @@ class OrderHistoryController extends GetxController {
   }
 
   List<OrderHistoryData> getFilteredOrders() {
+    totalOrders = [];
+    takeAwayOrders = [];
+    DineInOrders = [];
+    final value = listOrderHistory;
+    if (value.isNotEmpty) {
+      totalOrders.addAll(value);
+      for (final element in value) {
+        if (element.deliveryType == "TAKEAWAY") {
+          takeAwayOrders.add(element);
+        } else if (element.deliveryType == "DINING") {
+         DineInOrders.add(element);
+        }
+      }
+    } else {
+      // handle error case
+    }
     RxList<OrderHistoryData> filteredOrders = <OrderHistoryData>[].obs;
     if (filterType.value == FilterType.TakeAway) {
       filteredOrders.value = takeAwayOrders;
@@ -580,6 +646,7 @@ class OrderHistoryController extends GetxController {
                           children: [
                             GestureDetector(
                               onTap: () {
+                                _textOrderCancelReason.clear();
                                 Navigator.pop(context);
                               },
                               child: Text(
@@ -640,10 +707,8 @@ class OrderHistoryController extends GetxController {
       response = await RestClient(await RetroApi().dioData()).cancelOrder(body);
       Constants.hideDialog(context);
       if (response.success!) {
-        await getTakeAwayValue(orderId!).then((value) {
-          print("value ${value.data}");
-        });
           orderHistoryRef.value = callGetOrderHistoryList();
+          _textOrderCancelReason.clear();
         Navigator.pop(context);
         Constants.toastMessage(response.data!);
       } else {
@@ -678,58 +743,32 @@ class OrderHistoryController extends GetxController {
 
   Widget deliveryTypeButton(
       {required void Function()? onTap,
-        required IconData icon,
+        required String icon,
         required String title,
         required TextStyle style,
         required Color buttonColor,
         required Color color}) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: buttonColor
+     style: ButtonStyle(
+  backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
+      // set the height to 50
+      fixedSize:
+      MaterialStateProperty.all<Size>(
+          const Size(200, 50)),
+
       ),
       onPressed: onTap,
       child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(
-          icon,
-          color: color,
-        ),
+        Image.asset(icon, color: color, height: 20,),
         Text(
           title,
           style: style,
         )
       ],
     ),);
-      //
-      //
-      //
-      //
-      // GestureDetector(
-      //   onTap: onTap,
-      //   child: Container(
-      //     margin: EdgeInsets.all(4.0),
-      //     height: 70,
-      //     width: 70,
-      //     decoration: BoxDecoration(
-      //         color: buttonColor,
-      //         borderRadius: BorderRadius.all(Radius.circular(16.0))),
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       children: [
-      //         Icon(
-      //           icon,
-      //           color: color,
-      //         ),
-      //         Text(
-      //           title,
-      //           style: style,
-      //         )
-      //       ],
-      //     ),
-      //   ));
   }
 
   @override
