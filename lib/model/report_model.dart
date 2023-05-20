@@ -364,7 +364,7 @@ class CancelledOrdersDetail {
   String? deliveryType;
   String? cancelReason;
   String? cancelBy;
-  int? discounts;
+  double? discounts;
   String? userName;
   String? mobile;
   String? notes;
@@ -387,7 +387,7 @@ class CancelledOrdersDetail {
     deliveryType: json["delivery_type"],
     cancelReason: json["cancel_reason"],
     cancelBy: json["cancel_by"],
-    discounts: json["discounts"],
+    discounts: json["discounts"]?.toDouble(),
     userName: json["user_name"],
     mobile: json["mobile"],
     notes: json["notes"],

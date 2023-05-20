@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage>{
     // TODO: implement initState
     super.initState();
     // _textEmail.text = "pos@gmail.com";
-    // _textPassword.text = "Ahmed33!!";
+    // _textPassword.text = "ahmed123";
     // _textEmail.text = "";
     // _textPassword.text = "";
   }
