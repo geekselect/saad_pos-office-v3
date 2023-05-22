@@ -22,10 +22,9 @@ class LoginPage extends StatefulWidget{
 class _LoginPageState extends State<LoginPage>{
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // _textEmail.text = "pos@gmail.com";
-    // _textPassword.text = "Ahmed33!!";
+    _textEmail.text = "pos@gmail.com";
+    _textPassword.text = "Ahmed33!!";
     // _textEmail.text = "";
     // _textPassword.text = "";
   }

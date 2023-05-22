@@ -721,6 +721,14 @@ class OrderHistoryController extends GetxController {
   }
 
   showSwitchOrderDialog(dynamic orderId, dynamic paymentType, BuildContext context) {
+    var payment = '';
+    if(paymentType.toString() == 'POS CASH'){
+      payment = 'POS CARD';
+    } else if(paymentType.toString() == 'POS CARD'){
+      payment = 'POS CASH';
+    }  else {
+      payment = '';
+    }
     // showDialog(
     //   context: context,
     //   builder: (BuildContext context) {
@@ -872,18 +880,11 @@ class OrderHistoryController extends GetxController {
     Get.dialog(
       AlertDialog(
         title: Text('Switch Confirmation'),
-        content: Text('Do you want to switch payment?'),
+        content: Text('Do you want to switch ${paymentType.toString()} to $payment?'),
         actions: [
           ElevatedButton(
             onPressed: () async {
-              var payment = '';
-            if(paymentType.toString() == 'POS CASH'){
-              payment = 'POS CARD';
-            } else if(paymentType.toString() == 'POS CARD'){
-              payment = 'POS CASH';
-            }  else {
-              payment = '';
-            }
+
               await callSwitchPaymentOrder(
                   orderId, payment, context);
             },
