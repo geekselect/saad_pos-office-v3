@@ -19,3 +19,19 @@ class CommenRes {
     return data;
   }
 }
+
+class CommenPaymentSwitchRes {
+  String? success;
+
+  CommenPaymentSwitchRes({this.success});
+
+  CommenPaymentSwitchRes.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data =  Map<String, dynamic>();
+    data['success'] = this.success;
+    return data;
+  }
+}

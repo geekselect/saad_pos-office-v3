@@ -230,6 +230,9 @@ abstract class RestClient {
   @POST("cancel_order")
   Future<CommenRes> cancelOrder(@Body() Map<String, String> map);
 
+  @POST("paymentSwitch")
+  Future<CommenPaymentSwitchRes> paymentSwitchOrder(@Body() Map<String, String> map);
+
   @POST("refund")
   Future<CommenRes> refund(@Body() Map<String, String> map);
 

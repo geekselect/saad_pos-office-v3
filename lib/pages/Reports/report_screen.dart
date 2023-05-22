@@ -992,8 +992,8 @@ class Reports extends StatelessWidget {
                                             .value
                                             .payments!
                                             .posCash!
-                                            .amount
-                                            .toString()))),
+                                            .amount!
+                                            .toStringAsFixed(2)))),
                               ],
                             ),
                             Row(
@@ -1119,7 +1119,7 @@ class Reports extends StatelessWidget {
                                                                 ),
                                                                 commonRow(
                                                                   "Amount:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.amount.toString()}",
+                                                                  "${double.parse(_reportController.reportModelIncompleteOrdersData.value.amount.toString()).toStringAsFixed(2)}",
                                                                 ),
                                                                 commonRow(
                                                                   "Delivery Type:",
@@ -1179,7 +1179,7 @@ class Reports extends StatelessWidget {
                                                     ),
                                                     commonRow(
                                                       "Amount:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.amount.toString()}",
+                                                      "${double.parse(_reportController.reportModelCancelledOrdersData.value.amount.toString()).toStringAsFixed(2)}",
                                                     ),
                                                     commonRow(
                                                       "Delivery Type:",
@@ -1671,7 +1671,9 @@ class Reports extends StatelessWidget {
                               }
                             },
                             child: Text("Reports")),
-                      )
+
+                      ),
+                      SizedBox(height: 5),
                     ],
                   );
                   // : Center(

@@ -59,6 +59,7 @@ import 'package:get/get.dart';
 import 'package:pos/model/common_res.dart';
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
+import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
 import 'package:pos/retrofit/base_model.dart';
@@ -66,22 +67,21 @@ import 'package:pos/retrofit/server_error.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 enum FilterType { TakeAway, DineIn, None }
 
 class OrderHistoryController extends GetxController {
-
-
-  Rx<Future<BaseModel<OrderHistoryListModel>>?> orderHistoryRef = Rx<Future<BaseModel<OrderHistoryListModel>>?>(null);
+  Rx<Future<BaseModel<OrderHistoryListModel>>?> orderHistoryRef =
+      Rx<Future<BaseModel<OrderHistoryListModel>>?>(null);
   RxList<OrderHistoryData> listOrderHistory = <OrderHistoryData>[].obs;
   final DatabaseReference firebaseRef = FirebaseDatabase.instance.ref();
   final TextEditingController _textOrderCancelReason = TextEditingController();
   StreamSubscription<DatabaseEvent>? firebaseListener;
   final RxString searchQuery = ''.obs;
-   List<OrderHistoryData> totalOrders = <OrderHistoryData>[];
+  List<OrderHistoryData> totalOrders = <OrderHistoryData>[];
   List<OrderHistoryData> takeAwayOrders = <OrderHistoryData>[];
   List<OrderHistoryData> DineInOrders = <OrderHistoryData>[];
   RxBool disableCompleteButton = false.obs;
+  final PrinterController _printerController = Get.find<PrinterController>();
 
   @override
   void onInit() {
@@ -94,25 +94,25 @@ class OrderHistoryController extends GetxController {
     print("get orders ");
     final value = await callGetOrderHistoryList();
     if (value.data!.data!.isNotEmpty) {
-        totalOrders.addAll(value.data!.data!);
-        for (final element in value.data!.data!) {
-          if (element.deliveryType == "TAKEAWAY") {
-            takeAwayOrders.add(element);
-          } else if (element.deliveryType == "DINING") {
-            DineInOrders.add(element);
-          }
+      totalOrders.addAll(value.data!.data!);
+      for (final element in value.data!.data!) {
+        if (element.deliveryType == "TAKEAWAY") {
+          takeAwayOrders.add(element);
+        } else if (element.deliveryType == "DINING") {
+          DineInOrders.add(element);
         }
+      }
     } else {
       // handle error case
     }
   }
 
   initAsync() async {
-   firebaseListener =  firebaseRef
+    firebaseListener = firebaseRef
         .child('orders')
         .child((await SharedPreferences.getInstance())
-        .getString(Constants.loginUserId) ??
-        '144')
+                .getString(Constants.loginUserId) ??
+            '144')
         .onChildChanged
         .listen((event) {
       print("Event Trigger ${event}");
@@ -122,14 +122,14 @@ class OrderHistoryController extends GetxController {
 
   Future<BaseModel<OrderHistoryListModel>> callGetOrderHistoryList() async {
     OrderHistoryListModel response;
-    try{
-      response  = await  RestClient(await RetroApi().dioData()).showOrder();
+    try {
+      response = await RestClient(await RetroApi().dioData()).showOrder();
       if (response.success!) {
-        listOrderHistory.value=response.data!;
+        listOrderHistory.value = response.data!;
       } else {
         Constants.toastMessage('No Data');
       }
-    }catch (error, stacktrace) {
+    } catch (error, stacktrace) {
       print("Exception occurred: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
     }
@@ -146,15 +146,15 @@ class OrderHistoryController extends GetxController {
       port: port,
     );
     if (res == PosPrintResult.success) {
-        printPOSReceipt(printer, order);
+      printPOSReceipt(printer, order);
       printer.disconnect();
     }
   }
 
   printPOSReceipt(
-      NetworkPrinter printer,
-      OrderHistoryData order,
-      ) {
+    NetworkPrinter printer,
+    OrderHistoryData order,
+  ) {
     printer.text(order.vendorName!,
         styles: const PosStyles(
           align: PosAlign.center,
@@ -199,13 +199,14 @@ class OrderHistoryController extends GetxController {
     printer.text('Order Type :  ${order.deliveryType.toString()}',
         styles: const PosStyles(align: PosAlign.left));
 
-
     printer.hr();
     printer.row([
       PosColumn(text: 'Qty', width: 1),
       PosColumn(text: 'Item', width: 9),
       PosColumn(
-          text: 'Total', width: 2, styles: const PosStyles(align: PosAlign.right)),
+          text: 'Total',
+          width: 2,
+          styles: const PosStyles(align: PosAlign.right)),
     ]);
     Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
     OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
@@ -233,13 +234,13 @@ class OrderHistoryController extends GetxController {
               width: 9,
             ),
             PosColumn(
-                text:  double.parse(price.toString()).toStringAsFixed(2),
+                text: double.parse(price.toString()).toStringAsFixed(2),
                 width: 2,
                 styles: const PosStyles(align: PosAlign.right)),
           ]);
           for (int addonIndex = 0;
-          addonIndex < menuItem.addons!.length;
-          addonIndex++) {
+              addonIndex < menuItem.addons!.length;
+              addonIndex++) {
             Addon addonItem = menuItem.addons![addonIndex];
             if (addonIndex == 0) {
               printer.row([
@@ -258,7 +259,8 @@ class OrderHistoryController extends GetxController {
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
               PosColumn(
-                  text: double.parse(addonItem.price.toString()).toStringAsFixed(2),
+                  text: double.parse(addonItem.price.toString())
+                      .toStringAsFixed(2),
                   width: 2,
                   styles: const PosStyles(align: PosAlign.right)),
             ]);
@@ -267,7 +269,6 @@ class OrderHistoryController extends GetxController {
       }
     }
     printer.hr();
-
 
     printer.row([
       PosColumn(
@@ -308,8 +309,7 @@ class OrderHistoryController extends GetxController {
     if (order.discounts != null) {
       printer.row([
         PosColumn(
-            text:
-            'Discount',
+            text: 'Discount',
             width: 6,
             styles: const PosStyles(
               height: PosTextSize.size1,
@@ -317,7 +317,7 @@ class OrderHistoryController extends GetxController {
             )),
         PosColumn(
             text:
-            "$currencySymbol${double.parse(order.discounts!.toString()).toStringAsFixed(2)}",
+                "$currencySymbol${double.parse(order.discounts!.toString()).toStringAsFixed(2)}",
             width: 6,
             styles: const PosStyles(
               align: PosAlign.right,
@@ -380,12 +380,9 @@ class OrderHistoryController extends GetxController {
     }
   }
 
-
-
   printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order) {
     Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
     OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
-
 
     printer.text("*** Kitchen ***",
         styles: const PosStyles(
@@ -453,8 +450,8 @@ class OrderHistoryController extends GetxController {
             ),
           ]);
           for (int addonIndex = 0;
-          addonIndex < menuItem.addons!.length;
-          addonIndex++) {
+              addonIndex < menuItem.addons!.length;
+              addonIndex++) {
             Addon addonItem = menuItem.addons![addonIndex];
             if (addonIndex == 0) {
               printer.row([
@@ -489,7 +486,6 @@ class OrderHistoryController extends GetxController {
     printer.text('Thank you!',
         styles: const PosStyles(align: PosAlign.center, bold: true));
 
-
     printer.feed(1);
     printer.cut();
     printer.beep();
@@ -506,7 +502,7 @@ class OrderHistoryController extends GetxController {
         if (element.deliveryType == "TAKEAWAY") {
           takeAwayOrders.add(element);
         } else if (element.deliveryType == "DINING") {
-         DineInOrders.add(element);
+          DineInOrders.add(element);
         }
       }
     } else {
@@ -524,13 +520,13 @@ class OrderHistoryController extends GetxController {
     if (searchQuery.isNotEmpty) {
       filteredOrders.value = filteredOrders
           .where((order) =>
-      (order.userName != null &&
-          order.userName!
-              .toLowerCase()
-              .contains(searchQuery.value.toLowerCase())) ||
-          (order.orderId!
-              .toLowerCase()
-              .contains('#${searchQuery.value.toLowerCase()}')))
+              (order.userName != null &&
+                  order.userName!
+                      .toLowerCase()
+                      .contains(searchQuery.value.toLowerCase())) ||
+              (order.orderId!
+                  .toLowerCase()
+                  .contains('#${searchQuery.value.toLowerCase()}')))
           .toList();
     }
     return filteredOrders.value;
@@ -538,13 +534,11 @@ class OrderHistoryController extends GetxController {
 
   final Rx<FilterType> filterType = FilterType.None.obs;
 
-
-   applyFilterType(FilterType value) {
+  applyFilterType(FilterType value) {
     filterType.value = value;
   }
 
-
-  showCancelOrderDialog(int? orderId, BuildContext context) {
+  showCancelOrderDialog(OrderHistoryData order, int? orderId, BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -640,7 +634,7 @@ class OrderHistoryController extends GetxController {
                       ),
                       Padding(
                         padding:
-                        EdgeInsets.only(top: ScreenUtil().setHeight(15)),
+                            EdgeInsets.only(top: ScreenUtil().setHeight(15)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -664,8 +658,39 @@ class OrderHistoryController extends GetxController {
                               child: GestureDetector(
                                 onTap: () async {
                                   if (_textOrderCancelReason.text.isNotEmpty) {
-                                    await callCancelOrder(
-                                        orderId, _textOrderCancelReason.text, context);
+                                    await callCancelOrder(orderId,
+                                        _textOrderCancelReason.text, context);
+                                    if ((_printerController.printerModel.value.ipKitchen !=
+                                        null &&
+                                        _printerController
+                                            .printerModel
+                                            .value
+                                            .ipKitchen!
+                                            .isNotEmpty) &&
+                                        (_printerController.printerModel.value.portKitchen !=
+                                            null &&
+                                            _printerController
+                                                .printerModel
+                                                .value
+                                                .portKitchen!
+                                                .isNotEmpty)) {
+                                      testPrintKitchen(
+                                          _printerController
+                                              .printerModel
+                                              .value
+                                              .ipKitchen!,
+                                          int.parse(_printerController
+                                              .printerModel
+                                              .value
+                                              .portKitchen
+                                              .toString()),
+                                          context,
+                                          order);
+                                    } else {
+                                      Get.snackbar(
+                                          "Error",
+                                          "Please add kitchen printer ip and port");
+                                    }
                                   } else {
                                     Constants.toastMessage(
                                         'Please Enter Cancel Reason');
@@ -695,6 +720,213 @@ class OrderHistoryController extends GetxController {
     );
   }
 
+  showSwitchOrderDialog(dynamic orderId, dynamic paymentType, BuildContext context) {
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return StatefulBuilder(
+    //       builder: (context, setState) {
+    //         return Dialog(
+    //           insetPadding: EdgeInsets.all(15),
+    //           child: Padding(
+    //             padding: EdgeInsets.only(
+    //                 left: ScreenUtil().setWidth(20),
+    //                 right: ScreenUtil().setWidth(20),
+    //                 bottom: 0,
+    //                 top: ScreenUtil().setHeight(20)),
+    //             child: Container(
+    //               height: MediaQuery.of(context).size.height * 0.42,
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.stretch,
+    //                 children: [
+    //                   InkWell(
+    //                     onTap: () {
+    //                       Navigator.of(context).pop();
+    //                     },
+    //                     child: Row(
+    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                       children: [
+    //                         Text(
+    //                           'Cancel Order',
+    //                           overflow: TextOverflow.ellipsis,
+    //                           maxLines: 1,
+    //                           style: TextStyle(
+    //                             fontSize: ScreenUtil().setSp(18),
+    //                             fontWeight: FontWeight.w900,
+    //                             fontFamily: Constants.appFontBold,
+    //                           ),
+    //                         ),
+    //                         GestureDetector(
+    //                           child: Icon(Icons.close),
+    //                           onTap: () {
+    //                             Navigator.pop(context);
+    //                           },
+    //                         )
+    //                       ],
+    //                     ),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   const Divider(
+    //                     thickness: 1,
+    //                     color: Color(0xffcccccc),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   Text(
+    //                     'Order Cancel Reason',
+    //                     style: TextStyle(
+    //                         fontFamily: Constants.appFontBold, fontSize: 16),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   Card(
+    //                     elevation: 3,
+    //                     shape: RoundedRectangleBorder(
+    //                       borderRadius: BorderRadius.circular(10.0),
+    //                     ),
+    //                     child: Padding(
+    //                       padding: const EdgeInsets.all(8.0),
+    //                       child: TextField(
+    //                         controller: _textOrderCancelReason,
+    //                         keyboardType: TextInputType.text,
+    //                         decoration: const InputDecoration(
+    //                             contentPadding: EdgeInsets.only(left: 10),
+    //                             hintText: 'Type Order Cancel Reason',
+    //                             border: InputBorder.none),
+    //                         maxLines: 5,
+    //                         style: TextStyle(
+    //                             fontFamily: Constants.appFont,
+    //                             fontSize: 16,
+    //                             color: Color(
+    //                               Constants.colorGray,
+    //                             )),
+    //                       ),
+    //                     ),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   const Divider(
+    //                     thickness: 1,
+    //                     color: Color(0xffcccccc),
+    //                   ),
+    //                   Padding(
+    //                     padding:
+    //                     EdgeInsets.only(top: ScreenUtil().setHeight(15)),
+    //                     child: Row(
+    //                       mainAxisAlignment: MainAxisAlignment.end,
+    //                       children: [
+    //                         GestureDetector(
+    //                           onTap: () {
+    //                             _textOrderCancelReason.clear();
+    //                             Navigator.pop(context);
+    //                           },
+    //                           child: Text(
+    //                             'No Go Back',
+    //                             style: TextStyle(
+    //                                 fontSize: ScreenUtil().setSp(14),
+    //                                 fontWeight: FontWeight.bold,
+    //                                 fontFamily: Constants.appFontBold,
+    //                                 color: Color(Constants.colorGray)),
+    //                           ),
+    //                         ),
+    //                         Padding(
+    //                           padding: EdgeInsets.only(
+    //                               left: ScreenUtil().setWidth(12)),
+    //                           child: GestureDetector(
+    //                             onTap: () async {
+    //                               if (_textOrderCancelReason.text.isNotEmpty) {
+    //                                 await callCancelOrder(
+    //                                     orderId, _textOrderCancelReason.text, context);
+    //                               } else {
+    //                                 Constants.toastMessage(
+    //                                     'Please Enter Cancel Reason');
+    //                               }
+    //                             },
+    //                             child: Text(
+    //                               'Yes Cancel It',
+    //                               style: TextStyle(
+    //                                   fontSize: ScreenUtil().setSp(14),
+    //                                   fontWeight: FontWeight.bold,
+    //                                   fontFamily: Constants.appFontBold,
+    //                                   color: Color(Constants.colorBlue)),
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   )
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         );
+    //       },
+    //     );
+    //   },
+    // );
+    Get.dialog(
+      AlertDialog(
+        title: Text('Switch Confirmation'),
+        content: Text('Do you want to switch payment?'),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              var payment = '';
+            if(paymentType.toString() == 'POS CASH'){
+              payment = 'POS CARD';
+            } else if(paymentType.toString() == 'POS CARD'){
+              payment = 'POS CASH';
+            }  else {
+              payment = '';
+            }
+              await callSwitchPaymentOrder(
+                  orderId, payment, context);
+            },
+            child: Text('Yes'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: Text('No'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<BaseModel<CommenPaymentSwitchRes>> callSwitchPaymentOrder(
+      dynamic orderId, dynamic paymentType, BuildContext context) async {
+    CommenPaymentSwitchRes response;
+    try {
+      Constants.onLoading(context);
+      Map<String, String> body = {
+        'orderId': orderId.toString(),
+        'newPaymentType': paymentType.toString(),
+      };
+      response = await RestClient(await RetroApi().dioData()).paymentSwitchOrder(body);
+      Constants.hideDialog(context);
+      // if (response.success!) {
+        orderHistoryRef.value = callGetOrderHistoryList();
+        Get.back();
+        Constants.toastMessage(response.success!);
+        print("status updated");
+      // } else {
+      //   Constants.toastMessage(response.data!);
+      // }
+    } catch (error, stacktrace) {
+      Constants.hideDialog(context);
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      return BaseModel()..setException(ServerError.withError(error: error));
+    }
+    return BaseModel()..data = response;
+  }
+
   Future<BaseModel<CommenRes>> callCancelOrder(
       int? orderId, String cancelReason, BuildContext context) async {
     CommenRes response;
@@ -707,8 +939,8 @@ class OrderHistoryController extends GetxController {
       response = await RestClient(await RetroApi().dioData()).cancelOrder(body);
       Constants.hideDialog(context);
       if (response.success!) {
-          orderHistoryRef.value = callGetOrderHistoryList();
-          _textOrderCancelReason.clear();
+        orderHistoryRef.value = callGetOrderHistoryList();
+        _textOrderCancelReason.clear();
         Navigator.pop(context);
         Constants.toastMessage(response.data!);
       } else {
@@ -721,7 +953,6 @@ class OrderHistoryController extends GetxController {
     }
     return BaseModel()..data = response;
   }
-
 
   Future<CommenRes> getTakeAwayValue(int id) async {
     final _data = <String, dynamic>{
@@ -743,32 +974,34 @@ class OrderHistoryController extends GetxController {
 
   Widget deliveryTypeButton(
       {required void Function()? onTap,
-        required String icon,
-        required String title,
-        required TextStyle style,
-        required Color buttonColor,
-        required Color color}) {
+      required String icon,
+      required String title,
+      required TextStyle style,
+      required Color buttonColor,
+      required Color color}) {
     return ElevatedButton(
-     style: ButtonStyle(
-  backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
-      // set the height to 50
-      fixedSize:
-      MaterialStateProperty.all<Size>(
-          const Size(200, 50)),
-
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
+        // set the height to 50
+        fixedSize: MaterialStateProperty.all<Size>(const Size(200, 50)),
       ),
       onPressed: onTap,
       child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Image.asset(icon, color: color, height: 20,),
-        Text(
-          title,
-          style: style,
-        )
-      ],
-    ),);
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            icon,
+            color: color,
+            height: 20,
+          ),
+          Text(
+            title,
+            style: style,
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -776,5 +1009,4 @@ class OrderHistoryController extends GetxController {
     firebaseListener?.cancel();
     super.dispose();
   }
-
- }
+}

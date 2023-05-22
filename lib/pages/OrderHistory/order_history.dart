@@ -3088,6 +3088,7 @@ class OrderHistory extends StatelessWidget {
                                                                         onPressed:
                                                                             () async {
                                                                           await orderHistoryController.showCancelOrderDialog(
+                                                                              order,
                                                                               order.id,
                                                                               context);
                                                                           orderHistoryController
@@ -3551,7 +3552,43 @@ class OrderHistory extends StatelessWidget {
                                                                     )
                                                                   ]),
                                                             ),
-                                                      SizedBox(height: 5),
+                                                     order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ? Column(
+                                                       children: [
+                                                         SizedBox(height: 5),
+                                                         Align(
+                                                            alignment: Alignment.center,
+                                                            child: ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                  backgroundColor: Color(0XFF6C6868)),
+                                                              onPressed:
+                                                                  () async {
+                                                                print("order id ${order.id}");
+                                                                print("order payment type ${order.paymentType}");
+                                                                await orderHistoryController.showSwitchOrderDialog(
+                                                                    order.id,
+                                                                    order.paymentType,
+                                                                  context,
+                                                                );
+                                                                orderHistoryController
+                                                                    .orderHistoryRef
+                                                                    .value = orderHistoryController.callGetOrderHistoryList();
+                                                              },
+                                                              child:
+                                                              const Text(
+                                                                "Payment Switch",
+                                                                textAlign:
+                                                                TextAlign.center,
+                                                                style:
+                                                                TextStyle(
+                                                                  fontSize:
+                                                                  18,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                       ],
+                                                     ) : SizedBox(height: 5),
+
                                                     ],
                                                   ),
                                                 ),

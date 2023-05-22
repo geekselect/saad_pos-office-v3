@@ -1142,6 +1142,23 @@ class _RestClient implements RestClient {
     return value;
   }
 
+  @override
+  Future<CommenPaymentSwitchRes> paymentSwitchOrder(Map<String, String> map) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(map);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommenPaymentSwitchRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'paymentSwitch',
+                queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommenPaymentSwitchRes.fromJson(_result.data!);
+    return value;
+  }
+
   // @override
   // Future printerData(int? id) async {
   //   @override

@@ -825,7 +825,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         // 'address_id': widget.orderDeliveryType == 'SHOP' ? '' : widget.addressId.toString(),
         'delivery_charge':widget.orderDeliveryCharge,
         'payment_type': orderPaymentType,
-        'payment_status': orderPaymentType == 'COD' ? '0' : '1',
+        'payment_status':  '0',
         'order_status': widget.orderStatus,
         'custimization': '',
         'promocode_id': _cartController.strAppiedPromocodeId,
