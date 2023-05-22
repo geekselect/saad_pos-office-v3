@@ -780,6 +780,8 @@ class OrderHistoryData {
   String? vendorContact;
   String? userName;
   String? deliveryPersonName;
+  dynamic cashAmount;
+  dynamic cardAmount;
 
   OrderHistoryData({
     this.id,
@@ -805,6 +807,8 @@ class OrderHistoryData {
     this.placedFrom,
     this.cancelBy,
     this.cancelReason,
+    this.cardAmount,
+    this.cashAmount,
     this.tax,
     this.orderStartTime,
     this.orderEndTime,
@@ -836,6 +840,8 @@ class OrderHistoryData {
     paymentType: json["payment_type"],
     paymentToken: json["payment_token"],
     paymentStatus: json["payment_status"],
+    cardAmount: json["card_amount"],
+    cashAmount: json["cash_amount"],
     amount: json["amount"],
     adminCommission: json["admin_commission"],
     vendorAmount: json["vendor_amount"],
@@ -884,6 +890,8 @@ class OrderHistoryData {
     "admin_commission": adminCommission,
     "vendor_amount": vendorAmount,
     "delivery_type": deliveryType,
+    "cash_amount": cashAmount,
+    "card_amount": cardAmount,
     "promocode_id": promocodeId,
     "promocode_price": promocodePrice,
     "address_id": addressId,

@@ -173,7 +173,7 @@ class CartController extends GetxController{
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     try {
-      orderSettingModel = await RestClient(await RetroApi().dioData()).orderSetting(int.parse(vendorId));
+      orderSettingModel = await RestClient(await RetroApi().dioData()).orderSetting(int.parse(vendorId.toString()));
       if (orderSettingModel!.success!) {
 
       } else {

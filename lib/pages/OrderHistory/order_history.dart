@@ -2209,6 +2209,23 @@ class OrderHistory extends StatelessWidget {
                                                       const SizedBox(
                                                         height: 15,
                                                       ),
+                                                      Text(order.paymentType.toString(),style: TextStyle(
+                                                        color: const Color(
+                                                            0XFF000000),
+                                                        decoration:
+                                                        TextDecoration
+                                                            .none,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w700,
+                                                        fontFamily:
+                                                        Constants
+                                                            .appFont,
+                                                        fontSize: 15,
+                                                      ), ),
+                                                      const SizedBox(
+                                                        height: 5,
+                                                      ),
                                                       Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
@@ -2238,8 +2255,8 @@ class OrderHistory extends StatelessWidget {
                                                                           "POS CASH TAKEAWAY" ||
                                                                       order.paymentType ==
                                                                           "POS CARD TAKEAWAY"
-                                                                  ? '(Paid)'
-                                                                  : '(Unpaid)',
+                                                                  ? '(PAID)'
+                                                                  : '(UNPAID)',
                                                               style: TextStyle(
                                                                 color: const Color(
                                                                     0XFFF44336),
@@ -2944,9 +2961,43 @@ class OrderHistory extends StatelessWidget {
                                                                   )
                                                                 ],
                                                               ),
-                                                              const SizedBox(
-                                                                height: 5,
-                                                              ),
+                                                              order.paymentType == 'CASH+CARD' ?  Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  const SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  order.cashAmount != null ? Text(
+                                                                    'Cash Amount : ${double.parse(order.cashAmount.toString()).toStringAsFixed(2)} ',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontFamily: Constants
+                                                                            .appFont,
+                                                                        fontSize:
+                                                                        12),
+                                                                  ) : SizedBox(),
+                                                                  order.cashAmount != null ? const SizedBox(
+                                                                    height: 5,
+                                                                  ) : SizedBox(),
+                                                                  order.cardAmount != null ? Text(
+                                                                    'Card Amount : ${double.parse(order.cardAmount.toString()).toStringAsFixed(2)} ',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontFamily: Constants
+                                                                            .appFont,
+                                                                        fontSize:
+                                                                        12),
+                                                                  ) : SizedBox(),
+                                                                  order.cardAmount != null ? const SizedBox(
+                                                                    height: 5,
+                                                                  ) : SizedBox(),
+                                                                ],
+                                                              ) : SizedBox(height: 5,),
+
+
+
                                                             ],
                                                           ),
                                                           Row(

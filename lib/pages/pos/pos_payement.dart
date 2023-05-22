@@ -87,6 +87,8 @@ class _PosPaymentState extends State<PosPayment> {
   TextEditingController totalAmountController = TextEditingController();
   TextEditingController receivedController = TextEditingController();
   TextEditingController changedController = TextEditingController();
+    final TextEditingController posCashAmountController = TextEditingController();
+    final TextEditingController posCardAmountController = TextEditingController();
   CartController _cartController = Get.find<CartController>();
   OrderHistoryController _orderHistoryController =
       Get.find<OrderHistoryController>();
@@ -106,6 +108,7 @@ class _PosPaymentState extends State<PosPayment> {
   final box = GetStorage();
 
   final _formKey = GlobalKey<FormState>();
+  final _formDialogKey = GlobalKey<FormState>();
   Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
@@ -113,7 +116,6 @@ class _PosPaymentState extends State<PosPayment> {
   dynamic discount = 0;
   dynamic orderId;
   dynamic date;
-  FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -134,7 +136,6 @@ class _PosPaymentState extends State<PosPayment> {
     callGetResturantDetailsRef = _orderCustimizationController
         .callGetRestaurantsDetails();
     _printerController.getPrinterDetails();
-    _focusNode = FocusNode();
     super.initState();
   }
 
@@ -1207,9 +1208,7 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
-    });
+
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         child: Form(
@@ -1319,7 +1318,6 @@ class _PosPaymentState extends State<PosPayment> {
                                 //   //   return 'Please Enter Amount';
                                 //   // }
                                 // },
-                                focusNode: _focusNode,
                                 controller: receivedController,
                               ),
                             ),
@@ -1858,6 +1856,16 @@ class _PosPaymentState extends State<PosPayment> {
                                                 // }
                                               }),
                                           NumberButton(
+                                              value: 'CASH + CARD',
+                                              btnColor:
+                                                  Color(Constants.colorTheme),
+                                              onTapped:  () {
+
+                                                orderPaymentType = 'CASH+CARD';
+                                                placeOrder(0);
+
+                                              }),
+                                          NumberButton(
                                               value: 'Pay Later',
                                               btnColor:
                                                   Color(Constants.colorTheme),
@@ -2019,6 +2027,16 @@ class _PosPaymentState extends State<PosPayment> {
                                                 //             .cartMaster!);
                                                 //   }
                                                 // }
+                                              }),
+                                          NumberButton(
+                                              value: 'CASH + CARD',
+                                              btnColor:
+                                              Color(Constants.colorTheme),
+                                              onTapped:  () {
+
+                                                orderPaymentType = 'CASH+CARD';
+                                                placeOrder(0);
+
                                               }),
                                           NumberButton(
                                               value: 'Pay Later',
@@ -2250,6 +2268,16 @@ class _PosPaymentState extends State<PosPayment> {
                                                 // _cartController.cartMaster = null;
                                                 // _cartController
                                                 //     .cartTotalQuantity.value = 0;
+                                              }),
+                                          NumberButton(
+                                              value: 'CASH + CARD',
+                                              btnColor:
+                                              Color(Constants.colorTheme),
+                                              onTapped:  () {
+
+                                                orderPaymentType = 'CASH+CARD';
+                                               showMyDialog(context, posCashAmountController,posCardAmountController);
+
                                               }),
                                           NumberButton(
                                               value: 'Pay Later',
@@ -2504,7 +2532,6 @@ class _PosPaymentState extends State<PosPayment> {
                                 //     return 'Please Enter Amount';
                                 //   }
                                 // },
-                                focusNode: _focusNode,
                                 controller: receivedController,
                               ),
                             ),
@@ -3124,6 +3151,16 @@ class _PosPaymentState extends State<PosPayment> {
                               Expanded(
                                 child: NumberButton(
                                     height: 0.08,
+                                    value: 'Cash + Card',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'Cash+Card';
+                                      showMyDialog(context, posCashAmountController,posCardAmountController);
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
                                     value: 'Pay Later',
                                     btnColor: Color(Constants.colorTheme),
                                     onTapped: () {
@@ -3151,6 +3188,7 @@ class _PosPaymentState extends State<PosPayment> {
                                       // _cartController.cartTotalQuantity.value = 0;
                                     }),
                               ),
+
                             ],
                           );
                         } else if (_cartController.cartMaster?.oldOrderId !=
@@ -3259,6 +3297,16 @@ class _PosPaymentState extends State<PosPayment> {
                                       //             .cartMaster!);
                                       //   }
                                       // }
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'Cash + Card',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'Cash+Card';
+                                      showMyDialog(context, posCashAmountController,posCardAmountController);
                                     }),
                               ),
                               Expanded(
@@ -3424,7 +3472,6 @@ class _PosPaymentState extends State<PosPayment> {
                                     onTapped: () {
                                       orderPaymentType = 'POS CARD';
                                       placeOrder(2);
-
                                       ///Last Changing
                                       // if (posPort != null) {
                                       //   print("POS ADDED");
@@ -3463,6 +3510,16 @@ class _PosPaymentState extends State<PosPayment> {
                                       // _cartController.cartMaster = null;
                                       // _cartController
                                       //     .cartTotalQuantity.value = 0;
+                                    }),
+                              ),
+                              Expanded(
+                                child: NumberButton(
+                                    height: 0.08,
+                                    value: 'Cash + Card',
+                                    btnColor: Color(Constants.colorTheme),
+                                    onTapped: () {
+                                      orderPaymentType = 'Cash+Card';
+                                      showMyDialog(context, posCashAmountController,posCardAmountController);
                                     }),
                               ),
                               Expanded(
@@ -4440,6 +4497,10 @@ class _PosPaymentState extends State<PosPayment> {
         'item': json.encode(_cartController.cartMaster!.toMap()),
         // 'amount': widget.totalAmount.toString(),
         'amount': totalAmountController.text,
+        // 'cash_amount': orderPaymentType == 'POS CASH' || orderPaymentType == 'POS CASH TAKEAWAY' ? totalAmountController.text : '',
+        // 'card_amount': orderPaymentType == 'POS CARD' || orderPaymentType == 'POS CARD TAKEAWAY' ? totalAmountController.text : '',
+        'cash_amount': orderPaymentType == 'CASH+CARD' ? posCashAmountController.text : orderPaymentType == 'POS CASH' || orderPaymentType == 'POS CASH TAKEAWAY' ? totalAmountController.text : '',
+        'card_amount': orderPaymentType == 'CASH+CARD' ? posCardAmountController.text : orderPaymentType == 'POS CARD' || orderPaymentType == 'POS CARD TAKEAWAY' ? totalAmountController.text : '',
         'delivery_type': widget.orderDeliveryType,
         'delivery_charge': widget.orderDeliveryCharge,
         'payment_type': orderPaymentType,
@@ -4623,6 +4684,133 @@ class _PosPaymentState extends State<PosPayment> {
     }
   }
 
+    void showMyDialog(BuildContext context, TextEditingController poscashController,TextEditingController poscardController ) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(child: Text('Split Payment Method')),
+            content: Form(
+              key: _formDialogKey,
+              child: Container(
+                height: Get.height / 5,
+                width: Get.width / 4,
+                child: Column(
+
+                  children: [
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              validator: (value){
+                                if(value!.isEmpty){
+                                  return 'please enter amount';
+                                }
+                              },
+                              controller: poscashController,
+                              decoration: InputDecoration(labelText: 'Pos Cash'),
+                              inputFormatters: [
+                                DecimalTextInputFormatter(decimalRange: 2)
+                              ],
+                              onChanged: (String? val) {
+                                calculateCashToCardChanged();
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: TextFormField(
+                              validator: (value){
+                                if(value!.isEmpty){
+                                  return 'please enter amount';
+                                }
+                              },
+                              controller: poscardController,
+                              inputFormatters: [
+                                DecimalTextInputFormatter(decimalRange: 2)
+                              ],
+                              onChanged: (String? val) {
+                                calculateCardToCardChanged();
+                              },
+                              decoration: InputDecoration(labelText: 'Pos Card'),
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Customize padding// Customize minimum size
+                      ),
+                      onPressed: () {
+                        print("card main ${posCardAmountController.text} cash main ${posCashAmountController.text}");
+                        print("card ${poscardController.text} cash ${poscashController.text}");
+                        if(_formDialogKey.currentState!.validate()) {
+                          Constants.onLoading(context);
+                          placeOrder(2);
+                          // Constants.hideDialog(context);
+                        }// Go back to the previous screen
+                      },
+                      child: Text('Ok'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // actions: [
+            //
+            // ],
+          );
+        },
+      );
+    }
+
+    calculateCashToCardChanged() {
+      if (totalAmountController.text.isNotEmpty) {
+        if(posCashAmountController.text.isEmpty){
+          posCashAmountController.text = '0.00';
+        }
+        if (double.parse(totalAmountController.text.toString()) >=
+            double.parse(posCashAmountController.text.toString())) {
+          posCardAmountController.text =
+              (double.parse(totalAmountController.text.toString()) -
+                      double.parse(posCashAmountController.text.toString()))
+                  .toStringAsFixed(2);
+        } else {
+            posCardAmountController.text =
+            'Excessive amount';
+          }
+
+      } else {
+        posCardAmountController.text = '0';
+      }
+    }
+
+    calculateCardToCardChanged() {
+      if (totalAmountController.text.isNotEmpty) {
+        if(posCardAmountController.text.isEmpty){
+          posCardAmountController.text = '0.00';
+        }
+          if (double.parse(totalAmountController.text.toString()) >=
+              double.parse(posCardAmountController.text.toString())) {
+            posCashAmountController.text =
+                (double.parse(totalAmountController.text.toString()) -
+                    double.parse(posCardAmountController.text.toString()))
+                    .toStringAsFixed(2);
+          } else {
+            posCashAmountController.text =
+            'Excessive amount';
+          }
+
+      } else {
+        posCashAmountController.text = '0';
+      }
+    }
+
 // calculateDiscount(double discountPercentageValue, int _selectedButton) {
 //     print("total amount ${widget.totalAmount.toString()}");
 
@@ -4678,3 +4866,6 @@ class DecimalTextInputFormatter extends TextInputFormatter {
     return newValue;
   }
 }
+
+
+
