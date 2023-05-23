@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
 
 import 'package:pos/controller/order_custimization_controller.dart';
+import 'package:pos/controller/shift_controller.dart';
 import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
@@ -78,6 +79,7 @@ class PosPayment extends StatefulWidget {
 }
 
 class _PosPaymentState extends State<PosPayment> {
+  final ShiftController shiftController = Get.find<ShiftController>();
 
     bool paymentButtonSelect = false;
 
@@ -119,6 +121,7 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   void initState() {
+    getDataShift();
     totalAmountController.text = widget.totalAmount.toString();
     // get();
 
@@ -137,6 +140,15 @@ class _PosPaymentState extends State<PosPayment> {
         .callGetRestaurantsDetails();
     _printerController.getPrinterDetails();
     super.initState();
+  }
+
+  getDataShift()async {
+    final prefs = await SharedPreferences.getInstance();
+    String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';
+    String shiftCodeBefore = prefs.getString(Constants.shiftCode.toString()) ?? '';
+    print("Shift Inner");
+    print("Shift Name ${shiftName}");
+    print("Shift Name Before ${shiftCodeBefore}");
   }
 
   // Future<void> testReceipt(NetworkPrinter printer) async {
@@ -4474,7 +4486,19 @@ class _PosPaymentState extends State<PosPayment> {
     }
   }
 
+
   Future<BaseModel<CommenRes>> placeOrder(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';
+    String shiftCodeBefore = prefs.getString(Constants.shiftCode.toString()) ?? '';
+    print("Shift Name ${shiftName}");
+    print("Shift code ${shiftCodeBefore}");
+    if(shiftName.isEmpty && shiftCodeBefore.isEmpty){
+      var response = await shiftController.getShiftDetails(context, 'auto_generated_shift_code');
+      print("response ${response}");
+    }
+    String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
+    print("Shift Code after ${shiftCode}");
     CommenRes response;
     try {
       Constants.onLoading(context);
@@ -4491,6 +4515,7 @@ class _PosPaymentState extends State<PosPayment> {
                         : null,
         'vendor_id': widget.venderId.toString(),
         'date': widget.orderDate,
+        'shift_code': shiftCode,
         'time': widget.orderTime,
         'delivery_time': widget.deliveryTime,
         'delivery_date': widget.deliveryDate,

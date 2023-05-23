@@ -772,6 +772,8 @@ class _RestClient implements RestClient {
     return value;
   }
 
+
+
   @override
   Future<DealsSizes> singleVendorRetrieveSize(
       id, itemCategoryId, itemSizeId) async {
@@ -790,6 +792,44 @@ class _RestClient implements RestClient {
     final value = DealsSizes.fromMap(_result.data!);
     return value;
   }
+
+  @override
+  Future<ShiftModel> createShift(
+      vendor_id,user_id, shift_Name) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ShiftModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options,
+                'createShift/${vendor_id}/${user_id}/${shift_Name}',
+                queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ShiftModel.fromJson(_result.data!);
+    return value;
+  }
+  @override
+  Future<ListShiftModel> getAllShifts(
+      vendor_id,user_id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ListShiftModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options,
+                'getAllShifts/${vendor_id}/${user_id}',
+                queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ListShiftModel.fromJson(_result.data!);
+    return value;
+  }
+
 
   @override
   Future<FavoriteListModel> restFavorite() async {

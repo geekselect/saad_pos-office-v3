@@ -11,6 +11,7 @@ import 'package:pos/model/msg_response_model.dart';
 import 'package:pos/model/order_setting_api_model.dart';
 import 'package:pos/model/report_model.dart';
 import 'package:pos/model/reports_by_date_model.dart';
+import 'package:pos/model/shift_model.dart';
 import 'package:pos/model/single_vendor_model.dart';
 import 'package:pos/model/vendor_banner_model.dart';
 import 'package:pos/model/vendor_item_model.dart';
@@ -267,9 +268,18 @@ abstract class RestClient {
   @GET("single_vendor_retrieve_sizes/{id}/{halfNHalfMenuId}")
   Future<SingleVendorRetrieveSizes> singleVendorRetrieveSizes(
       @Path() int? id, int halfNHalfMenuId);
+
   @GET("single_vendor_retrieve_size/{id}/{itemCategoryId}/{itemSizeId}")
   Future<DealsSizes> singleVendorRetrieveSize(
       @Path() int? id, int itemCategoryId, int itemSizeId);
+
+  @GET("createShift/{vendorId}/{userId}/{shiftName}")
+  Future<ShiftModel> createShift(
+      @Path() int? vendorId, int userId, dynamic shiftName);
+
+  @GET("getAllShifts/{vendorId}/{userId}")
+  Future<ListShiftModel> getAllShifts(
+      @Path() int? vendorId, int userId);
 
   @POST("rest_faviroute")
   Future<FavoriteListModel> restFavorite();

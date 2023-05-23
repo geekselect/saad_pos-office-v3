@@ -2209,20 +2209,6 @@ class OrderHistory extends StatelessWidget {
                                                       const SizedBox(
                                                         height: 15,
                                                       ),
-                                                      Text(order.paymentType.toString(),style: TextStyle(
-                                                        color: const Color(
-                                                            0XFF000000),
-                                                        decoration:
-                                                        TextDecoration
-                                                            .none,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w700,
-                                                        fontFamily:
-                                                        Constants
-                                                            .appFont,
-                                                        fontSize: 15,
-                                                      ), ),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),
@@ -2247,31 +2233,20 @@ class OrderHistory extends StatelessWidget {
                                                                           .appFont,
                                                                   fontSize: 22),
                                                             ),
-                                                            Text(
-                                                              order.paymentType == "POS CASH" ||
-                                                                      order.paymentType ==
-                                                                          "POS CARD" ||
-                                                                      order.paymentType ==
-                                                                          "POS CASH TAKEAWAY" ||
-                                                                      order.paymentType ==
-                                                                          "POS CARD TAKEAWAY"
-                                                                  ? '(PAID)'
-                                                                  : '(UNPAID)',
-                                                              style: TextStyle(
-                                                                color: const Color(
-                                                                    0XFFF44336),
-                                                                decoration:
-                                                                    TextDecoration
-                                                                        .none,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                                fontFamily:
-                                                                    Constants
-                                                                        .appFont,
-                                                                fontSize: 15,
-                                                              ),
-                                                            ),
+                                                            Text(order.paymentType.toString(),style: TextStyle(
+                                                              color: const Color(
+                                                                  0XFF000000),
+                                                              decoration:
+                                                              TextDecoration
+                                                                  .none,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w700,
+                                                              fontFamily:
+                                                              Constants
+                                                                  .appFont,
+                                                              fontSize: 15,
+                                                            ), ),
                                                           ]),
                                                       const SizedBox(
                                                         height: 5,
@@ -2295,6 +2270,7 @@ class OrderHistory extends StatelessWidget {
                                                             ),
                                                       const SizedBox(
                                                         height: 5,
+
                                                       ),
                                                       order.datumUserName ==
                                                                   null ||
@@ -2369,16 +2345,46 @@ class OrderHistory extends StatelessWidget {
                                                                 )
                                                               ],
                                                             ),
-                                                      Text(
-                                                        "Order ${order.orderId.toString()}",
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            color: Color(
-                                                                0XFFF44336),
-                                                            fontFamily: Constants
-                                                                .appFontBold,
-                                                            fontSize: 17),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            "Order ${order.orderId.toString()}",
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0XFFF44336),
+                                                                fontFamily: Constants
+                                                                    .appFontBold,
+                                                                fontSize: 17),
+                                                          ),
+                                                          Text(
+                                                            order.paymentType == "POS CASH" ||
+                                                                order.paymentType ==
+                                                                    "POS CARD" ||
+                                                                order.paymentType ==
+                                                                    "POS CASH TAKEAWAY" ||
+                                                                order.paymentType ==
+                                                                    "POS CARD TAKEAWAY"
+                                                                ? '(PAID)'
+                                                                : '(UNPAID)',
+                                                            style: TextStyle(
+                                                              color: const Color(
+                                                                  0XFFF44336),
+                                                              decoration:
+                                                              TextDecoration
+                                                                  .none,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w700,
+                                                              fontFamily:
+                                                              Constants
+                                                                  .appFont,
+                                                              fontSize: 15,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                       const SizedBox(
                                                         height: 5,
@@ -3639,6 +3645,25 @@ class OrderHistory extends StatelessWidget {
                                                           ),
                                                        ],
                                                      ) : SizedBox(height: 5),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                       Align(
+                                                         alignment: Alignment.center,
+                                                         child: Text(
+                                                          "${order.shift_code.toString()}",
+                                                          overflow:
+                                                          TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black,
+                                                              fontFamily:
+                                                              Constants
+                                                                  .appFontBold,
+                                                              fontSize: 12),
+                                                      ),
+                                                       ),
 
                                                     ],
                                                   ),

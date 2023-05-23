@@ -748,6 +748,7 @@ class OrderHistoryData {
   String? time;
   String? paymentType;
   dynamic paymentToken;
+  dynamic shift_code;
   String? paymentStatus;
   String? amount;
   String? adminCommission;
@@ -820,6 +821,7 @@ class OrderHistoryData {
     this.tableNo,
     this.datumUserName,
     this.mobile,
+    this.shift_code,
     this.discounts,
     this.notes,
     this.vendorName,
@@ -833,6 +835,7 @@ class OrderHistoryData {
     id: json["id"],
     orderId: json["order_id"],
     vendorId: json["vendor_id"],
+    shift_code: json["shift_code"],
     userId: json["user_id"],
     deliveryPersonId: json["delivery_person_id"],
     date: json["date"] == null ? null : DateTime.parse(json["date"]),
@@ -879,6 +882,7 @@ class OrderHistoryData {
     "id": id,
     "order_id": orderId,
     "vendor_id": vendorId,
+    "shift_code": shift_code,
     "user_id": userId,
     "delivery_person_id": deliveryPersonId,
     "date": "${date!.year.toString().padLeft(4, '0')}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}",
