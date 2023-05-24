@@ -35,6 +35,7 @@ class ShiftModel {
   dynamic shiftDate;
   dynamic shiftName;
   dynamic shiftCode;
+  dynamic shiftTimer;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -44,6 +45,7 @@ class ShiftModel {
     this.userId,
     this.shiftDate,
     this.shiftName,
+    this.shiftTimer,
     this.shiftCode,
     this.createdAt,
     this.updatedAt,
@@ -55,6 +57,7 @@ class ShiftModel {
     userId: json["user_id"],
     shiftDate: json["shift_date"],
     shiftName: json["shift_name"],
+    shiftTimer: json["shift_timer"],
     shiftCode: json["shift_code"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
@@ -67,6 +70,7 @@ class ShiftModel {
     "shift_date": shiftDate,
     "shift_name": shiftName,
     "shift_code": shiftCode,
+    "shift_timer": shiftTimer,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
   };

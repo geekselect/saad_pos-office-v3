@@ -273,13 +273,22 @@ abstract class RestClient {
   Future<DealsSizes> singleVendorRetrieveSize(
       @Path() int? id, int itemCategoryId, int itemSizeId);
 
-  @GET("createShift/{vendorId}/{userId}/{shiftName}")
-  Future<ShiftModel> createShift(
-      @Path() int? vendorId, int userId, dynamic shiftName);
+  @GET("createShift")
+  Future<ShiftModel> createShift(@Body() Map<String, dynamic> map);
 
   @GET("getAllShifts/{vendorId}/{userId}")
   Future<ListShiftModel> getAllShifts(
       @Path() int? vendorId, int userId);
+
+  @GET("getCurrentShift/{userId}")
+  Future<ShiftModel> getCurrentShift(
+      @Path() int userId);
+
+  @POST("closeShift")
+  Future<MsgResModel> closeShift(@Body() Map<String, dynamic> map);
+
+  @POST("selectShift")
+  Future<MsgResModel> selectShift(@Body() Map<String, dynamic> map);
 
   @POST("rest_faviroute")
   Future<FavoriteListModel> restFavorite();

@@ -106,6 +106,7 @@ class _LoginUiAppState extends State<LoginUiApp> {
       minTextAdapt: true,
       builder: (context, child) {
         return GetMaterialApp(
+          smartManagement: SmartManagement.onlyBuilder,
           debugShowCheckedModeBanner: false,
           builder: (BuildContext context, Widget? widget) {
             Widget error = Text(

@@ -9,6 +9,7 @@ import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
 import 'package:pos/controller/shift_controller.dart';
+import 'package:pos/controller/timer_controller.dart';
 import 'package:pos/model/book_table_model.dart';
 import 'package:pos/model/booked_order_model.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
@@ -115,6 +116,8 @@ class _PosMenuState extends State<PosMenu> {
   // }
 
   String vendorIdMain = '';
+  RxString shiftCode = ''.obs;
+  RxString shiftName = ''.obs;
 
   int _getMenuItemCount(List<MenuCategory> _menuCategories) {
     if (_selectedCategoryIndex == 0) {
@@ -391,11 +394,11 @@ class _PosMenuState extends State<PosMenu> {
       SideBarGridTile(
         icon: Icons.create_new_folder,
         title: 'Create',
-        onTap: ()  {
+        onTap: () {
           shiftController.getShiftAllDetails(context).then((value) {});
           Get.dialog(
             Obx(
-                  () {
+              () {
                 return Form(
                   key: shiftController.formShiftKey,
                   onWillPop: () async {
@@ -411,109 +414,144 @@ class _PosMenuState extends State<PosMenu> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Obx(
-                                () => Column(
+                            () => Column(
                               children: [
-                                shiftController.createButtonEnable.value == false
+                                shiftController.createButtonEnable.value ==
+                                        false
                                     ? ElevatedButton(
-                                  onPressed: () {
-                                    shiftController.createButtonEnable.value = true;
-                                  },
-                                  child: Text('Create New Shift'),
-                                )
+                                        onPressed: () {
+                                          shiftController
+                                              .createButtonEnable.value = true;
+                                        },
+                                        child: Text('Create New Shift'),
+                                      )
                                     : SizedBox(),
-                                SizedBox(height: 10,),
+                                SizedBox(
+                                  height: 10,
+                                ),
                                 shiftController.createButtonEnable.value == true
                                     ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: Get.width / 4,
-                                      child: TextFormField(
-                                        controller: shiftController.shiftTextController,
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            return 'Please enter a shift name';
-                                          }
-                                          return null;
-                                        },
-                                        decoration: InputDecoration(
-                                          labelText: 'Shift Name',
-                                        ),
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          if (shiftController.formShiftKey.currentState!
-                                              .validate()) {
-                                            shiftController.getShiftDetails(context, shiftController.shiftTextController.text)
-                                                .then((value) {
-                                              Get.back();
-                                              shiftController.createButtonEnable.value =
-                                              false;
-                                            });
-                                          }
-                                        },
-                                        child: Text('Create'),
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: Get.width / 4,
+                                            child: TextFormField(
+                                              controller: shiftController
+                                                  .shiftTextController,
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Please enter a shift name';
+                                                }
+                                                return null;
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText: 'Shift Name',
+                                              ),
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                if (shiftController
+                                                    .formShiftKey.currentState!
+                                                    .validate()) {
+                                                  shiftController
+                                                      .createShiftDetails(
+                                                          context,
+                                                          shiftController
+                                                              .shiftTextController
+                                                              .text)
+                                                      .then((value) async {
+                                                        final  prefs = await SharedPreferences.getInstance();
+                                                    Get.back();
+                                                    shiftController
+                                                        .createButtonEnable
+                                                        .value = false;
+                                                    shiftCode.value = prefs.getString(Constants.shiftCode.toString()) ?? '';
+                                                    shiftName.value = prefs.getString(Constants.shiftName.toString()) ?? '';
+                                                        shiftController.shiftTextController.clear();
+                                                  });
+                                                }
+                                              },
+                                              child: Text('Create'),
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     : SizedBox(),
                               ],
                             ),
                           ),
-                          SizedBox(height: 20,),
-                          Text("Continue With Previous Shift", style: TextStyle(
-                            fontSize: 18,
-                          )),
-                          SizedBox(height: 10,),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text("Continue With Previous Shift",
+                              style: TextStyle(
+                                fontSize: 18,
+                              )),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Container(
                             height: Get.height / 3,
                             child: shiftController.shiftsList.isNotEmpty
                                 ? ListView.separated(
-                              itemCount: shiftController.shiftsList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return ListTile(
-                                  trailing: ElevatedButton(
-                                    onPressed: () async {
-                                      final prefs = await SharedPreferences.getInstance();
-                                      prefs.setString(
-                                        Constants.shiftCode.toString(),
-                                        shiftController.shiftsList[index].shiftCode.toString(),
+                                    itemCount:
+                                        shiftController.shiftsList.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return ListTile(
+                                        trailing: ElevatedButton(
+                                          onPressed: () async {
+                                            if(shiftController
+                                                .timerController
+                                                .timerDuration
+                                                .value != Duration.zero) {
+                                              shiftController.timerController
+                                                  .stopTimer();
+                                            }
+                                            print("${shiftController.timerController.elapsedTime}");
+                                            shiftController.selectShiftDetails(context, shiftController.shiftsList[index].shiftCode, shiftController.shiftsList[index].shiftName, shiftController.timerController.elapsedTime).then((value) {
+                                               shiftCode.value = shiftController.shiftsList[index].shiftCode.toString();
+                                               shiftName.value = shiftController.shiftsList[index].shiftName.toString();
+                                              Get.back();
+                                            });
+                                          },
+                                          child: const Text(
+                                            "Continue",
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                        ),
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                "Shift Date : ${shiftController.shiftsList[index].shiftDate.toString()}"),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                                "Shift Name : ${shiftController.shiftsList[index].shiftName.toString()}"),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                                "Shift Code : ${shiftController.shiftsList[index].shiftCode.toString()}"),
+                                          ],
+                                        ),
                                       );
-                                      prefs.setString(
-                                        Constants.shiftName.toString(),
-                                        shiftController.shiftsList[index].shiftName.toString(),
-                                      );
-                                      Get.back();
                                     },
-                                    child: const Text(
-                                      "Continue",
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                  title: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Shift Date : ${shiftController.shiftsList[index].shiftDate.toString()}"),
-                                      SizedBox(height: 10,),
-                                      Text("Shift Name : ${shiftController.shiftsList[index].shiftName.toString()}"),
-                                      SizedBox(height: 10,),
-                                      Text("Shift Code : ${shiftController.shiftsList[index].shiftCode.toString()}"),
-                                    ],
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return Divider();
-                              },
-                            )
+                                    separatorBuilder: (context, index) {
+                                      return Divider();
+                                    },
+                                  )
                                 : Center(
-                              child: Text("No Previous Shifts Found"),
-                            ),
+                                    child: Text("No Previous Shifts Found"),
+                                  ),
                           ),
                         ],
                       ),
@@ -523,137 +561,6 @@ class _PosMenuState extends State<PosMenu> {
               },
             ),
           );
-
-          // Get.dialog(
-          //   Obx(() {
-          //     return Form(
-          //       key: shiftController.formShiftKey,
-          //       child: AlertDialog(
-          //         title: Text('Create Shift'),
-          //         content: Container(
-          //           width: Get.width / 3,
-          //           child: Column(
-          //             mainAxisSize: MainAxisSize.min,
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: [
-          //
-          //               Obx(()=> Column(
-          //                   children: [
-          //                     shiftController.createButtonEnable.value == false
-          //                         ? ElevatedButton(
-          //                       onPressed: () {
-          //                         shiftController.createButtonEnable.value = true;
-          //                       },
-          //                       child: Text('Create New Shift'),
-          //                     )
-          //                         : SizedBox(),
-          //                     SizedBox(height: 10,),
-          //                     shiftController.createButtonEnable.value == true ? Row(
-          //                       crossAxisAlignment: CrossAxisAlignment.end,
-          //                       children: [
-          //                         Container(
-          //                           width: Get.width / 4,
-          //                           child: TextFormField(
-          //                             controller: shiftController.shiftTextController,
-          //                             validator: (value) {
-          //                               if (value!.isEmpty) {
-          //                                 return 'Please enter a shift name';
-          //                               }
-          //                               return null;
-          //                             },
-          //                             decoration: InputDecoration(
-          //                               labelText: 'Shift Name',
-          //                             ),
-          //                           ),
-          //                         ),
-          //                         Spacer(),
-          //                         Align(
-          //                           alignment: Alignment.bottomCenter,
-          //                           child: ElevatedButton(
-          //                             onPressed: () {
-          //                               if (shiftController.formShiftKey.currentState!
-          //                                   .validate()) {
-          //                                 shiftController.getShiftDetails(context)
-          //                                     .then((value) {
-          //                                   Get.back();
-          //                                   shiftController.createButtonEnable.value =
-          //                                   false;
-          //                                 });
-          //                               }
-          //                             },
-          //                             child: Text('Create'),
-          //                           ),
-          //                         ),
-          //                       ],
-          //                     ) : SizedBox(),
-          //                   ],
-          //                 ),
-          //               ),
-          //               SizedBox(height: 20,),
-          //               Text("Continue With Previous Shift", style: TextStyle(
-          //                 fontSize: 18,
-          //               )),
-          //               SizedBox(height: 10,),
-          //               Container(
-          //                 height: Get.height / 3,
-          //                 child: shiftController.shiftsList.isNotEmpty
-          //                     ? ListView.separated(
-          //                   itemCount: shiftController.shiftsList.length,
-          //                   itemBuilder: (BuildContext context, int index) {
-          //                     return ListTile(
-          //                         trailing: ElevatedButton(
-          //                           onPressed: () async {
-          //                             final prefs = await SharedPreferences
-          //                                 .getInstance();
-          //                             prefs.setString(
-          //                                 Constants.shiftCode.toString(),
-          //                                 shiftController.shiftsList[index]
-          //                                     .shiftCode.toString());
-          //                             prefs.setString(
-          //                                 Constants.shiftName.toString(),
-          //                                 shiftController.shiftsList[index]
-          //                                     .shiftName.toString());
-          //                             Get.back();
-          //                           },
-          //                           child: const Text(
-          //                             "Continue",
-          //                             style: TextStyle(fontSize: 15),
-          //                           ),
-          //                         ),
-          //                         title: Column(
-          //                           crossAxisAlignment: CrossAxisAlignment
-          //                               .start,
-          //                           children: [
-          //                             Text("Shift Date : ${shiftController
-          //                                 .shiftsList[index].shiftDate
-          //                                 .toString()}"),
-          //                             SizedBox(height: 10,),
-          //                             Text("Shift Name : ${shiftController
-          //                                 .shiftsList[index].shiftName
-          //                                 .toString()}"),
-          //                             SizedBox(height: 10,),
-          //                             Text("Shift Code : ${shiftController
-          //                                 .shiftsList[index].shiftCode
-          //                                 .toString()}"),
-          //                           ],
-          //                         ));
-          //                   }, separatorBuilder: (context, index) {
-          //                   return Divider();
-          //                 },)
-          //                     : Center(
-          //                   child: Text("No Previous Shifts Found"),
-          //                 ),
-          //               )
-          //
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     );
-          //
-          //   }
-          //   ),
-          // );
         },
       ),
       SideBarGridTile(
@@ -706,9 +613,11 @@ class _PosMenuState extends State<PosMenu> {
 
   getApiCAll() async {
     final prefs = await SharedPreferences.getInstance();
-
     vendorIdMain = prefs.getString(Constants.vendorId.toString()) ?? '';
+    shiftName.value = prefs.getString(Constants.shiftName.toString()) ?? '';
+    shiftCode.value = prefs.getString(Constants.shiftCode.toString()) ?? '';
     _orderCustimizationController.callGetRestaurantsDetails();
+    // shiftController.getCurrentShiftDetails(context);
   }
 
   String searchText = '';
@@ -780,8 +689,16 @@ class _PosMenuState extends State<PosMenu> {
   //   return filteredMenuItems;
   // }
 
+  String formatDuration(Duration duration) {
+    final hours = duration.inHours.toString().padLeft(2, '0');
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$hours:$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("elappsed time ${shiftController.timerController.elapsedTime}");
     return Scaffold(
       backgroundColor: Constants.secondaryColor,
       body: isLoading
@@ -814,366 +731,396 @@ class _PosMenuState extends State<PosMenu> {
                               children: [
                                 Column(
                                   children: [
-                                    ClipPath(
-                                      clipper: AppbarClipper(),
-                                      child: Container(
-                                        height: Get.height * 0.1,
-                                        width: Get.width,
-                                        decoration: BoxDecoration(
-                                            color: Color(Constants.colorTheme)),
-                                        child: Row(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 25.0),
-                                                  child: RichText(
-                                                    text: TextSpan(
-                                                      // Note: Styles for TextSpans must be explicitly defined.
-                                                      // Child text spans will inherit styles from parent
-                                                      style: TextStyle(
-                                                        fontSize: 14.0,
-                                                        color: Colors.black,
-                                                      ),
-                                                      children: <TextSpan>[
-                                                        TextSpan(
-                                                            text:
-                                                                vendorNameList[
-                                                                    0],
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w800,
-                                                                fontSize: 25,
-                                                                color: Colors
-                                                                    .black)),
-                                                        TextSpan(text: ' '),
-                                                        TextSpan(
-                                                            text:
-                                                                vendorNameList[
-                                                                    1],
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w800,
-                                                                fontSize: 25,
-                                                                color: Colors
-                                                                    .white)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Spacer(),
-                                            // Container(
-                                            //   child: GestureDetector(
-                                            //       onTap: () {
-                                            //         Get.to(() => NewFile());
-                                            //       },
-                                            //       child: Text("New Page")),
-                                            // ),
-                                            // SizedBox(
-                                            //   width: 5,
-                                            // ),
-                                            Align(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                child: Obx(() => Text(
-                                                    shiftController
-                                                        .shiftDuration.value
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                    textAlign:
-                                                        TextAlign.center))),
-                                            SizedBox(
-                                              width: 6,
-                                            ),
-                                            Container(
-                                              width: 200,
-                                              // child: TextField(
-                                              //   // controller: _controller,
-                                              //   decoration: const InputDecoration(
-                                              //     hintText: 'Search',
-                                              //     suffixIcon: Icon(Icons.search),
-                                              //   ),
-                                              //   onChanged: (value) {
-                                              //     setState(() {
-                                              //       searchQuery = value;
-                                              //     });
-                                              //     // setState(() {
-                                              //     //   searchText = value;
-                                              //     // });
-                                              //     // _search(value,singleRestaurantsDetailsModel.data!.menuCategory![0].singleMenu!,singleRestaurantsDetailsModel.data!.menuCategory![0].halfNHalfMenu!,singleRestaurantsDetailsModel.data!.menuCategory![0].dealsMenu!);
-                                              //   },
-                                              // ),
-                                              child: TextField(
-                                                onTap: () {
-                                                  if (_selectedCategoryIndex !=
-                                                      0) {
-                                                    setState(() {
-                                                      _selectedCategoryIndex =
-                                                          0;
-                                                    });
-                                                  }
-                                                },
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _searchQuery = value;
-                                                  });
-                                                },
-                                                decoration: const InputDecoration(
-                                                    labelText: 'Search',
-                                                    labelStyle: TextStyle(
-                                                        color: Colors.white)
-                                                    // border: OutlineInputBorder(),
-                                                    ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: Get.width * 0.3,
-                                              child: Row(
+                                     ClipPath(
+                                        clipper: AppbarClipper(),
+                                        child: Container(
+                                          height: Get.height * 0.1,
+                                          width: Get.width,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Color(Constants.colorTheme)),
+                                          child: Row(
+                                            children: [
+                                              Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
+                                                    MainAxisAlignment.start,
                                                 children: [
-                                                  if (_cartController
-                                                      .diningValue)
-                                                    Center(
-                                                      child: Text(
-                                                        'DINE IN',
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 25.0),
+                                                    child: RichText(
+                                                      text: TextSpan(
+                                                        // Note: Styles for TextSpans must be explicitly defined.
+                                                        // Child text spans will inherit styles from parent
                                                         style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 50,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontSize: 14.0,
+                                                          color: Colors.black,
                                                         ),
-                                                      ),
-                                                    )
-                                                  else
-                                                    Center(
-                                                      child: Text(
-                                                        'TAKEAWAY',
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 50,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                              text:
+                                                                  vendorNameList[
+                                                                      0],
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  fontSize: 25,
+                                                                  color: Colors
+                                                                      .black)),
+                                                          TextSpan(text: ' '),
+                                                          TextSpan(
+                                                              text:
+                                                                  vendorNameList[
+                                                                      1],
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  fontSize: 25,
+                                                                  color: Colors
+                                                                      .white)),
+                                                        ],
                                                       ),
                                                     ),
-                                                  Switch(
-                                                    onChanged:
-                                                        (bool? value) async {
-                                                      if (value!) {
-                                                        print("if Block");
-                                                        print(
-                                                            "${_cartController.tableNumber}");
-                                                        print("if Block End");
-                                                        await showDialog<int>(
-                                                            context: context,
-                                                            builder:
-                                                                (_) =>
-                                                                    AlertDialog(
-                                                                      title: Center(
-                                                                          child:
-                                                                              Text('Available table no')),
-                                                                      content:
-                                                                          SizedBox(
-                                                                        height: Get.height *
-                                                                            0.4,
-                                                                        width: Get.width *
-                                                                            0.5,
-                                                                        child:
-                                                                            Column(
-                                                                          children: [
-                                                                            Expanded(
-                                                                              child: FutureBuilder<BookTableModel>(
-                                                                                  future: getBookTable(),
-                                                                                  builder: (context, snapshot) {
-                                                                                    if (snapshot.hasError) {
-                                                                                      return Center(
-                                                                                        child: Text(snapshot.error.toString()),
-                                                                                      );
-                                                                                    } else if (snapshot.hasData) {
-                                                                                      return GridView.builder(
-                                                                                        itemCount: snapshot.data?.data.bookedTable.length ?? 0,
-                                                                                        itemBuilder: (builder, index) {
-                                                                                          return GestureDetector(
-                                                                                            onTap: () async {
-                                                                                              final prefs = await SharedPreferences.getInstance();
-
-                                                                                              // int vendorId = prefs.getInt(Constants.vendorId.toString()) ?? 0;
-                                                                                              String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
-
-                                                                                              _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
-                                                                                              if (snapshot.data!.data.bookedTable[index].status == 1) {
-                                                                                                Map<String, dynamic> param = {
-                                                                                                  'vendor_id': '${int.parse(vendorId.toString())}',
-                                                                                                  'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
-                                                                                                };
-                                                                                                BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
-                                                                                                BookedOrderModel bookOrderModel = baseModel.data!;
-                                                                                                if (bookOrderModel.success!) {
-                                                                                                  print("ABC");
-                                                                                                  _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
-                                                                                                  _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
-                                                                                                  _diningCartController.diningUserName = bookOrderModel.data!.userName!;
-                                                                                                  _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
-                                                                                                  _diningCartController.diningNotes = bookOrderModel.data!.notes!;
-                                                                                                  _diningCartController.nameController.text = _diningCartController.diningUserName;
-                                                                                                  _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
-                                                                                                  _diningCartController.notesController.text = _diningCartController.diningNotes;
-                                                                                                  Navigator.pop(context);
-                                                                                                } else {
-                                                                                                  print("Error");
-                                                                                                  print(bookOrderModel.toJson());
-                                                                                                  // print(baseModel.error);
-                                                                                                }
-                                                                                              } else {
-                                                                                                Navigator.pop(context);
-                                                                                              }
-                                                                                            },
-                                                                                            child: Container(
-                                                                                              margin: EdgeInsets.only(bottom: 18),
-                                                                                              child: Stack(
-                                                                                                children: [
-                                                                                                  Positioned(
-                                                                                                    child: Container(
-                                                                                                      padding: EdgeInsets.all(40.0),
-                                                                                                      decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                  Center(
-                                                                                                    child: Text(
-                                                                                                      snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
-                                                                                                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ],
-                                                                                              ),
-                                                                                            ),
-                                                                                          );
-                                                                                        },
-                                                                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                          crossAxisCount: kIsWeb ? 8 : 3,
-                                                                                          mainAxisExtent: 80,
-                                                                                        ),
-                                                                                      );
-                                                                                    }
-                                                                                    return Center(
-                                                                                      child: CircularProgressIndicator(color: Color(Constants.colorTheme)),
-                                                                                    );
-                                                                                  }),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ));
-                                                        setState(() {
-                                                          // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-                                                          _cartController
-                                                                  .diningValue =
-                                                              _cartController
-                                                                          .tableNumber !=
-                                                                      null
-                                                                  ? true
-                                                                  : false;
-                                                          _cartController
-                                                                  .isPromocodeApplied =
-                                                              false;
-                                                          _cartController
-                                                              .userMobileNumber = '';
-                                                          _cartController
-                                                              .userName = '';
-                                                          _cartController
-                                                              .notes = '';
-                                                          _cartController
-                                                                  .nameController
-                                                                  .text =
-                                                              _cartController
-                                                                  .userName;
-                                                          _cartController
-                                                                  .phoneNoController
-                                                                  .text =
-                                                              _cartController
-                                                                  .userMobileNumber;
-                                                          _cartController
-                                                                  .notesController
-                                                                  .text =
-                                                              _cartController
-                                                                  .notes;
-                                                        });
-                                                      } else {
-                                                        print(
-                                                            "new table select");
-                                                        setState(() {
-                                                          if (_cartController
-                                                                  .cartMaster
-                                                                  ?.oldOrderId !=
-                                                              null) {
-                                                            _cartController
-                                                                    .cartMaster =
-                                                                null;
-                                                          }
-                                                          _cartController
-                                                                  .tableNumber =
-                                                              null;
-                                                          _cartController
-                                                                  .diningValue =
-                                                              false;
-                                                          _diningCartController
-                                                              .diningUserName = '';
-                                                          _diningCartController
-                                                              .diningUserMobileNumber = '';
-                                                          _diningCartController
-                                                              .diningNotes = '';
-                                                          _diningCartController
-                                                                  .nameController
-                                                                  .text =
-                                                              _diningCartController
-                                                                  .diningUserName;
-                                                          _diningCartController
-                                                                  .phoneNoController
-                                                                  .text =
-                                                              _diningCartController
-                                                                  .diningUserMobileNumber;
-                                                          _diningCartController
-                                                                  .notesController
-                                                                  .text =
-                                                              _diningCartController
-                                                                  .diningNotes;
-                                                        });
-                                                      }
-                                                    },
-                                                    value: _cartController
-                                                        .diningValue,
-                                                    activeColor:
-                                                        Constants.yellowColor,
-                                                    activeTrackColor:
-                                                        Constants.yellowColor,
-                                                    inactiveThumbColor:
-                                                        Colors.white,
-                                                    inactiveTrackColor:
-                                                        Colors.white,
                                                   ),
                                                 ],
                                               ),
-                                            )
-                                          ],
+                                              SizedBox(
+                                                width: 30,
+                                              ),
+                                              Obx(() {
+                                                final duration = shiftController
+                                                    .timerController
+                                                    .timerDuration
+                                                    .value;
+                                                return  shiftController
+                                                    .timerController
+                                                    .timerDuration
+                                                    .value == Duration.zero ? SizedBox() :  Align(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                        '${shiftName.value}: ${formatDuration(duration)}',
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            SizedBox(width: 5),
+                                                      ElevatedButton(
+                                                                onPressed: () {
+                                                                  shiftController.timerController.stopTimer();
+                                                                  print("${shiftController.timerController.elapsedTime}");
+
+                                                                  shiftController
+                                                                      .closeShiftDetails(
+                                                                          context);
+                                                                },
+                                                                child: Text(
+                                                                    "Close"))
+                                                          ],
+                                                        ),
+                                                      ) ;
+                                              }),
+
+                                              Spacer(),
+                                              // Container(
+                                              //   child: GestureDetector(
+                                              //       onTap: () {
+                                              //         Get.to(() => NewFile());
+                                              //       },
+                                              //       child: Text("New Page")),
+                                              // ),
+                                              // SizedBox(
+                                              //   width: 5,
+                                              // ),
+
+                                              Container(
+                                                width: 200,
+                                                // child: TextField(
+                                                //   // controller: _controller,
+                                                //   decoration: const InputDecoration(
+                                                //     hintText: 'Search',
+                                                //     suffixIcon: Icon(Icons.search),
+                                                //   ),
+                                                //   onChanged: (value) {
+                                                //     setState(() {
+                                                //       searchQuery = value;
+                                                //     });
+                                                //     // setState(() {
+                                                //     //   searchText = value;
+                                                //     // });
+                                                //     // _search(value,singleRestaurantsDetailsModel.data!.menuCategory![0].singleMenu!,singleRestaurantsDetailsModel.data!.menuCategory![0].halfNHalfMenu!,singleRestaurantsDetailsModel.data!.menuCategory![0].dealsMenu!);
+                                                //   },
+                                                // ),
+                                                child: TextField(
+                                                  onTap: () {
+                                                    if (_selectedCategoryIndex !=
+                                                        0) {
+                                                      setState(() {
+                                                        _selectedCategoryIndex =
+                                                            0;
+                                                      });
+                                                    }
+                                                  },
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      _searchQuery = value;
+                                                    });
+                                                  },
+                                                  decoration: const InputDecoration(
+                                                      labelText: 'Search',
+                                                      labelStyle: TextStyle(
+                                                          color: Colors.white)
+                                                      // border: OutlineInputBorder(),
+                                                      ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: Get.width * 0.3,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    if (_cartController
+                                                        .diningValue)
+                                                      Center(
+                                                        child: Text(
+                                                          'DINE IN',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 50,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    else
+                                                      Center(
+                                                        child: Text(
+                                                          'TAKEAWAY',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 50,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    Switch(
+                                                      onChanged:
+                                                          (bool? value) async {
+                                                        if (value!) {
+                                                          print("if Block");
+                                                          print(
+                                                              "${_cartController.tableNumber}");
+                                                          print("if Block End");
+                                                          await showDialog<int>(
+                                                              context: context,
+                                                              builder: (_) =>
+                                                                  AlertDialog(
+                                                                    title: Center(
+                                                                        child: Text(
+                                                                            'Available table no')),
+                                                                    content:
+                                                                        SizedBox(
+                                                                      height:
+                                                                          Get.height *
+                                                                              0.4,
+                                                                      width: Get
+                                                                              .width *
+                                                                          0.5,
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child: FutureBuilder<BookTableModel>(
+                                                                                future: getBookTable(),
+                                                                                builder: (context, snapshot) {
+                                                                                  if (snapshot.hasError) {
+                                                                                    return Center(
+                                                                                      child: Text(snapshot.error.toString()),
+                                                                                    );
+                                                                                  } else if (snapshot.hasData) {
+                                                                                    return GridView.builder(
+                                                                                      itemCount: snapshot.data?.data.bookedTable.length ?? 0,
+                                                                                      itemBuilder: (builder, index) {
+                                                                                        return GestureDetector(
+                                                                                          onTap: () async {
+                                                                                            final prefs = await SharedPreferences.getInstance();
+
+                                                                                            // int vendorId = prefs.getInt(Constants.vendorId.toString()) ?? 0;
+                                                                                            String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+
+                                                                                            _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
+                                                                                            if (snapshot.data!.data.bookedTable[index].status == 1) {
+                                                                                              Map<String, dynamic> param = {
+                                                                                                'vendor_id': '${int.parse(vendorId.toString())}',
+                                                                                                'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
+                                                                                              };
+                                                                                              BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
+                                                                                              BookedOrderModel bookOrderModel = baseModel.data!;
+                                                                                              if (bookOrderModel.success!) {
+                                                                                                print("ABC");
+                                                                                                _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
+                                                                                                _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                                                                                                _diningCartController.diningUserName = bookOrderModel.data!.userName!;
+                                                                                                _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
+                                                                                                _diningCartController.diningNotes = bookOrderModel.data!.notes!;
+                                                                                                _diningCartController.nameController.text = _diningCartController.diningUserName;
+                                                                                                _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
+                                                                                                _diningCartController.notesController.text = _diningCartController.diningNotes;
+                                                                                                Navigator.pop(context);
+                                                                                              } else {
+                                                                                                print("Error");
+                                                                                                print(bookOrderModel.toJson());
+                                                                                                // print(baseModel.error);
+                                                                                              }
+                                                                                            } else {
+                                                                                              Navigator.pop(context);
+                                                                                            }
+                                                                                          },
+                                                                                          child: Container(
+                                                                                            margin: EdgeInsets.only(bottom: 18),
+                                                                                            child: Stack(
+                                                                                              children: [
+                                                                                                Positioned(
+                                                                                                  child: Container(
+                                                                                                    padding: EdgeInsets.all(40.0),
+                                                                                                    decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Center(
+                                                                                                  child: Text(
+                                                                                                    snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
+                                                                                                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                        crossAxisCount: kIsWeb ? 8 : 3,
+                                                                                        mainAxisExtent: 80,
+                                                                                      ),
+                                                                                    );
+                                                                                  }
+                                                                                  return Center(
+                                                                                    child: CircularProgressIndicator(color: Color(Constants.colorTheme)),
+                                                                                  );
+                                                                                }),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ));
+                                                          setState(() {
+                                                            // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
+                                                            _cartController
+                                                                    .diningValue =
+                                                                _cartController
+                                                                            .tableNumber !=
+                                                                        null
+                                                                    ? true
+                                                                    : false;
+                                                            _cartController
+                                                                    .isPromocodeApplied =
+                                                                false;
+                                                            _cartController
+                                                                .userMobileNumber = '';
+                                                            _cartController
+                                                                .userName = '';
+                                                            _cartController
+                                                                .notes = '';
+                                                            _cartController
+                                                                    .nameController
+                                                                    .text =
+                                                                _cartController
+                                                                    .userName;
+                                                            _cartController
+                                                                    .phoneNoController
+                                                                    .text =
+                                                                _cartController
+                                                                    .userMobileNumber;
+                                                            _cartController
+                                                                    .notesController
+                                                                    .text =
+                                                                _cartController
+                                                                    .notes;
+                                                          });
+                                                        } else {
+                                                          print(
+                                                              "new table select");
+                                                          setState(() {
+                                                            if (_cartController
+                                                                    .cartMaster
+                                                                    ?.oldOrderId !=
+                                                                null) {
+                                                              _cartController
+                                                                      .cartMaster =
+                                                                  null;
+                                                            }
+                                                            _cartController
+                                                                    .tableNumber =
+                                                                null;
+                                                            _cartController
+                                                                    .diningValue =
+                                                                false;
+                                                            _diningCartController
+                                                                .diningUserName = '';
+                                                            _diningCartController
+                                                                .diningUserMobileNumber = '';
+                                                            _diningCartController
+                                                                .diningNotes = '';
+                                                            _diningCartController
+                                                                    .nameController
+                                                                    .text =
+                                                                _diningCartController
+                                                                    .diningUserName;
+                                                            _diningCartController
+                                                                    .phoneNoController
+                                                                    .text =
+                                                                _diningCartController
+                                                                    .diningUserMobileNumber;
+                                                            _diningCartController
+                                                                    .notesController
+                                                                    .text =
+                                                                _diningCartController
+                                                                    .diningNotes;
+                                                          });
+                                                        }
+                                                      },
+                                                      value: _cartController
+                                                          .diningValue,
+                                                      activeColor:
+                                                          Constants.yellowColor,
+                                                      activeTrackColor:
+                                                          Constants.yellowColor,
+                                                      inactiveThumbColor:
+                                                          Colors.white,
+                                                      inactiveTrackColor:
+                                                          Colors.white,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
+
                                     // getMenu(
                                     //     singleRestaurantsDetailsModel,
                                     //     selectedMenuCategoryIndex,
@@ -1293,8 +1240,7 @@ class _PosMenuState extends State<PosMenu> {
                                     //             )
 
                                     ///**************
-                                    Expanded(
-                                      child: Row(
+                                    Expanded(child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
@@ -2693,8 +2639,7 @@ class _PosMenuState extends State<PosMenu> {
                                             }),
                                           )
                                         ],
-                                      ),
-                                    ),
+                                      )),
                                   ],
                                 ),
                                 Positioned(

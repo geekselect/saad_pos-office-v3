@@ -4494,7 +4494,7 @@ class _PosPaymentState extends State<PosPayment> {
     print("Shift Name ${shiftName}");
     print("Shift code ${shiftCodeBefore}");
     if(shiftName.isEmpty && shiftCodeBefore.isEmpty){
-      var response = await shiftController.getShiftDetails(context, 'auto_generated_shift_code');
+      var response = await shiftController.createShiftDetails(context, 'auto_generated_shift_code');
       print("response ${response}");
     }
     String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
