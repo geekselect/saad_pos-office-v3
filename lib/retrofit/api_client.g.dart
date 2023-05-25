@@ -794,19 +794,19 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ShiftModel> createShift(map) async {
+  Future<MsgResModel> createShift(map) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(map);
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CommenRes>(
+        _setStreamType<MsgResModel>(
             Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'createShift',
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ShiftModel.fromJson(_result.data!);
+    final value = MsgResModel.fromJson(_result.data!);
     return value;
   }
   @override
@@ -842,6 +842,7 @@ class _RestClient implements RestClient {
                 'selectShift',
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    print('response select Shift inner res ${_result.data}');
     final value = MsgResModel.fromJson(_result.data!);
     return value;
   }
@@ -864,20 +865,20 @@ class _RestClient implements RestClient {
     return value;
   }
   @override
-  Future<ShiftModel> getCurrentShift(user_id) async {
+  Future<MsgResModel> getCurrentShift(user_id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ShiftModel>(
+        _setStreamType<MsgResModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options,
                 'getCurrentShift/${user_id}',
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ShiftModel.fromJson(_result.data!);
+    final value = MsgResModel.fromJson(_result.data!);
     return value;
   }
 

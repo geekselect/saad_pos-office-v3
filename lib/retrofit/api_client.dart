@@ -274,14 +274,14 @@ abstract class RestClient {
       @Path() int? id, int itemCategoryId, int itemSizeId);
 
   @GET("createShift")
-  Future<ShiftModel> createShift(@Body() Map<String, dynamic> map);
+  Future<MsgResModel> createShift(@Body() Map<String, dynamic> map);
 
   @GET("getAllShifts/{vendorId}/{userId}")
   Future<ListShiftModel> getAllShifts(
       @Path() int? vendorId, int userId);
 
   @GET("getCurrentShift/{userId}")
-  Future<ShiftModel> getCurrentShift(
+  Future<MsgResModel> getCurrentShift(
       @Path() int userId);
 
   @POST("closeShift")

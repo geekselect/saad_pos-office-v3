@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,13 +19,12 @@ class ShiftController extends GetxController {
   RxBool createButtonEnable = false.obs;
   final TextEditingController shiftTextController = TextEditingController();
   final GlobalKey<FormState> formShiftKey = GlobalKey<FormState>();
-
   RxList<ShiftModel> shiftsList = <ShiftModel>[].obs;
-
-
-
-  Future<BaseModel<ShiftModel>> createShiftDetails(BuildContext context, dynamic shiftName) async {
-    ShiftModel response;
+  RxString shiftCodeMain = ''.obs;
+  RxString shiftNameMain = ''.obs;
+  Future<BaseModel<MsgResModel>> createShiftDetails(
+      BuildContext context, dynamic shiftName) async {
+    MsgResModel response;
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
@@ -36,39 +36,60 @@ class ShiftController extends GetxController {
     try {
       Constants.onLoading(context);
       response = await RestClient(await RetroApi().dioData()).createShift(body);
-      prefs.setString(
-          Constants.shiftCode.toString(), response.shiftCode.toString());
-      prefs.setString(
-          Constants.shiftName.toString(), response.shiftName.toString());
+      print('response ${response.toJson()}');
+      if (response.success) {
+        Map<String, dynamic> res = response.msg as Map<String, dynamic>;
+        ShiftModel shiftModel = ShiftModel.fromJson(res);
+        prefs.setString(
+            Constants.shiftCode.toString(), shiftModel.shiftCode.toString());
+        prefs.setString(
+            Constants.shiftName.toString(), shiftModel.shiftName.toString());
+        shiftCodeMain.value = shiftModel.shiftCode.toString();
+        shiftNameMain.value = shiftModel.shiftName.toString();
+        timerController.startTimer();
+      } else {
+        createButtonEnable.value = false;
+        Constants.toastMessage(response.msg!.toString());
+      }
       Constants.hideDialog(context);
-      timerController.startTimer();
-
+      shiftTextController.clear();
+      Get.back();
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
     }
     return BaseModel()..data = response;
   }
+
   Future<BaseModel<MsgResModel>> closeShiftDetails(BuildContext context) async {
     MsgResModel response;
+
     final prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
     String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
+    timerController.stopTimer();
+    print("${timerController.elapsedTime}");
     dynamic shiftTime = timerController.elapsedTime.toString();
-    print("shift Time ${shiftTime}");
     try {
       Map<String, dynamic> body = {
         "user_id": userId,
         "shift_code": shiftCode,
         "shift_timer": shiftTime,
       };
+      Constants.onLoading(context);
       response = await RestClient(await RetroApi().dioData()).closeShift(body);
-      prefs.setString(
-          Constants.shiftCode.toString(), '');
-      prefs.setString(
-          Constants.shiftName.toString(), '');
+      if (response.success) {
+        prefs.setString(Constants.shiftCode.toString(), '');
+        prefs.setString(Constants.shiftName.toString(), '');
+        shiftCodeMain.value = '';
+        shiftNameMain.value = '';
+        timerController.timerDuration.value = Duration.zero;
 
-
+        Constants.hideDialog(context);
+        Constants.toastMessage(response.msg!.toString());
+      } else {
+        Constants.toastMessage(response.msg!);
+      }
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
@@ -76,7 +97,8 @@ class ShiftController extends GetxController {
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<ListShiftModel>> getShiftAllDetails(BuildContext context) async {
+  Future<BaseModel<ListShiftModel>> getShiftAllDetails(
+      BuildContext context) async {
     ListShiftModel response;
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
@@ -85,14 +107,9 @@ class ShiftController extends GetxController {
       createButtonEnable.value == false;
       Constants.onLoading(context);
       response = await RestClient(await RetroApi().dioData()).getAllShifts(
-          int.parse(vendorId.toString()),
-          int.parse(userId.toString()));
-      if (response.success!) {
+          int.parse(vendorId.toString()), int.parse(userId.toString()));
         shiftsList.value = response.data!;
-      } else {
-        Constants.toastMessage('No Data');
-      }
-     print("response ${response.toJson()}");
+      // print("response ${response.toJson()}");
       Constants.hideDialog(context);
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
@@ -100,34 +117,54 @@ class ShiftController extends GetxController {
     }
     return BaseModel()..data = response;
   }
-  Future<BaseModel<ShiftModel>> getCurrentShiftDetails(BuildContext context) async {
-    ShiftModel response;
+
+  Future<BaseModel<MsgResModel>> getCurrentShiftDetails() async {
+    MsgResModel response;
     final prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
     try {
-      response = await RestClient(await RetroApi().dioData()).getCurrentShift(
-          int.parse(userId.toString()));
-      if(response.shiftCode != null) {
+      response = await RestClient(await RetroApi().dioData())
+          .getCurrentShift(int.parse(userId.toString()));
+      if (response.success) {
+        Map<String, dynamic> res = response.msg as Map<String, dynamic>;
+        ShiftModel shiftModel = ShiftModel.fromJson(res);
         prefs.setString(
-            Constants.shiftCode.toString(), response.shiftCode.toString());
+            Constants.shiftCode.toString(), shiftModel.shiftCode.toString());
         prefs.setString(
-            Constants.shiftName.toString(), response.shiftName.toString());
-        if(response.shiftTimer != null) {
-          String durationString = response.shiftTimer!;
-          DateFormat durationFormat = DateFormat('H:m:s');
-          DateTime durationDateTime = durationFormat.parse(durationString);
-          Duration duration = Duration(
-            hours: durationDateTime.hour,
-            minutes: durationDateTime.minute,
-            seconds: durationDateTime.second,
-          );
-          timerController.timerDuration.value = duration;
+            Constants.shiftName.toString(), shiftModel.shiftName.toString());
+        shiftCodeMain.value = shiftModel.shiftCode.toString();
+        shiftNameMain.value = shiftModel.shiftName.toString();
+        if(timerController.timerDuration.value == Duration.zero) {
+          if (shiftModel.shiftTimer != null) {
+            String durationString = shiftModel.shiftTimer;
+            DateFormat durationFormat = DateFormat('H:m:s');
+            DateTime durationDateTime = durationFormat.parse(durationString);
+            Duration duration = Duration(
+              hours: durationDateTime.hour,
+              minutes: durationDateTime.minute,
+              seconds: durationDateTime.second,
+            );
+            timerController.timerDuration.value = duration;
+          }
+          else {
+            String durationString = '00:00:01.11111';
+            DateFormat durationFormat = DateFormat('H:m:s');
+            DateTime durationDateTime = durationFormat.parse(durationString);
+            Duration duration = Duration(
+              hours: durationDateTime.hour,
+              minutes: durationDateTime.minute,
+              seconds: durationDateTime.second,
+            );
+            timerController.timerDuration.value = duration;
+          }
+          timerController.startTimer();
         }
       } else {
-        prefs.setString(
-            Constants.shiftCode.toString(), '');
-        prefs.setString(
-            Constants.shiftName.toString(), '');
+        prefs.setString(Constants.shiftCode.toString(), '');
+        prefs.setString(Constants.shiftName.toString(), '');
+        shiftCodeMain.value = '';
+        shiftNameMain.value = '';
+        Constants.toastMessage(response.msg!.toString());
       }
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
@@ -136,26 +173,31 @@ class ShiftController extends GetxController {
     return BaseModel()..data = response;
   }
 
-
-
-  Future<BaseModel<MsgResModel>> selectShiftDetails(BuildContext context,  dynamic shift_code, dynamic shift_name, dynamic timer) async {
+  Future<BaseModel<MsgResModel>> selectShiftDetails(BuildContext context,
+      dynamic shiftCodeFunc, dynamic shiftNameFunc, dynamic timer) async {
     MsgResModel response;
     final prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
     Map<String, dynamic> body = {
-      "shift_code": shift_code,
+      "shift_code": shiftCodeFunc,
       "user_id": userId,
-      "shift_timer": timer,
+      "shift_timer_old": timer,
     };
+    print("body select Shift ${body}");
     try {
       response = await RestClient(await RetroApi().dioData()).selectShift(body);
-      if(response.success) {
+      // print('response select Shift function out ${response.toJson()}');
+      if (response.success) {
+        Map<String, dynamic> res = response.msg as Map<String, dynamic>;
+        ShiftModel shiftModel = ShiftModel.fromJson(res);
         prefs.setString(
-            Constants.shiftCode.toString(), shift_code.toString());
+            Constants.shiftCode.toString(), shiftModel.shiftCode.toString());
         prefs.setString(
-            Constants.shiftName.toString(), shift_name.toString());
-        if(response.shiftTimer != null) {
-          String durationString = response.shiftTimer!;
+            Constants.shiftName.toString(), shiftModel.shiftName.toString());
+        shiftCodeMain.value = shiftModel.shiftCode.toString();
+        shiftNameMain.value = shiftModel.shiftName.toString();
+        if (shiftModel.shiftTimer != null) {
+          String durationString = shiftModel.shiftTimer;
           DateFormat durationFormat = DateFormat('H:m:s');
           DateTime durationDateTime = durationFormat.parse(durationString);
           Duration duration = Duration(
@@ -165,9 +207,22 @@ class ShiftController extends GetxController {
           );
           timerController.timerDuration.value = duration;
         }
+        // else {
+        //   String durationString = '00:00:01.11111';
+        //   DateFormat durationFormat = DateFormat('H:m:s');
+        //   DateTime durationDateTime = durationFormat.parse(durationString);
+        //   Duration duration = Duration(
+        //     hours: durationDateTime.hour,
+        //     minutes: durationDateTime.minute,
+        //     seconds: durationDateTime.second,
+        //   );
+        //   timerController.timerDuration.value = duration;
+        // }
         timerController.startTimer();
-
+      } else {
+        Constants.toastMessage(response.msg!.toString());
       }
+      Get.back();
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
@@ -242,9 +297,3 @@ class ShiftController extends GetxController {
 //     );
 //   }
 // }
-
-
-
-
-
-

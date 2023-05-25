@@ -116,8 +116,7 @@ class _PosMenuState extends State<PosMenu> {
   // }
 
   String vendorIdMain = '';
-  RxString shiftCode = ''.obs;
-  RxString shiftName = ''.obs;
+
 
   int _getMenuItemCount(List<MenuCategory> _menuCategories) {
     if (_selectedCategoryIndex == 0) {
@@ -457,23 +456,21 @@ class _PosMenuState extends State<PosMenu> {
                                               onPressed: () {
                                                 if (shiftController
                                                     .formShiftKey.currentState!
-                                                    .validate()) {
+                                                    .validate() && shiftController
+                                                    .timerController.timerDuration
+                                                    .value == Duration.zero) {
                                                   shiftController
                                                       .createShiftDetails(
                                                           context,
                                                           shiftController
                                                               .shiftTextController
-                                                              .text)
-                                                      .then((value) async {
-                                                        final  prefs = await SharedPreferences.getInstance();
-                                                    Get.back();
-                                                    shiftController
-                                                        .createButtonEnable
-                                                        .value = false;
-                                                    shiftCode.value = prefs.getString(Constants.shiftCode.toString()) ?? '';
-                                                    shiftName.value = prefs.getString(Constants.shiftName.toString()) ?? '';
-                                                        shiftController.shiftTextController.clear();
-                                                  });
+                                                              .text);
+                                                } else{
+                                                  shiftController
+                                                      .shiftTextController
+                                                      .clear();
+Get.back();
+                                                  Constants.toastMessage('please first close ongoing shift');
                                                 }
                                               },
                                               child: Text('Create'),
@@ -505,23 +502,52 @@ class _PosMenuState extends State<PosMenu> {
                                         (BuildContext context, int index) {
                                       return ListTile(
                                         trailing: ElevatedButton(
-                                          onPressed: () async {
-                                            if(shiftController
-                                                .timerController
-                                                .timerDuration
-                                                .value != Duration.zero) {
-                                              shiftController.timerController
-                                                  .stopTimer();
-                                            }
-                                            print("${shiftController.timerController.elapsedTime}");
-                                            shiftController.selectShiftDetails(context, shiftController.shiftsList[index].shiftCode, shiftController.shiftsList[index].shiftName, shiftController.timerController.elapsedTime).then((value) {
-                                               shiftCode.value = shiftController.shiftsList[index].shiftCode.toString();
-                                               shiftName.value = shiftController.shiftsList[index].shiftName.toString();
-                                              Get.back();
-                                            });
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: shiftController
+                                                .shiftsList[index]
+                                                .shiftCode == shiftController.shiftCodeMain.value ? Colors.grey : Color(Constants.colorTheme), // Background color
+                                          ),
+                                          onPressed: shiftController
+                                              .shiftsList[index]
+                                              .shiftCode == shiftController.shiftCodeMain.value ? (){} :  () async {
+
+                                              if (shiftController
+                                                  .timerController.timerDuration
+                                                  .value == Duration.zero) {
+                                                print("Timer not Send");
+                                                shiftController
+                                                    .selectShiftDetails(context,
+                                                    shiftController
+                                                        .shiftsList[index]
+                                                        .shiftCode,
+                                                    shiftController
+                                                        .shiftsList[index]
+                                                        .shiftName,
+                                                   '');
+                                              }
+                                              if (shiftController
+                                                  .timerController.timerDuration
+                                                  .value != Duration.zero) {
+                                                shiftController.timerController.stopTimer();
+                                                print("Timer Send");
+                                                shiftController
+                                                    .selectShiftDetails(context,
+                                                    shiftController
+                                                        .shiftsList[index]
+                                                        .shiftCode,
+                                                    shiftController
+                                                        .shiftsList[index]
+                                                        .shiftName,
+                                                    shiftController
+                                                        .timerController
+                                                        .elapsedTime);
+                                              }
+
                                           },
-                                          child: const Text(
-                                            "Continue",
+                                          child:  Text(
+                                            shiftController
+                                                .shiftsList[index]
+                                                .shiftCode == shiftController.shiftCodeMain.value ? "Ongoing" :"Continue",
                                             style: TextStyle(fontSize: 15),
                                           ),
                                         ),
@@ -614,10 +640,10 @@ class _PosMenuState extends State<PosMenu> {
   getApiCAll() async {
     final prefs = await SharedPreferences.getInstance();
     vendorIdMain = prefs.getString(Constants.vendorId.toString()) ?? '';
-    shiftName.value = prefs.getString(Constants.shiftName.toString()) ?? '';
-    shiftCode.value = prefs.getString(Constants.shiftCode.toString()) ?? '';
     _orderCustimizationController.callGetRestaurantsDetails();
-    // shiftController.getCurrentShiftDetails(context);
+    shiftController.getCurrentShiftDetails().then((value) => print("value...${value.data!.toJson()}"));
+    shiftController.shiftNameMain.value = prefs.getString(Constants.shiftName.toString()) ?? '';
+    shiftController.shiftCodeMain.value = prefs.getString(Constants.shiftCode.toString()) ?? '';
   }
 
   String searchText = '';
@@ -807,7 +833,7 @@ class _PosMenuState extends State<PosMenu> {
                                                         child: Row(
                                                           children: [
                                                             Text(
-                                                        '${shiftName.value}: ${formatDuration(duration)}',
+                                                        '${shiftController.shiftNameMain.value}: ${formatDuration(duration)}',
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
@@ -816,12 +842,10 @@ class _PosMenuState extends State<PosMenu> {
                                                             SizedBox(width: 5),
                                                       ElevatedButton(
                                                                 onPressed: () {
-                                                                  shiftController.timerController.stopTimer();
-                                                                  print("${shiftController.timerController.elapsedTime}");
-
                                                                   shiftController
                                                                       .closeShiftDetails(
                                                                           context);
+
                                                                 },
                                                                 child: Text(
                                                                     "Close"))
