@@ -105,6 +105,7 @@ class MenuCartMaster {
     "deals_items":dealsItems == null ?null:dealsItems!.toMap(),
   };
 }
+
 class DealsItems {
 DealsItems({
   required this.name,

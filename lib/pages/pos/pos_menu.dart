@@ -715,12 +715,7 @@ Get.back();
   //   return filteredMenuItems;
   // }
 
-  String formatDuration(Duration duration) {
-    final hours = duration.inHours.toString().padLeft(2, '0');
-    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$hours:$minutes:$seconds';
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -833,7 +828,7 @@ Get.back();
                                                         child: Row(
                                                           children: [
                                                             Text(
-                                                        '${shiftController.shiftNameMain.value}: ${formatDuration(duration)}',
+                                                        '${shiftController.shiftNameMain.value}: ${shiftController.formatDuration(duration)}',
                                                               style: TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors

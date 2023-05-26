@@ -56,7 +56,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:pos/model/common_res.dart';
+import 'package:intl/intl.dart';
+import 'package:pos/model/common_res.dart' as commonRes;
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
 import 'package:pos/printer/printer_controller.dart';
@@ -160,6 +161,11 @@ class OrderHistoryController extends GetxController {
           align: PosAlign.center,
           height: PosTextSize.size2,
           width: PosTextSize.size2,
+        ));
+    printer.text("(Duplicate)",
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true
         ),
         linesAfter: 1);
 
@@ -180,7 +186,7 @@ class OrderHistoryController extends GetxController {
           styles: const PosStyles(align: PosAlign.left));
     }
 
-    printer.text('${order.date} ${order.time}',
+    printer.text('${DateFormat('yyyy-MM-dd').format(order.date!)} ${order.time}',
         styles: const PosStyles(align: PosAlign.left));
 
     if (order.tableNo != null && order.tableNo != 0) {
@@ -365,7 +371,7 @@ class OrderHistoryController extends GetxController {
   }
 
   void testPrintKitchen(String printerIp, int port, BuildContext ctx,
-      OrderHistoryData order) async {
+      OrderHistoryData order, bool orderCheck) async {
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
     final printer = NetworkPrinter(paper, profile);
@@ -375,22 +381,50 @@ class OrderHistoryController extends GetxController {
     );
 
     if (res == PosPrintResult.success) {
-      printKitchenReceipt(printer, order);
+      printKitchenReceipt(printer, order, orderCheck);
       printer.disconnect();
     }
   }
 
-  printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order) {
+  printKitchenReceipt(NetworkPrinter printer, OrderHistoryData order,  bool orderCheck) {
     Map<String, dynamic> jsonMap = jsonDecode(order.orderData!);
     OrderDataModel orderData = OrderDataModel.fromJson(jsonMap);
 
-    printer.text("*** Kitchen ***",
+
+    if(orderCheck == false) {
+      printer.text("*** Kitchen ***",
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ));
+    } else {
+      printer.text("Order Cancelled",
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ));
+
+    }
+
+    printer.text("(Duplicate)",
         styles: const PosStyles(
           align: PosAlign.center,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
+         bold: true
         ),
         linesAfter: 1);
+
+    if(orderCheck == true){
+      printer.text("Order Id ${order.orderId.toString()}",
+          styles: const PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ),
+          linesAfter: 1);
+    }
+
 
     if (order.tableNo != null && order.tableNo != 0) {
       printer.text('Table Number : ${order.tableNo}',
@@ -401,9 +435,10 @@ class OrderHistoryController extends GetxController {
           ),
           linesAfter: 1);
     }
-
-    printer.text("Order Id ${order.orderId.toString()}",
-        styles: const PosStyles(align: PosAlign.left));
+    if(orderCheck == false) {
+      printer.text("Order Id ${order.orderId.toString()}",
+          styles: const PosStyles(align: PosAlign.left));
+    }
 
     if (order.datumUserName != null && order.mobile != null) {
       printer.text('Customer Name : ${order.datumUserName}',
@@ -413,7 +448,7 @@ class OrderHistoryController extends GetxController {
           styles: const PosStyles(align: PosAlign.left));
     }
 
-    printer.text('${order.date} ${order.time}',
+    printer.text('${DateFormat('yyyy-MM-dd').format(order.date!)} ${order.time}',
         styles: const PosStyles(align: PosAlign.left));
 
     if (order.paymentType.toString() == "INCOMPLETE ORDER") {
@@ -537,6 +572,7 @@ class OrderHistoryController extends GetxController {
   applyFilterType(FilterType value) {
     filterType.value = value;
   }
+
 
   showCancelOrderDialog(OrderHistoryData order, int? orderId, BuildContext context) {
     showDialog(
@@ -685,7 +721,9 @@ class OrderHistoryController extends GetxController {
                                               .portKitchen
                                               .toString()),
                                           context,
-                                          order);
+                                          order,
+                                      true
+                                      );
                                     } else {
                                       Get.snackbar(
                                           "Error",
@@ -901,9 +939,9 @@ class OrderHistoryController extends GetxController {
     );
   }
 
-  Future<BaseModel<CommenPaymentSwitchRes>> callSwitchPaymentOrder(
+  Future<BaseModel<commonRes.CommenPaymentSwitchRes>> callSwitchPaymentOrder(
       dynamic orderId, dynamic paymentType, BuildContext context) async {
-    CommenPaymentSwitchRes response;
+    commonRes.CommenPaymentSwitchRes response;
     try {
       Constants.onLoading(context);
       Map<String, String> body = {
@@ -913,10 +951,10 @@ class OrderHistoryController extends GetxController {
       response = await RestClient(await RetroApi().dioData()).paymentSwitchOrder(body);
       Constants.hideDialog(context);
       // if (response.success!) {
-        orderHistoryRef.value = callGetOrderHistoryList();
-        Get.back();
-        Constants.toastMessage(response.success!);
-        print("status updated");
+      orderHistoryRef.value = callGetOrderHistoryList();
+      Get.back();
+      Constants.toastMessage(response.success!);
+      print("status updated");
       // } else {
       //   Constants.toastMessage(response.data!);
       // }
@@ -928,9 +966,9 @@ class OrderHistoryController extends GetxController {
     return BaseModel()..data = response;
   }
 
-  Future<BaseModel<CommenRes>> callCancelOrder(
+  Future<BaseModel<commonRes.CommenRes>> callCancelOrder(
       int? orderId, String cancelReason, BuildContext context) async {
-    CommenRes response;
+    commonRes.CommenRes response;
     try {
       Constants.onLoading(context);
       Map<String, String> body = {
@@ -955,7 +993,7 @@ class OrderHistoryController extends GetxController {
     return BaseModel()..data = response;
   }
 
-  Future<CommenRes> getTakeAwayValue(int id) async {
+  Future<commonRes.CommenRes> getTakeAwayValue(int id) async {
     final _data = <String, dynamic>{
       "old_takaway_id": id,
       "order_status": "COMPLETE"
@@ -964,7 +1002,7 @@ class OrderHistoryController extends GetxController {
         .completeSpecificTakeawayOrder(_data);
   }
 
-  Future<CommenRes> completeOrders() async {
+  Future<commonRes.CommenRes> completeOrders() async {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
@@ -972,6 +1010,8 @@ class OrderHistoryController extends GetxController {
     return await RestClient(await RetroApi().dioData())
         .completeTakeawayOrder(_data);
   }
+
+
 
   Widget deliveryTypeButton(
       {required void Function()? onTap,

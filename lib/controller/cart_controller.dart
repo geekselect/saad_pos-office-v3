@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:pos/model/apply_promocode_model.dart';
 import 'package:pos/model/booked_order_model.dart';
 import 'package:pos/model/cart_master.dart';
-import 'package:pos/model/common_res.dart';
+import 'package:pos/model/common_res.dart' as commonRes;
 import 'package:pos/model/order_setting_api_model.dart';
 import 'package:pos/model/promoCode_model.dart';
 import 'package:pos/pages/cart_screen.dart';
@@ -227,7 +227,7 @@ class CartController extends GetxController{
         strAppiedPromocodeId = id.toString();
       } else {
         Map loginMap = jsonDecode(response.toString());
-        var commenRes = CommenRes.fromJson(loginMap as Map<String, dynamic>);
+        var commenRes = commonRes.CommenRes.fromJson(loginMap as Map<String, dynamic>);
         Constants.toastMessage(commenRes.data!);
       }
     } catch (error, stacktrace) {

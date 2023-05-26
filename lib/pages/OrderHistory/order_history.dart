@@ -1863,7 +1863,7 @@ class OrderHistory extends StatelessWidget {
         //       });
         // }),
         body: LayoutBuilder(builder: (constraints, mainContext) {
-          final itemWidth = constraints.width / 4.1;
+          final itemWidth = constraints.width > 600 ?  constraints.width / 4.1 : constraints.width;
           return GetBuilder<OrderHistoryController>(
               init: _orderHistoryMainController,
               builder: (orderHistoryController) {
@@ -1879,7 +1879,9 @@ class OrderHistory extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 5),
-                      Row(
+
+                      constraints.width > 650
+                          ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
@@ -1943,8 +1945,7 @@ class OrderHistory extends StatelessWidget {
                               ),
                             ),
                           ),
-                          constraints.width > 650
-                              ? Row(
+                           Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     ElevatedButton(
@@ -2010,56 +2011,120 @@ class OrderHistory extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                              : Row(
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await orderHistoryController
-                                            .completeOrders()
-                                            .then((value) {
-                                          Get.to(
-                                              () => PosMenu(isDining: false));
-                                        });
-                                      },
-                                      style: ButtonStyle(
-                                        // set the height to 50
-                                        fixedSize:
-                                            MaterialStateProperty.all<Size>(
-                                                const Size(110, 50)),
-                                      ),
-                                      child: Text(
-                                        'Complete Orders',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontFamily: Constants.appFont),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Container(
-                                      width: 70,
-                                      margin: const EdgeInsets.only(right: 10),
-                                      child: TextField(
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                        onChanged: (value) {
-                                          orderHistoryController
-                                              .searchQuery.value = value;
-                                        },
-                                        decoration: const InputDecoration(
-                                            labelText: 'Search',
-                                            labelStyle:
-                                                TextStyle(color: Colors.black)
-                                            // border: OutlineInputBorder(),
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                         ],
+                      ) : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal : 8.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                     child: Obx(
+                                        () => orderHistoryController.deliveryTypeButton(
+                                        onTap: () => orderHistoryController
+                                            .applyFilterType(FilterType.DineIn),
+                                        icon: 'assets/images/dining.png',
+                                        title: "Dine In",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: orderHistoryController
+                                                .filterType.value ==
+                                                FilterType.DineIn
+                                                ? Colors.white
+                                                : Colors.black),
+                                        color: orderHistoryController
+                                            .filterType.value ==
+                                            FilterType.DineIn
+                                            ? Colors.white
+                                            : Colors.black,
+                                        buttonColor: orderHistoryController
+                                            .filterType.value ==
+                                            FilterType.DineIn
+                                            ? Colors.red.shade500
+                                            : Colors.white),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                     child: Obx(
+                                        () => orderHistoryController.deliveryTypeButton(
+                                        onTap: () => orderHistoryController
+                                            .applyFilterType(
+                                            FilterType.TakeAway),
+                                        icon: 'assets/images/takeaway.png',
+                                        title: "TakeAway",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: orderHistoryController
+                                                .filterType.value ==
+                                                FilterType.TakeAway
+                                                ? Colors.white
+                                                : Colors.black),
+                                        color: orderHistoryController.filterType.value ==
+                                            FilterType.TakeAway
+                                            ? Colors.white
+                                            : Colors.black,
+                                        buttonColor: orderHistoryController
+                                            .filterType.value ==
+                                            FilterType.TakeAway
+                                            ? Colors.red.shade500
+                                            : Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await orderHistoryController
+                                        .completeOrders()
+                                        .then((value) {
+                                      Get.to(
+                                              () => PosMenu(isDining: false));
+                                    });
+                                  },
+                                  style: ButtonStyle(
+                                    // set the height to 50
+                                    fixedSize:
+                                    MaterialStateProperty.all<Size>(
+                                        const Size(110, 50)),
+                                  ),
+                                  child: Text(
+                                    'Complete Orders',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: Constants.appFont),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: TextField(
+                                    style: const TextStyle(
+                                        color: Colors.black),
+                                    onChanged: (value) {
+                                      orderHistoryController
+                                          .searchQuery.value = value;
+                                    },
+                                    decoration: const InputDecoration(
+                                        labelText: 'Search',
+                                        labelStyle:
+                                        TextStyle(color: Colors.black)
+                                      // border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                       Expanded(
                         child: FutureBuilder<BaseModel<OrderHistoryListModel>>(
@@ -3527,7 +3592,9 @@ class OrderHistory extends StatelessWidget {
                                                                           .portKitchen
                                                                           .toString()),
                                                                       context,
-                                                                      order);
+                                                                      order,
+                                                                    false,
+                                                                      );
                                                                 } else {
                                                                   Get.snackbar(
                                                                       "Error",

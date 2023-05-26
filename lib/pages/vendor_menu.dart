@@ -10,6 +10,7 @@ import 'package:pos/config/screen_config.dart';
 import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
+import 'package:pos/controller/shift_controller.dart';
 import 'package:pos/model/cart_master.dart' as cm;
 import 'package:pos/model/single_restaurants_details_model.dart';
 import 'package:pos/pages/OrderHistory/order_history.dart';
@@ -47,6 +48,7 @@ class VendorMenu extends StatefulWidget {
 
 class _VendorMenuState extends State<VendorMenu>
     with SingleTickerProviderStateMixin {
+  final ShiftController shiftController = Get.put(ShiftController());
   final DiningCartController _diningCartController= Get.find<DiningCartController>();
   OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
@@ -531,6 +533,43 @@ class _VendorMenuState extends State<VendorMenu>
                       SizedBox(
                         height: 20,
                       ),
+                      Obx(() {
+                        final duration = shiftController
+                            .timerController
+                            .timerDuration
+                            .value;
+                        return  shiftController
+                            .timerController
+                            .timerDuration
+                            .value == Duration.zero ? SizedBox() :  Align(
+                          alignment:
+                          Alignment.center,
+                          child: Row(
+                            children: [
+                              Text(
+                                '${shiftController.shiftNameMain.value}: ${shiftController.formatDuration(duration)}',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors
+                                        .black),
+                              ),
+                              SizedBox(width: 5),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(Constants.colorTheme), // Background color
+                                  ),
+                                  onPressed: () {
+                                    shiftController
+                                        .closeShiftDetails(
+                                        context);
+
+                                  },
+                                  child: Text(
+                                      "Close"))
+                            ],
+                          ),
+                        ) ;
+                      }),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -718,6 +757,211 @@ class _VendorMenuState extends State<VendorMenu>
                               ),
                             ],
                           ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(Constants.colorTheme), // Background color
+                              ),
+                              onPressed: () {
+                            shiftController.getShiftAllDetails(context).then((value) {});
+                            Get.dialog(
+                              Obx(
+                                    () {
+                                  return Form(
+                                    key: shiftController.formShiftKey,
+                                    onWillPop: () async {
+                                      shiftController.createButtonEnable.value = false;
+                                      return true;
+                                    },
+                                    child: AlertDialog(
+                                      title: Text('Create Shift'),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Obx(
+                                                  () => Column(
+                                                children: [
+                                                  shiftController.createButtonEnable.value ==
+                                                      false
+                                                      ? ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Color(Constants.colorTheme), // Background color
+                                                    ),
+                                                    onPressed: () {
+                                                      shiftController
+                                                          .createButtonEnable.value = true;
+                                                    },
+                                                    child: Text('Create New Shift'),
+                                                  )
+                                                      : SizedBox(),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  shiftController.createButtonEnable.value == true
+                                                      ? Row(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                    children: [
+                                                      Expanded(
+                                                        child: IntrinsicWidth(
+                                                          child: TextFormField(
+                                                            controller: shiftController
+                                                                .shiftTextController,
+                                                            validator: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return 'Please enter a shift name';
+                                                              }
+                                                              return null;
+                                                            },
+                                                            decoration: InputDecoration(
+                                                              labelText: 'Shift Name',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5,),
+                                                      Align(
+                                                        alignment: Alignment.bottomCenter,
+                                                        child: ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                          backgroundColor: Color(Constants.colorTheme), // Background color
+                                                          ),
+                                                          onPressed: () {
+                                                            if (shiftController
+                                                                .formShiftKey.currentState!
+                                                                .validate() && shiftController
+                                                                .timerController.timerDuration
+                                                                .value == Duration.zero) {
+                                                              shiftController
+                                                                  .createShiftDetails(
+                                                                  context,
+                                                                  shiftController
+                                                                      .shiftTextController
+                                                                      .text);
+                                                            } else{
+                                                              shiftController
+                                                                  .shiftTextController
+                                                                  .clear();
+                                                              Get.back();
+                                                              Constants.toastMessage('please first close ongoing shift');
+                                                            }
+                                                          },
+                                                          child: Text('Create'),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                      : SizedBox(),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Text("Continue With Previous Shift",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                )),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              height: Get.height / 3,
+                                              child: shiftController.shiftsList.isNotEmpty
+                                                  ? ListView.separated(
+                                                itemCount:
+                                                shiftController.shiftsList.length,
+                                                itemBuilder:
+                                                    (BuildContext context, int index) {
+                                                  return ListTile(
+                                                    trailing: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: shiftController
+                                                            .shiftsList[index]
+                                                            .shiftCode == shiftController.shiftCodeMain.value ? Colors.grey : Color(Constants.colorTheme), // Background color
+                                                      ),
+                                                      onPressed: shiftController
+                                                          .shiftsList[index]
+                                                          .shiftCode == shiftController.shiftCodeMain.value ? (){} :  () async {
+
+                                                        if (shiftController
+                                                            .timerController.timerDuration
+                                                            .value == Duration.zero) {
+                                                          print("Timer not Send");
+                                                          shiftController
+                                                              .selectShiftDetails(context,
+                                                              shiftController
+                                                                  .shiftsList[index]
+                                                                  .shiftCode,
+                                                              shiftController
+                                                                  .shiftsList[index]
+                                                                  .shiftName,
+                                                              '');
+                                                        }
+                                                        if (shiftController
+                                                            .timerController.timerDuration
+                                                            .value != Duration.zero) {
+                                                          shiftController.timerController.stopTimer();
+                                                          print("Timer Send");
+                                                          shiftController
+                                                              .selectShiftDetails(context,
+                                                              shiftController
+                                                                  .shiftsList[index]
+                                                                  .shiftCode,
+                                                              shiftController
+                                                                  .shiftsList[index]
+                                                                  .shiftName,
+                                                              shiftController
+                                                                  .timerController
+                                                                  .elapsedTime);
+                                                        }
+
+                                                      },
+                                                      child:  Text(
+                                                        shiftController
+                                                            .shiftsList[index]
+                                                            .shiftCode == shiftController.shiftCodeMain.value ? "Ongoing" :"Continue",
+                                                        style: TextStyle(fontSize: 15),
+                                                      ),
+                                                    ),
+                                                    title: Column(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                            "Shift Date : ${shiftController.shiftsList[index].shiftDate.toString()}"),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                            "Shift Name : ${shiftController.shiftsList[index].shiftName.toString()}"),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                            "Shift Code : ${shiftController.shiftsList[index].shiftCode.toString()}"),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                                separatorBuilder: (context, index) {
+                                                  return Divider();
+                                                },
+                                              )
+                                                  : Center(
+                                                child: Text("No Previous Shifts Found"),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }, child: Text("Create Shift")),
                           Text(
                             _orderCustimizationController
                                 .response!.data!.vendor!.name,
@@ -1000,27 +1244,32 @@ class _VendorMenuState extends State<VendorMenu>
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  right: 5,
-                                  child: ClipOval(
-                                    child: Material(
-                                      color: Color(Constants.colorTheme),
-                                      // Button color
-                                      child: GestureDetector(
-                                        onTap: () {},
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Obx(() => Text(
-                                                  _cartController
-                                                      .cartTotalQuantity
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ))),
+
+                                   Positioned(
+                                    right: 5,
+                                    child: ClipOval(
+                                      child: Material(
+                                        color: Color(Constants.colorTheme),
+                                        // Button color
+                                        child: GestureDetector(
+                                            onTap: () {},
+                                            child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                    2.0),
+                                                child:  Obx(() => Text(
+                                                      _cartController.cartTotalQuantity.value != 0 ? _cartController.cartMaster!
+                                                        .cart.length.toString() : '0',
+                                                    // _cartController
+                                                    //     .cartTotalQuantity
+                                                    //     .toString(),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    )
+                                                ),
+                                                )),
                                       ),
                                     ),
-                                  ),
+                                  )
                                 ),
                               ],
                             ),
