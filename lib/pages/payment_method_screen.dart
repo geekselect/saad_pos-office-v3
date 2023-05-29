@@ -790,7 +790,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   //   ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
   // }
   Future<BaseModel<CommenRes>> placeOrder() async {
-    CommenRes response;
+    var response;
     try{
       Constants.onLoading(context);
 

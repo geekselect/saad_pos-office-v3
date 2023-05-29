@@ -14,19 +14,17 @@ import 'package:pos/pages/order/OrderDetailScreen.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
 import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/widgets/number_btn.dart';
-import 'package:pos/widgets/shortcut_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 import '../../controller/auto_printer_controller.dart';
 import '../../controller/cart_controller.dart';
 import '../../controller/order_history_controller.dart';
-import '../../model/common_res.dart';
+import '../../model/common_res.dart' as common;
 import '../../retrofit/api_client.dart';
 import '../../retrofit/api_header.dart';
 import '../../retrofit/base_model.dart';
 import '../../retrofit/server_error.dart';
 import '../../utils/constants.dart';
-import '../OrderHistory/order_history.dart';
 import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 
@@ -138,7 +136,858 @@ class _PosPaymentState extends State<PosPayment> {
     print("Shift Name Before ${shiftCodeBefore}");
   }
 
-  //
+
+  void testPrintPOS(String printerIp, int port,
+      OrderHistoryData orderData , OrderDataModel orderModel) async {
+    // TODO Don't forget to choose printer's paper size
+    const PaperSize paper = PaperSize.mm80;
+    final profile = await CapabilityProfile.load();
+    final printer = NetworkPrinter(paper, profile);
+    final PosPrintResult res = await printer.connect(
+      printerIp,
+      port: port,
+    );
+
+    print('Print result: ${res.msg}');
+    Get.snackbar("", res.msg);
+
+    if (res == PosPrintResult.success) {
+      // DEMO RECEIPT
+      BaseModel<rest.SingleRestaurantsDetailsModel>? restaurantDetails =
+          await callGetResturantDetailsRef;
+      if (restaurantDetails != null) {
+        print("--------POS PRint-------");
+        print(
+            'Print ip pos result: ${_printerController.printerModel.value.ipPos}');
+        print(
+            'Print ip posport result: ${_printerController.printerModel.value.portPos}');
+        print(
+            'Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
+        print(
+            'Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
+        print("---------------");
+        print('Print ip kitchen result: ${printerIp}');
+        print('Print ip kitchenport result: ${port}');
+        print("---------------");
+        printPOSReceipt(printer, restaurantDetails, orderData, orderModel);
+        print(
+            'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
+      } else {
+        print('Failed to fetch restaurant details');
+      }
+      // TEST PRINT
+      // await testReceipt(printer);
+      printer.disconnect();
+    }
+
+    // final snackBar =
+    //     SnackBar(content: Text(res.msg, textAlign: TextAlign.center));
+    // ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
+
+  printPOSReceipt(
+    NetworkPrinter printer,
+    BaseModel<rest.SingleRestaurantsDetailsModel>? restaurantDetails,
+      OrderHistoryData orderData,
+      OrderDataModel orderModel
+      ) {
+    print("-----------------> ${orderData.toJson()}");
+
+    List<Cart> cart = orderModel.cart!;
+    // List<Cart> cart = cartMaster.cart;
+    printer.text(restaurantDetails!.data!.data!.vendor!.name,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.text(restaurantDetails.data!.data!.vendor!.mapAddress.toString(),
+        styles: PosStyles(align: PosAlign.center));
+    // printer.text('New Braunfels, TX',
+    //     styles: PosStyles(align: PosAlign.center));
+
+    printer.text(
+        "Phone : ${restaurantDetails.data!.data!.vendor!.contact.toString()}",
+        styles: PosStyles(align: PosAlign.left));
+
+    printer.text("Order Id ${orderData.orderId.toString()}",
+        styles: PosStyles(align: PosAlign.left));
+
+    if (orderData.datumUserName != null || orderData.datumUserName!.isNotEmpty) {
+      printer.text('Customer Name : ${orderData.datumUserName}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+    if (orderData.mobile != null || orderData.mobile!.isNotEmpty) {
+      printer.text('Customer Phone No : ${orderData.mobile}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('${DateFormat('yyyy-MM-dd').format(orderData.date!)} ${orderData.time}',
+        styles: PosStyles(align: PosAlign.left));
+
+    if (orderData.tableNo != null && orderData.tableNo != 0) {
+      printer.text('Table Number : ${orderData.tableNo}',
+          styles: const PosStyles(align: PosAlign.left));
+    }
+
+    if (orderData.paymentType == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : UnPaid',
+          styles: PosStyles(align: PosAlign.left));
+    } else {
+      printer.text('Payment Status : ${orderData.paymentType}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    printer.text('Order Type :  ${orderData.deliveryType}',
+        styles: PosStyles(align: PosAlign.left));
+
+
+    printer.hr();
+    printer.row([
+      PosColumn(text: 'Qty', width: 1),
+      PosColumn(text: 'Item', width: 9),
+      PosColumn(
+          text: 'Total', width: 2, styles: PosStyles(align: PosAlign.right)),
+    ]);
+    for (int itemIndex = 0; itemIndex < cart.length; itemIndex++) {
+      String category = cart[itemIndex].category!;
+      MenuCategory? menuCategory = cart[itemIndex].menuCategory;
+      List<Menu> menu = cart[itemIndex].menu!;
+      if (category == 'SINGLE') {
+        Cart cartItem = cart[itemIndex];
+        // printer.row([
+        //   PosColumn(
+        //       text: "-SINGLE-",
+        //       width: 12,
+        //       styles: PosStyles(
+        //           width: PosTextSize.size1,
+        //           height: PosTextSize.size1,
+        //           align: PosAlign.center))
+        // ]);
+
+        // var price;
+        // if(_cartController.diningValue) {
+        //   price =  cart[
+        //   itemIndex]
+        //       .diningAmount;
+        // } else {
+        //   price =  cart[
+        //   itemIndex]
+        //       .totalAmount;
+        // }
+
+        for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+          Menu menuItem = menu[menuIndex];
+          if(widget.orderDeliveryType == 'DINING') {
+            print("dining row");
+            printer.row([
+              PosColumn(text: cartItem.quantity.toString(), width: 1),
+              PosColumn(
+                text: menu[menuIndex].name! +
+                    (cart[itemIndex].size != null
+                        ? '(${cart[itemIndex].size?.sizeName})'
+                        : ''),
+                width: 9,
+              ),
+              PosColumn(
+                  text: double.parse(cartItem.diningAmount.toString()).toStringAsFixed(2),
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          } else {
+            print("takeaway row");
+            printer.row([
+              PosColumn(text: cartItem.quantity.toString(), width: 1),
+              PosColumn(
+                text: menu[menuIndex].name! +
+                    (cart[itemIndex].size != null
+                        ? '(${cart[itemIndex].size['size_name']})'
+                        : ''),
+                width: 9,
+              ),
+              PosColumn(
+                  text:  double.parse(cartItem.totalAmount.toString()).toStringAsFixed(2),
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          }
+          for (int addonIndex = 0;
+              addonIndex < menuItem.addons!.length;
+              addonIndex++) {
+            Addon addonItem = menuItem.addons![addonIndex];
+            if (addonIndex == 0) {
+              printer.row([
+                PosColumn(
+                    text: "-ADDONS-",
+                    width: 12,
+                    styles: PosStyles(
+                        width: PosTextSize.size1,
+                        height: PosTextSize.size1,
+                        align: PosAlign.center))
+              ]);
+            }
+            printer.row([
+              PosColumn(text: '', width: 1),
+              PosColumn(text: " ${addonItem.name}", width: 9),
+              // PosColumn(
+              // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+              PosColumn(
+                  // text:  double.parse(addonItem.price.toString()).toStringAsFixed(2),
+                  text:  '',
+                  width: 2,
+                  styles: PosStyles(align: PosAlign.right)),
+            ]);
+          }
+        }
+      }
+      // else if (category == 'HALF_N_HALF') {
+      //   Cart cartItem = cart[itemIndex];
+      //   printer.row([
+      //     PosColumn(
+      //         text: "-HALF & HALF-",
+      //         width: 12,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1,
+      //             height: PosTextSize.size1,
+      //             align: PosAlign.center))
+      //   ]);
+      //   printer.row([
+      //     PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //     PosColumn(
+      //         text: menuCategory!.name +
+      //             (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //         width: 9,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1, height: PosTextSize.size1)),
+      //     // PosColumn(
+      //     // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     PosColumn(
+      //         text: cartItem.totalAmount.toString(),
+      //         width: 2,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      //
+      //   for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //     Menu menuItem = menu[menuIndex];
+      //     printer.row([
+      //       PosColumn(
+      //           text: ' ${menuIndex == 0 ? '-1st Half-' : "-2nd Half-"}',
+      //           width: 12,
+      //           styles: PosStyles(
+      //               width: PosTextSize.size1,
+      //               height: PosTextSize.size1,
+      //               align: PosAlign.center))
+      //     ]);
+      //     printer.row([
+      //       PosColumn(text: '', width: 1),
+      //       PosColumn(text: menuItem.name! + '', width: 9),
+      //       // PosColumn(
+      //       // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //       PosColumn(
+      //           text: '', width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     ]);
+      //
+      //     for (int addonIndex = 0;
+      //         addonIndex < menuItem.addons!.length;
+      //         addonIndex++) {
+      //       Addon addonItem = menuItem.addons![addonIndex];
+      //       if (addonIndex == 0) {
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-ADDONS-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //       }
+      //       printer.row([
+      //         PosColumn(text: '', width: 1),
+      //         PosColumn(text: addonItem.name, width: 9),
+      //         // PosColumn(
+      //         // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //         PosColumn(
+      //             text: addonItem.price.toString(),
+      //             width: 2,
+      //             styles: PosStyles(align: PosAlign.right)),
+      //       ]);
+      //     }
+      //   }
+      // } else if (category == 'DEALS') {
+      //   Cart cartItem = cart[itemIndex];
+      //
+      //   printer.row([
+      //     PosColumn(
+      //         text: "-DEALS-",
+      //         width: 12,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1,
+      //             height: PosTextSize.size1,
+      //             align: PosAlign.center))
+      //   ]);
+      //   printer.row([
+      //     PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //     PosColumn(
+      //         text: menuCategory!.name +
+      //             (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //         width: 9,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1, height: PosTextSize.size1)),
+      //     // PosColumn(
+      //     // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     PosColumn(
+      //         text: cartItem.totalAmount.toString(),
+      //         width: 2,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      //   for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //     Menu menuItem = menu[menuIndex];
+      //     DealsItems dealsItems = menu[menuIndex].dealsItems!;
+      //     printer.row([
+      //       PosColumn(
+      //           text: "-${menuItem.name}(${dealsItems.name})-",
+      //           width: 12,
+      //           styles: PosStyles(
+      //               width: PosTextSize.size1,
+      //               height: PosTextSize.size1,
+      //               align: PosAlign.center))
+      //     ]);
+      //     for (int addonIndex = 0;
+      //         addonIndex < menuItem.addons!.length;
+      //         addonIndex++) {
+      //       Addon addonItem = menuItem.addons![addonIndex];
+      //       if (addonIndex == 0) {
+      //         printer.row([
+      //           PosColumn(width: 1),
+      //           PosColumn(
+      //               text: "        -ADDONS-",
+      //               width: 9,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center)),
+      //           PosColumn(width: 2),
+      //         ]);
+      //       }
+      //       printer.row([
+      //         PosColumn(text: '', width: 1),
+      //         PosColumn(text: addonItem.name!, width: 9),
+      //         // PosColumn(
+      //         // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //         PosColumn(
+      //             text: addonItem.price.toString(),
+      //             width: 2,
+      //             styles: PosStyles(align: PosAlign.right)),
+      //       ]);
+      //     }
+      //   }
+      // }
+    }
+    printer.hr();
+
+    printer.row([
+      PosColumn(
+          text: 'SubTotal',
+          width: 6,
+          styles: PosStyles(
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: "$currencySymbol${double.parse(orderData.subTotal!).toStringAsFixed(2)}",
+          width: 6,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    printer.row([
+      PosColumn(
+          text: 'Tax',
+          width: 6,
+          styles: PosStyles(
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: "$currencySymbol${double.parse(orderData.tax!).toStringAsFixed(2)}",
+          width: 6,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    if (double.parse(orderData.amount.toString()) != double.parse(totalAmountController.text)) {
+      printer.row([
+        PosColumn(
+            text:
+                'Discount ${_selectedButton == 0 ? "5%" : _selectedButton == 1 ? "10%" : _selectedButton == 2 ? "15%" : ''}',
+            width: 6,
+            styles: PosStyles(
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+        PosColumn(
+            text:
+                "$currencySymbol${((double.parse(orderData.amount.toString())) - (double.parse(totalAmountController.text.toString()))).toStringAsFixed(2)}",
+            width: 6,
+            styles: PosStyles(
+              align: PosAlign.right,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+      ]);
+    }
+
+    printer.row([
+      PosColumn(
+          text: 'TOTAL',
+          width: 6,
+          styles: PosStyles(
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          )),
+      PosColumn(
+          text: "$currencySymbol${double.parse(orderData.amount.toString()).toStringAsFixed(2)}",
+          width: 6,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          )),
+    ]);
+
+    printer.hr();
+
+    if (orderData.notes != null &&
+        orderData.notes!.isNotEmpty &&
+        orderData.notes != '') {
+      printer.text(
+        "Instructions: ${orderData.notes!}",
+      );
+    }
+
+    printer.hr(ch: '=', linesAfter: 1);
+
+    printer.feed(2);
+    printer.text('Thank you!',
+        styles: PosStyles(align: PosAlign.center, bold: true));
+
+    // Print QR Code from image
+    // try {
+    //   const String qrData = 'example.com';
+    //   const double qrSize = 200;
+    //   final uiImg = await QrPainter(
+    //     data: qrData,
+    //     version: QrVersions.auto,
+    //     gapless: false,
+    //   ).toImageData(qrSize);
+    //   final dir = await getTemporaryDirectory();
+    //   final pathName = '${dir.path}/qr_tmp.png';
+    //   final qrFile = File(pathName);
+    //   final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
+    //   final img = decodeImage(imgFile.readAsBytesSync());
+
+    //   printer.image(img);
+    // } catch (e) {
+    //   print(e);
+    // }
+
+    // Print QR Code using native function
+    // printer.qrcode('example.com');
+
+    printer.feed(1);
+    printer.cut();
+    printer.beep();
+  }
+
+  void testPrintKitchen(String printerIp, int port,
+      OrderHistoryData orderData, OrderDataModel orderModel ) async {
+    // TODO Don't forget to choose printer's paper size
+    const PaperSize paper = PaperSize.mm80;
+    final profile = await CapabilityProfile.load();
+    final printer = NetworkPrinter(paper, profile);
+    final PosPrintResult res = await printer.connect(
+      printerIp,
+      port: port,
+    );
+    Get.snackbar("", res.msg);
+
+    // final snackBar =
+    // SnackBar(content: Text(res.msg, textAlign: TextAlign.center));
+    // ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+
+    // print('Print result: ${res.msg}');
+
+    if (res == PosPrintResult.success) {
+      // DEMO RECEIPT
+      print("--------Kithcen PRint-------");
+      print(
+          'Print ip pos result: ${_printerController.printerModel.value.ipPos}');
+      print(
+          'Print ip posport result: ${_printerController.printerModel.value.portPos}');
+      print(
+          'Print ip kitchen result: ${_printerController.printerModel.value.ipKitchen}');
+      print(
+          'Print ip kitchenport result: ${_printerController.printerModel.value.portKitchen}');
+      print("---------------");
+      print('Print ip kitchen result: ${printerIp}');
+      print('Print ip kitchenport result: ${port}');
+      print("---------------");
+      printKitchenReceipt(printer, orderData, orderModel);
+
+      // TEST PRINT
+      // await testReceipt(printer);
+      printer.disconnect();
+    } else {
+      print("--------NO-------");
+      print("--------$printerIp-------");
+      print("--------$port-------");
+    }
+  }
+
+  printKitchenReceipt(NetworkPrinter printer,OrderHistoryData orderData , OrderDataModel orderModel) {
+
+    List<Cart> cart = orderModel.cart!;
+    // printer.text("*** PRINT ***",
+    //     styles: PosStyles(
+    //       align: PosAlign.center,
+    //       height: PosTextSize.size2,
+    //       width: PosTextSize.size2,
+    //       reverse: true
+    //     ),);
+
+    printer.text("*** Kitchen ***",
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    // printer.text('${cartMaster.oldOrderId?.toString()}',
+    //     styles: PosStyles(
+    //       align: PosAlign.center,
+    //       height: PosTextSize.size2,
+    //       width: PosTextSize.size2,
+    //     ));
+
+    if (orderData.tableNo != null && orderData.tableNo != 0) {
+      printer.text('Table ${orderData.tableNo}',
+          styles: PosStyles(
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ),
+          linesAfter: 1);
+    }
+
+    if (orderData.userName != null  && orderData.mobile != null) {
+      printer.text('Customer Name : ${orderData.userName }',
+          styles: PosStyles(align: PosAlign.left));
+
+      printer.text('Customer Phone No : ${orderData.mobile}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+    printer.text("Order Id ${orderData.orderId.toString()}",
+        styles: PosStyles(align: PosAlign.left));
+
+    printer.text('${DateFormat('yyyy-MM-dd').format(orderData.date!)} ${orderData.time}',
+        styles: PosStyles(align: PosAlign.left));
+
+    if (orderData.paymentType == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : Unpaid',
+          styles: PosStyles(align: PosAlign.left));
+    } else {
+      printer.text('Payment Status : ${orderData.paymentType}',
+          styles: PosStyles(align: PosAlign.left));
+      // printer.text('Payment Status : Paid',
+      //     styles: PosStyles(align: PosAlign.left));
+    }
+
+    printer.text("Order Type : ${orderData.deliveryType}",
+        styles: PosStyles(align: PosAlign.left));
+
+    // printer.text('Web: www.example.com',
+    //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
+
+    // printer.hr();
+    // printer.text(widget.orderDeliveryType!,
+    //   styles: PosStyles(
+    //     align: PosAlign.center,
+    //     height: PosTextSize.size3,
+    //     width: PosTextSize.size3,
+    //   ),);
+    printer.hr();
+    printer.row([
+      PosColumn(text: 'Qty', width: 2),
+      PosColumn(text: 'Item', width: 10),
+    ]);
+    for (int itemIndex = 0; itemIndex < cart.length; itemIndex++) {
+      String category = cart[itemIndex].category!;
+      MenuCategory? menuCategory = cart[itemIndex].menuCategory;
+      List<Menu> menu = cart[itemIndex].menu!;
+      if (category == 'SINGLE') {
+        Cart cartItem = cart[itemIndex];
+
+        for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+          Menu menuItem = menu[menuIndex];
+          printer.row([
+            PosColumn(
+                text: cartItem.quantity.toString(),
+                width: 2,
+                styles: PosStyles(bold: true)),
+            PosColumn(
+                text: menu[menuIndex].name! +
+                    (cart[itemIndex].size != null
+                        ? '(${cart[itemIndex].size['size_name']})'
+                        : ''),
+                width: 10,
+                styles: PosStyles(
+                    width: PosTextSize.size1,
+                    height: PosTextSize.size1,
+                    align: PosAlign.left,
+                    bold: true)),
+          ]);
+          for (int addonIndex = 0;
+              addonIndex < menuItem.addons!.length;
+              addonIndex++) {
+            Addon addonItem = menuItem.addons![addonIndex];
+            if (addonIndex == 0) {
+              printer.row([
+                PosColumn(
+                    text: "-ADDONS-",
+                    width: 12,
+                    styles: PosStyles(
+                        width: PosTextSize.size1,
+                        height: PosTextSize.size1,
+                        align: PosAlign.center))
+              ]);
+            }
+            printer.row([
+              PosColumn(text: '', width: 2),
+              PosColumn(text: " ${addonItem.name}", width: 10),
+              // PosColumn(
+              // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+            ]);
+          }
+        }
+      }
+      // else if (category == 'HALF_N_HALF') {
+      //   Cart cartItem = cart[itemIndex];
+      //   printer.row([
+      //     PosColumn(
+      //         text: "-HALF & HALF-",
+      //         width: 12,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1,
+      //             height: PosTextSize.size1,
+      //             align: PosAlign.center))
+      //   ]);
+      //   printer.row([
+      //     PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //     PosColumn(
+      //         text: menuCategory!.name +
+      //             (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //         width: 9,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1, height: PosTextSize.size1)),
+      //     // PosColumn(
+      //     // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     PosColumn(
+      //         text: cartItem.totalAmount.toString(),
+      //         width: 2,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      //   for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //     Menu menuItem = menu[menuIndex];
+      //     printer.row([
+      //       PosColumn(
+      //           text: ' ${menuIndex == 0 ? '-1st Half-' : "-2nd Half-"}',
+      //           width: 12,
+      //           styles: PosStyles(
+      //               width: PosTextSize.size1,
+      //               height: PosTextSize.size1,
+      //               align: PosAlign.center))
+      //     ]);
+      //     printer.row([
+      //       PosColumn(text: '', width: 1),
+      //       PosColumn(text: menuItem.name! + '', width: 9),
+      //       // PosColumn(
+      //       // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //       PosColumn(
+      //           text: '', width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     ]);
+      //
+      //     for (int addonIndex = 0;
+      //         addonIndex < menuItem.addons!.length;
+      //         addonIndex++) {
+      //       Addon addonItem = menuItem.addons![addonIndex];
+      //       if (addonIndex == 0) {
+      //         printer.row([
+      //           PosColumn(
+      //               text: "-ADDONS-",
+      //               width: 12,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center))
+      //         ]);
+      //       }
+      //       printer.row([
+      //         PosColumn(text: '', width: 1),
+      //         PosColumn(text: addonItem.name!, width: 9),
+      //         // PosColumn(
+      //         // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //         PosColumn(
+      //             text: addonItem.price.toString(),
+      //             width: 2,
+      //             styles: PosStyles(align: PosAlign.right)),
+      //       ]);
+      //     }
+      //   }
+      // } else if (category == 'DEALS') {
+      //   Cart cartItem = cart[itemIndex];
+      //
+      //   printer.row([
+      //     PosColumn(
+      //         text: "-DEALS-",
+      //         width: 12,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1,
+      //             height: PosTextSize.size1,
+      //             align: PosAlign.center))
+      //   ]);
+      //   printer.row([
+      //     PosColumn(text: cartItem.quantity.toString(), width: 1),
+      //     PosColumn(
+      //         text: menuCategory!.name +
+      //             (cartItem.size != null ? '(${cartItem.size?.sizeName})' : ''),
+      //         width: 9,
+      //         styles: PosStyles(
+      //             width: PosTextSize.size1, height: PosTextSize.size1)),
+      //     // PosColumn(
+      //     // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //     PosColumn(
+      //         text: cartItem.totalAmount.toString(),
+      //         width: 2,
+      //         styles: PosStyles(align: PosAlign.right)),
+      //   ]);
+      //   for (int menuIndex = 0; menuIndex < menu.length; menuIndex++) {
+      //     Menu menuItem = menu[menuIndex];
+      //     // DealsItems dealsItems = menu[menuIndex].dealsItems!;
+      //     printer.row([
+      //       PosColumn(
+      //           text: "-${menuItem.name}(${dealsItems.name})-",
+      //           width: 12,
+      //           styles: PosStyles(
+      //               width: PosTextSize.size1,
+      //               height: PosTextSize.size1,
+      //               align: PosAlign.center))
+      //     ]);
+      //     for (int addonIndex = 0;
+      //         addonIndex < menuItem.addons!.length;
+      //         addonIndex++) {
+      //       Addon addonItem = menuItem.addons![addonIndex];
+      //       if (addonIndex == 0) {
+      //         printer.row([
+      //           PosColumn(width: 1),
+      //           PosColumn(
+      //               text: "        -ADDONS-",
+      //               width: 9,
+      //               styles: PosStyles(
+      //                   width: PosTextSize.size1,
+      //                   height: PosTextSize.size1,
+      //                   align: PosAlign.center)),
+      //           PosColumn(width: 2),
+      //         ]);
+      //       }
+      //       printer.row([
+      //         PosColumn(text: '', width: 1),
+      //         PosColumn(text: addonItem.name!, width: 9),
+      //         // PosColumn(
+      //         // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+      //         PosColumn(
+      //             text: addonItem.price.toString(),
+      //             width: 2,
+      //             styles: PosStyles(align: PosAlign.right)),
+      //       ]);
+      //     }
+      //   }
+      // }
+    }
+    // printer.hr();
+
+    // printer.row([
+    //   PosColumn(
+    //       text: 'TOTAL',
+    //       width: 6,
+    //       styles: PosStyles(
+    //         height: PosTextSize.size2,
+    //         width: PosTextSize.size2,
+    //       )),
+    //   PosColumn(
+    //       text: "$currencySymbol${totalAmountController.text}",
+    //       width: 6,
+    //       styles: PosStyles(
+    //         align: PosAlign.right,
+    //         height: PosTextSize.size2,
+    //         width: PosTextSize.size2,
+    //       )),
+    // ]);
+    printer.hr();
+
+    if (orderData.notes != null &&
+        orderData.notes!.isNotEmpty &&
+        orderData.notes != '') {
+      printer.text(
+        "Instructions: ${orderData.notes!}",
+      );
+    }
+
+    printer.hr(ch: '=', linesAfter: 1);
+
+    printer.feed(2);
+    printer.text('Thank you!',
+        styles: PosStyles(align: PosAlign.center, bold: true));
+
+    // Print QR Code from image
+    // try {
+    //   const String qrData = 'example.com';
+    //   const double qrSize = 200;
+    //   final uiImg = await QrPainter(
+    //     data: qrData,
+    //     version: QrVersions.auto,
+    //     gapless: false,
+    //   ).toImageData(qrSize);
+    //   final dir = await getTemporaryDirectory();
+    //   final pathName = '${dir.path}/qr_tmp.png';
+    //   final qrFile = File(pathName);
+    //   final imgFile = await qrFile.writeAsBytes(uiImg.buffer.asUint8List());
+    //   final img = decodeImage(imgFile.readAsBytesSync());
+
+    //   printer.image(img);
+    // } catch (e) {
+    //   print(e);
+    // }
+
+    // Print QR Code using native function
+    // printer.qrcode('example.com');
+
+    printer.feed(1);
+    printer.cut();
+    printer.beep();
+  }
+
+  ///vv
   // void testPrintPOS(String printerIp, int port, BuildContext ctx,
   //     OrderData orderData ) async {
   //   // TODO Don't forget to choose printer's paper size
@@ -1128,6 +1977,8 @@ class _PosPaymentState extends State<PosPayment> {
   //   // Update the total amount with the discounted value
   //   totalAmountController.text = discountedTotal.toStringAsFixed(2);
   // }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -4415,7 +5266,7 @@ class _PosPaymentState extends State<PosPayment> {
   //     });
   //   }
   // }
-  Future<BaseModel<CommenRes>> placeOrder(int value) async {
+  Future<BaseModel<common.CommenRes>> placeOrder(int value) async {
     final prefs = await SharedPreferences.getInstance();
     String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';
     String shiftCodeBefore = prefs.getString(Constants.shiftCode.toString()) ?? '';
@@ -4423,7 +5274,7 @@ class _PosPaymentState extends State<PosPayment> {
       var response = await shiftController.createShiftDetails(context, 'auto_generated_shift_code');
     }
     String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
-    CommenRes res;
+    common.CommenRes res;
     try {
       Map<String, dynamic> body = {
         'notes': widget.notes,
@@ -4442,17 +5293,12 @@ class _PosPaymentState extends State<PosPayment> {
         'time': widget.orderTime,
         'delivery_time': widget.deliveryTime,
         'delivery_date': widget.deliveryDate,
-        'item': _cartController.cartMaster,
-        // 'amount': widget.totalAmount.toString(),
-        'amount': totalAmountController.text,
-        // 'cash_amount': orderPaymentType == 'POS CASH' || orderPaymentType == 'POS CASH TAKEAWAY' ? totalAmountController.text : '',
-        // 'card_amount': orderPaymentType == 'POS CARD' || orderPaymentType == 'POS CARD TAKEAWAY' ? totalAmountController.text : '',
-        'cash_amount': orderPaymentType == 'CASH+CARD' ? posCashAmountController.text : orderPaymentType == 'POS CASH' || orderPaymentType == 'POS CASH TAKEAWAY' ? totalAmountController.text : '',
+        'item': json.encode(_cartController.cartMaster!.toMap()),
+        'amount': totalAmountController.text, 'cash_amount': orderPaymentType == 'CASH+CARD' ? posCashAmountController.text : orderPaymentType == 'POS CASH' || orderPaymentType == 'POS CASH TAKEAWAY' ? totalAmountController.text : '',
         'card_amount': orderPaymentType == 'CASH+CARD' ? posCardAmountController.text : orderPaymentType == 'POS CARD' || orderPaymentType == 'POS CARD TAKEAWAY' ? totalAmountController.text : '',
         'delivery_type': widget.orderDeliveryType,
         'delivery_charge': widget.orderDeliveryCharge,
         'payment_type': orderPaymentType,
-        // 'payment_status': orderPaymentType == 'COD' ? '0' : '1',
         'payment_status': '0',
         'order_status': 'APPROVE',
         // 'order_status': widget.orderStatus,
@@ -4466,162 +5312,152 @@ class _PosPaymentState extends State<PosPayment> {
         'tax': widget.strTaxAmount.toStringAsFixed(2),
         'sub_total': widget.subTotal!.toStringAsFixed(2),
         'table_no': widget.tableNumber?.toString(),
-        // 'user_id': widget.tableNumber?.toString(),
         'old_order_id': _cartController.cartMaster!.oldOrderId?.toString(),
-        // 'tax': json.encode(widget.allTax).toString(),
       };
       res = await RestClient(await RetroApi().dioData()).bookOrder(body);
       print("response answer ${res.toJson()}");
       print(res.success);
       print("Dummy test");
 
-      print("res data type ${res.orderData.runtimeType}");
-      if(res.success!){
-          String improperJson = res.orderData.toString();
-          // var jsonMap = jsonDecode(improperJson);
-          // String properJsonString = jsonEncode(jsonMap.toJson());
-          // Map<dynamic, dynamic> jsonNew = jsonDecode(properJsonString);
-          // Map<String, dynamic> convertedMap = {};
-          // jsonNew.forEach((key, value) {
-          //   convertedMap[key.toString()] = value;
-          // });
-          // OrderHistoryData orderData =
-          // OrderHistoryData.fromJson(convertedMap);
-          print("orderData ${improperJson.toString()}");
+
+      if (res.success!) {
+        Constants.toastMessage(res.data!);
+        // Map<String, dynamic> jsonMapMain =
+        // jsonDecode(res.orderData!.toString());
+        // OrderHistoryData orderHistoryData = OrderHistoryData.fromJson(jsonMapMain);
+        // print("order History Model ${orderHistoryData.toJson()}");
+        Map<String, dynamic> jsonMap =
+        jsonDecode(res.orderData!.orderData!);
+        OrderDataModel orderData =
+        OrderDataModel.fromJson(jsonMap);
+        print("order Model ${orderData.toJson()}");
+
+        if (value == 0) {
+          if(_autoPrinterController.autoPrint.value == true) {
+            if (_printerController.printerModel.value.portPos != null) {
+              print("POS ADDED");
+              if (_printerController.printerModel.value.ipPos == '' &&
+                  _printerController.printerModel.value.portPos == '' ||
+                  _printerController.printerModel.value.ipPos == null &&
+                      _printerController.printerModel.value.portPos == null) {
+                print("pos ip empty");
+              } else {
+                print("pos ip not empty");
+                print("test pos ip not empty");
+                print("Cart ${_cartController.cartMaster!.toMap()}");
+                testPrintPOS(
+                    _printerController.printerModel.value.ipPos!,
+                    int.parse(
+                        _printerController.printerModel.value.portPos
+                            .toString()),
+
+                    res.orderData!,
+                    orderData
+                    );
+              }
+            }
+          }
+        } else if (value == 1) {
+          if(_autoPrinterController.autoPrintKitchen.value == true) {
+            if (_printerController.printerModel.value.portKitchen != null) {
+              print("kitchen Added");
+              if (_printerController.printerModel.value.ipKitchen == '' &&
+                  _printerController.printerModel.value.portKitchen == '' ||
+                  _printerController.printerModel.value.ipKitchen == null &&
+                      _printerController.printerModel.value.portKitchen ==
+                          null) {
+                print("kitchen ip empty");
+              } else {
+                print(" kitchen ip not empty");
+                testPrintKitchen(
+                    _printerController.printerModel.value.ipKitchen!,
+                    int.parse(_printerController.printerModel.value.portKitchen
+                        .toString()),
+
+                    res.orderData!,
+                    orderData);
+              }
+            }
+          }
+        } else if (value == 2) {
+          if(_autoPrinterController.autoPrint.value == true) {
+            if (_printerController.printerModel.value.portPos != null) {
+              print("POS ADDED");
+              if (_printerController.printerModel.value.ipPos == '' &&
+                  _printerController.printerModel.value.portPos == '' ||
+                  _printerController.printerModel.value.ipPos == null &&
+                      _printerController.printerModel.value.portPos == null) {
+                print("pos ip empty");
+              } else {
+                print("pos ip not empty");
+                testPrintPOS(
+                    _printerController.printerModel.value.ipPos!,
+                    int.parse(
+                        _printerController.printerModel.value.portPos
+                            .toString()),
+
+                    res.orderData!,
+                    orderData);
+              }
+            }
+          }
+          if(_autoPrinterController.autoPrintKitchen.value == true) {
+            if (_printerController.printerModel.value.portKitchen != null) {
+              print("kitchen Added");
+              if (_printerController.printerModel.value.ipKitchen == '' &&
+                  _printerController.printerModel.value.portKitchen == '' ||
+                  _printerController.printerModel.value.ipKitchen == null &&
+                      _printerController.printerModel.value.portKitchen ==
+                          null) {
+                print("kitchen ip empty");
+              } else {
+                print(" kitchen ip not empty");
+                testPrintKitchen(
+                    _printerController.printerModel.value.ipKitchen!,
+                    int.parse(_printerController.printerModel.value.portKitchen
+                        .toString()),
+                    res.orderData!,
+                    orderData);
+              }
+            }
+          }
+        } else {}
+        if(widget.orderDeliveryType == "DINING"){
+          widget.notes == '' ?  _diningCartController.diningNotes = '' : widget.notes;
+          widget.userName == '' ?  _diningCartController.diningUserName = '' : widget.userName;
+          widget.mobileNumber == '' ?  _diningCartController.diningUserMobileNumber = '' : widget.mobileNumber;
+        } else {
+          widget.notes == '' ?  _cartController.notes = '' : widget.notes;
+          widget.userName == '' ?  _cartController.userName = '' : widget.userName;
+          widget.mobileNumber == '' ?  _cartController.userMobileNumber = '' : widget.mobileNumber;
+        }
+        _diningCartController.diningNotes = '';
+        _diningCartController.diningUserName = '';
+        _diningCartController.diningUserMobileNumber = '';
+        _cartController.notes = '';
+        _cartController.userName = '';
+        _cartController.userMobileNumber = '';
+        _diningCartController.phoneNoController.clear();
+        _diningCartController.nameController.clear();
+        _diningCartController.notesController.clear();
+        _cartController.phoneNoController.clear();
+        _cartController.nameController.clear();
+        _cartController.notesController.clear();
+        widget.orderDeliveryType == "DINING"
+            ? _cartController.diningValue = true
+            : false;
+        _cartController.cartMaster = null;
+        _cartController.cartTotalQuantity.value = 0;
+        _orderHistoryController.callGetOrderHistoryList();
+
+        // Future.delayed(Duration(seconds: 3), () {
+        Get.offAll(
+          () => PosMenu(isDining: false),
+        );
+        // });
+      } else {
+        Constants.toastMessage('Errow while place order.');
       }
-      // if (res.success!) {
-      //   Constants.toastMessage(res.data!);
-      //   String a = res.orderData!;
-      //   // Map<String, dynamic> jsonData = res.orderData!;
-      //   // OrderData response = OrderData.fromJson(jsonData);
-      //   String jsonString = a;
-      //   Map<String, dynamic> jsonData = jsonDecode(jsonString);
-      //   OrderData response = OrderData.fromJson(jsonData);
-      //
-      //
-      //   if (value == 0) {
-      //     if(_autoPrinterController.autoPrint.value == true) {
-      //       if (_printerController.printerModel.value.portPos != null) {
-      //         print("POS ADDED");
-      //         if (_printerController.printerModel.value.ipPos == '' &&
-      //             _printerController.printerModel.value.portPos == '' ||
-      //             _printerController.printerModel.value.ipPos == null &&
-      //                 _printerController.printerModel.value.portPos == null) {
-      //           print("pos ip empty");
-      //         } else {
-      //           print("pos ip not empty");
-      //           print("test pos ip not empty");
-      //           print("Cart ${_cartController.cartMaster!.toMap()}");
-      //           testPrintPOS(
-      //               _printerController.printerModel.value.ipPos!,
-      //               int.parse(
-      //                   _printerController.printerModel.value.portPos
-      //                       .toString()),
-      //               context,
-      //             response
-      //               );
-      //         }
-      //       }
-      //     }
-      //   } else if (value == 1) {
-      //     if(_autoPrinterController.autoPrintKitchen.value == true) {
-      //       if (_printerController.printerModel.value.portKitchen != null) {
-      //         print("kitchen Added");
-      //         if (_printerController.printerModel.value.ipKitchen == '' &&
-      //             _printerController.printerModel.value.portKitchen == '' ||
-      //             _printerController.printerModel.value.ipKitchen == null &&
-      //                 _printerController.printerModel.value.portKitchen ==
-      //                     null) {
-      //           print("kitchen ip empty");
-      //         } else {
-      //           print(" kitchen ip not empty");
-      //           testPrintKitchen(
-      //               _printerController.printerModel.value.ipKitchen!,
-      //               int.parse(_printerController.printerModel.value.portKitchen
-      //                   .toString()),
-      //               context,
-      //               response);
-      //         }
-      //       }
-      //     }
-      //   } else if (value == 2) {
-      //     if(_autoPrinterController.autoPrint.value == true) {
-      //       if (_printerController.printerModel.value.portPos != null) {
-      //         print("POS ADDED");
-      //         if (_printerController.printerModel.value.ipPos == '' &&
-      //             _printerController.printerModel.value.portPos == '' ||
-      //             _printerController.printerModel.value.ipPos == null &&
-      //                 _printerController.printerModel.value.portPos == null) {
-      //           print("pos ip empty");
-      //         } else {
-      //           print("pos ip not empty");
-      //           testPrintPOS(
-      //               _printerController.printerModel.value.ipPos!,
-      //               int.parse(
-      //                   _printerController.printerModel.value.portPos
-      //                       .toString()),
-      //               context,
-      //               response);
-      //         }
-      //       }
-      //     }
-      //     if(_autoPrinterController.autoPrintKitchen.value == true) {
-      //       if (_printerController.printerModel.value.portKitchen != null) {
-      //         print("kitchen Added");
-      //         if (_printerController.printerModel.value.ipKitchen == '' &&
-      //             _printerController.printerModel.value.portKitchen == '' ||
-      //             _printerController.printerModel.value.ipKitchen == null &&
-      //                 _printerController.printerModel.value.portKitchen ==
-      //                     null) {
-      //           print("kitchen ip empty");
-      //         } else {
-      //           print(" kitchen ip not empty");
-      //           testPrintKitchen(
-      //               _printerController.printerModel.value.ipKitchen!,
-      //               int.parse(_printerController.printerModel.value.portKitchen
-      //                   .toString()),
-      //               context,
-      //               response);
-      //         }
-      //       }
-      //     }
-      //   } else {}
-      //   if(widget.orderDeliveryType == "DINING"){
-      //     widget.notes == '' ?  _diningCartController.diningNotes = '' : widget.notes;
-      //     widget.userName == '' ?  _diningCartController.diningUserName = '' : widget.userName;
-      //     widget.mobileNumber == '' ?  _diningCartController.diningUserMobileNumber = '' : widget.mobileNumber;
-      //   } else {
-      //     widget.notes == '' ?  _cartController.notes = '' : widget.notes;
-      //     widget.userName == '' ?  _cartController.userName = '' : widget.userName;
-      //     widget.mobileNumber == '' ?  _cartController.userMobileNumber = '' : widget.mobileNumber;
-      //   }
-      //   _diningCartController.diningNotes = '';
-      //   _diningCartController.diningUserName = '';
-      //   _diningCartController.diningUserMobileNumber = '';
-      //   _cartController.notes = '';
-      //   _cartController.userName = '';
-      //   _cartController.userMobileNumber = '';
-      //   _diningCartController.phoneNoController.clear();
-      //   _diningCartController.nameController.clear();
-      //   _diningCartController.notesController.clear();
-      //   _cartController.phoneNoController.clear();
-      //   _cartController.nameController.clear();
-      //   _cartController.notesController.clear();
-      //   widget.orderDeliveryType == "DINING"
-      //       ? _cartController.diningValue = true
-      //       : false;
-      //   _cartController.cartMaster = null;
-      //   _cartController.cartTotalQuantity.value = 0;
-      //   _orderHistoryController.callGetOrderHistoryList();
-      //
-      //   // Future.delayed(Duration(seconds: 3), () {
-      //   Get.offAll(
-      //     () => PosMenu(isDining: false),
-      //   );
-      //   // });
-      // } else {
-      //   Constants.toastMessage('Errow while place order.');
-      // }
     } catch (error, stacktrace) {
       print("catch");
 
@@ -4630,6 +5466,7 @@ class _PosPaymentState extends State<PosPayment> {
     }
     return BaseModel()..data = res;
   }
+
 
   String addStringIntoInt(int number) {
     String stringNumber = receivedController.text;

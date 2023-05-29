@@ -156,18 +156,15 @@ class OrderHistoryController extends GetxController {
     NetworkPrinter printer,
     OrderHistoryData order,
   ) {
+
     printer.text(order.vendorName!,
         styles: const PosStyles(
           align: PosAlign.center,
           height: PosTextSize.size2,
           width: PosTextSize.size2,
         ));
-    printer.text("(Duplicate)",
-        styles: const PosStyles(
-          align: PosAlign.center,
-          bold: true
-        ),
-        linesAfter: 1);
+
+
 
     printer.text(order.vendorAddress.toString(),
         styles: const PosStyles(align: PosAlign.center));
@@ -175,7 +172,7 @@ class OrderHistoryController extends GetxController {
     printer.text("Phone : ${order.vendorContact.toString()}",
         styles: const PosStyles(align: PosAlign.left));
 
-    printer.text("Order Id ${order.orderId.toString()}",
+    printer.text("Order Id ${order.orderId.toString()} (Duplicate Bill)",
         styles: const PosStyles(align: PosAlign.left));
 
     if (order.datumUserName != null && order.mobile != null) {
@@ -261,12 +258,11 @@ class OrderHistoryController extends GetxController {
             }
             printer.row([
               PosColumn(text: '', width: 1),
-              PosColumn(text: addonItem.name, width: 9),
+              PosColumn(text: " ${addonItem.name}", width: 9),
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
               PosColumn(
-                  text: double.parse(addonItem.price.toString())
-                      .toStringAsFixed(2),
+                  text: '',
                   width: 2,
                   styles: const PosStyles(align: PosAlign.right)),
             ]);
