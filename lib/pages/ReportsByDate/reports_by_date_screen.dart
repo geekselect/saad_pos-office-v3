@@ -130,10 +130,25 @@ class ReportsByDate extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(height: 10,),
-                                      Text(" From : ${DateFormat('yyyy-MM-dd').format(data.from!)}  to  ${DateFormat('yyyy-MM-dd').format(data.to!)}", style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          padding: EdgeInsets.all(2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: BorderRadius.circular(5)
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.calendar_today_outlined, color: Colors.white, size: 16,),
+                                              Text(" From : ${DateFormat('yyyy-MM-dd').format(data.from!)}  to  ${DateFormat('yyyy-MM-dd').format(data.to!)}", style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(height: 10,),
                                       Expanded(
                                         child: ListView.builder(
@@ -399,8 +414,8 @@ class ReportsByDate extends StatelessWidget {
                                                                     'Pos Cash'))),
                                                         Expanded(child: Center(
                                                             child: Text(
-                                                                datum.posCash!
-                                                                    .amount!
+                                                                double.parse(datum.posCash!
+                                                                    .amount!.toString())
                                                                     .toStringAsFixed(
                                                                     2)))),
                                                         Expanded(
@@ -438,8 +453,8 @@ class ReportsByDate extends StatelessWidget {
                                                         Expanded(
                                                             child: Center(
                                                                 child: Text(
-                                                                    datum.posCard!
-                                                                        .amount!
+                                              double.parse(datum.posCard!
+                                                  .amount!.toString())
                                                                         .toStringAsFixed(
                                                                         2)))),
                                                         Expanded(child: Center(

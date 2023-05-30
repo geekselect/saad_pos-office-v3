@@ -930,7 +930,7 @@ class Reports extends StatelessWidget {
                         height: 5,
                       ),
                       Container(
-                        height: 70,
+                        height: 80,
                         width: double.infinity,
                         // padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
@@ -987,13 +987,12 @@ class Reports extends StatelessWidget {
                                     child: Center(child: Text("POS Cash"))),
                                 Expanded(
                                     child: Center(
-                                        child: Text(_reportController
+                                        child: Text(double.parse(_reportController
                                             .reportModelData
                                             .value
                                             .payments!
                                             .posCash!
-                                            .amount!
-                                            .toStringAsFixed(2)))),
+                                            .amount!).toStringAsFixed(2)))),
                               ],
                             ),
                             Row(
@@ -1013,15 +1012,40 @@ class Reports extends StatelessWidget {
                                     child: Center(child: Text("POS Card"))),
                                 Expanded(
                                     child: Center(
-                                        child: Text(_reportController
+                                        child: Text(double.parse(_reportController
                                             .reportModelData
                                             .value
                                             .payments!
                                             .posCard!
                                             .amount!
-                                            .toStringAsFixed(2)))),
+                                        ).toStringAsFixed(2)))),
                               ],
-                            )
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Center(
+                                        child: Text(
+                                  "Total Sale",
+                                ))),
+                                 Expanded(
+                                    child: Center(child: Text(_reportController
+                                        .reportModelData
+                                        .value.payments!.totalSale!.name !=
+                                        null
+                                        ?
+                                    _reportController
+                                        .reportModelData
+                                        .value.payments!.totalSale!.name.toString() : ''))),
+                                Expanded(
+                                    child: Center(
+                                        child: Text(double.parse(_reportController
+                                            .reportModelData
+                                            .value.payments!.totalSale!
+                                            .amount!
+                                        ).toStringAsFixed(2)))),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -1314,8 +1338,8 @@ class Reports extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text("Todays total Discounts"),
-                                Text(_reportController
-                                    .reportModelData.value.totalDiscounts!
+                                Text(double.parse(_reportController
+                                    .reportModelData.value.totalDiscounts!.toString())
                                     .toStringAsFixed(2)),
                               ],
                             ),
@@ -1342,8 +1366,7 @@ class Reports extends StatelessWidget {
                               children: [
                                 const Text("Todays total Cancelled Amount"),
                                 Text(_reportController
-                                    .reportModelData.value.totalCanceledAmount!
-                                    .toStringAsFixed(2)),
+                                    .reportModelData.value.totalCanceledAmount!.toString()),
                               ],
                             ),
                           ],

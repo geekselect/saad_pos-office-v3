@@ -469,7 +469,7 @@ class _PosMenuState extends State<PosMenu> {
                                                   shiftController
                                                       .shiftTextController
                                                       .clear();
-Get.back();
+                                                      Get.back();
                                                   Constants.toastMessage('please first close ongoing shift');
                                                 }
                                               },

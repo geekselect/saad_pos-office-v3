@@ -215,11 +215,11 @@ class _PosPaymentState extends State<PosPayment> {
     printer.text("Order Id ${orderData.orderId.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
-    if (orderData.datumUserName != null || orderData.datumUserName!.isNotEmpty) {
+    if (orderData.datumUserName != null && orderData.datumUserName!.isNotEmpty) {
       printer.text('Customer Name : ${orderData.datumUserName}',
           styles: PosStyles(align: PosAlign.left));
     }
-    if (orderData.mobile != null || orderData.mobile!.isNotEmpty) {
+    if (orderData.mobile != null && orderData.mobile!.isNotEmpty) {
       printer.text('Customer Phone No : ${orderData.mobile}',
           styles: PosStyles(align: PosAlign.left));
     }
@@ -287,7 +287,7 @@ class _PosPaymentState extends State<PosPayment> {
               PosColumn(
                 text: menu[menuIndex].name! +
                     (cart[itemIndex].size != null
-                        ? '(${cart[itemIndex].size?.sizeName})'
+                        ? '(${cart[itemIndex].size['size_name']})'
                         : ''),
                 width: 9,
               ),
@@ -317,20 +317,20 @@ class _PosPaymentState extends State<PosPayment> {
               addonIndex < menuItem.addons!.length;
               addonIndex++) {
             Addon addonItem = menuItem.addons![addonIndex];
-            if (addonIndex == 0) {
-              printer.row([
-                PosColumn(
-                    text: "-ADDONS-",
-                    width: 12,
-                    styles: PosStyles(
-                        width: PosTextSize.size1,
-                        height: PosTextSize.size1,
-                        align: PosAlign.center))
-              ]);
-            }
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
             printer.row([
               PosColumn(text: '', width: 1),
-              PosColumn(text: " ${addonItem.name}", width: 9),
+              PosColumn(text: " ${addonItem.name} (ADDON)", width: 9),
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
               PosColumn(
@@ -524,21 +524,20 @@ class _PosPaymentState extends State<PosPayment> {
           )),
     ]);
 
-    if (double.parse(orderData.amount.toString()) != double.parse(totalAmountController.text)) {
+    if (orderData.discounts != null) {
       printer.row([
         PosColumn(
-            text:
-                'Discount ${_selectedButton == 0 ? "5%" : _selectedButton == 1 ? "10%" : _selectedButton == 2 ? "15%" : ''}',
+            text: 'Discount',
             width: 6,
-            styles: PosStyles(
+            styles: const PosStyles(
               height: PosTextSize.size1,
               width: PosTextSize.size1,
             )),
         PosColumn(
             text:
-                "$currencySymbol${((double.parse(orderData.amount.toString())) - (double.parse(totalAmountController.text.toString()))).toStringAsFixed(2)}",
+            "$currencySymbol${double.parse(orderData.discounts!.toString()).toStringAsFixed(2)}",
             width: 6,
-            styles: PosStyles(
+            styles: const PosStyles(
               align: PosAlign.right,
               height: PosTextSize.size1,
               width: PosTextSize.size1,
@@ -761,20 +760,20 @@ class _PosPaymentState extends State<PosPayment> {
               addonIndex < menuItem.addons!.length;
               addonIndex++) {
             Addon addonItem = menuItem.addons![addonIndex];
-            if (addonIndex == 0) {
-              printer.row([
-                PosColumn(
-                    text: "-ADDONS-",
-                    width: 12,
-                    styles: PosStyles(
-                        width: PosTextSize.size1,
-                        height: PosTextSize.size1,
-                        align: PosAlign.center))
-              ]);
-            }
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
             printer.row([
               PosColumn(text: '', width: 2),
-              PosColumn(text: " ${addonItem.name}", width: 10),
+              PosColumn(text: " ${addonItem.name} (ADDON)", width: 10),
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
             ]);
@@ -1993,28 +1992,60 @@ class _PosPaymentState extends State<PosPayment> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFFff6565),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(3),
-                                child: Icon(
-                                  Icons.clear,
-                                  grade: 3,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
-                              )),
+                      Row(
+                        // mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                         child: Row(
+                           children: [
+                             Flexible(
+                               child: Obx(() => SwitchListTile(
+                                 title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
+                                 value: _autoPrinterController.autoPrintKitchen.value,
+                                 onChanged: (bool value) {
+                                   _autoPrinterController.saveAutoPrintKitchen(value);
+                                 },
+                               )),
+                             ),
+                             Flexible(
+                                  child: Obx(() => SwitchListTile(
+                                 title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
+                                 value: _autoPrinterController.autoPrint.value,
+                                 onChanged: (bool value) {
+                                   _autoPrinterController.saveAutoPrint(value);
+                                 },
+                               )),
+                             ),
+                           ],
+                         ),
+                       ),
+                            Expanded(
+                         flex: 5,
+                         child: Container(),
+                       ),
+
+                       GestureDetector(
+                         onTap: () {
+                           Get.back();
+                         },
+                         child: Container(
+                             decoration: BoxDecoration(
+                               shape: BoxShape.circle,
+                               color: Color(0xFFff6565),
+                             ),
+                             child: Padding(
+                               padding: const EdgeInsets.all(3),
+                               child: Icon(
+                                 Icons.clear,
+                                 grade: 3,
+                                 size: 16,
+                                 color: Colors.white,
+                               ),
+                             )),
+                       ),
+                          ],
                         ),
-                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -2458,20 +2489,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         widget.orderDeliveryType == 'DINING') {
                                       return Column(
                                         children: [
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
-                                            value: _autoPrinterController.autoPrintKitchen.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrintKitchen(value);
-                                            },
-                                          )),
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
-                                            value: _autoPrinterController.autoPrint.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrint(value);
-                                            },
-                                          )),
+
                                           NumberButton(
                                               value: 'Pay Later',
                                               btnColor:
@@ -2510,20 +2528,6 @@ class _PosPaymentState extends State<PosPayment> {
                                         widget.orderDeliveryType == 'DINING') {
                                       return Column(
                                         children: [
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
-                                            value: _autoPrinterController.autoPrintKitchen.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrintKitchen(value);
-                                            },
-                                          )),
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
-                                            value: _autoPrinterController.autoPrint.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrint(value);
-                                            },
-                                          )),
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
@@ -2636,7 +2640,7 @@ class _PosPaymentState extends State<PosPayment> {
                                               onTapped:  () {
 
                                                 orderPaymentType = 'CASH+CARD';
-                                                placeOrder(0);
+                                                showMyDialog(context, posCashAmountController,posCardAmountController);
 
                                               }),
                                           NumberButton(
@@ -2680,20 +2684,7 @@ class _PosPaymentState extends State<PosPayment> {
                                             'TAKEAWAY') {
                                       return Column(
                                         children: [
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
-                                            value: _autoPrinterController.autoPrintKitchen.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrintKitchen(value);
-                                            },
-                                          )),
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
-                                            value: _autoPrinterController.autoPrint.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrint(value);
-                                            },
-                                          )),
+
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
@@ -2809,7 +2800,7 @@ class _PosPaymentState extends State<PosPayment> {
                                               onTapped:  () {
 
                                                 orderPaymentType = 'CASH+CARD';
-                                                placeOrder(0);
+                                                showMyDialog(context, posCashAmountController,posCardAmountController);
 
                                               }),
                                           NumberButton(
@@ -2909,20 +2900,7 @@ class _PosPaymentState extends State<PosPayment> {
                                           //             FontWeight.normal),
                                           //   ),
                                           // ),
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrintKitchen.value == true ? 'Kitchen Print ON' : 'Kitchen OFF'),
-                                            value: _autoPrinterController.autoPrintKitchen.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrintKitchen(value);
-                                            },
-                                          )),
-                                          Obx(() => SwitchListTile(
-                                            title: Text(_autoPrinterController.autoPrint.value == true ? 'POS Print ON' : 'POS OFF'),
-                                            value: _autoPrinterController.autoPrint.value,
-                                            onChanged: (bool value) {
-                                              _autoPrinterController.saveAutoPrint(value);
-                                            },
-                                          )),
+
                                           NumberButton(
                                               value: 'POS CASH',
                                               btnColor: Colors.black,
@@ -5268,14 +5246,15 @@ class _PosPaymentState extends State<PosPayment> {
   // }
   Future<BaseModel<common.CommenRes>> placeOrder(int value) async {
     final prefs = await SharedPreferences.getInstance();
-    String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';
-    String shiftCodeBefore = prefs.getString(Constants.shiftCode.toString()) ?? '';
-    if(shiftName.isEmpty && shiftCodeBefore.isEmpty){
-      var response = await shiftController.createShiftDetails(context, 'auto_generated_shift_code');
-    }
+    // String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';
     String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
+    // if(shiftName.isEmpty && shiftCodeBefore.isEmpty){
+    //   var response = await shiftController.createShiftDetails(context, 'auto_generated_shift_code');
+    // }
+    // String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
     common.CommenRes res;
     try {
+      Constants.onLoading(context);
       Map<String, dynamic> body = {
         'notes': widget.notes,
         'discounts': _selectedButton == -1
@@ -5322,10 +5301,6 @@ class _PosPaymentState extends State<PosPayment> {
 
       if (res.success!) {
         Constants.toastMessage(res.data!);
-        // Map<String, dynamic> jsonMapMain =
-        // jsonDecode(res.orderData!.toString());
-        // OrderHistoryData orderHistoryData = OrderHistoryData.fromJson(jsonMapMain);
-        // print("order History Model ${orderHistoryData.toJson()}");
         Map<String, dynamic> jsonMap =
         jsonDecode(res.orderData!.orderData!);
         OrderDataModel orderData =
@@ -5544,7 +5519,7 @@ class _PosPaymentState extends State<PosPayment> {
                         print("card ${poscardController.text} cash ${poscashController.text}");
                         if(_formDialogKey.currentState!.validate()) {
                           Constants.onLoading(context);
-                          placeOrder(2);
+                          placeOrder(0);
                           // Constants.hideDialog(context);
                         }// Go back to the previous screen
                       },

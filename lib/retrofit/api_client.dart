@@ -133,6 +133,10 @@ abstract class RestClient {
     @Body() map,
   );
 
+  @POST("newPosCashCard")
+  Future<ReportModel> reportsCall(
+      @Body() map);
+
   @POST("add_address")
   Future<CommenRes> addAddress(@Body() Map<String, String> map);
 
@@ -190,11 +194,11 @@ abstract class RestClient {
   //     @Path() int? id,
   //     );
   ///End
-  @GET("possalesingleuser/{id}/{user_id}")
-  Future reportsCall(
-    @Path() int? id,
-    @Path() int? user_id,
-  );
+  // @GET("possalesingleuser/{id}/{user_id}")
+  // Future reportsCall(
+  //   @Path() int? id,
+  //   @Path() int? user_id,
+  // );
 
   @POST("possalebydate")
   Future<ReportByDateModel> reportsApiByDate(@Body() Map<String, dynamic> map);

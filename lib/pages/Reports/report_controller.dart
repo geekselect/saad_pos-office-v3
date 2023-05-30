@@ -243,8 +243,8 @@ class ReportController extends GetxController {
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
   Rx<Order> reportModelOrderData = Order().obs;
-  Rx<CancelledOrdersDetail> reportModelCancelledOrdersData = CancelledOrdersDetail().obs;
-  Rx<IncompleteOrdersDetail> reportModelIncompleteOrdersData = IncompleteOrdersDetail().obs;
+  Rx<OrdersDetail> reportModelCancelledOrdersData = OrdersDetail().obs;
+  Rx<OrdersDetail> reportModelIncompleteOrdersData = OrdersDetail().obs;
   Rx<ReportModel> reportModelData = ReportModel().obs;
 
   String? posIp;
@@ -266,9 +266,15 @@ class ReportController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
+    String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
     ReportModel response;
     try {
-      response = await RestClient(await RetroApi().dioData()).reportsCall(int.parse(vendorId.toString()), int.parse(userId.toString()));
+      Map<String, dynamic> body = {
+        'vendorId': vendorId,
+        'userId': userId,
+        'shiftCode': shiftCode,
+      };
+      response = await RestClient(await RetroApi().dioData()).reportsCall(body);
       print("data of reports by Date screen ${response.toJson()}");
 
       reportModelData.value = response;

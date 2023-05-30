@@ -245,20 +245,20 @@ class OrderHistoryController extends GetxController {
               addonIndex < menuItem.addons!.length;
               addonIndex++) {
             Addon addonItem = menuItem.addons![addonIndex];
-            if (addonIndex == 0) {
-              printer.row([
-                PosColumn(
-                    text: "-ADDONS-",
-                    width: 12,
-                    styles: const PosStyles(
-                        width: PosTextSize.size1,
-                        height: PosTextSize.size1,
-                        align: PosAlign.center))
-              ]);
-            }
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: const PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
             printer.row([
               PosColumn(text: '', width: 1),
-              PosColumn(text: " ${addonItem.name}", width: 9),
+              PosColumn(text: " ${addonItem.name} (ADDON)", width: 9),
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
               PosColumn(
@@ -484,26 +484,28 @@ class OrderHistoryController extends GetxController {
               addonIndex < menuItem.addons!.length;
               addonIndex++) {
             Addon addonItem = menuItem.addons![addonIndex];
-            if (addonIndex == 0) {
-              printer.row([
-                PosColumn(
-                    text: "-ADDONS-",
-                    width: 12,
-                    styles: const PosStyles(
-                        width: PosTextSize.size1,
-                        height: PosTextSize.size1,
-                        align: PosAlign.center))
-              ]);
-            }
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: const PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
             printer.row([
               PosColumn(text: '', width: 2),
-              PosColumn(text: addonItem.name, width: 10),
+              PosColumn(text: ' ${addonItem.name} (ADDON)', width: 10),
             ]);
           }
         }
       }
     }
     printer.hr();
+
+
 
     if (order.notes != null) {
       printer.text(

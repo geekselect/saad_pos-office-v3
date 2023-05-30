@@ -318,6 +318,8 @@ class _RestClient implements RestClient {
     return value;
   }
 
+
+
   @override
   Future<CommenRes> addAddress(map) async {
     const _extra = <String, dynamic>{};
@@ -1149,18 +1151,17 @@ class _RestClient implements RestClient {
   // }
   ///End
   @override
-  Future<ReportModel> reportsCall(int? id, int? user_id) async {
-    @override
+  Future<ReportModel> reportsCall(map) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
+    _data.addAll(map);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReportModel>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'possalesingleuser/${id}/${user_id}',
-                    queryParameters: queryParameters, data: _data)
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'newPosCashCard',
+                queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReportModel.fromJson(_result.data!);
     return value;

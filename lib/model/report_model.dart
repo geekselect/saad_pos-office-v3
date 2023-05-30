@@ -296,6 +296,225 @@
 //
 //     final reportModel = reportModelFromJson(jsonString);
 
+///Without total sale
+// import 'dart:convert';
+//
+// ReportModel reportModelFromJson(String str) => ReportModel.fromJson(json.decode(str));
+//
+// String reportModelToJson(ReportModel data) => json.encode(data.toJson());
+//
+// class ReportModel {
+//   Payments? payments;
+//   dynamic totalOrders;
+//   dynamic totalTakeaway;
+//   dynamic totalDining;
+//   dynamic totalDiscounts;
+//   dynamic totalCanceled;
+//   dynamic totalCanceledAmount;
+//   List<CancelledOrdersDetail>? cancelledOrdersDetail;
+//   int? totalIncomplete;
+//   List<IncompleteOrdersDetail>? incompleteOrdersDetail;
+//   List<Order>? orders;
+//
+//   ReportModel({
+//     this.payments,
+//     this.totalOrders,
+//     this.totalTakeaway,
+//     this.totalDining,
+//     this.totalDiscounts,
+//     this.totalCanceled,
+//     this.totalCanceledAmount,
+//     this.cancelledOrdersDetail,
+//     this.totalIncomplete,
+//     this.incompleteOrdersDetail,
+//     this.orders,
+//   });
+//
+//   factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
+//     payments: json["payments"] == null ? null : Payments.fromJson(json["payments"]),
+//     totalOrders: json["Total Orders"],
+//     totalTakeaway: json["Total Takeaway"],
+//     totalDining: json["Total Dining"],
+//     totalDiscounts: json["Total Discounts"],
+//     totalCanceled: json["Total Canceled"],
+//     totalCanceledAmount: json["Total Canceled Amount"],
+//     cancelledOrdersDetail: json["Cancelled Orders Detail"] == null ? [] : List<CancelledOrdersDetail>.from(json["Cancelled Orders Detail"]!.map((x) => CancelledOrdersDetail.fromJson(x))),
+//     totalIncomplete: json["Total Incomplete"],
+//     incompleteOrdersDetail: json["Incomplete Orders Detail"] == null ? [] : List<IncompleteOrdersDetail>.from(json["Incomplete Orders Detail"]!.map((x) => IncompleteOrdersDetail.fromJson(x))),
+//     orders: json["orders"] == null ? [] : List<Order>.from(json["orders"]!.map((x) => Order.fromJson(x))),
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "payments": payments?.toJson(),
+//     "Total Orders": totalOrders,
+//     "Total Takeaway": totalTakeaway,
+//     "Total Dining": totalDining,
+//     "Total Discounts": totalDiscounts,
+//     "Total Canceled": totalCanceled,
+//     "Total Canceled Amount": totalCanceledAmount,
+//     "Cancelled Orders Detail": cancelledOrdersDetail == null ? [] : List<dynamic>.from(cancelledOrdersDetail!.map((x) => x.toJson())),
+//     "Total Incomplete": totalIncomplete,
+//     "Incomplete Orders Detail": incompleteOrdersDetail == null ? [] : List<dynamic>.from(incompleteOrdersDetail!.map((x) => x.toJson())),
+//     "orders": orders == null ? [] : List<dynamic>.from(orders!.map((x) => x.toJson())),
+//   };
+// }
+//
+// class CancelledOrdersDetail {
+//   String? orderId;
+//   String? amount;
+//   String? deliveryType;
+//   String? cancelReason;
+//   String? cancelBy;
+//   double? discounts;
+//   String? userName;
+//   String? mobile;
+//   String? notes;
+//
+//   CancelledOrdersDetail({
+//     this.orderId,
+//     this.amount,
+//     this.deliveryType,
+//     this.cancelReason,
+//     this.cancelBy,
+//     this.discounts,
+//     this.userName,
+//     this.mobile,
+//     this.notes,
+//   });
+//
+//   factory CancelledOrdersDetail.fromJson(Map<String, dynamic> json) => CancelledOrdersDetail(
+//     orderId: json["order_id"],
+//     amount: json["amount"],
+//     deliveryType: json["delivery_type"],
+//     cancelReason: json["cancel_reason"],
+//     cancelBy: json["cancel_by"],
+//     discounts: json["discounts"]?.toDouble(),
+//     userName: json["user_name"],
+//     mobile: json["mobile"],
+//     notes: json["notes"],
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "order_id": orderId,
+//     "amount": amount,
+//     "delivery_type": deliveryType,
+//     "cancel_reason": cancelReason,
+//     "cancel_by": cancelBy,
+//     "discounts": discounts,
+//     "user_name": userName,
+//     "mobile": mobile,
+//     "notes": notes,
+//   };
+// }
+//
+// class IncompleteOrdersDetail {
+//   String? orderId;
+//   String? amount;
+//   String? paymentType;
+//   String? deliveryType;
+//   String? orderStatus;
+//   String? userName;
+//   String? mobile;
+//   String? notes;
+//
+//   IncompleteOrdersDetail({
+//     this.orderId,
+//     this.amount,
+//     this.paymentType,
+//     this.deliveryType,
+//     this.orderStatus,
+//     this.userName,
+//     this.mobile,
+//     this.notes,
+//   });
+//
+//   factory IncompleteOrdersDetail.fromJson(Map<String, dynamic> json) => IncompleteOrdersDetail(
+//     orderId: json["order_id"],
+//     amount: json["amount"],
+//     paymentType: json["payment_type"],
+//     deliveryType: json["delivery_type"],
+//     orderStatus: json["order_status"],
+//     userName: json["user_name"],
+//     mobile: json["mobile"],
+//     notes: json["notes"],
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "order_id": orderId,
+//     "amount": amount,
+//     "payment_type": paymentType,
+//     "delivery_type": deliveryType,
+//     "order_status": orderStatus,
+//     "user_name": userName,
+//     "mobile": mobile,
+//     "notes": notes,
+//   };
+// }
+//
+// class Order {
+//   String? itemName;
+//   int? quantity;
+//
+//   Order({
+//     this.itemName,
+//     this.quantity,
+//   });
+//
+//   factory Order.fromJson(Map<String, dynamic> json) => Order(
+//     itemName: json["item_name"],
+//     quantity: json["quantity"],
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "item_name": itemName,
+//     "quantity": quantity,
+//   };
+// }
+//
+// class Payments {
+//   PosCa? posCash;
+//   PosCa? posCard;
+//
+//   Payments({
+//     this.posCash,
+//     this.posCard,
+//   });
+//
+//   factory Payments.fromJson(Map<String, dynamic> json) => Payments(
+//     posCash: json["Pos cash"] == null ? null : PosCa.fromJson(json["Pos cash"]),
+//     posCard: json["Pos card"] == null ? null : PosCa.fromJson(json["Pos card"]),
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "Pos cash": posCash?.toJson(),
+//     "Pos card": posCard?.toJson(),
+//   };
+// }
+//
+// class PosCa {
+//   String? name;
+//   double? amount;
+//
+//   PosCa({
+//     this.name,
+//     this.amount,
+//   });
+//
+//   factory PosCa.fromJson(Map<String, dynamic> json) => PosCa(
+//     name: json["name"],
+//     amount: json["amount"]?.toDouble(),
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "name": name,
+//     "amount": amount,
+//   };
+// }
+
+// To parse this JSON data, do
+//
+//     final reportModel = reportModelFromJson(jsonString);
+
 import 'dart:convert';
 
 ReportModel reportModelFromJson(String str) => ReportModel.fromJson(json.decode(str));
@@ -310,9 +529,9 @@ class ReportModel {
   dynamic totalDiscounts;
   dynamic totalCanceled;
   dynamic totalCanceledAmount;
-  List<CancelledOrdersDetail>? cancelledOrdersDetail;
-  int? totalIncomplete;
-  List<IncompleteOrdersDetail>? incompleteOrdersDetail;
+  List<OrdersDetail>? cancelledOrdersDetail;
+  dynamic totalIncomplete;
+  List<OrdersDetail>? incompleteOrdersDetail;
   List<Order>? orders;
 
   ReportModel({
@@ -337,9 +556,9 @@ class ReportModel {
     totalDiscounts: json["Total Discounts"],
     totalCanceled: json["Total Canceled"],
     totalCanceledAmount: json["Total Canceled Amount"],
-    cancelledOrdersDetail: json["Cancelled Orders Detail"] == null ? [] : List<CancelledOrdersDetail>.from(json["Cancelled Orders Detail"]!.map((x) => CancelledOrdersDetail.fromJson(x))),
+    cancelledOrdersDetail: json["Cancelled Orders Detail"] == null ? [] : List<OrdersDetail>.from(json["Cancelled Orders Detail"]!.map((x) => OrdersDetail.fromJson(x))),
     totalIncomplete: json["Total Incomplete"],
-    incompleteOrdersDetail: json["Incomplete Orders Detail"] == null ? [] : List<IncompleteOrdersDetail>.from(json["Incomplete Orders Detail"]!.map((x) => IncompleteOrdersDetail.fromJson(x))),
+    incompleteOrdersDetail: json["Incomplete Orders Detail"] == null ? [] : List<OrdersDetail>.from(json["Incomplete Orders Detail"]!.map((x) => OrdersDetail.fromJson(x))),
     orders: json["orders"] == null ? [] : List<Order>.from(json["orders"]!.map((x) => Order.fromJson(x))),
   );
 
@@ -358,18 +577,20 @@ class ReportModel {
   };
 }
 
-class CancelledOrdersDetail {
+class OrdersDetail {
   String? orderId;
   String? amount;
   String? deliveryType;
   String? cancelReason;
   String? cancelBy;
-  double? discounts;
+  String? discounts;
   String? userName;
   String? mobile;
   String? notes;
+  String? paymentType;
+  String? orderStatus;
 
-  CancelledOrdersDetail({
+  OrdersDetail({
     this.orderId,
     this.amount,
     this.deliveryType,
@@ -379,18 +600,22 @@ class CancelledOrdersDetail {
     this.userName,
     this.mobile,
     this.notes,
+    this.paymentType,
+    this.orderStatus,
   });
 
-  factory CancelledOrdersDetail.fromJson(Map<String, dynamic> json) => CancelledOrdersDetail(
+  factory OrdersDetail.fromJson(Map<String, dynamic> json) => OrdersDetail(
     orderId: json["order_id"],
     amount: json["amount"],
     deliveryType: json["delivery_type"],
     cancelReason: json["cancel_reason"],
     cancelBy: json["cancel_by"],
-    discounts: json["discounts"]?.toDouble(),
+    discounts: json["discounts"],
     userName: json["user_name"],
     mobile: json["mobile"],
     notes: json["notes"],
+    paymentType: json["payment_type"],
+    orderStatus: json["order_status"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -403,50 +628,8 @@ class CancelledOrdersDetail {
     "user_name": userName,
     "mobile": mobile,
     "notes": notes,
-  };
-}
-
-class IncompleteOrdersDetail {
-  String? orderId;
-  String? amount;
-  String? paymentType;
-  String? deliveryType;
-  String? orderStatus;
-  String? userName;
-  String? mobile;
-  String? notes;
-
-  IncompleteOrdersDetail({
-    this.orderId,
-    this.amount,
-    this.paymentType,
-    this.deliveryType,
-    this.orderStatus,
-    this.userName,
-    this.mobile,
-    this.notes,
-  });
-
-  factory IncompleteOrdersDetail.fromJson(Map<String, dynamic> json) => IncompleteOrdersDetail(
-    orderId: json["order_id"],
-    amount: json["amount"],
-    paymentType: json["payment_type"],
-    deliveryType: json["delivery_type"],
-    orderStatus: json["order_status"],
-    userName: json["user_name"],
-    mobile: json["mobile"],
-    notes: json["notes"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "order_id": orderId,
-    "amount": amount,
     "payment_type": paymentType,
-    "delivery_type": deliveryType,
     "order_status": orderStatus,
-    "user_name": userName,
-    "mobile": mobile,
-    "notes": notes,
   };
 }
 
@@ -471,37 +654,41 @@ class Order {
 }
 
 class Payments {
-  PosCa? posCash;
-  PosCa? posCard;
+  PosCard? posCash;
+  PosCard? posCard;
+  PosCard? totalSale;
 
   Payments({
     this.posCash,
     this.posCard,
+    this.totalSale,
   });
 
   factory Payments.fromJson(Map<String, dynamic> json) => Payments(
-    posCash: json["Pos cash"] == null ? null : PosCa.fromJson(json["Pos cash"]),
-    posCard: json["Pos card"] == null ? null : PosCa.fromJson(json["Pos card"]),
+    posCash: json["Pos cash"] == null ? null : PosCard.fromJson(json["Pos cash"]),
+    posCard: json["Pos card"] == null ? null : PosCard.fromJson(json["Pos card"]),
+    totalSale: json["Total sale"] == null ? null : PosCard.fromJson(json["Total sale"]),
   );
 
   Map<String, dynamic> toJson() => {
     "Pos cash": posCash?.toJson(),
     "Pos card": posCard?.toJson(),
+    "Total sale": totalSale?.toJson(),
   };
 }
 
-class PosCa {
+class PosCard {
   String? name;
-  double? amount;
+  String? amount;
 
-  PosCa({
+  PosCard({
     this.name,
     this.amount,
   });
 
-  factory PosCa.fromJson(Map<String, dynamic> json) => PosCa(
+  factory PosCard.fromJson(Map<String, dynamic> json) => PosCard(
     name: json["name"],
-    amount: json["amount"]?.toDouble(),
+    amount: json["amount"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -509,4 +696,5 @@ class PosCa {
     "amount": amount,
   };
 }
+
 
