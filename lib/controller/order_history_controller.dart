@@ -289,24 +289,27 @@ class OrderHistoryController extends GetxController {
             width: PosTextSize.size1,
           )),
     ]);
-
-    printer.row([
-      PosColumn(
-          text: 'Tax',
-          width: 6,
-          styles: const PosStyles(
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          )),
-      PosColumn(
-          text: double.parse(order.tax.toString()).toStringAsFixed(2),
-          width: 6,
-          styles: const PosStyles(
-            align: PosAlign.right,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          )),
-    ]);
+    if (double.parse(order.tax!)
+        .toStringAsFixed(2) != 0.00) {
+      printer.row([
+        PosColumn(
+            text: 'Tax',
+            width: 6,
+            styles: PosStyles(
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+        PosColumn(
+            text: "$currencySymbol${double.parse(order.tax!)
+                .toStringAsFixed(2)}",
+            width: 6,
+            styles: PosStyles(
+              align: PosAlign.right,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+      ]);
+    }
 
     if (order.discounts != null) {
       printer.row([

@@ -35,6 +35,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
+
 // import 'package:pos/model/common_res.dart';
 import 'package:pos/model/report_model.dart';
 import 'package:pos/model/single_restaurants_details_model.dart';
@@ -246,20 +247,22 @@ class ReportController extends GetxController {
   Rx<OrdersDetail> reportModelCancelledOrdersData = OrdersDetail().obs;
   Rx<OrdersDetail> reportModelIncompleteOrdersData = OrdersDetail().obs;
   Rx<ReportModel> reportModelData = ReportModel().obs;
+  RxBool isLoading = false.obs;
+  RxBool buttonDisable = false.obs;
 
   String? posIp;
   int? posPort;
 
-
   final box = GetStorage();
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     posIp = box.read(Constants.posIp);
     posPort = box.read(Constants.posPort);
-    callGetResturantDetailsRef = _orderCustimizationController
-        .callGetRestaurantsDetails();
+    callGetResturantDetailsRef =
+        _orderCustimizationController.callGetRestaurantsDetails();
   }
 
   Future<BaseModel<ReportModel>>? reportsApiCall() async {
@@ -286,10 +289,7 @@ class ReportController extends GetxController {
   }
 
   void testPrintPOS(
-    String printerIp,
-    int port,
-    BuildContext ctx,
-  ) async {
+      String printerIp, int port, BuildContext ctx, bool value) async {
     // TODO Don't forget to choose printer's paper size
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
@@ -311,7 +311,7 @@ class ReportController extends GetxController {
         var date = DateTime.parse(DateTime.now().toString());
         var formattedDate = "${date.day}-${date.month}-${date.year} ${newDate}";
         print("date ${formattedDate}");
-        printPOSReceipt(printer, restaurantDetails, formattedDate);
+        printPOSReceipt(printer, restaurantDetails, formattedDate, value);
         print(
             'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
       } else {
@@ -324,7 +324,8 @@ class ReportController extends GetxController {
   printPOSReceipt(
       NetworkPrinter printer,
       BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails,
-      String date) {
+      String date,
+      bool value) {
     // // Print image
     // final ByteData data = await rootBundle.load('assets/rabbit_black.jpg');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -349,25 +350,32 @@ class ReportController extends GetxController {
     // printer.text('Web: www.example.com',
     //     styles: PosStyles(align: PosAlign.center), linesAfter: 1);
     printer.hr();
-    printer.row([
-      PosColumn(text: 'Sold Item Names', width: 7),
-      PosColumn(
-          text: 'Total Quantity',
-          width: 5,
-          styles: PosStyles(align: PosAlign.right)),
-    ]);
-    for (int index = 0; index < reportModelData.value.orders!.length; index++) {
-      Order reportDetailOrderModel = reportModelData.value.orders![index];
+    if (value == true) {
       printer.row([
-        PosColumn(text: reportDetailOrderModel.itemName.toString(), width: 11),
+        PosColumn(text: 'Sold Item Names', width: 7),
         PosColumn(
-            text: reportDetailOrderModel.quantity.toString(),
-            width: 1,
+            text: 'Total Quantity',
+            width: 5,
             styles: PosStyles(align: PosAlign.right)),
       ]);
+      for (int index = 0;
+          index < reportModelData.value.orders!.length;
+          index++) {
+        Order reportDetailOrderModel = reportModelData.value.orders![index];
+        printer.row([
+          PosColumn(
+              text: reportDetailOrderModel.itemName.toString(), width: 11),
+          PosColumn(
+              text: reportDetailOrderModel.quantity.toString(),
+              width: 1,
+              styles: PosStyles(align: PosAlign.right)),
+        ]);
+      }
     }
 
-    printer.hr(ch: '=', linesAfter: 1);
+    if (value == true) {
+      printer.hr(ch: '=', linesAfter: 1);
+    }
     printer.row([
       PosColumn(text: 'User Name', width: 3),
       PosColumn(
@@ -375,65 +383,61 @@ class ReportController extends GetxController {
       PosColumn(
           text: 'Amount', width: 3, styles: PosStyles(align: PosAlign.right)),
     ]);
-    // for (int index = 0;
-    //     index < reportModelData.value.payments!.posCash!.name!.length;
-    //     index++) {
-      // Payments reportDetailModel = reportModelData.value.payments!.posCash.name;
-    reportModelData.value.payments!.posCash!.name != null ?  printer.row([
-        PosColumn(
-            text: reportModelData.value.payments!.posCash!.name!.toString(),
-            width: 4),
-        PosColumn(
-            text: "Pos Cash Amount",
-            width: 5,
-            styles: PosStyles(align: PosAlign.center)),
-        PosColumn(
-            text:
-                "${reportModelData.value.payments!.posCash!.amount!.toString()}",
-            width: 3,
-            styles: PosStyles(align: PosAlign.right)),
-      ]): printer.row([
-      PosColumn(
-          text: 'No data',
-          width: 4),
-      PosColumn(
-          text: "Pos Cash Amount",
-          width: 5,
-          styles: PosStyles(align: PosAlign.center)),
-      PosColumn(
-          text:
-          "${reportModelData.value.payments!.posCash!.amount!.toString()}",
-          width: 3,
-          styles: PosStyles(align: PosAlign.right)),
-    ]);
+    reportModelData.value.payments!.posCash!.name != null
+        ? printer.row([
+            PosColumn(
+                text: reportModelData.value.payments!.posCash!.name!.toString(),
+                width: 4),
+            PosColumn(
+                text: "Pos Cash Amount",
+                width: 5,
+                styles: PosStyles(align: PosAlign.center)),
+            PosColumn(
+                text:
+                    "${reportModelData.value.payments!.posCash!.amount!.toString()}",
+                width: 3,
+                styles: PosStyles(align: PosAlign.right)),
+          ])
+        : printer.row([
+            PosColumn(text: 'No data', width: 4),
+            PosColumn(
+                text: "Pos Cash Amount",
+                width: 5,
+                styles: PosStyles(align: PosAlign.center)),
+            PosColumn(
+                text:
+                    "${reportModelData.value.payments!.posCash!.amount!.toString()}",
+                width: 3,
+                styles: PosStyles(align: PosAlign.right)),
+          ]);
 
-    reportModelData.value.payments!.posCard!.name != null ? printer.row([
-        PosColumn(
-            text: reportModelData.value.payments!.posCard!.name!.toString(),
-            width: 4),
-        PosColumn(
-            text: "Pos Card Amount",
-            width: 5,
-            styles: PosStyles(align: PosAlign.center)),
-        PosColumn(
-            text:
-                "${reportModelData.value.payments!.posCard!.amount!.toString()}",
-            width: 3,
-            styles: PosStyles(align: PosAlign.right)),
-      ]) : printer.row([
-      PosColumn(
-          text: 'No data',
-          width: 4),
-      PosColumn(
-          text: "Pos Card Amount",
-          width: 5,
-          styles: PosStyles(align: PosAlign.center)),
-      PosColumn(
-          text:
-          "${reportModelData.value.payments!.posCard!.amount!.toString()}",
-          width: 3,
-          styles: PosStyles(align: PosAlign.right)),
-    ]);
+    reportModelData.value.payments!.posCard!.name != null
+        ? printer.row([
+            PosColumn(
+                text: reportModelData.value.payments!.posCard!.name!.toString(),
+                width: 4),
+            PosColumn(
+                text: "Pos Card Amount",
+                width: 5,
+                styles: PosStyles(align: PosAlign.center)),
+            PosColumn(
+                text:
+                    "${reportModelData.value.payments!.posCard!.amount!.toString()}",
+                width: 3,
+                styles: PosStyles(align: PosAlign.right)),
+          ])
+        : printer.row([
+            PosColumn(text: 'No data', width: 4),
+            PosColumn(
+                text: "Pos Card Amount",
+                width: 5,
+                styles: PosStyles(align: PosAlign.center)),
+            PosColumn(
+                text:
+                    "${reportModelData.value.payments!.posCard!.amount!.toString()}",
+                width: 3,
+                styles: PosStyles(align: PosAlign.right)),
+          ]);
     // }
 
     ///For Pos cash and pos card
@@ -485,7 +489,7 @@ class ReportController extends GetxController {
     printer.row([
       PosColumn(text: 'Todays Total Discounts', width: 8),
       PosColumn(
-          text: reportModelData.value.totalDiscounts!.toStringAsFixed(2),
+          text: reportModelData.value.totalDiscounts!.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
@@ -506,18 +510,27 @@ class ReportController extends GetxController {
     printer.row([
       PosColumn(text: 'Todays Total Cancelled Amount', width: 8),
       PosColumn(
-          text: double.parse(reportModelData.value.totalCanceledAmount!.toString()).toStringAsFixed(2),
+          text: double.parse(
+                  reportModelData.value.totalCanceledAmount!.toString())
+              .toStringAsFixed(2),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
-
+    if (reportModelData.value.payments != null) {
+      printer.row([
+        PosColumn(text: 'Todays Total Sale', width: 8),
+        PosColumn(
+            text: reportModelData.value.payments!.totalSale!.amount.toString(),
+            width: 4,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+    }
 
     printer.hr(ch: '=', linesAfter: 1);
 
     printer.feed(2);
     printer.text('Report version 3.66F Thank you!',
         styles: PosStyles(align: PosAlign.center, bold: true));
-
 
     printer.feed(1);
     printer.cut();

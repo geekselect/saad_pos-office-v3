@@ -505,24 +505,27 @@ class _PosPaymentState extends State<PosPayment> {
             width: PosTextSize.size1,
           )),
     ]);
-
-    printer.row([
-      PosColumn(
-          text: 'Tax',
-          width: 6,
-          styles: PosStyles(
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          )),
-      PosColumn(
-          text: "$currencySymbol${double.parse(orderData.tax!).toStringAsFixed(2)}",
-          width: 6,
-          styles: PosStyles(
-            align: PosAlign.right,
-            height: PosTextSize.size1,
-            width: PosTextSize.size1,
-          )),
-    ]);
+    if (double.parse(orderData.tax!)
+        .toStringAsFixed(2) != 0.00) {
+      printer.row([
+        PosColumn(
+            text: 'Tax',
+            width: 6,
+            styles: PosStyles(
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+        PosColumn(
+            text: "$currencySymbol${double.parse(orderData.tax!)
+                .toStringAsFixed(2)}",
+            width: 6,
+            styles: PosStyles(
+              align: PosAlign.right,
+              height: PosTextSize.size1,
+              width: PosTextSize.size1,
+            )),
+      ]);
+    }
 
     if (orderData.discounts != null) {
       printer.row([

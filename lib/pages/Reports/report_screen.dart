@@ -861,15 +861,20 @@
 //   }
 // }
 
+import 'dart:async';
+
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pos/model/report_model.dart';
+import 'package:pos/pages/OrderHistory/order_history.dart';
 import 'package:pos/pages/Reports/report_controller.dart';
 import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
 import 'package:pos/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../retrofit/base_model.dart';
 
@@ -888,9 +893,8 @@ class Reports extends StatelessWidget {
       ),
       body: Container(
           decoration: BoxDecoration(
-              color: Colors.red.shade50,
               image: DecorationImage(
-                image: AssetImage('images/ic_background_image.png'),
+                image: AssetImage('images/bg_image.png'),
                 fit: BoxFit.cover,
               )),
           child: FutureBuilder<BaseModel<ReportModel>>(
@@ -908,796 +912,782 @@ class Reports extends StatelessWidget {
 
                   // if we got our data
                 } else if (snapshot.hasData) {
-                  // Extracting data from snapshot object
-                  // final data = snapshot.data as String;
-                  // return Container();
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "Payments",
-                          style: TextStyle(
-                              color: Colors.red.shade400,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        height: 80,
-                        width: double.infinity,
-                        // padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: const [
-                                Expanded(
-                                  child: Center(
-                                    child: Text(
-                                      "Name",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Center(
-                                    child: Text(
-                                      "Type",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Center(
-                                    child: Text(
-                                      "Amount",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(height: 20),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 6), // changes position of shadow
                                 ),
                               ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Center(
-                                        child: Text(_reportController
-                                                    .reportModelData
-                                                    .value
-                                                    .payments!
-                                                    .posCash!
-                                                    .name !=
-                                                null
-                                            ? _reportController.reportModelData
-                                                .value.payments!.posCash!.name!
-                                                .toString()
-                                            : "No data"))),
-                                const Expanded(
-                                    child: Center(child: Text("POS Cash"))),
-                                Expanded(
-                                    child: Center(
-                                        child: Text(double.parse(_reportController
-                                            .reportModelData
-                                            .value
-                                            .payments!
-                                            .posCash!
-                                            .amount!).toStringAsFixed(2)))),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Center(
-                                        child: Text(
-                                  _reportController.reportModelData.value
-                                              .payments!.posCard!.name !=
-                                          null
-                                      ? _reportController.reportModelData.value
-                                          .payments!.posCard!.name!
-                                          .toString()
-                                      : "No data",
-                                ))),
-                                const Expanded(
-                                    child: Center(child: Text("POS Card"))),
-                                Expanded(
-                                    child: Center(
-                                        child: Text(double.parse(_reportController
-                                            .reportModelData
-                                            .value
-                                            .payments!
-                                            .posCard!
-                                            .amount!
-                                        ).toStringAsFixed(2)))),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Center(
-                                        child: Text(
-                                  "Total Sale",
-                                ))),
-                                 Expanded(
-                                    child: Center(child: Text(_reportController
-                                        .reportModelData
-                                        .value.payments!.totalSale!.name !=
-                                        null
-                                        ?
-                                    _reportController
-                                        .reportModelData
-                                        .value.payments!.totalSale!.name.toString() : ''))),
-                                Expanded(
-                                    child: Center(
-                                        child: Text(double.parse(_reportController
-                                            .reportModelData
-                                            .value.payments!.totalSale!
-                                            .amount!
-                                        ).toStringAsFixed(2)))),
-                              ],
-                            ),
-                          ],
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Todays Shift",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height: 40,
+                                child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _reportController.reportModelData.value.todaysShifts!.length + 1,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      if (index == 0) {
+                                        // This is the first item, which is the button
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            if (!_reportController.buttonDisable
+                                                .value) {
+                                              final prefs = await SharedPreferences
+                                                  .getInstance();
+                                              prefs.setString(
+                                                  Constants.shiftCode.toString(),
+                                                  '');
+                                              _reportController.isLoading.value = true;
+                                              _reportController.buttonDisable.value = true;
+                                              _reportController.reportsApiCall();
+                                              Future.delayed(
+                                                  Duration(seconds: 3), () {
+                                                _reportController.isLoading.value =
+                                                false;
+                                              });
+                                              Timer(Duration(seconds: 5), () {
+                                                _reportController.buttonDisable
+                                                    .value = false;
+                                              });
+                                            } else {
+                                              print("button disabled");
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                            margin: EdgeInsets.symmetric(horizontal: 8),
+                                            decoration: BoxDecoration(
+                                              color: Color(Constants.colorTheme),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "Current Shift",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            if (!_reportController.buttonDisable
+                                                .value) {
+                                              final prefs = await SharedPreferences
+                                                  .getInstance();
+                                              prefs.setString(
+                                                  Constants.shiftCode.toString(),
+                                                  _reportController.reportModelData
+                                                      .value.todaysShifts![index - 1]
+                                                      .shiftCode.toString());
+                                              _reportController.isLoading.value =
+                                              true;
+                                              _reportController.buttonDisable.value =
+                                              true;
+                                              _reportController.reportsApiCall();
+                                              Future.delayed(
+                                                  Duration(seconds: 3), () {
+                                                _reportController.isLoading.value =
+                                                false;
+                                              });
+                                              Timer(Duration(seconds: 5), () {
+                                                _reportController.buttonDisable
+                                                    .value = false;
+                                              });
+                                            } else {
+                                              print("button disabled");
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 6, horizontal: 12),
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            decoration: BoxDecoration(
+                                                color: Color(Constants.colorTheme),
+                                                borderRadius: BorderRadius.circular(
+                                                    10)),
+                                            child: Center(
+                                              child: IntrinsicWidth(
+                                                child: Text(
+                                                  "${_reportController.reportModelData
+                                                      .value.todaysShifts![index - 1]
+                                                      .shiftName}",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 17,
+                                                      fontWeight: FontWeight.w700),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "Orders",
-                          style: TextStyle(
-                              color: Colors.red.shade400,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Expanded(
-                        child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: snapshot.data!.data!.orders!.length + 1,
-                            itemBuilder: (BuildContext context, int index) {
-                              if (index ==
-                                  snapshot.data!.data!.orders!.length) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(height: 10),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                        Obx(()=> Expanded(
+                            child: _reportController.isLoading.value == true ? Center(
+                              child: CircularProgressIndicator(
+                                color: Color(Constants.colorTheme),
+                              ),
+                            ) : Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    padding:
+                                    EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: IntrinsicWidth(
                                       child: Text(
-                                        "Cancelled Orders Detail",
+                                        "Payments",
                                         style: TextStyle(
-                                            color: Colors.red.shade400,
+                                            color: Colors.white,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ),
-                                    ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: ClampingScrollPhysics(),
-                                        padding: EdgeInsets.zero,
-                                        itemCount: snapshot.data!.data!
-                                                .cancelledOrdersDetail!.length +
-                                            1,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          if (index ==
-                                              snapshot
-                                                  .data!.data!.cancelledOrdersDetail!.length) {
-                                            return Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(height: 10),
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                  margin: EdgeInsets.symmetric(vertical: 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: Offset(0, 6), // changes position of shadow
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${_reportController.reportModelData.value.payments!.posCash!.name.toString()} (${_reportController.reportModelData.value.currentShift ?? ''})',
+                                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Column(
+                                        children: [
+                                          Row(
+                                            children: const [
+                                              Expanded(
+                                                child: Center(
                                                   child: Text(
-                                                    "Incomplete Orders Detail",
+                                                    "Type",
                                                     style: TextStyle(
-                                                        color: Colors.red.shade400,
-                                                        fontSize: 18,
                                                         fontWeight: FontWeight.w600),
                                                   ),
                                                 ),
-                                                ListView.builder(
-                                                    shrinkWrap: true,
-                                                    physics: ClampingScrollPhysics(),
-                                                    padding: EdgeInsets.zero,
-                                                    itemCount: snapshot.data!.data!
-                                                        .incompleteOrdersDetail!.length,
-                                                    itemBuilder:
-                                                        (BuildContext context, int index) {
-
-                                                        _reportController
-                                                            .reportModelIncompleteOrdersData
-                                                            .value = snapshot.data!
-                                                            .data!.incompleteOrdersDetail![
-                                                        index];
-                                                        return Container(
-                                                          color: Colors.white,
-                                                          margin: EdgeInsets.symmetric(
-                                                              vertical: 4, horizontal: 20),
-                                                          child: ListTile(
-                                                            dense: true,
-                                                            contentPadding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 10),
-                                                            title: Column(
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment.start,
-                                                              children: [
-                                                                commonRow(
-                                                                  "Order ID:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.orderId.toString()}",
-                                                                ),
-                                                                commonRow(
-                                                                  "Amount:",
-                                                                  "${double.parse(_reportController.reportModelIncompleteOrdersData.value.amount.toString()).toStringAsFixed(2)}",
-                                                                ),
-                                                                commonRow(
-                                                                  "Delivery Type:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.deliveryType.toString()}",
-                                                                ),
-                                                                commonRow(
-                                                                  "User Name:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.userName.toString()}",
-                                                                ),
-                                                                commonRow(
-                                                                  "User Mobile:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.mobile.toString()}",
-                                                                ),
-                                                                commonRow(
-                                                                  "Payment Type:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.paymentType.toString()}",
-                                                                ),
-                                                                commonRow(
-                                                                  "Order Status:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.orderStatus.toString()}",
-                                                                ),
-                                                                commonRow(
-                                                                  "Notes:",
-                                                                  "${_reportController.reportModelIncompleteOrdersData.value.notes.toString()}",
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ), // title: Text("List item $index")),
-                                                        );
-
-                                                    }),
-                                                SizedBox(height: 5),
-                                              ],
-                                            );
-                                          } else {
-                                            _reportController
-                                                .reportModelCancelledOrdersData
-                                                .value = snapshot.data!
-                                                    .data!.cancelledOrdersDetail![
-                                                index];
-                                            return Container(
-                                              color: Colors.white,
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 4, horizontal: 20),
-                                              child: ListTile(
-                                                dense: true,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                title: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    commonRow(
-                                                      "Order ID:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.orderId.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "Amount:",
-                                                      "${double.parse(_reportController.reportModelCancelledOrdersData.value.amount.toString()).toStringAsFixed(2)}",
-                                                    ),
-                                                    commonRow(
-                                                      "Delivery Type:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.deliveryType.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "User Name:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.userName.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "User Mobile:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.mobile.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "Cancel By:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.cancelBy.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "Discounts:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.discounts.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "Cancel Reason:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.cancelReason.toString()}",
-                                                    ),
-                                                    commonRow(
-                                                      "Notes:",
-                                                      "${_reportController.reportModelCancelledOrdersData.value.notes.toString()}",
-                                                    ),
-                                                  ],
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Amount",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
                                                 ),
-                                              ), // title: Text("List item $index")),
-                                            );
-                                          }
-                                        }),
-                                    SizedBox(height: 5),
-                                  ],
-                                );
-                              } else {
-                                _reportController.reportModelOrderData.value =
-                                    snapshot.data!.data!.orders![index];
-                                return Column(
-                                  children: [
-                                    Container(
-                                      color: Colors.white,
-                                      margin: EdgeInsets.symmetric(
-                                          vertical: 2, horizontal: 20),
-                                      child: ListTile(
-                                        dense: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                "Item Name: ${_reportController.reportModelOrderData.value.itemName.toString()}",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14),
                                               ),
-                                            ),
-                                            Expanded(
-                                              flex: 2,
-                                              child: Text(
-                                                "Quantity : ${_reportController.reportModelOrderData.value.quantity.toString()}",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Sum",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ), // title: Text("List item $index")),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Takeaway",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Dining",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Incomplete",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Cancelled",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Discounts",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                    "Total Orders",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Center(child: Text('Pos Cash'))),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(
+
+                                                  double
+                                                      .parse(
+                                                      _reportController.reportModelData.value.payments!
+                                                          .posCash!
+                                                          .amount!
+                                                          .toString())
+                                                      .toStringAsFixed(
+                                                      2)),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),)),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),)),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),)),
+                                              ),
+              Expanded(
+              child: Center(
+              child: Text(' - - - - - - - - - ', style: TextStyle(
+              fontWeight: FontWeight.bold
+              ),)),
+              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),)),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),)),
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),)),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(children: [
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        'Pos Card'))),
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        double
+                                                            .parse(
+                                                            _reportController.reportModelData.value.payments!
+                                                                .posCard!
+                                                                .amount!
+                                                                .toString())
+                                                            .toStringAsFixed(
+                                                            2)))),
+                                            Expanded(
+                                              child: Center(
+                                                  child: Text(
+                                                      double
+                                                          .parse(
+                                                          _reportController.reportModelData.value.payments!
+                                                              .totalSale!
+                                                              .amount!
+                                                              .toString())
+                                                          .toStringAsFixed(
+                                                          2))),),
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        _reportController.reportModelData.value
+                                                            .totalTakeaway
+                                                            .toString()))),
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        _reportController.reportModelData.value
+                                                            .totalDining
+                                                            .toString()))),
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        _reportController.reportModelData.value
+                                                            .totalIncomplete
+                                                            .toString()))),
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        _reportController.reportModelData.value
+                                                            .totalCanceled
+                                                            .toString()))),
+                                            Expanded(
+                                                child: Center(
+                                                    child: Text(
+                                                        double
+                                                            .parse(
+                                                            _reportController.reportModelData.value
+                                                                .totalDiscounts
+                                                                .toString())
+                                                            .toStringAsFixed(
+                                                            2)))),
+                                            Expanded(
+                                              child: Center(
+                                                  child: Text(
+                                                      _reportController.reportModelData.value
+                                                          .totalOrders
+                                                          .toString())),),
+                                          ]),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: IntrinsicWidth(
+                                      child: Text(
+                                        "Orders",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                     ),
-                                  ],
-                                );
-                              }
-                            }),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Expanded(
+                                  child: Container(
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.withOpacity(0.3),
+                                                    spreadRadius: 5,
+                                                    blurRadius: 7,
+                                                    offset: Offset(0, 6), // changes position of shadow
+                                                  ),
+                                                ],
+                                                borderRadius: BorderRadius.circular(15)),
+                                            child: _reportController.reportModelData.value.orders!.isNotEmpty ? Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Item Name",
+                                                        style: TextStyle(
+                                                            color: Color(Constants.colorTheme),
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w600),
+                                                      ),
+                                                      Text(
+                                                        "Quantity",
+                                                        style: TextStyle(
+                                                            color: Color(Constants.colorTheme),
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w600),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 5,),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      padding: EdgeInsets.zero,
+                                                      itemCount: _reportController.reportModelData.value.orders!.length,
+                                                      itemBuilder: (BuildContext context, int index) {
+                                                        return Padding(
+                                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Image.asset("assets/images/fork.png", height: 10, width: 10,),
+                                                                  SizedBox(width: 5,),
+                                                                  Text(
+                                                                    _reportController.reportModelData.value.orders![index].itemName.toString(),
+                                                                    style: TextStyle(
+                                                                        color: Colors.black,
+                                                                        fontSize: 14,
+                                                                    fontWeight: FontWeight.w400),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(right: 16),
+                                                                child: Text(
+                                                                  _reportController.reportModelData.value.orders![index].quantity.toString(),
+                                                                  style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w400),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }),
+                                                ),
+                                              ],
+                                            ) : Center(
+                                              child: Text("No Orders"),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.withOpacity(0.3),
+                                                    spreadRadius: 5,
+                                                    blurRadius: 7,
+                                                    offset: Offset(0, 6), // changes position of shadow
+                                                  ),
+                                                ],
+                                                borderRadius: BorderRadius.circular(15)),
+                                            child: _reportController.reportModelData.value.incompleteOrdersDetail!.isNotEmpty ? Column(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    "Incomplete Orders",
+                                                    style: TextStyle(
+                                                        color: Color(Constants.colorTheme),
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 5,),
+                                                Expanded(
+                                                  child: ListView.separated(
+                                                      padding: EdgeInsets.zero,
+                                                      itemCount: _reportController.reportModelData.value.incompleteOrdersDetail!.length,
+                                                      itemBuilder: (BuildContext context, int index) {
+                                                        return Column(
+                                                          children: [
+                                                            CustomNewRow('Order ID', _reportController.reportModelData.value.incompleteOrdersDetail![index].orderId.toString()),
+                                                            CustomNewRow('User Name', _reportController.reportModelData.value.incompleteOrdersDetail![index].userName.toString()),
+                                                            CustomNewRow('Mobile',_reportController.reportModelData.value.incompleteOrdersDetail![index].mobile.toString()),
+                                                            CustomNewRow('Cancel By', _reportController.reportModelData.value.incompleteOrdersDetail![index].cancelBy ?? 'No Cancel'),
+                                                            CustomNewRow('Order Status', _reportController.reportModelData.value.incompleteOrdersDetail![index].orderStatus.toString()),
+                                                            CustomNewRow('Payment Type', _reportController.reportModelData.value.incompleteOrdersDetail![index].paymentType.toString()),
+                                                            CustomNewRow('Amount', _reportController.reportModelData.value.incompleteOrdersDetail![index].amount.toString()),
+                                                            CustomNewRow('Delivery Type', _reportController.reportModelData.value.incompleteOrdersDetail![index].deliveryType.toString()),
+                                                            CustomNewRow('Discounts', _reportController.reportModelData.value.incompleteOrdersDetail![index].discounts.toString()),
+                                                            CustomNewRow('Notes', _reportController.reportModelData.value.incompleteOrdersDetail![index].notes.toString()),
+                                                            CustomNewRow('Cancel Reason', _reportController.reportModelData.value.incompleteOrdersDetail![index].cancelReason ?? 'No Cancel'),
+                                                          ],
+                                                        );
+                                                      }, separatorBuilder: (BuildContext context, int index) {
+                                                        return Container(
+                                                            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                            child: LineWithCircles());
+                                                  },),
+                                                ),
+                                              ],
+                                            ) :  Center(
+                                              child: Text("No Incomplete Orders"),
+                                        ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.withOpacity(0.3),
+                                                    spreadRadius: 5,
+                                                    blurRadius: 7,
+                                                    offset: Offset(0, 6), // changes position of shadow
+                                                  ),
+                                                ],
+                                                borderRadius: BorderRadius.circular(15)),
+                                            child: _reportController.reportModelData.value.cancelledOrdersDetail!.isNotEmpty ? Column(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    "Cancelled Orders",
+                                                    style: TextStyle(
+                                                        color: Color(Constants.colorTheme),
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: ListView.separated(
+                                                      padding: EdgeInsets.zero,
+                                                      itemCount: _reportController.reportModelData.value.cancelledOrdersDetail!.length,
+                                                      itemBuilder: (BuildContext context, int index) {
+                                                        return  Column(
+                                                          children: [
+                                                            CustomNewRow('Order ID', _reportController.reportModelData.value.cancelledOrdersDetail![index].orderId.toString()),
+                                                            CustomNewRow('User Name', _reportController.reportModelData.value.cancelledOrdersDetail![index].userName.toString()),
+                                                            CustomNewRow('Mobile', _reportController.reportModelData.value.cancelledOrdersDetail![index].mobile.toString()),
+                                                            CustomNewRow('Cancel By', _reportController.reportModelData.value.cancelledOrdersDetail![index].cancelBy ?? 'No Cancel'),
+                                                            CustomNewRow('Order Status', _reportController.reportModelData.value.cancelledOrdersDetail![index].orderStatus ?? 'No Status'),
+                                                            CustomNewRow('Payment Type', _reportController.reportModelData.value.cancelledOrdersDetail![index].paymentType ?? 'No Payment'),
+                                                            CustomNewRow('Amount', _reportController.reportModelData.value.cancelledOrdersDetail![index].amount.toString()),
+                                                            CustomNewRow('Delivery Type', _reportController.reportModelData.value.cancelledOrdersDetail![index].deliveryType.toString()),
+                                                            CustomNewRow('Discounts', _reportController.reportModelData.value.cancelledOrdersDetail![index].discounts.toString()),
+                                                            CustomNewRow('Notes', _reportController.reportModelData.value.cancelledOrdersDetail![index].notes.toString()),
+                                                            CustomNewRow('Cancel Reason', _reportController.reportModelData.value.cancelledOrdersDetail![index].cancelReason ?? 'No Cancel'),
+                                                          ],
+                                                        );
+                                                      }, separatorBuilder: (BuildContext context, int index) {
+                                                    return Container(
+                                                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                        child: LineWithCircles());
+                                                  },),
+                                                ),
+                                              ],
+                                            ) :   Center(
+                                              child: Text("No Cancelled Orders"),
+                                        ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        Get.dialog(
+                                          AlertDialog(
+                                            title: Text('Print Confirmation'),
+                                            content: Text('Do you want to print with items?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  if (_printerController.printerModel.value.ipPos !=
+                                                      null) {
+                                                    print("POS ADDED");
+                                                    if (_printerController
+                                                        .printerModel.value.ipPos ==
+                                                        '' &&
+                                                        _printerController
+                                                            .printerModel.value.portPos ==
+                                                            '' ||
+                                                        _printerController
+                                                            .printerModel.value.ipPos ==
+                                                            null &&
+                                                            _printerController
+                                                                .printerModel.value.portPos ==
+                                                                null) {
+                                                      print("pos ip empty");
+                                                    } else {
+                                                      _reportController.testPrintPOS(
+                                                          _printerController
+                                                              .printerModel.value.ipPos!,
+                                                          int.parse(_printerController
+                                                              .printerModel.value.portPos!),
+                                                          context,
+                                                          true
+                                                      );
+                                                    }
+                                                  }
+                                                  Get.back();
+                                                },
+                                                child: Text('Yes'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  if (_printerController.printerModel.value.ipPos !=
+                                                      null) {
+                                                    print("POS ADDED");
+                                                    if (_printerController
+                                                        .printerModel.value.ipPos ==
+                                                        '' &&
+                                                        _printerController
+                                                            .printerModel.value.portPos ==
+                                                            '' ||
+                                                        _printerController
+                                                            .printerModel.value.ipPos ==
+                                                            null &&
+                                                            _printerController
+                                                                .printerModel.value.portPos ==
+                                                                null) {
+                                                      print("pos ip empty");
+                                                    } else {
+                                                      _reportController.testPrintPOS(
+                                                          _printerController
+                                                              .printerModel.value.ipPos!,
+                                                          int.parse(_printerController
+                                                              .printerModel.value.portPos!),
+                                                          context,
+                                                          false
+                                                      );
+                                                    }
+                                                  }
+                                                  Get.back();
+                                                },
+                                                child: Text('No'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                        // if (_printerController.printerModel.value.ipPos !=
+                                        //     null) {
+                                        //   print("POS ADDED");
+                                        //   if (_printerController
+                                        //                   .printerModel.value.ipPos ==
+                                        //               '' &&
+                                        //           _printerController
+                                        //                   .printerModel.value.portPos ==
+                                        //               '' ||
+                                        //       _printerController
+                                        //                   .printerModel.value.ipPos ==
+                                        //               null &&
+                                        //           _printerController
+                                        //                   .printerModel.value.portPos ==
+                                        //               null) {
+                                        //     print("pos ip empty");
+                                        //   } else {
+                                        //     _reportController.testPrintPOS(
+                                        //       _printerController
+                                        //           .printerModel.value.ipPos!,
+                                        //       int.parse(_printerController
+                                        //           .printerModel.value.portPos!),
+                                        //       context,
+                                        //     );
+                                        //   }
+                                        // }
+                                      },
+                                      child: Text("Print")),
+                                ),
 
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "Total Orders",
-                          style: TextStyle(
-                              color: Colors.red.shade400,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        // height: 50,
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total orders"),
-                                Text(_reportController
-                                    .reportModelData.value.totalOrders
-                                    .toString()),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total TakeAway"),
-                                Text(_reportController
-                                    .reportModelData.value.totalTakeaway
-                                    .toString()),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total Dine in"),
-                                Text(_reportController
-                                    .reportModelData.value.totalDining
-                                    .toString()),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total Discounts"),
-                                Text(double.parse(_reportController
-                                    .reportModelData.value.totalDiscounts!.toString())
-                                    .toStringAsFixed(2)),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total Cancelled Orders"),
-                                Text(_reportController
-                                    .reportModelData.value.totalCanceled!
-                                    .toString()),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total Incomplete Orders"),
-                                Text(_reportController
-                                    .reportModelData.value.totalIncomplete!
-                                    .toString()),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Todays total Cancelled Amount"),
-                                Text(_reportController
-                                    .reportModelData.value.totalCanceledAmount!.toString()),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5),
-
-                      ///For both but 2 future builders
-                      // Expanded(
-                      //   child: FutureBuilder<BaseModel<ReportCashModel>>(
-                      //     builder: (ctx, snapshot) {
-                      //       // Checking if future is resolved or not
-                      //       if (snapshot.connectionState == ConnectionState.done) {
-                      //         // If we got an error
-                      //         if (snapshot.hasError) {
-                      //           return Center(
-                      //             child: Text(
-                      //               '${snapshot.error} occurred',
-                      //               style: TextStyle(fontSize: 18),
-                      //             ),
-                      //           );
-                      //
-                      //           // if we got our data
-                      //         } else if (snapshot.hasData) {
-                      //           // Extracting data from snapshot object
-                      //           // final data = snapshot.data as String;
-                      //           return Center(
-                      //             child: ListView.builder(
-                      //               padding: EdgeInsets.zero,
-                      //                 itemCount: snapshot.data!.data!.data!.names!.length,
-                      //                 itemBuilder: (BuildContext context, int index) {
-                      //                   _reportController.posCashLength.value = snapshot.data!.data!.data!.amount!;
-                      //                   return Container(
-                      //                     color: Colors.white,
-                      //                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //                     child: ListTile(
-                      //                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      //                         title:  Text(
-                      //                           "${snapshot.data!.data!.data!.names![index].toString()}",
-                      //                           style: TextStyle(color: Colors.black, fontSize: 18),
-                      //                         ),
-                      //                         subtitle:  Text(
-                      //                           "Payment pos cash ${snapshot.data!.data!.data!.amount![index].toString()}",
-                      //                           style: TextStyle(color: Colors.black, fontSize: 15),
-                      //                         ),
-                      //                     ),  // title: Text("List item $index")),
-                      //                   );
-                      //                 }),
-                      //
-                      //
-                      //
-                      //             // Container(
-                      //             //   child: Column(
-                      //             //     children: [
-                      //             //      Row(
-                      //             //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //             //        children: [
-                      //             //          Text("Name"),
-                      //             //          Text("${snapshot.data!.data!.data!.names!.first.toString()}")
-                      //             //        ],
-                      //             //      ),
-                      //             //       SizedBox(height: 10,),
-                      //             //       Row(
-                      //             //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //             //         children: [
-                      //             //           Text("Amount"),
-                      //             //           Text("${snapshot.data!.data!.data!.amount!.first.toString()}")
-                      //             //         ],
-                      //             //       ),
-                      //             //     ],
-                      //             //   ),
-                      //             // ),
-                      //           );
-                      //         }
-                      //       }
-                      //
-                      //       // Displaying LoadingSpinner to indicate waiting state
-                      //       return Center(
-                      //         child: CircularProgressIndicator(),
-                      //       );
-                      //     },
-                      //
-                      //     // Future that needs to be resolved
-                      //     // inorder to display something on the Canvas
-                      //     future: _reportController.posCashCall(Constants.vendorId),
-                      //   ),
-                      // ),
-                      // Expanded(
-                      //   child: FutureBuilder<BaseModel<ReportCardModel>>(
-                      //     builder: (ctx, snapshot) {
-                      //       // Checking if future is resolved or not
-                      //       if (snapshot.connectionState == ConnectionState.done) {
-                      //         // If we got an error
-                      //         if (snapshot.hasError) {
-                      //           return Center(
-                      //             child: Text(
-                      //               '${snapshot.error} occurred',
-                      //               style: TextStyle(fontSize: 18),
-                      //             ),
-                      //           );
-                      //
-                      //           // if we got our data
-                      //         } else if (snapshot.hasData) {
-                      //           // Extracting data from snapshot object
-                      //           // final data = snapshot.data as String;
-                      //           return Center(
-                      //             child: ListView.builder(
-                      //                 padding: EdgeInsets.zero,
-                      //                 itemCount: snapshot.data!.data!.data!.names!.length,
-                      //                 itemBuilder: (BuildContext context, int index) {
-                      //                   _reportController.poscardlength.value = snapshot.data!.data!.data!.amount!;
-                      //                   return Container(
-                      //                     color: Colors.white,
-                      //                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //                     child: ListTile(
-                      //                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      //                       title:  Text(
-                      //                         "${snapshot.data!.data!.data!.names![index].toString()}",
-                      //                         style: TextStyle(color: Colors.black, fontSize: 18),
-                      //                       ),
-                      //                       subtitle:  Text(
-                      //                         "Payment pos card ${snapshot.data!.data!.data!.amount![index].toString()}",
-                      //                         style: TextStyle(color: Colors.black, fontSize: 15),
-                      //                       ),
-                      //                     ),  // title: Text("List item $index")),
-                      //                   );
-                      //                 }),
-                      //
-                      //
-                      //
-                      //             // Container(
-                      //             //   child: Column(
-                      //             //     children: [
-                      //             //      Row(
-                      //             //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //             //        children: [
-                      //             //          Text("Name"),
-                      //             //          Text("${snapshot.data!.data!.data!.names!.first.toString()}")
-                      //             //        ],
-                      //             //      ),
-                      //             //       SizedBox(height: 10,),
-                      //             //       Row(
-                      //             //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //             //         children: [
-                      //             //           Text("Amount"),
-                      //             //           Text("${snapshot.data!.data!.data!.amount!.first.toString()}")
-                      //             //         ],
-                      //             //       ),
-                      //             //     ],
-                      //             //   ),
-                      //             // ),
-                      //           );
-                      //         }
-                      //       }
-                      //
-                      //       // Displaying LoadingSpinner to indicate waiting state
-                      //       return Center(
-                      //         child: CircularProgressIndicator(),
-                      //       );
-                      //     },
-                      //
-                      //     // Future that needs to be resolved
-                      //     // inorder to display something on the Canvas
-                      //     future: _reportController.posCardCall(Constants.vendorId),
-                      //   ),
-                      // ),
-                      ///For both Pos card and also pos cash call in same futurebuilder
-                      // Expanded(
-                      //   child: FutureBuilder<List<dynamic>>(
-                      //     builder: (ctx, snapshot) {
-                      //       // Checking if future is resolved or not
-                      //       if (snapshot.connectionState == ConnectionState.done) {
-                      //         // If we got an error
-                      //         if (snapshot.hasError) {
-                      //           return Center(
-                      //             child: Text(
-                      //               '${snapshot.error} occurred',
-                      //               style: TextStyle(fontSize: 18),
-                      //             ),
-                      //           );
-                      //         } else if (snapshot.hasData) {
-                      //           // Combine the two lists
-                      //           List<dynamic> list1 = snapshot.data![0];
-                      //           List<dynamic> list2 = snapshot.data![1];
-                      //           List<dynamic> combinedList = [...list1, ...list2];
-                      //           // Build the ListView using the combined list
-                      //           return Center(
-                      //             child: ListView.builder(
-                      //               padding: EdgeInsets.zero,
-                      //               itemCount: combinedList.length,
-                      //               itemBuilder: (BuildContext context, int index) {
-                      //                 print("value..${combinedList[index].toJson()}");
-                      //
-                      //                 String subtitle = "Payment";
-                      //                 // Get the payment method from the current item
-                      //                var type = combinedList[index].runtimeType;
-                      //                print("type ${type}");
-                      //                 ReportCashModel? reportCashModel;
-                      //                 ReportCardModel? reportCardModel;
-                      //
-                      //                 // Check the payment method and call the appropriate model
-                      //                 if (type == ReportCashModel) {
-                      //                   // Call the Pos cash model
-                      //                   print("ABC");
-                      //                    reportCashModel = combinedList[index];
-                      //                    _reportController.posCashdata.value = reportCashModel!;
-                      //                   // posCashModel(combinedList[index]);
-                      //                 } else if (type == ReportCardModel) {
-                      //                   // Call the Pos card model
-                      //                   // posCardModel(combinedList[index]);
-                      //                    reportCardModel = combinedList[index];
-                      //                    _reportController.posCarddata.value = reportCardModel!;
-                      //                   print("DEF");
-                      //
-                      //                 }
-                      //
-                      //                 return type == ReportCashModel ?
-                      //                 reportCashModel!.data!.names!.length == 0 ? Container() :
-                      //                 Container(
-                      //                   color: Colors.white,
-                      //                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //                   child: ListTile(
-                      //                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      //                     title: Text(
-                      //                         reportCashModel.data!.names!.first.toString(),
-                      //                       style: TextStyle(color: Colors.black, fontSize: 18),
-                      //                     ),
-                      //                     subtitle: Text(
-                      //                        "Payement pos cash ${reportCashModel.data!.amount!.first.toString()}",
-                      //                       style: TextStyle(color: Colors.black, fontSize: 15),
-                      //                     )
-                      //                   ),
-                      //                 ) :
-                      //                 reportCardModel!.data!.names!.length == 0 ? Container() :
-                      //                 Container(
-                      //                   color: Colors.white,
-                      //                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //                   child: ListTile(
-                      //                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      //                     title: Text(
-                      //                       reportCardModel.data!.names!.first.toString(),
-                      //                       style: TextStyle(color: Colors.black, fontSize: 18),
-                      //                     ),
-                      //                     subtitle:  Text(
-                      //                       "Payement pos card ${reportCardModel.data!.amount!.first.toString()}",
-                      //                       style: TextStyle(color: Colors.black, fontSize: 15),
-                      //                     ),
-                      //                   ),
-                      //                 );
-                      //               },
-                      //             ),
-                      //             // child: ListView.builder(
-                      //             //   padding: EdgeInsets.zero,
-                      //             //   itemCount: combinedList.length,
-                      //             //   itemBuilder: (BuildContext context, int index) {
-                      //             //   print("value..${combinedList[index].toJson()}");
-                      //             //
-                      //             //     String subtitle = "Payment";
-                      //             //     return Container(
-                      //             //       color: Colors.white,
-                      //             //       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //             //       child: ListTile(
-                      //             //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      //             //         title: Text(
-                      //             //           "${combinedList[index].toString()}",
-                      //             //           style: TextStyle(color: Colors.black, fontSize: 18),
-                      //             //         ),
-                      //             //         subtitle: Text(
-                      //             //           subtitle,
-                      //             //           style: TextStyle(color: Colors.black, fontSize: 15),
-                      //             //         ),
-                      //             //       ),
-                      //             //     );
-                      //             //   },
-                      //             // ),
-                      //           );
-                      //         }
-                      //       }
-                      //
-                      //       // Displaying LoadingSpinner to indicate waiting state
-                      //       return Center(
-                      //         child: CircularProgressIndicator(),
-                      //       );
-                      //     },
-                      //
-                      //     // Future that needs to be resolved
-                      //     // inorder to display something on the Canvas
-                      //     future: Future.wait([
-                      //       _reportController.posCashCall(Constants.vendorId),
-                      //       _reportController.posCardCall(Constants.vendorId)
-                      //     ]),
-                      //   ),
-                      // ),
-                      ///End futurebuilder for both
-
-                      Align(
-                        alignment: Alignment.center,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              if (_printerController.printerModel.value.ipPos !=
-                                  null) {
-                                print("POS ADDED");
-                                if (_printerController
-                                                .printerModel.value.ipPos ==
-                                            '' &&
-                                        _printerController
-                                                .printerModel.value.portPos ==
-                                            '' ||
-                                    _printerController
-                                                .printerModel.value.ipPos ==
-                                            null &&
-                                        _printerController
-                                                .printerModel.value.portPos ==
-                                            null) {
-                                  print("pos ip empty");
-                                } else {
-                                  _reportController.testPrintPOS(
-                                    _printerController
-                                        .printerModel.value.ipPos!,
-                                    int.parse(_printerController
-                                        .printerModel.value.portPos!),
-                                    context,
-                                  );
-                                }
-                              }
-                            },
-                            child: Text("Reports")),
-
-                      ),
-                      SizedBox(height: 5),
-                    ],
+                        SizedBox(height: 20),
+                      ],
+                    ),
                   );
                   // : Center(
                   //     child: Text("No data"),
@@ -1736,5 +1726,30 @@ Widget commonRow(String text1, String text2) {
         ),
       ),
     ],
+  );
+}
+
+Widget CustomNewRow(String text1, String text2){
+  return   Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          text1,
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
+        ),
+        Text(
+          text2,
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w400),
+        ),
+      ],
+    ),
   );
 }

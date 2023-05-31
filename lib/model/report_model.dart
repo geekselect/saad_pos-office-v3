@@ -522,6 +522,8 @@ ReportModel reportModelFromJson(String str) => ReportModel.fromJson(json.decode(
 String reportModelToJson(ReportModel data) => json.encode(data.toJson());
 
 class ReportModel {
+  List<TodaysShift>? todaysShifts;
+  String? currentShift;
   Payments? payments;
   dynamic totalOrders;
   dynamic totalTakeaway;
@@ -535,7 +537,9 @@ class ReportModel {
   List<Order>? orders;
 
   ReportModel({
+    this.todaysShifts,
     this.payments,
+    this.currentShift,
     this.totalOrders,
     this.totalTakeaway,
     this.totalDining,
@@ -549,8 +553,10 @@ class ReportModel {
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
+    todaysShifts: json["Todays Shifts"] == null ? [] : List<TodaysShift>.from(json["Todays Shifts"]!.map((x) => TodaysShift.fromJson(x))),
     payments: json["payments"] == null ? null : Payments.fromJson(json["payments"]),
     totalOrders: json["Total Orders"],
+    currentShift: json["Current Shift"],
     totalTakeaway: json["Total Takeaway"],
     totalDining: json["Total Dining"],
     totalDiscounts: json["Total Discounts"],
@@ -563,8 +569,10 @@ class ReportModel {
   );
 
   Map<String, dynamic> toJson() => {
+    "Todays Shifts": todaysShifts == null ? [] : List<dynamic>.from(todaysShifts!.map((x) => x.toJson())),
     "payments": payments?.toJson(),
     "Total Orders": totalOrders,
+    "Current Shift": currentShift,
     "Total Takeaway": totalTakeaway,
     "Total Dining": totalDining,
     "Total Discounts": totalDiscounts,
@@ -574,6 +582,26 @@ class ReportModel {
     "Total Incomplete": totalIncomplete,
     "Incomplete Orders Detail": incompleteOrdersDetail == null ? [] : List<dynamic>.from(incompleteOrdersDetail!.map((x) => x.toJson())),
     "orders": orders == null ? [] : List<dynamic>.from(orders!.map((x) => x.toJson())),
+  };
+}
+
+class TodaysShift {
+  String? shiftCode;
+  String? shiftName;
+
+  TodaysShift({
+    this.shiftCode,
+    this.shiftName,
+  });
+
+  factory TodaysShift.fromJson(Map<String, dynamic> json) => TodaysShift(
+    shiftCode: json["Shift code"],
+    shiftName: json["Shift name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "Shift code": shiftCode,
+    "Shift name": shiftName,
   };
 }
 
