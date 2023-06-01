@@ -200,7 +200,7 @@ abstract class RestClient {
   //   @Path() int? user_id,
   // );
 
-  @POST("possalebydate")
+  @POST("posTotalSaleByShiftCodeDate")
   Future<ReportByDateModel> reportsApiByDate(@Body() Map<String, dynamic> map);
 
   @GET("Pos-User-record/{vendorId}/{user_id}")

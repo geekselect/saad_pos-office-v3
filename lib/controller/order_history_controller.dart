@@ -191,12 +191,20 @@ class OrderHistoryController extends GetxController {
           styles: const PosStyles(align: PosAlign.left));
     }
 
-    if (order.paymentType.toString() == "INCOMPLETE ORDER") {
-      printer.text('Payment Status : INCOMPLETE PAYMENT',
-          styles: const PosStyles(align: PosAlign.left));
+    if (order.paymentType == "INCOMPLETE ORDER") {
+      printer.text('Payment Status : UnPaid',
+          styles: PosStyles(align: PosAlign.left));
     } else {
-      printer.text('Payment Status : ${order.paymentType.toString()}',
-          styles: const PosStyles(align: PosAlign.left));
+      if(order.paymentType == "POS CASH TAKEAWAY"){
+        printer.text('Payment Status : POS CASH',
+            styles: PosStyles(align: PosAlign.left));
+      }else if(order.paymentType == "POS CARD TAKEAWAY"){
+        printer.text('Payment Status : POS CARD',
+            styles: PosStyles(align: PosAlign.left));
+      } else {
+        printer.text('Payment Status : ${order.paymentType}',
+            styles: PosStyles(align: PosAlign.left));
+      }
     }
 
     printer.text('Order Type :  ${order.deliveryType.toString()}',
@@ -290,7 +298,7 @@ class OrderHistoryController extends GetxController {
           )),
     ]);
     if (double.parse(order.tax!)
-        .toStringAsFixed(2) != 0.00) {
+        .toStringAsFixed(2) != "0.00") {
       printer.row([
         PosColumn(
             text: 'Tax',
@@ -398,31 +406,17 @@ class OrderHistoryController extends GetxController {
             width: PosTextSize.size2,
           ));
     } else {
-      printer.text("Order Cancelled",
-          styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2,
-          ));
-
-    }
-
-    printer.text("(Duplicate)",
-        styles: const PosStyles(
-          align: PosAlign.center,
-         bold: true
-        ),
-        linesAfter: 1);
-
-    if(orderCheck == true){
-      printer.text("Order Id ${order.orderId.toString()}",
+      printer.text("Order Cancelled \nOrder Id ${order.orderId.toString()}",
           styles: const PosStyles(
             align: PosAlign.center,
             height: PosTextSize.size2,
             width: PosTextSize.size2,
           ),
-          linesAfter: 1);
+      linesAfter: 1);
+
     }
+
+
 
 
     if (order.tableNo != null && order.tableNo != 0) {
@@ -435,6 +429,9 @@ class OrderHistoryController extends GetxController {
           linesAfter: 1);
     }
     if(orderCheck == false) {
+      printer.text("Order Id ${order.orderId.toString()} (Duplicate Bill)",
+          styles: const PosStyles(align: PosAlign.left));
+    } else{
       printer.text("Order Id ${order.orderId.toString()}",
           styles: const PosStyles(align: PosAlign.left));
     }
@@ -449,15 +446,26 @@ class OrderHistoryController extends GetxController {
 
     printer.text('${DateFormat('yyyy-MM-dd').format(order.date!)} ${order.time}',
         styles: const PosStyles(align: PosAlign.left));
-
-    if (order.paymentType.toString() == "INCOMPLETE ORDER") {
-      printer.text('Payment Status : INCOMPLETE PAYMENT',
-          styles: const PosStyles(align: PosAlign.left));
+    if(orderCheck == false) {
+      if (order.paymentType == "INCOMPLETE ORDER") {
+        printer.text('Payment Status : UnPaid',
+            styles: PosStyles(align: PosAlign.left));
+      } else {
+        if (order.paymentType == "POS CASH TAKEAWAY") {
+          printer.text('Payment Status : POS CASH',
+              styles: PosStyles(align: PosAlign.left));
+        } else if (order.paymentType == "POS CARD TAKEAWAY") {
+          printer.text('Payment Status : POS CARD',
+              styles: PosStyles(align: PosAlign.left));
+        } else {
+          printer.text('Payment Status : ${order.paymentType}',
+              styles: PosStyles(align: PosAlign.left));
+        }
+      }
     } else {
-      printer.text('Payment Status : ${order.paymentType.toString()}',
-          styles: const PosStyles(align: PosAlign.left));
+      printer.text('Payment Status : Refunded',
+          styles: PosStyles(align: PosAlign.left));
     }
-
     printer.text('Order Type :  ${order.deliveryType.toString()}',
         styles: const PosStyles(align: PosAlign.left));
 
@@ -582,7 +590,7 @@ class OrderHistoryController extends GetxController {
         return StatefulBuilder(
           builder: (context, setState) {
             return Dialog(
-              insetPadding: EdgeInsets.all(15),
+              insetPadding: EdgeInsets.symmetric(horizontal: 15),
               child: Padding(
                 padding: EdgeInsets.only(
                     left: ScreenUtil().setWidth(20),
@@ -590,165 +598,171 @@ class OrderHistoryController extends GetxController {
                     bottom: 0,
                     top: ScreenUtil().setHeight(20)),
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.42,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Cancel Order',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(
-                                fontSize: ScreenUtil().setSp(18),
-                                fontWeight: FontWeight.w900,
-                                fontFamily: Constants.appFontBold,
+                  height: MediaQuery.of(context).size.height * 0.38,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Cancel Order',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: ScreenUtil().setSp(18),
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: Constants.appFontBold,
+                                ),
                               ),
-                            ),
-                            GestureDetector(
-                              child: Icon(Icons.close),
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(10),
-                      ),
-                      const Divider(
-                        thickness: 1,
-                        color: Color(0xffcccccc),
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(10),
-                      ),
-                      Text(
-                        'Order Cancel Reason',
-                        style: TextStyle(
-                            fontFamily: Constants.appFontBold, fontSize: 16),
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(10),
-                      ),
-                      Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                            controller: _textOrderCancelReason,
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.only(left: 10),
-                                hintText: 'Type Order Cancel Reason',
-                                border: InputBorder.none),
-                            maxLines: 5,
-                            style: TextStyle(
-                                fontFamily: Constants.appFont,
-                                fontSize: 16,
-                                color: Color(
-                                  Constants.colorGray,
-                                )),
+                              GestureDetector(
+                                child: Icon(Icons.close),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: ScreenUtil().setHeight(10),
-                      ),
-                      const Divider(
-                        thickness: 1,
-                        color: Color(0xffcccccc),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.only(top: ScreenUtil().setHeight(15)),
-                        child: Row(
+                        SizedBox(
+                          height: ScreenUtil().setHeight(10),
+                        ),
+                        const Divider(
+                          thickness: 1,
+                          color: Color(0xffcccccc),
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(10),
+                        ),
+                        Text(
+                          'Order Cancel Reason',
+                          style: TextStyle(
+                              fontFamily: Constants.appFontBold, fontSize: 16),
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(10),
+                        ),
+                        Card(
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: _textOrderCancelReason,
+                              keyboardType: TextInputType.text,
+                              decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.only(left: 10),
+                                  hintText: 'Type Order Cancel Reason',
+                                  border: InputBorder.none),
+                              maxLines: 5,
+                              style: TextStyle(
+                                  fontFamily: Constants.appFont,
+                                  fontSize: 16,
+                                  color: Color(
+                                    Constants.colorGray,
+                                  )),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(10),
+                        ),
+                        const Divider(
+                          thickness: 1,
+                          color: Color(0xffcccccc),
+                        ),
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                _textOrderCancelReason.clear();
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                'No Go Back',
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
+                                // set the height to 50
+                                fixedSize: MaterialStateProperty.all<Size>(const Size(130, 40)),
+                              ),
+                              onPressed: (){
+                              _textOrderCancelReason.clear();
+                              Navigator.pop(context);
+                            }, child: Text(
+                              'No Go Back',
+                              style: TextStyle(
+                                  fontSize: ScreenUtil().setSp(14),
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: Constants.appFontBold,
+                                  color: Colors.white),
+                            ),),
+
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: ScreenUtil().setWidth(12)),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
+                                  // set the height to 50
+                                  fixedSize: MaterialStateProperty.all<Size>(const Size(130, 40)),
+                                ),
+                                onPressed: () async {
+                                if (_textOrderCancelReason.text.isNotEmpty) {
+                                  await callCancelOrder(orderId,
+                                      _textOrderCancelReason.text, context);
+                                  if ((_printerController.printerModel.value.ipKitchen !=
+                                      null &&
+                                      _printerController
+                                          .printerModel
+                                          .value
+                                          .ipKitchen!
+                                          .isNotEmpty) &&
+                                      (_printerController.printerModel.value.portKitchen !=
+                                          null &&
+                                          _printerController
+                                              .printerModel
+                                              .value
+                                              .portKitchen!
+                                              .isNotEmpty)) {
+                                    testPrintKitchen(
+                                        _printerController
+                                            .printerModel
+                                            .value
+                                            .ipKitchen!,
+                                        int.parse(_printerController
+                                            .printerModel
+                                            .value
+                                            .portKitchen
+                                            .toString()),
+                                        context,
+                                        order,
+                                        true
+                                    );
+                                  } else {
+                                    Get.snackbar(
+                                        "Error",
+                                        "Please add kitchen printer ip and port");
+                                  }
+                                } else {
+                                  Constants.toastMessage(
+                                      'Please Enter Cancel Reason');
+                                }
+                              }, child: Text(
+                                'Yes Cancel It',
                                 style: TextStyle(
                                     fontSize: ScreenUtil().setSp(14),
                                     fontWeight: FontWeight.bold,
                                     fontFamily: Constants.appFontBold,
-                                    color: Color(Constants.colorGray)),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenUtil().setWidth(12)),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  if (_textOrderCancelReason.text.isNotEmpty) {
-                                    await callCancelOrder(orderId,
-                                        _textOrderCancelReason.text, context);
-                                    if ((_printerController.printerModel.value.ipKitchen !=
-                                        null &&
-                                        _printerController
-                                            .printerModel
-                                            .value
-                                            .ipKitchen!
-                                            .isNotEmpty) &&
-                                        (_printerController.printerModel.value.portKitchen !=
-                                            null &&
-                                            _printerController
-                                                .printerModel
-                                                .value
-                                                .portKitchen!
-                                                .isNotEmpty)) {
-                                      testPrintKitchen(
-                                          _printerController
-                                              .printerModel
-                                              .value
-                                              .ipKitchen!,
-                                          int.parse(_printerController
-                                              .printerModel
-                                              .value
-                                              .portKitchen
-                                              .toString()),
-                                          context,
-                                          order,
-                                      true
-                                      );
-                                    } else {
-                                      Get.snackbar(
-                                          "Error",
-                                          "Please add kitchen printer ip and port");
-                                    }
-                                  } else {
-                                    Constants.toastMessage(
-                                        'Please Enter Cancel Reason');
-                                  }
-                                },
-                                child: Text(
-                                  'Yes Cancel It',
-                                  style: TextStyle(
-                                      fontSize: ScreenUtil().setSp(14),
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: Constants.appFontBold,
-                                      color: Color(Constants.colorBlue)),
-                                ),
-                              ),
+                                    color: Colors.white),
+                              ),),
                             ),
                           ],
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

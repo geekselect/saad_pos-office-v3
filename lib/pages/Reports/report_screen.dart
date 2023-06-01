@@ -1236,7 +1236,7 @@ class Reports extends StatelessWidget {
                                                         fontWeight: FontWeight.bold
                                                     ),)),
                                               ),
-              Expanded(
+                                              Expanded(
               child: Center(
               child: Text(' - - - - - - - - - ', style: TextStyle(
               fontWeight: FontWeight.bold

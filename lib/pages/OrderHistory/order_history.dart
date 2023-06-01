@@ -2431,7 +2431,9 @@ class OrderHistory extends StatelessWidget {
                                                                 order.paymentType ==
                                                                     "POS CASH TAKEAWAY" ||
                                                                 order.paymentType ==
-                                                                    "POS CARD TAKEAWAY"
+                                                                    "POS CARD TAKEAWAY" ||
+                                                            order.paymentType ==
+                                                          "CASH+CARD"
                                                                 ? '(PAID)'
                                                                 : '(UNPAID)',
                                                             style: TextStyle(
@@ -3085,7 +3087,8 @@ class OrderHistory extends StatelessWidget {
                                                                       (order.paymentType ==
                                                                               'POS CASH' ||
                                                                           order.paymentType ==
-                                                                              'POS CARD')
+                                                                              'POS CARD' || order.paymentType ==
+                                                                          'CASH+CARD')
                                                                   ? Expanded(
                                                                       child:
                                                                           ElevatedButton(

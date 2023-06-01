@@ -1177,7 +1177,7 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReportByDateModel>(
             Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'possalebydate',
+                .compose(_dio.options, 'posTotalSaleByShiftCodeDate',
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReportByDateModel.fromJson(_result.data!);

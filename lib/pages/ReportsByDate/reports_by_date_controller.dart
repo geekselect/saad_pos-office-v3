@@ -30,6 +30,7 @@ class ReportByDateController extends GetxController {
   String? posIp;
   int? posPort;
   RxBool isValue = false.obs;
+  RxBool isLoading = false.obs;
 
   RxString selectedDate = ''.obs;
 
@@ -75,11 +76,13 @@ class ReportByDateController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
+    String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
     Map<String, dynamic> body = {
       "dateRangeStart": startDate.value,
       "dateRangeEnd": endDate.value,
       "vendor_id": vendorId,
       "user_id": userId,
+      "shift_codes" : shiftCode
     };
     ReportByDateModel response;
     try {
@@ -141,7 +144,7 @@ class ReportByDateController extends GetxController {
         ),
         linesAfter: 1);
 
-    printer.text("From ${DateFormat('yyyy-MM-dd').format(reportByDateModelData.value.from!)} to ${DateFormat('yyyy-MM-dd').format(reportByDateModelData.value.to!)}", styles: PosStyles(align: PosAlign.left));
+    // printer.text("From ${DateFormat('yyyy-MM-dd').format(reportByDateModelData.value.from!)} to ${DateFormat('yyyy-MM-dd').format(reportByDateModelData.value.to!)}", styles: PosStyles(align: PosAlign.left));
     printer.hr();
     for (int index = 0; index < reportByDateModelData.value.data!.length; index++) {
       Datum datum = reportByDateModelData.value.data![index];
@@ -186,14 +189,14 @@ class ReportByDateController extends GetxController {
       printer.row([
         PosColumn(text: "Total Dining" , width: 10),
         PosColumn(
-            text: datum.orderPlaced!.totalTotalDining.toString(),
+            text: datum.orderPlaced!.totalDining.toString(),
             width: 2,
             styles: PosStyles(align: PosAlign.right)),
       ]);
       printer.row([
         PosColumn(text: "Total Discounts" , width: 10),
         PosColumn(
-            text: datum.orderPlaced!.totalTotalDiscounts.toString(),
+            text: datum.orderPlaced!.totalDiscounts.toString(),
             width: 2,
             styles: PosStyles(align: PosAlign.right)),
       ]);

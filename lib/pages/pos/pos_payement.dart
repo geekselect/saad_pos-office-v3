@@ -236,8 +236,16 @@ class _PosPaymentState extends State<PosPayment> {
       printer.text('Payment Status : UnPaid',
           styles: PosStyles(align: PosAlign.left));
     } else {
-      printer.text('Payment Status : ${orderData.paymentType}',
-          styles: PosStyles(align: PosAlign.left));
+      if(orderData.paymentType == "POS CASH TAKEAWAY"){
+        printer.text('Payment Status : POS CASH',
+            styles: PosStyles(align: PosAlign.left));
+      }else if(orderData.paymentType == "POS CARD TAKEAWAY"){
+        printer.text('Payment Status : POS CARD',
+            styles: PosStyles(align: PosAlign.left));
+      } else {
+        printer.text('Payment Status : ${orderData.paymentType}',
+            styles: PosStyles(align: PosAlign.left));
+      }
     }
 
     printer.text('Order Type :  ${orderData.deliveryType}',
@@ -506,7 +514,7 @@ class _PosPaymentState extends State<PosPayment> {
           )),
     ]);
     if (double.parse(orderData.tax!)
-        .toStringAsFixed(2) != 0.00) {
+        .toStringAsFixed(2) != "0.00") {
       printer.row([
         PosColumn(
             text: 'Tax',
@@ -706,13 +714,19 @@ class _PosPaymentState extends State<PosPayment> {
         styles: PosStyles(align: PosAlign.left));
 
     if (orderData.paymentType == "INCOMPLETE ORDER") {
-      printer.text('Payment Status : Unpaid',
+      printer.text('Payment Status : UnPaid',
           styles: PosStyles(align: PosAlign.left));
     } else {
-      printer.text('Payment Status : ${orderData.paymentType}',
-          styles: PosStyles(align: PosAlign.left));
-      // printer.text('Payment Status : Paid',
-      //     styles: PosStyles(align: PosAlign.left));
+      if(orderData.paymentType == "POS CASH TAKEAWAY"){
+        printer.text('Payment Status : POS CASH',
+            styles: PosStyles(align: PosAlign.left));
+      }else if(orderData.paymentType == "POS CARD TAKEAWAY"){
+        printer.text('Payment Status : POS CARD',
+            styles: PosStyles(align: PosAlign.left));
+      } else {
+        printer.text('Payment Status : ${orderData.paymentType}',
+            styles: PosStyles(align: PosAlign.left));
+      }
     }
 
     printer.text("Order Type : ${orderData.deliveryType}",
