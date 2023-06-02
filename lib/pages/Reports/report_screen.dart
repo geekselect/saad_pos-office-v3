@@ -894,7 +894,7 @@ class Reports extends StatelessWidget {
       body: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('images/bg_image.png'),
+                image: AssetImage('assets/images/bg_image.png'),
                 fit: BoxFit.cover,
               )),
           child: FutureBuilder<BaseModel<ReportModel>>(
@@ -920,7 +920,7 @@ class Reports extends StatelessWidget {
                       children: [
                         SizedBox(height: 20),
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               boxShadow: [
@@ -1077,12 +1077,18 @@ class Reports extends StatelessWidget {
                                         color: Colors.black,
                                         borderRadius: BorderRadius.circular(5)),
                                     child: IntrinsicWidth(
-                                      child: Text(
-                                        "Payments",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
+                                      child: Row(
+                                        children: [
+                                          Image.asset("assets/images/file_report.png", width: 15, height: 15,),
+                                          SizedBox(width: 5,),
+                                          Text(
+                                            "Details (${_reportController.reportModelData.value.currentShift.toString()})",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -1091,7 +1097,7 @@ class Reports extends StatelessWidget {
                                   height: 10,
                                 ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                                   margin: EdgeInsets.symmetric(vertical: 5),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
@@ -1119,7 +1125,7 @@ class Reports extends StatelessWidget {
                                               Expanded(
                                                 child: Center(
                                                   child: Text(
-                                                    "Type",
+                                                    "Pos Card",
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.w600),
                                                   ),
@@ -1128,7 +1134,7 @@ class Reports extends StatelessWidget {
                                               Expanded(
                                                 child: Center(
                                                   child: Text(
-                                                    "Amount",
+                                                    "Pos Cash",
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.w600),
                                                   ),
@@ -1137,7 +1143,7 @@ class Reports extends StatelessWidget {
                                               Expanded(
                                                 child: Center(
                                                   child: Text(
-                                                    "Total Sum",
+                                                    "Total Sale",
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.w600),
                                                   ),
@@ -1199,75 +1205,72 @@ class Reports extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                  child: Center(child: Text('Pos Cash'))),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(
-
-                                                  double
-                                                      .parse(
-                                                      _reportController.reportModelData.value.payments!
-                                                          .posCash!
-                                                          .amount!
-                                                          .toString())
-                                                      .toStringAsFixed(
-                                                      2)),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),)),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),)),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),)),
-                                              ),
-                                              Expanded(
-              child: Center(
-              child: Text(' - - - - - - - - - ', style: TextStyle(
-              fontWeight: FontWeight.bold
-              ),)),
-              ),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),)),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),)),
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                    child: Text(' - - - - - - - - - ', style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),)),
-                                              ),
-                                            ],
-                                          ),
+              //                             SizedBox(height: 10),
+              //                             Row(
+              //                               children: [
+              //                                 Expanded(
+              //                                     child: Center(child: Text('Pos Cash'))),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(
+              //
+              //                                     double
+              //                                         .parse(
+              //                                         _reportController.reportModelData.value.payments!
+              //                                             .posCash!
+              //                                             .amount!
+              //                                             .toString())
+              //                                         .toStringAsFixed(
+              //                                         2)),
+              //                                   ),
+              //                                 ),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(' - - - - - - - - - ', style: TextStyle(
+              //                                           fontWeight: FontWeight.bold
+              //                                       ),)),
+              //                                 ),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(' - - - - - - - - - ', style: TextStyle(
+              //                                           fontWeight: FontWeight.bold
+              //                                       ),)),
+              //                                 ),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(' - - - - - - - - - ', style: TextStyle(
+              //                                           fontWeight: FontWeight.bold
+              //                                       ),)),
+              //                                 ),
+              //                                 Expanded(
+              // child: Center(
+              // child: Text(' - - - - - - - - - ', style: TextStyle(
+              // fontWeight: FontWeight.bold
+              // ),)),
+              // ),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(' - - - - - - - - - ', style: TextStyle(
+              //                                           fontWeight: FontWeight.bold
+              //                                       ),)),
+              //                                 ),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(' - - - - - - - - - ', style: TextStyle(
+              //                                           fontWeight: FontWeight.bold
+              //                                       ),)),
+              //                                 ),
+              //                                 Expanded(
+              //                                   child: Center(
+              //                                       child: Text(' - - - - - - - - - ', style: TextStyle(
+              //                                           fontWeight: FontWeight.bold
+              //                                       ),)),
+              //                                 ),
+              //                               ],
+              //                             ),
                                           SizedBox(height: 10),
                                           Row(children: [
-                                            Expanded(
-                                                child: Center(
-                                                    child: Text(
-                                                        'Pos Card'))),
+
                                             Expanded(
                                                 child: Center(
                                                     child: Text(
@@ -1279,6 +1282,17 @@ class Reports extends StatelessWidget {
                                                                 .toString())
                                                             .toStringAsFixed(
                                                             2)))),
+                                            Expanded(
+                                                child: Center(
+                                                  child: Text(
+                                                      double
+                                                          .parse(
+                                                          _reportController.reportModelData.value.payments!
+                                                              .posCash!
+                                                              .amount!
+                                                              .toString())
+                                                          .toStringAsFixed(
+                                                          2)),)),
                                             Expanded(
                                               child: Center(
                                                   child: Text(
@@ -1337,7 +1351,7 @@ class Reports extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 20,
                                 ),
                                 Align(
                                   alignment: Alignment.center,
@@ -1348,17 +1362,23 @@ class Reports extends StatelessWidget {
                                         color: Colors.black,
                                         borderRadius: BorderRadius.circular(5)),
                                     child: IntrinsicWidth(
-                                      child: Text(
-                                        "Orders",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
+                                      child: Row(
+                                        children: [
+                                          Image.asset("assets/images/fork.png", color: Colors.white, width: 15, height: 15,),
+                                          SizedBox(width: 5,),
+                                          Text(
+                                            "Orders (${_reportController.reportModelData.value.currentShift.toString()})",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                SizedBox(height: 20),
                                 Expanded(
                                   child: Container(
                                     child: Row(
@@ -1366,7 +1386,7 @@ class Reports extends StatelessWidget {
                                         Expanded(
                                           flex: 3,
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                                             decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 boxShadow: [
@@ -1380,27 +1400,24 @@ class Reports extends StatelessWidget {
                                                 borderRadius: BorderRadius.circular(15)),
                                             child: _reportController.reportModelData.value.orders!.isNotEmpty ? Column(
                                               children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "Item Name",
-                                                        style: TextStyle(
-                                                            color: Color(Constants.colorTheme),
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w600),
-                                                      ),
-                                                      Text(
-                                                        "Quantity",
-                                                        style: TextStyle(
-                                                            color: Color(Constants.colorTheme),
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w600),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Item Name",
+                                                      style: TextStyle(
+                                                          color: Color(Constants.colorTheme),
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                    Text(
+                                                      "Quantity",
+                                                      style: TextStyle(
+                                                          color: Color(Constants.colorTheme),
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                  ],
                                                 ),
                                                 SizedBox(height: 5,),
                                                 Expanded(
@@ -1408,36 +1425,30 @@ class Reports extends StatelessWidget {
                                                       padding: EdgeInsets.zero,
                                                       itemCount: _reportController.reportModelData.value.orders!.length,
                                                       itemBuilder: (BuildContext context, int index) {
-                                                        return Padding(
-                                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Image.asset("assets/images/fork.png", height: 10, width: 10,),
-                                                                  SizedBox(width: 5,),
-                                                                  Text(
-                                                                    _reportController.reportModelData.value.orders![index].itemName.toString(),
-                                                                    style: TextStyle(
-                                                                        color: Colors.black,
-                                                                        fontSize: 14,
-                                                                    fontWeight: FontWeight.w400),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets.only(right: 16),
-                                                                child: Text(
-                                                                  _reportController.reportModelData.value.orders![index].quantity.toString(),
+                                                        return Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Image.asset("assets/images/fork.png", height: 10, width: 10,),
+                                                                SizedBox(width: 5,),
+                                                                Text(
+                                                                  _reportController.reportModelData.value.orders![index].itemName.toString(),
                                                                   style: TextStyle(
                                                                       color: Colors.black,
                                                                       fontSize: 14,
-                                                                      fontWeight: FontWeight.w400),
+                                                                  fontWeight: FontWeight.w400),
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ),
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                              _reportController.reportModelData.value.orders![index].quantity.toString(),
+                                                              style: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.w400),
+                                                            ),
+                                                          ],
                                                         );
                                                       }),
                                                 ),
@@ -1450,7 +1461,7 @@ class Reports extends StatelessWidget {
                                         SizedBox(width: 10),
                                         Expanded(
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                                             decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 boxShadow: [
@@ -1470,7 +1481,7 @@ class Reports extends StatelessWidget {
                                                     "Incomplete Orders",
                                                     style: TextStyle(
                                                         color: Color(Constants.colorTheme),
-                                                        fontSize: 14,
+                                                        fontSize: 16,
                                                         fontWeight: FontWeight.w600),
                                                   ),
                                                 ),
@@ -1510,7 +1521,7 @@ class Reports extends StatelessWidget {
                                         SizedBox(width: 10),
                                         Expanded(
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                                            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                                             decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 boxShadow: [
@@ -1530,7 +1541,7 @@ class Reports extends StatelessWidget {
                                                     "Cancelled Orders",
                                                     style: TextStyle(
                                                         color: Color(Constants.colorTheme),
-                                                        fontSize: 14,
+                                                        fontSize: 16,
                                                         fontWeight: FontWeight.w600),
                                                   ),
                                                 ),
@@ -1571,11 +1582,16 @@ class Reports extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 30,
                                 ),
                                 Align(
                                   alignment: Alignment.center,
                                   child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        // backgroundColor: MaterialStateProperty.all<Color>(Color(CO)),
+                                        // set the height to 50
+                                        fixedSize: MaterialStateProperty.all<Size>(const Size(120, 30)),
+                                      ),
                                       onPressed: () {
                                         Get.dialog(
                                           AlertDialog(
@@ -1678,7 +1694,7 @@ class Reports extends StatelessWidget {
                                         //   }
                                         // }
                                       },
-                                      child: Text("Print")),
+                                      child: Text("Print", style: TextStyle(fontSize: 16),)),
                                 ),
 
                               ],
@@ -1731,7 +1747,7 @@ Widget commonRow(String text1, String text2) {
 
 Widget CustomNewRow(String text1, String text2){
   return   Padding(
-    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+    padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 2),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1739,14 +1755,14 @@ Widget CustomNewRow(String text1, String text2){
           text1,
           style: TextStyle(
               color: Colors.black,
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w400),
         ),
         Text(
           text2,
           style: TextStyle(
               color: Colors.black,
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w400),
         ),
       ],

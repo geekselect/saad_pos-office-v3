@@ -11,13 +11,13 @@ String reportByDateModelToJson(ReportByDateModel data) => json.encode(data.toJso
 class ReportByDateModel {
   List<Datum>? data;
   List<TotalItemSold>? totalItemSold;
-  double? sumPosCash;
-  double? sumPosCard;
-  int? sumPosTotal;
+  dynamic sumPosCash;
+  dynamic sumPosCard;
+  dynamic sumPosTotal;
   int? sumTotalOrders;
   int? sumTotalTakeaway;
   int? sumTotalDining;
-  int? sumTotalDiscounts;
+  dynamic sumTotalDiscounts;
   int? sumTotalCanceled;
   int? sunTotalIncomplete;
 
@@ -112,7 +112,7 @@ class OrderPlaced {
   int? totalOrders;
   int? totalTakeaway;
   int? totalDining;
-  int? totalDiscounts;
+  dynamic totalDiscounts;
   int? totalCanceled;
   String? totalCanceledAmount;
   List<OrdersDetail>? cancelledOrdersDetail;

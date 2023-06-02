@@ -55,6 +55,7 @@ class ShiftController extends GetxController {
         shiftCodeMain.value = shiftModel.shiftCode.toString();
         shiftNameMain.value = shiftModel.shiftName.toString();
         timerController.startTimer();
+
       } else {
         createButtonEnable.value = false;
         Constants.toastMessage(response.msg!.toString());
@@ -63,6 +64,7 @@ class ShiftController extends GetxController {
       shiftTextController.clear();
       Get.back();
     } catch (error, stacktrace) {
+      Constants.hideDialog(context);
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
     }
@@ -92,13 +94,13 @@ class ShiftController extends GetxController {
         shiftCodeMain.value = '';
         shiftNameMain.value = '';
         timerController.timerDuration.value = Duration.zero;
-
-        Constants.hideDialog(context);
         Constants.toastMessage(response.msg!.toString());
       } else {
         Constants.toastMessage(response.msg!);
       }
+      Constants.hideDialog(context);
     } catch (error, stacktrace) {
+      Constants.hideDialog(context);
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
     }
@@ -120,6 +122,7 @@ class ShiftController extends GetxController {
       // print("response ${response.toJson()}");
       Constants.hideDialog(context);
     } catch (error, stacktrace) {
+      Constants.hideDialog(context);
       print("Exception occurred printer: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
     }
@@ -173,6 +176,7 @@ class ShiftController extends GetxController {
         shiftCodeMain.value = '';
         shiftNameMain.value = '';
         Constants.toastMessage(response.msg!.toString());
+        timerController.stopTimer();
       }
     } catch (error, stacktrace) {
       print("Exception occurred printer: $error stackTrace: $stacktrace");
@@ -227,7 +231,11 @@ class ShiftController extends GetxController {
         //   timerController.timerDuration.value = duration;
         // }
         timerController.startTimer();
-      } else {
+      }
+      // else if (response.success == false && response.msg == 'you already on $shiftNameFunc Shift') {
+      //   getCurrentShiftDetails();
+      // }
+        else{
         Constants.toastMessage(response.msg!.toString());
       }
       Get.back();

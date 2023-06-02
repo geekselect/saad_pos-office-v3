@@ -529,7 +529,7 @@ class ReportController extends GetxController {
     printer.hr(ch: '=', linesAfter: 1);
 
     printer.feed(2);
-    printer.text('Report version 3.66F Thank you!',
+    printer.text('Report version 4.0 Thank you!',
         styles: PosStyles(align: PosAlign.center, bold: true));
 
     printer.feed(1);

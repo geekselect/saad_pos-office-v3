@@ -2686,7 +2686,8 @@ class _PosMenuState extends State<PosMenu> {
                       },
                     ),
                   );
-                } else if (constraints.maxWidth > 650 &&
+                }
+                else if (constraints.maxWidth > 650 &&
                     constraints.maxWidth < 900) {
                   print("Tablet");
                   return SafeArea(

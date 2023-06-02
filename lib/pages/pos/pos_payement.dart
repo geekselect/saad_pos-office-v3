@@ -1998,8 +1998,9 @@ class _PosPaymentState extends State<PosPayment> {
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -2096,6 +2097,7 @@ class _PosPaymentState extends State<PosPayment> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black),
                                 readOnly: true,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(),
                                 controller: totalAmountController,
                               ),
@@ -2128,6 +2130,7 @@ class _PosPaymentState extends State<PosPayment> {
                                     fontSize: 35,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black),
+                                keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   DecimalTextInputFormatter(decimalRange: 2)
                                 ],
@@ -2172,6 +2175,7 @@ class _PosPaymentState extends State<PosPayment> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black),
                                 readOnly: true,
+
                                 decoration: InputDecoration(),
                                 controller: changedController,
                               ),

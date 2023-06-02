@@ -25,8 +25,8 @@ class ReportByDateController extends GetxController {
   Rx<ReportByDateModel> reportByDateModelData = ReportByDateModel().obs;
   RxBool startDateSelect = false.obs;
   RxBool endDateSelect = false.obs;
-  Rx<String> startDate = ''.obs;
-  Rx<String> endDate = ''.obs;
+  RxString startDate = ''.obs;
+  RxString endDate = ''.obs;
   String? posIp;
   int? posPort;
   RxBool isValue = false.obs;
@@ -72,6 +72,7 @@ class ReportByDateController extends GetxController {
         .callGetRestaurantsDetails();
   }
 
+
   Future<BaseModel<ReportByDateModel>>? reportsApiByDateCall() async {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
@@ -90,6 +91,7 @@ class ReportByDateController extends GetxController {
       print("data of reports ${response.toJson()}");
 
       reportByDateModelData.value = response;
+
     } catch (error, stacktrace) {
       print("Exception occurred: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
@@ -148,11 +150,13 @@ class ReportByDateController extends GetxController {
     printer.hr();
     for (int index = 0; index < reportByDateModelData.value.data!.length; index++) {
       Datum datum = reportByDateModelData.value.data![index];
-      printer.text("${DateFormat('yyyy-MM-dd').format(datum.date!)}", styles: PosStyles(
+      printer.text("${DateFormat('yyyy-MM-dd').format(datum.date!)}\n(${datum.shiftName.toString()})", styles: PosStyles(
         align: PosAlign.center,
         height: PosTextSize.size2,
         width: PosTextSize.size2,
-      ),);
+      ),
+          linesAfter: 1
+      );
       datum.posCash!.name != null ?  printer.row([
         PosColumn(text: "${datum.posCash!.name!} (Pos Cash)" , width: 10),
         PosColumn(
@@ -179,6 +183,19 @@ class ReportByDateController extends GetxController {
             width: 2,
             styles: PosStyles(align: PosAlign.right)),
       ]);
+      datum.posTotalSale!.name != null ?  printer.row([
+        PosColumn(text: "${datum.posTotalSale!.name!} (Pos Total Sale)" , width: 10),
+        PosColumn(
+            text: double.parse(datum.posTotalSale!.amount.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]) : printer.row([
+        PosColumn(text: "No Name" , width: 10),
+        PosColumn(
+            text: double.parse(datum.posTotalSale!.amount.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
       printer.row([
         PosColumn(text: "Total TakeAway" , width: 10),
         PosColumn(
@@ -196,7 +213,21 @@ class ReportByDateController extends GetxController {
       printer.row([
         PosColumn(text: "Total Discounts" , width: 10),
         PosColumn(
-            text: datum.orderPlaced!.totalDiscounts.toString(),
+            text: double.parse(datum.orderPlaced!.totalDiscounts.toString()).toStringAsFixed(2),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: "Total Incomplete" , width: 10),
+        PosColumn(
+            text: datum.orderPlaced!.totalIncomplete.toString(),
+            width: 2,
+            styles: PosStyles(align: PosAlign.right)),
+      ]);
+      printer.row([
+        PosColumn(text: "Total Cancelled" , width: 10),
+        PosColumn(
+            text: datum.orderPlaced!.totalCanceled.toString(),
             width: 2,
             styles: PosStyles(align: PosAlign.right)),
       ]);
@@ -232,7 +263,9 @@ class ReportByDateController extends GetxController {
     if (value == true) {
       printer.text("Total Items Sold",
           styles: PosStyles(align: PosAlign.center, height: PosTextSize.size2,
-            width: PosTextSize.size2,));
+            width: PosTextSize.size2,),
+
+      linesAfter: 1);
     }
     if (value == true) {printer.row([
       PosColumn(text: 'Total Items Names', width: 6),
@@ -282,6 +315,13 @@ class ReportByDateController extends GetxController {
             width: 4,
             styles: PosStyles(align: PosAlign.right)),
       ]);
+    printer.row([
+      PosColumn(text: 'Total Sum Pos', width: 8),
+      PosColumn(
+          text: double.parse(reportByDateModelData.value.sumPosTotal.toString()).toStringAsFixed(2),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
       printer.row([
         PosColumn(text: 'Sum Total Takeaway', width: 8),
         PosColumn(
@@ -299,7 +339,21 @@ class ReportByDateController extends GetxController {
       printer.row([
       PosColumn(text: 'Sum Total Discounts', width: 8),
       PosColumn(
-          text: reportByDateModelData.value.sumTotalDiscounts.toString(),
+          text: double.parse(reportByDateModelData.value.sumTotalDiscounts.toString()).toStringAsFixed(2),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+    printer.row([
+      PosColumn(text: 'Sum Total Incomplete', width: 8),
+      PosColumn(
+          text: reportByDateModelData.value.sunTotalIncomplete.toString(),
+          width: 4,
+          styles: PosStyles(align: PosAlign.right)),
+    ]);
+    printer.row([
+      PosColumn(text: 'Sum Total Cancelled', width: 8),
+      PosColumn(
+          text: reportByDateModelData.value.sumTotalCanceled.toString(),
           width: 4,
           styles: PosStyles(align: PosAlign.right)),
     ]);
