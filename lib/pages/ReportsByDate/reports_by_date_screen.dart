@@ -1436,6 +1436,7 @@ class ReportsByDate extends StatelessWidget {
                                                                 SizedBox(height: 5),
                                                                 ListView.separated(
                                                                   shrinkWrap: true,
+                                                                  physics: NeverScrollableScrollPhysics(),
                                                                   itemCount: _reportByDateController
                                                                       .reportByDateModelData
                                                                       .value.data![index]
@@ -1569,6 +1570,7 @@ class ReportsByDate extends StatelessWidget {
                                                                 SizedBox(height: 5),
                                                                 ListView.separated(
                                                                   shrinkWrap: true,
+                                                                  physics: NeverScrollableScrollPhysics(),
                                                                   itemCount: _reportByDateController
                                                                       .reportByDateModelData
                                                                       .value.data![index]

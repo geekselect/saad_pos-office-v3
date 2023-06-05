@@ -2098,6 +2098,9 @@ class _PosPaymentState extends State<PosPayment> {
                                     color: Colors.black),
                                 readOnly: true,
                                 keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                                ],
                                 decoration: InputDecoration(),
                                 controller: totalAmountController,
                               ),
@@ -2131,8 +2134,8 @@ class _PosPaymentState extends State<PosPayment> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black),
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  DecimalTextInputFormatter(decimalRange: 2)
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                                 ],
                                 decoration: InputDecoration(),
                                 onChanged: (String? val) {
