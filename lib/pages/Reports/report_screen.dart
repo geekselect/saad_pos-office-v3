@@ -1376,7 +1376,7 @@ class Reports extends StatelessWidget {
                                           SizedBox(height: 5),
                                           ListView.builder(
                                             shrinkWrap: true,
-                                            // physics: NeverScrollableScrollPhysics(),
+                                            physics: NeverScrollableScrollPhysics(),
                                             itemCount: _reportController.reportModelData.value.orders!.length,
                                             itemBuilder: (context,
                                                 i) {
