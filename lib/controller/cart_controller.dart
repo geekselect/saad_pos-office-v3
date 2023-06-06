@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screen_animation_utils/transitions.dart';
 class CartController extends GetxController{
   CartMaster? cartMaster;
+  dynamic verificationItems;
   RxBool refreshScreen=false.obs;
   List<PromoCodeListData> listPromoCode = [];
   ScrollController scrollController = ScrollController();
@@ -57,6 +58,36 @@ class CartController extends GetxController{
   bool diningValue = false;
   int? tableNumber;
   @override
+
+  void verifyCartItems() {
+    for (var verificationItem in verificationItems) {
+      bool itemFound = false;
+
+      for (var cartItem in cartMaster!.cart) {
+        var calculatedAmount = cartItem.quantity * cartItem.totalAmount;
+        var verificationAmount = verificationItem.quantity * verificationItem.totalAmount;
+        var calculatedDiningAmount = cartItem.quantity * cartItem.diningAmount;
+        var verificationDiningAmount = verificationItem.quantity * verificationItem.diningAmount;
+        if (calculatedAmount == verificationAmount && calculatedDiningAmount == verificationDiningAmount) {
+          itemFound = true;
+          break;
+        }
+      }
+
+      if (itemFound) {
+        print('Verified');
+      } else {
+        var cartItemIndex = cartMaster!.cart.indexOf(verificationItem);
+        if (cartItemIndex != -1) {
+          cartMaster!.cart[cartItemIndex].quantity = verificationItem.quantity;
+          cartMaster!.cart[cartItemIndex].totalAmount = verificationItem.totalAmount;
+          cartMaster!.cart[cartItemIndex].diningAmount = verificationItem.diningAmount;
+          print('Updated Cart Item');
+        }
+      }
+    }
+  }
+
 
   bool checkMenuExistInCart(String menuCategory,int menuId){
     if (cartMaster!=null) {
@@ -104,36 +135,36 @@ class CartController extends GetxController{
       },
     );
   }
-  Future<bool> showMenuExistDialog(BuildContext context)async {
-
-    // set up the AlertDialog
-
-
-    // show the dialog
-   return await showDialog<bool?>(
-      context: context,
-      builder: (BuildContext context) {
-        return   AlertDialog(
-          title: Text("The Menu Already Exist"),
-          content: Text("Do You Want To Add Item With Different Size And Addons"),
-          actions: [
-        TextButton(
-        child: Text("YES"),
-        onPressed:  () {
-        Navigator.pop(context,true);
-        },
-        ),
-        TextButton(
-        child: Text("NO"),
-        onPressed:  () {
-        Navigator.pop(context,false);
-        },
-        ),
-          ],
-        );
-      },
-    ) ?? false;
-  }
+  // Future<bool> showMenuExistDialog(BuildContext context)async {
+  //
+  //   // set up the AlertDialog
+  //
+  //
+  //   // show the dialog
+  //  return await showDialog<bool?>(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return   AlertDialog(
+  //         title: Text("The Menu Already Exist"),
+  //         content: Text("Do You Want To Add Item With Different Size And Addons"),
+  //         actions: [
+  //       TextButton(
+  //       child: Text("YES"),
+  //       onPressed:  () {
+  //       Navigator.pop(context,true);
+  //       },
+  //       ),
+  //       TextButton(
+  //       child: Text("NO"),
+  //       onPressed:  () {
+  //       Navigator.pop(context,false);
+  //       },
+  //       ),
+  //         ],
+  //       );
+  //     },
+  //   ) ?? false;
+  // }
   Future<BaseModel<PromoCodeModel>> callGetPromocodeListData(
       int? restaurantId,BuildContext context) async {
     PromoCodeModel response;
@@ -268,7 +299,6 @@ class CartController extends GetxController{
     // calculatedAmount-=discountAmount;
     //totalPrice = totalPrice - discountAmount;
   }
-
   void addItem(Cart cart,int vendorId,BuildContext context)async{
    if(cartMaster==null){
      print("cartMaster null");
@@ -324,6 +354,9 @@ class CartController extends GetxController{
                print("Exist");
                // if(diningValue) {
                //   print("diningValue");
+               print("before ${cartMaster!.cart[i].totalAmount}");
+               print("before ${cartMaster!.cart[i].diningAmount}");
+               print("before ${cartMaster!.cart[i].quantity}");
 
                  double diningAmountMain = cartMaster!.cart[i].diningAmount /
                      cartMaster!.cart[i].quantity;
@@ -338,9 +371,12 @@ class CartController extends GetxController{
                      takeAwayAmountMain == 1.0) {
                    takeAwayAmountMain = takeAwayAmountMain * cartMaster!.cart[i].quantity;
                  }
-                 print("before ${cartMaster!.cart[i].totalAmount}");
-                 print("before ${cartMaster!.cart[i].diningAmount}");
-                 print("before ${cartMaster!.cart[i].quantity}");
+               print("after ${cartMaster!.cart[i].totalAmount}");
+               print("after ${cartMaster!.cart[i].diningAmount}");
+               print("after ${cartMaster!.cart[i].quantity}");
+               print("after ${diningAmountMain}");
+               print("after ${takeAwayAmountMain}");
+
 
                  cartMaster!.cart[i].quantity++;
                  cartMaster!.cart[i].diningAmount = diningAmountMain * cartMaster!.cart[i].quantity;
@@ -349,6 +385,8 @@ class CartController extends GetxController{
                  print("total ${cartMaster!.cart[i].totalAmount}");
                  print("total ${cartMaster!.cart[i].diningAmount}");
                  print("total ${cartMaster!.cart[i].quantity}");
+               print("total ${diningAmountMain}");
+               print("total ${takeAwayAmountMain}");
                // } else {
                //   print("No diningValue");
                //
@@ -431,14 +469,34 @@ class CartController extends GetxController{
             }
 
             if(exist){
+              print("Exist remove");
               if(cartMaster!.cart[i].quantity==1){
                 cartMaster!.cart.removeAt(i);
                 return;
               }
-              double amount=cartMaster!.cart[i].totalAmount/cartMaster!.cart[i].quantity;
+              // if(diningValue) {
+              //   print("diningValue");
+              print("before remove ${cartMaster!.cart[i].totalAmount}");
+              print("before remove ${cartMaster!.cart[i].diningAmount}");
+              print("before remove ${cartMaster!.cart[i].quantity}");
+
+
+              // cartMaster!.cart[i].diningAmount = amount;
+
+
+              double totalAmount=cartMaster!.cart[i].totalAmount/cartMaster!.cart[i].quantity;
+              double totalDiningAmount=cartMaster!.cart[i].diningAmount/cartMaster!.cart[i].quantity;
               cartMaster!.cart[i].quantity--;
-              cartMaster!.cart[i].totalAmount-=amount;
+              cartMaster!.cart[i].totalAmount-=totalAmount;
+              cartMaster!.cart[i].diningAmount-=totalDiningAmount;
+              print("total remove ${cartMaster!.cart[i].totalAmount}");
+              print("total remove ${cartMaster!.cart[i].diningAmount}");
+              print("total remove ${cartMaster!.cart[i].quantity}");
+              print("total remove ${totalAmount}");
+              print("total remove ${totalDiningAmount}");
               return;
+
+
             }
           }
         }
@@ -492,38 +550,38 @@ class CartController extends GetxController{
     }
     return 0;
   }
-  void addItemToast(){
-    // Fluttertoast.showToast(
-    //     msg: "$quantity Item added to cart",
-    //     toastLength: Toast.LENGTH_SHORT,
-    //     gravity: ToastGravity.CENTER,
-    //     timeInSecForIosWeb: 1,
-    //     backgroundColor: Colors.black,
-    //     textColor: Colors.white,
-    //     fontSize: 16.0
-    // );
-    Get.snackbar(
-      "$quantity Item added to cart",
-      "",
-        snackPosition:SnackPosition.BOTTOM,
-      backgroundColor: Color(Constants.colorTheme).withOpacity(0.8),
-      borderRadius: 0.0,
-      margin: EdgeInsets.all(0.0),
-      colorText: Colors.white,
-        snackStyle:SnackStyle.FLOATING,
-    );
-  }
-  void removeItemToast(){
-    Fluttertoast.showToast(
-        msg: "Item removed from cart",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
-  }
+  // void addItemToast(){
+  //   // Fluttertoast.showToast(
+  //   //     msg: "$quantity Item added to cart",
+  //   //     toastLength: Toast.LENGTH_SHORT,
+  //   //     gravity: ToastGravity.CENTER,
+  //   //     timeInSecForIosWeb: 1,
+  //   //     backgroundColor: Colors.black,
+  //   //     textColor: Colors.white,
+  //   //     fontSize: 16.0
+  //   // );
+  //   Get.snackbar(
+  //     "$quantity Item added to cart",
+  //     "",
+  //       snackPosition:SnackPosition.BOTTOM,
+  //     backgroundColor: Color(Constants.colorTheme).withOpacity(0.8),
+  //     borderRadius: 0.0,
+  //     margin: EdgeInsets.all(0.0),
+  //     colorText: Colors.white,
+  //       snackStyle:SnackStyle.FLOATING,
+  //   );
+  // }
+  // void removeItemToast(){
+  //   Fluttertoast.showToast(
+  //       msg: "Item removed from cart",
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.CENTER,
+  //       timeInSecForIosWeb: 1,
+  //       backgroundColor: Colors.black,
+  //       textColor: Colors.white,
+  //       fontSize: 16.0
+  //   );
+  // }
   }
 
   ///

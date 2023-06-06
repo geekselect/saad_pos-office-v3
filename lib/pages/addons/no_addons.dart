@@ -34,7 +34,7 @@ class _NoAddonsState extends State<NoAddons> {
             diningAmount: double.parse(widget.menu.diningPrice??'0.0'),
             quantity: 1),
         widget.menu.vendorId);
-    print(_cartController.quantity.value);
+    print("Quantity ${_cartController.quantity.value}");
     super.initState();
   }
   @override
@@ -86,6 +86,7 @@ class _NoAddonsState extends State<NoAddons> {
                     height: ScreenConfig.blockHeight*1,
                   ),
                   ItemQuantity(btnPlusOnPressed: ()async{
+                    print("cart data quantity plus ${_cartController.quantity.value}");
                     Cart cart=Cart(
                         category: widget.category,
                         menu:[ MenuCartMaster(
@@ -105,6 +106,7 @@ class _NoAddonsState extends State<NoAddons> {
 
 
                   }, btnMinusOnPressed: (){
+                    print("cart data quantity minus ${_cartController.quantity.value}");
                     Cart cart=Cart(
                         category: widget.category,
                         menu:[ MenuCartMaster(
@@ -155,7 +157,9 @@ class _NoAddonsState extends State<NoAddons> {
                     //     int.parse(widget.menu.vendorId.toString()),
                     //     context);
 
+                    print("cart data quantity flat ${_cartController.quantity.value}");
                     ///Previous
+                    print("No Addon Flat Button");
                     Cart cart=Cart(
                         category: widget.category,
                         menu:[ MenuCartMaster(
@@ -170,7 +174,7 @@ class _NoAddonsState extends State<NoAddons> {
                         quantity: 1);
                      _cartController.addItem(
                         cart,widget.menu.vendorId,context);
-                    _cartController.quantity.value=_cartController.getQuantity(
+                    _cartController.quantity.value =_cartController.getQuantity(
                        cart, widget.menu.vendorId);
 
 

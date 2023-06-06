@@ -1982,7 +1982,7 @@ class OrderHistory extends StatelessWidget {
                                         'Complete All Orders',
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 18,
+                                            fontSize: 15,
                                             fontFamily: Constants.appFont),
                                       ),
                                     ),
@@ -3109,8 +3109,7 @@ class OrderHistory extends StatelessWidget {
                                                                               TextAlign.center,
                                                                           style:
                                                                               TextStyle(
-                                                                            fontSize:
-                                                                                18,
+                                                                            fontSize: 15,
                                                                           ),
                                                                         ),
                                                                       ),
@@ -3179,7 +3178,7 @@ class OrderHistory extends StatelessWidget {
                                                                                     "Edit / Pay",
                                                                                     textAlign: TextAlign.center,
                                                                                     style: TextStyle(
-                                                                                      fontSize: 18,
+                                                                                      fontSize: 15,
                                                                                     ),
                                                                                   ),
                                                                                 ),
@@ -3227,8 +3226,7 @@ class OrderHistory extends StatelessWidget {
                                                                               TextAlign.center,
                                                                           style:
                                                                               TextStyle(
-                                                                            fontSize:
-                                                                                18,
+                                                                                fontSize: 15,
                                                                           ),
                                                                         ),
                                                                       ),
@@ -3554,7 +3552,7 @@ class OrderHistory extends StatelessWidget {
                                                                         .center,
                                                                 style:
                                                                     TextStyle(
-                                                                  fontSize: 18,
+                                                                      fontSize: 15,
                                                                 ),
                                                               ),
                                                             ),
@@ -3611,7 +3609,7 @@ class OrderHistory extends StatelessWidget {
                                                                         .center,
                                                                 style:
                                                                     TextStyle(
-                                                                  fontSize: 18,
+                                                                      fontSize: 15,
                                                                 ),
                                                               ),
                                                             ),
@@ -3679,7 +3677,7 @@ class OrderHistory extends StatelessWidget {
                                                                     )
                                                                   ]),
                                                             ),
-                                                     order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ? Column(
+                                                     order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ||  order.paymentType.toString() == 'POS CASH TAKEAWAY' || order.paymentType.toString() == 'POS CARD TAKEAWAY' ? Column(
                                                        children: [
                                                          SizedBox(height: 5),
                                                          Align(
@@ -3715,6 +3713,43 @@ class OrderHistory extends StatelessWidget {
                                                           ),
                                                        ],
                                                      ) : SizedBox(height: 5),
+
+                                                      // order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ? Column(
+                                                      //   children: [
+                                                      //     SizedBox(height: 5),
+                                                      //     Align(
+                                                      //       alignment: Alignment.center,
+                                                      //       child: ElevatedButton(
+                                                      //         style: ElevatedButton.styleFrom(
+                                                      //             backgroundColor: Color(0XFF6C6868)),
+                                                      //         onPressed:
+                                                      //             () async {
+                                                      //           print("order id ${order.id}");
+                                                      //           print("order payment type ${order.paymentType}");
+                                                      //           await orderHistoryController.showSwitchOrderDialog(
+                                                      //             order.id,
+                                                      //             order.paymentType,
+                                                      //             context,
+                                                      //           );
+                                                      //           orderHistoryController
+                                                      //               .orderHistoryRef
+                                                      //               .value = orderHistoryController.callGetOrderHistoryList();
+                                                      //         },
+                                                      //         child:
+                                                      //         const Text(
+                                                      //           "Payment Switch",
+                                                      //           textAlign:
+                                                      //           TextAlign.center,
+                                                      //           style:
+                                                      //           TextStyle(
+                                                      //             fontSize:
+                                                      //             18,
+                                                      //           ),
+                                                      //         ),
+                                                      //       ),
+                                                      //     ),
+                                                      //   ],
+                                                      // ) : SizedBox(height: 5),
                                                       const SizedBox(
                                                         height: 20,
                                                       ),

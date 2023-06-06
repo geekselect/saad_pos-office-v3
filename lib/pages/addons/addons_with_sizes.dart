@@ -75,143 +75,228 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Stack(
             children: [
-              Container(
-                height: 100,
-                width: 100,
-                // margin: EdgeInsets.only(left: 5.0),
-                // decoration: ,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: CachedNetworkImageProvider(widget.menu.image),
-                      fit: BoxFit.cover),
-                  // borderRadius: BorderRadius.circular(12.0),
-                  borderRadius: BorderRadius.only(topLeft:Radius.circular(8.0) ),
-                ),
-              ),
-              SizedBox(
-                width: ScreenConfig.blockWidth*2,
-              ),
-              Flexible(
-                flex: 4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.menu.name,
-                      maxLines: 2
-                      ,style: TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: 19,
-                      ),),
-                    SizedBox(
-                      height: ScreenConfig.blockHeight*1,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 100,
+                    width: 100,
+                    // margin: EdgeInsets.only(left: 5.0),
+                    // decoration: ,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(widget.menu.image),
+                          fit: BoxFit.cover),
+                      // borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.only(topLeft:Radius.circular(8.0) ),
                     ),
-                    Text(
-                      _orderCustimizationController.response!.data!.vendor!.name,maxLines: 4,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(Constants.colorTheme),
-                        overflow: TextOverflow.ellipsis,
-                      ),),
-                    SizedBox(
-                      height: ScreenConfig.blockHeight*1,
-                    ),
-                    ItemQuantity(
-                        btnFloatOnPressed: () async{
-                          if (_cartController.checkMenuExistInCart(widget.category, widget.menu.id)) {
-                           if( await _cartController.showMenuExistDialog(context)){
-                               Set set={};
-                               double totalAmount=double.parse(widget.data[initPosition].price.toString());
-                               double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
-                               List<cartMaster.AddonCartMaster> addonsList=[];
-                               for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
-                                 if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
+                  ),
+                  SizedBox(
+                    width: ScreenConfig.blockWidth*2,
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.menu.name,
+                          maxLines: 2
+                          ,style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 19,
+                          ),),
+                        SizedBox(
+                          height: ScreenConfig.blockHeight*1,
+                        ),
+                        Text(
+                          _orderCustimizationController.response!.data!.vendor!.name,maxLines: 4,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(Constants.colorTheme),
+                            overflow: TextOverflow.ellipsis,
+                          ),),
+                        SizedBox(
+                          height: ScreenConfig.blockHeight*1,
+                        ),
+                        ItemQuantity(
+                            btnFloatOnPressed: () async{
+                              if (_cartController.checkMenuExistInCart(widget.category, widget.menu.id)) {
+                               // if( await _cartController.showMenuExistDialog(context)){
+                               //     Set set={};
+                               //     double totalAmount=double.parse(widget.data[initPosition].price.toString());
+                               //     double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
+                               //     List<cartMaster.AddonCartMaster> addonsList=[];
+                               //     for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
+                               //       if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
+                               //
+                               //       }else{
+                               //         set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
+                               //         for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
+                               //           if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
+                               //             if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
+                               //
+                               //               addonsList.add(cartMaster.AddonCartMaster(
+                               //                 id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
+                               //                 name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
+                               //                 price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!),
+                               //                 diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0'),
+                               //               ));
+                               //               totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
+                               //               diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
+                               //             }
+                               //           }
+                               //         }
+                               //
+                               //       }
+                               //
+                               //     }
+                               //      _cartController.addItem(cartMaster.Cart(
+                               //         quantity: 1,
+                               //         totalAmount: totalAmount,
+                               //         diningAmount: diningAmount,
+                               //         category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                               //     _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
+                               //         quantity: 1,
+                               //         totalAmount: totalAmount,
+                               //         diningAmount: diningAmount,
+                               //         category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                               //     setState(() {
+                               //
+                               //     });
+                               //
+                               // } else{
+                               //   Get.snackbar("Item", "Not Added");
+                               // }
+                                Set set={};
+                                double totalAmount=double.parse(widget.data[initPosition].price.toString());
+                                double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
+                                List<cartMaster.AddonCartMaster> addonsList=[];
+                                for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
+                                  if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
 
-                                 }else{
-                                   set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
-                                   for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
-                                     if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
-                                       if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
+                                  }else{
+                                    set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
+                                    for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
+                                      if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
+                                        if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
 
-                                         addonsList.add(cartMaster.AddonCartMaster(
-                                           id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
-                                           name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
-                                           price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!),
-                                           diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0'),
-                                         ));
-                                         totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
-                                         diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
-                                       }
-                                     }
-                                   }
+                                          addonsList.add(cartMaster.AddonCartMaster(
+                                            id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
+                                            name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
+                                            price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!),
+                                            diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0'),
+                                          ));
+                                          totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
+                                          diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
+                                        }
+                                      }
+                                    }
 
-                                 }
+                                  }
 
-                               }
+                                }
                                 _cartController.addItem(cartMaster.Cart(
-                                   quantity: 1,
-                                   totalAmount: totalAmount,
-                                   diningAmount: diningAmount,
-                                   category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
-                               _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
-                                   quantity: 1,
-                                   totalAmount: totalAmount,
-                                   diningAmount: diningAmount,
-                                   category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
-                               setState(() {
+                                    quantity: 1,
+                                    totalAmount: totalAmount,
+                                    diningAmount: diningAmount,
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                                _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
+                                    quantity: 1,
+                                    totalAmount: totalAmount,
+                                    diningAmount: diningAmount,
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                                setState(() {
 
-                               });
-
-                           } else{
-                             Get.snackbar("Item", "Not Added");
-                           }
-                          }else{
-                            Set set=Set();
-                            double totalAmount=double.parse(widget.data[initPosition].price.toString());
-                            double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
-                            List<cartMaster.AddonCartMaster> addonsList=[];
-                            for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
-                              if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
-
+                                });
                               }else{
-                                set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
-                                for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
-                                  if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
-                                    if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
-                                      addonsList.add(cartMaster.AddonCartMaster(
-                                        id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
-                                        name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
-                                        price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!,),
-                                        diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0',),
-                                      ));
-                                      totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
-                                      diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
+                                Set set=Set();
+                                double totalAmount=double.parse(widget.data[initPosition].price.toString());
+                                double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
+                                List<cartMaster.AddonCartMaster> addonsList=[];
+                                for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
+                                  if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
+
+                                  }else{
+                                    set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
+                                    for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
+                                      if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
+                                        if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
+                                          addonsList.add(cartMaster.AddonCartMaster(
+                                            id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
+                                            name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
+                                            price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!,),
+                                            diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0',),
+                                          ));
+                                          totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
+                                          diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
+                                        }
+                                      }
+                                    }
+
+                                  }
+
+                                }
+                                 _cartController.addItem(cartMaster.Cart(
+                                    quantity: 1,
+                                    totalAmount: totalAmount,
+                                    diningAmount: diningAmount,
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                                _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
+                                    diningAmount: diningAmount,
+                                    quantity: 1,
+                                    totalAmount: totalAmount,
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                                setState(() {
+
+                                });
+                              }
+                            },
+                            btnPlusOnPressed: ()async{
+                              Set set={};
+                              double totalAmount=double.parse(widget.data[initPosition].price.toString());
+                              double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
+                              List<cartMaster.AddonCartMaster> addonsList=[];
+                              for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
+                                if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
+
+                                }else{
+                                  set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
+                                  for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
+                                    if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
+                                      if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
+                                        addonsList.add(cartMaster.AddonCartMaster(
+                                          id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
+                                          name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
+                                          price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!),
+                                          diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0'),
+                                        ));
+                                        totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
+                                        diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.');
+                                      }
                                     }
                                   }
+
                                 }
 
                               }
+                               _cartController.addItem(cartMaster.Cart(
+                                  quantity: 1,
+                                  totalAmount: totalAmount,
+                                  diningAmount: diningAmount,
+                                  category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                              _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
+                                  quantity: 1,
+                                  totalAmount: totalAmount,
+                                  diningAmount: diningAmount,
+                                  category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                              setState(() {
 
-                            }
-                             _cartController.addItem(cartMaster.Cart(
-                                quantity: 1,
-                                totalAmount: totalAmount,
-                                diningAmount: diningAmount,
-                                category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
-                            _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
-                                diningAmount: diningAmount,
-                                quantity: 1,
-                                totalAmount: totalAmount,
-                                category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
-                            setState(() {
-
-                            });
-                          }
-                        },
-                        btnPlusOnPressed: ()async{
-                          Set set={};
+                              });
+                            },
+                            btnMinusOnPressed: (){
+                          Set set=Set();
                           double totalAmount=double.parse(widget.data[initPosition].price.toString());
                           double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
                           List<cartMaster.AddonCartMaster> addonsList=[];
@@ -230,7 +315,7 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                                       diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0'),
                                     ));
                                     totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
-                                    diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.');
+                                    diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
                                   }
                                 }
                               }
@@ -238,71 +323,44 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                             }
 
                           }
-                           _cartController.addItem(cartMaster.Cart(
+                          _cartController.removeItem(cartMaster.Cart(
                               quantity: 1,
                               totalAmount: totalAmount,
                               diningAmount: diningAmount,
-                              category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                              category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                              totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(),
+                              id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                           _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
                               quantity: 1,
                               totalAmount: totalAmount,
                               diningAmount: diningAmount,
-                              category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
-                          setState(() {
+                              category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                              totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(),
+                              id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                          // setState(() {
+                          //
+                          // });
 
-                          });
-                        },
-                        btnMinusOnPressed: (){
-                      Set set=Set();
-                      double totalAmount=double.parse(widget.data[initPosition].price.toString());
-                      double diningAmount=double.parse(widget.data[initPosition].sizeDiningPrice??'0.0');
-                      List<cartMaster.AddonCartMaster> addonsList=[];
-                      for(int i=0;i<widget.data[initPosition].groupMenuAddon!.length;i++){
-                        if(set.contains(widget.data[initPosition].groupMenuAddon![i].addonCategoryId)){
+                        })
 
-                        }else{
-                          set.add(widget.data[initPosition].groupMenuAddon![i].addonCategoryId);
-                          for(int menuAddonIndex=0;menuAddonIndex<widget.data[initPosition].menuAddon!.length;menuAddonIndex++){
-                            if(widget.data[initPosition].groupMenuAddon![i].addonCategoryId==widget.data[initPosition].menuAddon![menuAddonIndex].addonCategoryId){
-                              if(widget.data[initPosition].menuAddon![menuAddonIndex].addon!.isChecked==1){
-                                addonsList.add(cartMaster.AddonCartMaster(
-                                  id: widget.data[initPosition].menuAddon![menuAddonIndex].id,
-                                  name:widget.data[initPosition].menuAddon![menuAddonIndex].addon!.name ,
-                                  price: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price!),
-                                  diningPrice: double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0'),
-                                ));
-                                totalAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].price.toString());
-                                diningAmount+=double.parse(widget.data[initPosition].menuAddon![menuAddonIndex].addonDiningPrice??'0.0');
-                              }
-                            }
-                          }
-
-                        }
-
-                      }
-                      _cartController.removeItem(cartMaster.Cart(
-                          quantity: 1,
-                          totalAmount: totalAmount,
-                          diningAmount: diningAmount,
-                          category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
-                          totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(),
-                          id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
-                      _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
-                          quantity: 1,
-                          totalAmount: totalAmount,
-                          diningAmount: diningAmount,
-                          category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
-                          totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(),
-                          id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
-                      // setState(() {
-                      //
-                      // });
-
-                    })
-
-                  ],
-                ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
+              Positioned(
+                  top: 10,
+                  right: 10,
+                  child: GestureDetector(
+                    onTap: (){
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.clear,
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                  ))
             ],
           ),
           SizedBox(

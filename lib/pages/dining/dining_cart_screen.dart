@@ -3444,14 +3444,21 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
     subTotal = totalAmount;
     return Scaffold(
       body: _cartController.cartMaster == null ||
-          _cartController.cartMaster!.cart.isEmpty ? Center(
+          _cartController.cartMaster!.cart.isEmpty ? Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('images/bg-cart.png'),
+              fit: BoxFit.cover,
+            )),
+            child: Center(
         child: Text("No data in the cart"),
-      ) :
+      ),
+          ) :
       Container(
         decoration: BoxDecoration(
             color: Color(Constants.colorScreenBackGround),
             image: DecorationImage(
-              image: AssetImage('images/ic_background_image.png'),
+              image: AssetImage('images/bg-cart.png'),
               fit: BoxFit.cover,
             )),
         child: SafeArea(
@@ -3549,6 +3556,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                               _diningCartController.phoneNoController.clear();
                               _diningCartController.notesController.clear();
                               _cartController.tableNumber = null;
+
                               setState(() {});
                             },
                             child: Text('Clear Cart'))

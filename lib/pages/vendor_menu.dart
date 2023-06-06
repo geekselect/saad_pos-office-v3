@@ -111,6 +111,7 @@ class _VendorMenuState extends State<VendorMenu>
 
   @override
   void initState() {
+
     _tabController = TabController(
         length:
             _orderCustimizationController.response!.data!.menuCategory!.length,
@@ -181,6 +182,7 @@ class _VendorMenuState extends State<VendorMenu>
 
   @override
   Widget build(BuildContext context) {
+
     itemPositionsListener.itemPositions.addListener(() {
       _tabController!.animateTo(
           itemPositionsListener.itemPositions.value.first.index,
@@ -510,6 +512,7 @@ class _VendorMenuState extends State<VendorMenu>
           //
           //
           // );
+          print("dining value before dining vendor ${_cartController.diningValue}");
           return Column(
             children: [
               Container(

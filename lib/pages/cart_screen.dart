@@ -1748,9 +1748,15 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   void initState() {
+
     print('auto print cart screen ${_autoPrinterController.autoPrint.value}');
     print('auto print kitchen cart screen ${_autoPrinterController.autoPrintKitchen.value}');
     _cartController.diningValue = widget.isDining;
+    if(_cartController.cartMaster == null){
+      setState(() {
+        _cartController.diningValue = false;
+      });
+    }
     // if (_cartController.cartMaster != null) {
 
     statusRef = _orderCustimizationController
@@ -1835,9 +1841,8 @@ class _CartScreenState extends State<CartScreen> {
       return Scaffold(
         body: Container(
             decoration: BoxDecoration(
-                color: Color(Constants.colorScreenBackGround),
                 image: DecorationImage(
-                  image: AssetImage('images/ic_background_image.png'),
+                  image: AssetImage('images/bg-cart.png'),
                   fit: BoxFit.cover,
                 )),
             child: Center(
@@ -1855,10 +1860,8 @@ class _CartScreenState extends State<CartScreen> {
             return Scaffold(
               body: Container(
                 decoration: BoxDecoration(
-                    color: Color(Constants.colorScreenBackGround),
                     image: DecorationImage(
-                      image:
-                      AssetImage('images/ic_background_image.png'),
+                      image: AssetImage('images/bg-cart.png'),
                       fit: BoxFit.cover,
                     )),
                 child: SafeArea(

@@ -699,13 +699,15 @@ class _PosPaymentState extends State<PosPayment> {
           linesAfter: 1);
     }
 
-    if (orderData.userName != null  && orderData.mobile != null) {
-      printer.text('Customer Name : ${orderData.userName }',
+    if (orderData.datumUserName != null && orderData.datumUserName!.isNotEmpty) {
+      printer.text('Customer Name : ${orderData.datumUserName}',
           styles: PosStyles(align: PosAlign.left));
-
+    }
+    if (orderData.mobile != null && orderData.mobile!.isNotEmpty) {
       printer.text('Customer Phone No : ${orderData.mobile}',
           styles: PosStyles(align: PosAlign.left));
     }
+
 
     printer.text("Order Id ${orderData.orderId.toString()}",
         styles: PosStyles(align: PosAlign.left));

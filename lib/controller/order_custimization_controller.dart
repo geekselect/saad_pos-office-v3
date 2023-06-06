@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/model/SingleVendorRetrieveSize.dart'
     as singleVendorRetrieveSize;
 import 'package:pos/model/deals_items_model.dart';
@@ -17,6 +18,8 @@ import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderCustimizationController extends GetxController {
+  CartController _cartController = Get.put(CartController());
+
   RxString strRestaurantsName = ''.obs,
       strRestaurantsAddress = ''.obs,
       strRestaurantsRate = ''.obs,
@@ -44,6 +47,7 @@ class OrderCustimizationController extends GetxController {
         strRestaurantsReview.value = response!.data!.vendor!.review.toString();
         strRestaurantsAddress.value = response!.data!.vendor!.mapAddress;
         strRestaurantImage.value = response!.data!.vendor!.image;
+
       } else {
         Constants.toastMessage('Error while getting details');
       }

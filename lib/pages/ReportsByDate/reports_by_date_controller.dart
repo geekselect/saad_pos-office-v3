@@ -77,13 +77,14 @@ class ReportByDateController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
-    String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
+    // String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
     Map<String, dynamic> body = {
       "dateRangeStart": startDate.value,
       "dateRangeEnd": endDate.value,
       "vendor_id": vendorId,
       "user_id": userId,
-      "shift_codes" : shiftCode
+      // "shift_codes" : shiftCode
+      "shift_codes" : ''
     };
     ReportByDateModel response;
     try {

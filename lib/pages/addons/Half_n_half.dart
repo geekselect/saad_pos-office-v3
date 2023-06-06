@@ -581,16 +581,22 @@ class _HalfNHalfState extends State<HalfNHalf>  with TickerProviderStateMixin {
 
   }, btnFloatOnPressed: ()async{
     if(_cartController.checkMenuExistInCart(widget.category, widget.halfNHalfMenu.id)){
-      if( await _cartController.showMenuExistDialog(context)){
-         _cartController.addItem(
-         getCurrentCart(singleVendorRetrieveSizes),
-             widget.vendorId,context);
-        _cartController.quantity.value=_cartController.getQuantity(
-           getCurrentCart(singleVendorRetrieveSizes),
-            widget.vendorId);
-      }else{
-        Get.snackbar("Item", "Not Added");
-      }
+      _cartController.addItem(
+          getCurrentCart(singleVendorRetrieveSizes),
+          widget.vendorId,context);
+      _cartController.quantity.value=_cartController.getQuantity(
+          getCurrentCart(singleVendorRetrieveSizes),
+          widget.vendorId);
+      // if( await _cartController.showMenuExistDialog(context)){
+      //    _cartController.addItem(
+      //    getCurrentCart(singleVendorRetrieveSizes),
+      //        widget.vendorId,context);
+      //   _cartController.quantity.value=_cartController.getQuantity(
+      //      getCurrentCart(singleVendorRetrieveSizes),
+      //       widget.vendorId);
+      // }else{
+      //   Get.snackbar("Item", "Not Added");
+      // }
     }else {
        _cartController.addItem(
         getCurrentCart(singleVendorRetrieveSizes),

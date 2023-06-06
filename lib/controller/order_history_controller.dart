@@ -175,13 +175,16 @@ class OrderHistoryController extends GetxController {
     printer.text("Order Id ${order.orderId.toString()} (Duplicate Bill)",
         styles: const PosStyles(align: PosAlign.left));
 
-    if (order.datumUserName != null && order.mobile != null) {
+    if (order.datumUserName != null && order.datumUserName!.isNotEmpty) {
       printer.text('Customer Name : ${order.datumUserName}',
-          styles: const PosStyles(align: PosAlign.left));
-
-      printer.text('Customer Phone No : ${order.mobile}',
-          styles: const PosStyles(align: PosAlign.left));
+          styles: PosStyles(align: PosAlign.left));
     }
+    if (order.mobile != null && order.mobile!.isNotEmpty) {
+      printer.text('Customer Phone No : ${order.mobile}',
+          styles: PosStyles(align: PosAlign.left));
+    }
+
+
 
     printer.text('${DateFormat('yyyy-MM-dd').format(order.date!)} ${order.time}',
         styles: const PosStyles(align: PosAlign.left));
@@ -436,12 +439,13 @@ class OrderHistoryController extends GetxController {
           styles: const PosStyles(align: PosAlign.left));
     }
 
-    if (order.datumUserName != null && order.mobile != null) {
+    if (order.datumUserName != null && order.datumUserName!.isNotEmpty) {
       printer.text('Customer Name : ${order.datumUserName}',
-          styles: const PosStyles(align: PosAlign.left));
-
+          styles: PosStyles(align: PosAlign.left));
+    }
+    if (order.mobile != null && order.mobile!.isNotEmpty) {
       printer.text('Customer Phone No : ${order.mobile}',
-          styles: const PosStyles(align: PosAlign.left));
+          styles: PosStyles(align: PosAlign.left));
     }
 
     printer.text('${DateFormat('yyyy-MM-dd').format(order.date!)} ${order.time}',
@@ -564,8 +568,8 @@ class OrderHistoryController extends GetxController {
     if (searchQuery.isNotEmpty) {
       filteredOrders.value = filteredOrders
           .where((order) =>
-              (order.userName != null &&
-                  order.userName!
+              (order.datumUserName != null &&
+                  order.datumUserName!
                       .toLowerCase()
                       .contains(searchQuery.value.toLowerCase())) ||
               (order.orderId!
@@ -584,184 +588,552 @@ class OrderHistoryController extends GetxController {
 
 
   showCancelOrderDialog(OrderHistoryData order, int? orderId, BuildContext context) {
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return StatefulBuilder(
+    //       builder: (context, setState) {
+    //         return Center(
+    //           child: Dialog(
+    //             child: Padding(
+    //               padding: EdgeInsets.all(20),
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.stretch,
+    //                 children: [
+    //                   InkWell(
+    //                     onTap: () {
+    //                       Navigator.of(context).pop();
+    //                     },
+    //                     child: Row(
+    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                       children: [
+    //                         Text(
+    //                           'Cancel Order',
+    //                           overflow: TextOverflow.ellipsis,
+    //                           maxLines: 1,
+    //                           style: TextStyle(
+    //                             fontSize: ScreenUtil().setSp(18),
+    //                             fontWeight: FontWeight.w900,
+    //                             fontFamily: Constants.appFontBold,
+    //                           ),
+    //                         ),
+    //                         GestureDetector(
+    //                           child: Icon(Icons.close),
+    //                           onTap: () {
+    //                             Navigator.pop(context);
+    //                           },
+    //                         )
+    //                       ],
+    //                     ),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   const Divider(
+    //                     thickness: 1,
+    //                     color: Color(0xffcccccc),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   Text(
+    //                     'Order Cancel Reason',
+    //                     style: TextStyle(
+    //                         fontFamily: Constants.appFontBold, fontSize: 16),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   Card(
+    //                     elevation: 3,
+    //                     shape: RoundedRectangleBorder(
+    //                       borderRadius: BorderRadius.circular(10.0),
+    //                     ),
+    //                     child: Padding(
+    //                       padding: const EdgeInsets.all(8.0),
+    //                       child: TextField(
+    //                         controller: _textOrderCancelReason,
+    //                         keyboardType: TextInputType.text,
+    //                         decoration: const InputDecoration(
+    //                             contentPadding: EdgeInsets.only(left: 10),
+    //                             hintText: 'Type Order Cancel Reason',
+    //                             border: InputBorder.none),
+    //                         maxLines: 5,
+    //                         style: TextStyle(
+    //                             fontFamily: Constants.appFont,
+    //                             fontSize: 16,
+    //                             color: Color(
+    //                               Constants.colorGray,
+    //                             )),
+    //                       ),
+    //                     ),
+    //                   ),
+    //                   SizedBox(
+    //                     height: ScreenUtil().setHeight(10),
+    //                   ),
+    //                   const Divider(
+    //                     thickness: 1,
+    //                     color: Color(0xffcccccc),
+    //                   ),
+    //                   Row(
+    //                     mainAxisAlignment: MainAxisAlignment.end,
+    //                     children: [
+    //                       ElevatedButton(
+    //                         style: ButtonStyle(
+    //                           backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
+    //                           // set the height to 50
+    //                           fixedSize: MaterialStateProperty.all<Size>(const Size(130, 40)),
+    //                         ),
+    //                         onPressed: (){
+    //                         _textOrderCancelReason.clear();
+    //                         Navigator.pop(context);
+    //                       }, child: Text(
+    //                         'No Go Back',
+    //                         style: TextStyle(
+    //                             fontSize: ScreenUtil().setSp(14),
+    //                             fontWeight: FontWeight.bold,
+    //                             fontFamily: Constants.appFontBold,
+    //                             color: Colors.white),
+    //                       ),),
+    //
+    //                       Padding(
+    //                         padding: EdgeInsets.only(
+    //                             left: ScreenUtil().setWidth(12)),
+    //                         child: ElevatedButton(
+    //                           style: ButtonStyle(
+    //                             backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
+    //                             // set the height to 50
+    //                             fixedSize: MaterialStateProperty.all<Size>(const Size(130, 40)),
+    //                           ),
+    //                           onPressed: () async {
+    //                           if (_textOrderCancelReason.text.isNotEmpty) {
+    //                             await callCancelOrder(orderId,
+    //                                 _textOrderCancelReason.text, context);
+    //                             if ((_printerController.printerModel.value.ipKitchen !=
+    //                                 null &&
+    //                                 _printerController
+    //                                     .printerModel
+    //                                     .value
+    //                                     .ipKitchen!
+    //                                     .isNotEmpty) &&
+    //                                 (_printerController.printerModel.value.portKitchen !=
+    //                                     null &&
+    //                                     _printerController
+    //                                         .printerModel
+    //                                         .value
+    //                                         .portKitchen!
+    //                                         .isNotEmpty)) {
+    //                               testPrintKitchen(
+    //                                   _printerController
+    //                                       .printerModel
+    //                                       .value
+    //                                       .ipKitchen!,
+    //                                   int.parse(_printerController
+    //                                       .printerModel
+    //                                       .value
+    //                                       .portKitchen
+    //                                       .toString()),
+    //                                   context,
+    //                                   order,
+    //                                   true
+    //                               );
+    //                             } else {
+    //                               Get.snackbar(
+    //                                   "Error",
+    //                                   "Please add kitchen printer ip and port");
+    //                             }
+    //                           } else {
+    //                             Constants.toastMessage(
+    //                                 'Please Enter Cancel Reason');
+    //                           }
+    //                         }, child: Text(
+    //                           'Yes Cancel It',
+    //                           style: TextStyle(
+    //                               fontSize: ScreenUtil().setSp(14),
+    //                               fontWeight: FontWeight.bold,
+    //                               fontFamily: Constants.appFontBold,
+    //                               color: Colors.white),
+    //                         ),),
+    //                       ),
+    //                     ],
+    //                   )
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         );
+    //       },
+    //     );
+    //   },
+    // );
+
+    ///Second
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return StatefulBuilder(
+    //       builder: (context, setState) {
+    //         return Center(
+    //           child: FractionallySizedBox(
+    //             widthFactor: 0.8, // Adjust the width as needed
+    //             child: Dialog(
+    //               child: Padding(
+    //                 padding: EdgeInsets.all(20),
+    //                 child: Column(
+    //                   crossAxisAlignment: CrossAxisAlignment.stretch,
+    //                   children: [
+    //                     InkWell(
+    //                       onTap: () {
+    //                         Navigator.of(context).pop();
+    //                       },
+    //                       child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Text(
+    //                             'Cancel Order',
+    //                             overflow: TextOverflow.ellipsis,
+    //                             maxLines: 1,
+    //                             style: TextStyle(
+    //                               fontSize: ScreenUtil().setSp(18),
+    //                               fontWeight: FontWeight.w900,
+    //                               fontFamily: Constants.appFontBold,
+    //                             ),
+    //                           ),
+    //                           GestureDetector(
+    //                             child: Icon(Icons.close),
+    //                             onTap: () {
+    //                               Navigator.pop(context);
+    //                             },
+    //                           )
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     SizedBox(
+    //                       height: ScreenUtil().setHeight(10),
+    //                     ),
+    //                     const Divider(
+    //                       thickness: 1,
+    //                       color: Color(0xffcccccc),
+    //                     ),
+    //                     SizedBox(
+    //                       height: ScreenUtil().setHeight(10),
+    //                     ),
+    //                     Text(
+    //                       'Order Cancel Reason',
+    //                       style: TextStyle(
+    //                           fontFamily: Constants.appFontBold, fontSize: 16),
+    //                     ),
+    //                     SizedBox(
+    //                       height: ScreenUtil().setHeight(10),
+    //                     ),
+    //                     Card(
+    //                       elevation: 3,
+    //                       shape: RoundedRectangleBorder(
+    //                         borderRadius: BorderRadius.circular(10.0),
+    //                       ),
+    //                       child: Padding(
+    //                         padding: const EdgeInsets.all(8.0),
+    //                         child: TextField(
+    //                           controller: _textOrderCancelReason,
+    //                           keyboardType: TextInputType.text,
+    //                           decoration: const InputDecoration(
+    //                               contentPadding: EdgeInsets.only(left: 10),
+    //                               hintText: 'Type Order Cancel Reason',
+    //                               border: InputBorder.none),
+    //                           maxLines: 5,
+    //                           style: TextStyle(
+    //                               fontFamily: Constants.appFont,
+    //                               fontSize: 16,
+    //                               color: Color(
+    //                                 Constants.colorGray,
+    //                               )),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     SizedBox(
+    //                       height: ScreenUtil().setHeight(10),
+    //                     ),
+    //                     const Divider(
+    //                       thickness: 1,
+    //                       color: Color(0xffcccccc),
+    //                     ),
+    //                     Row(
+    //                       mainAxisAlignment: MainAxisAlignment.end,
+    //                       children: [
+    //                         ElevatedButton(
+    //                           style: ButtonStyle(
+    //                             backgroundColor:
+    //                             MaterialStateProperty.all<Color>(
+    //                                 Color(Constants.colorTheme)),
+    //                             // set the height to 50
+    //                             fixedSize: MaterialStateProperty.all<Size>(
+    //                                 const Size(130, 40)),
+    //                           ),
+    //                           onPressed: () {
+    //                             _textOrderCancelReason.clear();
+    //                             Navigator.pop(context);
+    //                           },
+    //                           child: Text(
+    //                             'No Go Back',
+    //                             style: TextStyle(
+    //                                 fontSize: ScreenUtil().setSp(14),
+    //                                 fontWeight: FontWeight.bold,
+    //                                 fontFamily: Constants.appFontBold,
+    //                                 color: Colors.white),
+    //                           ),
+    //                         ),
+    //                         Padding(
+    //                           padding: EdgeInsets.only(
+    //                               left: ScreenUtil().setWidth(12)),
+    //                           child: ElevatedButton(
+    //                             style: ButtonStyle(
+    //                               backgroundColor:
+    //                               MaterialStateProperty.all<Color>(
+    //                                   Color(Constants.colorTheme)),
+    //                               // set the height to 50
+    //                               fixedSize: MaterialStateProperty.all<Size>(
+    //                                   const Size(130, 40)),
+    //                             ),
+    //                             onPressed: () async {
+    //                               if (_textOrderCancelReason.text.isNotEmpty) {
+    //                                 await callCancelOrder(
+    //                                     orderId,
+    //                                     _textOrderCancelReason.text,
+    //                                     context);
+    //                                 if ((_printerController
+    //                                     .printerModel.value.ipKitchen !=
+    //                                     null &&
+    //                                     _printerController
+    //                                         .printerModel.value.ipKitchen!
+    //                                         .isNotEmpty) &&
+    //                                     (_printerController
+    //                                         .printerModel.value.portKitchen !=
+    //                                         null &&
+    //                                         _printerController
+    //                                             .printerModel.value.portKitchen!
+    //                                             .isNotEmpty)) {
+    //                                   testPrintKitchen(
+    //                                       _printerController
+    //                                           .printerModel.value.ipKitchen!,
+    //                                       int.parse(_printerController
+    //                                           .printerModel.value.portKitchen
+    //                                           .toString()),
+    //                                       context,
+    //                                       order,
+    //                                       true);
+    //                                 } else {
+    //                                   Get.snackbar("Error",
+    //                                       "Please add kitchen printer ip and port");
+    //                                 }
+    //                               } else {
+    //                                 Constants.toastMessage(
+    //                                     'Please Enter Cancel Reason');
+    //                               }
+    //                             },
+    //                             child: Text(
+    //                               'Yes Cancel It',
+    //                               style: TextStyle(
+    //                                   fontSize: ScreenUtil().setSp(14),
+    //                                   fontWeight: FontWeight.bold,
+    //                                   fontFamily: Constants.appFontBold,
+    //                                   color: Colors.white),
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       ],
+    //                     )
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //         );
+    //       },
+    //     );
+    //   },
+    // );
+
+    ///Third
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Dialog(
-              insetPadding: EdgeInsets.symmetric(horizontal: 15),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(20),
-                    right: ScreenUtil().setWidth(20),
-                    bottom: 0,
-                    top: ScreenUtil().setHeight(20)),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.38,
-                  width: MediaQuery.of(context).size.width / 2,
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Cancel Order',
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: ScreenUtil().setSp(18),
-                                  fontWeight: FontWeight.w900,
-                                  fontFamily: Constants.appFontBold,
-                                ),
-                              ),
-                              GestureDetector(
-                                child: Icon(Icons.close),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(10),
-                        ),
-                        const Divider(
-                          thickness: 1,
-                          color: Color(0xffcccccc),
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(10),
-                        ),
-                        Text(
-                          'Order Cancel Reason',
-                          style: TextStyle(
-                              fontFamily: Constants.appFontBold, fontSize: 16),
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(10),
-                        ),
-                        Card(
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                              controller: _textOrderCancelReason,
-                              keyboardType: TextInputType.text,
-                              decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.only(left: 10),
-                                  hintText: 'Type Order Cancel Reason',
-                                  border: InputBorder.none),
-                              maxLines: 5,
-                              style: TextStyle(
-                                  fontFamily: Constants.appFont,
-                                  fontSize: 16,
-                                  color: Color(
-                                    Constants.colorGray,
-                                  )),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(10),
-                        ),
-                        const Divider(
-                          thickness: 1,
-                          color: Color(0xffcccccc),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+            return Center(
+              child: FractionallySizedBox(
+                widthFactor: 0.8, // Adjust the width as needed
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.5, // Adjust the height as needed
+                  ),
+                  child: Dialog(
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
-                                // set the height to 50
-                                fixedSize: MaterialStateProperty.all<Size>(const Size(130, 40)),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Cancel Order',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: ScreenUtil().setSp(18),
+                                      fontWeight: FontWeight.w900,
+                                      fontFamily: Constants.appFontBold,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    child: Icon(Icons.close),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
                               ),
-                              onPressed: (){
-                              _textOrderCancelReason.clear();
-                              Navigator.pop(context);
-                            }, child: Text(
-                              'No Go Back',
-                              style: TextStyle(
-                                  fontSize: ScreenUtil().setSp(14),
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: Constants.appFontBold,
-                                  color: Colors.white),
-                            ),),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenUtil().setWidth(12)),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
-                                  // set the height to 50
-                                  fixedSize: MaterialStateProperty.all<Size>(const Size(130, 40)),
-                                ),
-                                onPressed: () async {
-                                if (_textOrderCancelReason.text.isNotEmpty) {
-                                  await callCancelOrder(orderId,
-                                      _textOrderCancelReason.text, context);
-                                  if ((_printerController.printerModel.value.ipKitchen !=
-                                      null &&
-                                      _printerController
-                                          .printerModel
-                                          .value
-                                          .ipKitchen!
-                                          .isNotEmpty) &&
-                                      (_printerController.printerModel.value.portKitchen !=
-                                          null &&
-                                          _printerController
-                                              .printerModel
-                                              .value
-                                              .portKitchen!
-                                              .isNotEmpty)) {
-                                    testPrintKitchen(
-                                        _printerController
-                                            .printerModel
-                                            .value
-                                            .ipKitchen!,
-                                        int.parse(_printerController
-                                            .printerModel
-                                            .value
-                                            .portKitchen
-                                            .toString()),
-                                        context,
-                                        order,
-                                        true
-                                    );
-                                  } else {
-                                    Get.snackbar(
-                                        "Error",
-                                        "Please add kitchen printer ip and port");
-                                  }
-                                } else {
-                                  Constants.toastMessage(
-                                      'Please Enter Cancel Reason');
-                                }
-                              }, child: Text(
-                                'Yes Cancel It',
-                                style: TextStyle(
-                                    fontSize: ScreenUtil().setSp(14),
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: Constants.appFontBold,
-                                    color: Colors.white),
-                              ),),
                             ),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(10),
+                            ),
+                            const Divider(
+                              thickness: 1,
+                              color: Color(0xffcccccc),
+                            ),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(10),
+                            ),
+                            Text(
+                              'Order Cancel Reason',
+                              style: TextStyle(
+                                  fontFamily: Constants.appFontBold, fontSize: 16),
+                            ),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(10),
+                            ),
+                            Card(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: _textOrderCancelReason,
+                                  keyboardType: TextInputType.text,
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.only(left: 10),
+                                      hintText: 'Type Order Cancel Reason',
+                                      border: InputBorder.none),
+                                  maxLines: 5,
+                                  style: TextStyle(
+                                      fontFamily: Constants.appFont,
+                                      fontSize: 16,
+                                      color: Color(
+                                        Constants.colorGray,
+                                      )),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: ScreenUtil().setHeight(10),
+                            ),
+                            const Divider(
+                              thickness: 1,
+                              color: Color(0xffcccccc),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color(Constants.colorTheme)),
+                                    // set the height to 50
+                                    fixedSize: MaterialStateProperty.all<Size>(
+                                        const Size(130, 40)),
+                                  ),
+                                  onPressed: () {
+                                    _textOrderCancelReason.clear();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'No Go Back',
+                                    style: TextStyle(
+                                        fontSize: ScreenUtil().setSp(14),
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: Constants.appFontBold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: ScreenUtil().setWidth(12)),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color(Constants.colorTheme)),
+                                      // set the height to 50
+                                      fixedSize: MaterialStateProperty.all<Size>(
+                                          const Size(130, 40)),
+                                    ),
+                                    onPressed: () async {
+                                      if (_textOrderCancelReason.text.isNotEmpty) {
+                                        await callCancelOrder(
+                                            orderId,
+                                            _textOrderCancelReason.text,
+                                            context);
+                                        if ((_printerController.printerModel.value
+                                            .ipKitchen !=
+                                            null &&
+                                            _printerController.printerModel.value
+                                                .ipKitchen!.isNotEmpty) &&
+                                            (_printerController.printerModel.value
+                                                .portKitchen !=
+                                                null &&
+                                                _printerController.printerModel.value
+                                                    .portKitchen!.isNotEmpty)) {
+                                          testPrintKitchen(
+                                              _printerController
+                                                  .printerModel.value.ipKitchen!,
+                                              int.parse(_printerController
+                                                  .printerModel.value.portKitchen
+                                                  .toString()),
+                                              context,
+                                              order,
+                                              true);
+                                        } else {
+                                          Get.snackbar("Error",
+                                              "Please add kitchen printer ip and port");
+                                        }
+                                      } else {
+                                        Constants.toastMessage(
+                                            'Please Enter Cancel Reason');
+                                      }
+                                    },
+                                    child: Text(
+                                      'Yes Cancel It',
+                                      style: TextStyle(
+                                          fontSize: ScreenUtil().setSp(14),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: Constants.appFontBold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -771,6 +1143,8 @@ class OrderHistoryController extends GetxController {
         );
       },
     );
+
+
   }
 
   showSwitchOrderDialog(dynamic orderId, dynamic paymentType, BuildContext context) {
@@ -779,7 +1153,11 @@ class OrderHistoryController extends GetxController {
       payment = 'POS CARD';
     } else if(paymentType.toString() == 'POS CARD'){
       payment = 'POS CASH';
-    }  else {
+    }  else if(paymentType.toString() == 'POS CASH TAKEAWAY'){
+      payment = 'POS CARD TAKEAWAY';
+    } else if(paymentType.toString() == 'POS CARD TAKEAWAY'){
+      payment = 'POS CASH TAKEAWAY';
+    } else {
       payment = '';
     }
     // showDialog(

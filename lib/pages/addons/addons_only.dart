@@ -519,113 +519,130 @@ class _AddonsOnlyState extends State<AddonsOnly> {
             height: Get.height,
             child: Column(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Stack(
                   children: [
-                    Container(
-                      height: 125,
-                      width: 125,
-                      // margin: EdgeInsets.only(left: 5.0),
-                      // decoration: ,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.data.image),
-                            fit: BoxFit.cover),
-                        // borderRadius: BorderRadius.circular(12.0),
-                        borderRadius:
-                        BorderRadius.only(topLeft: Radius.circular(8.0)),
-                      ),
-                    ),
-                    SizedBox(
-                      width: ScreenConfig.blockWidth * 2,
-                    ),
-                    Flexible(
-                      flex: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 3,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 125,
+                          width: 125,
+                          // margin: EdgeInsets.only(left: 5.0),
+                          // decoration: ,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: CachedNetworkImageProvider(widget.data.image),
+                                fit: BoxFit.cover),
+                            // borderRadius: BorderRadius.circular(12.0),
+                            borderRadius:
+                            BorderRadius.only(topLeft: Radius.circular(8.0)),
                           ),
-                          Text(
-                            widget.data.name,
-                            maxLines: 2,
-                            style: TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 19,
-                            ),
-                          ),
-                          Text(
-                            widget.data.price.toString(),
-                            maxLines: 2,
-                            style: TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 13,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
+                        ),
+                        SizedBox(
+                          width: ScreenConfig.blockWidth * 2,
+                        ),
+                        Flexible(
+                          flex: 4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 3,
+                              ),
+                              Text(
+                                widget.data.name,
+                                maxLines: 2,
+                                style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 19,
+                                ),
+                              ),
+                              Text(
+                                widget.data.price.toString(),
+                                maxLines: 2,
+                                style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
 
-                          Text(
-                            'Description',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            widget.data.description,
-                            maxLines: 4,
-                            style: TextStyle(
-                              fontSize: 12,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ItemQuantity(btnPlusOnPressed: () async {
-                            _cartController.addItem(
-                                getCurrentCart(), widget.data.vendorId, context);
-                            _cartController.quantity.value =
-                                _cartController.getQuantity(
+                              Text(
+                                'Description',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                              Text(
+                                widget.data.description,
+                                maxLines: 4,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ItemQuantity(btnPlusOnPressed: () async {
+                                _cartController.addItem(
+                                    getCurrentCart(), widget.data.vendorId, context);
+                                _cartController.quantity.value =
+                                    _cartController.getQuantity(
+                                        getCurrentCart(), widget.data.vendorId);
+                              }, btnMinusOnPressed: () async {
+                                _cartController.removeItem(
                                     getCurrentCart(), widget.data.vendorId);
-                          }, btnMinusOnPressed: () async {
-                            _cartController.removeItem(
-                                getCurrentCart(), widget.data.vendorId);
-                            _cartController.quantity.value =
-                                _cartController.getQuantity(
-                                    getCurrentCart(), widget.data.vendorId);
-                          }, btnFloatOnPressed: () {
-                            print("DATA ${widget.data.toMap()}");
-                            _cartController.addItem(
-                                getCurrentCart(), widget.data.vendorId, context);
-                            _cartController.quantity.value =
-                                _cartController.getQuantity(
-                                    getCurrentCart(), widget.data.vendorId);
-                          }),
+                                _cartController.quantity.value =
+                                    _cartController.getQuantity(
+                                        getCurrentCart(), widget.data.vendorId);
+                              }, btnFloatOnPressed: () {
+                                print("DATA ${widget.data.toMap()}");
+                                _cartController.addItem(
+                                    getCurrentCart(), widget.data.vendorId, context);
+                                _cartController.quantity.value =
+                                    _cartController.getQuantity(
+                                        getCurrentCart(), widget.data.vendorId);
+                              }),
 
-                          // (_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.displayDiscountPrice==null)?
-                          // Text(
-                          //   (_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.price==null) ?
-                          //   '' :
-                          //   "Price "+_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.price.toString()
-                          //   ,style: TextStyle(
-                          //       fontSize: 10
-                          //   ),):
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.start,
-                          //   children: [
-                          //   Text('${_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.displayPrice}',style: TextStyle(decoration:  TextDecoration.lineThrough,color: Colors.grey),),
-                          //     Text(' ${_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.displayDiscountPrice}')
-                          //   ],
-                          // ),
-                        ],
-                      ),
+                              // (_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.displayDiscountPrice==null)?
+                              // Text(
+                              //   (_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.price==null) ?
+                              //   '' :
+                              //   "Price "+_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.price.toString()
+                              //   ,style: TextStyle(
+                              //       fontSize: 10
+                              //   ),):
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.start,
+                              //   children: [
+                              //   Text('${_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.displayPrice}',style: TextStyle(decoration:  TextDecoration.lineThrough,color: Colors.grey),),
+                              //     Text(' ${_orderCustimizationController.response!.data!.menuCategory![index].singleMenu![i].menu!.displayDiscountPrice}')
+                              //   ],
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+                    Positioned(
+                        top: 10,
+                        right: 10,
+                        child: GestureDetector(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: Icon(
+                      Icons.clear,
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                        ))
                   ],
                 ),
                 SizedBox(
