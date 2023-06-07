@@ -929,6 +929,7 @@ class _AddonsOnlyState extends State<AddonsOnly> {
         menu: [
           cartMaster.MenuCartMaster(
               id: widget.data.id,
+              modifiers: [],
               name: widget.data.name,
               image: widget.data.image,
               totalAmount: totalAmount,

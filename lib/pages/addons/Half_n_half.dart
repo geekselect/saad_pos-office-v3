@@ -427,6 +427,7 @@ class _HalfNHalfState extends State<HalfNHalf>  with TickerProviderStateMixin {
                                                       }
                                                       this.menu[initPosition] =
                                                           cartMaster.MenuCartMaster(id: menu.id,
+                                                              modifiers: [],
                                                               name: menu.name,
                                                               image: menu.image,
                                                               diningAmount: diningAmount,
@@ -477,6 +478,7 @@ class _HalfNHalfState extends State<HalfNHalf>  with TickerProviderStateMixin {
                                                         .menuSize![MenuSizeIndex].menu!;
                                                     this.menu[initPosition] =
                                                         cartMaster.MenuCartMaster(id: menu.id,
+                                                            modifiers: [],
                                                             name: menu.name,
                                                             image: menu.image,
                                                             totalAmount: (double

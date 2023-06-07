@@ -2090,7 +2090,7 @@ class OrderHistory extends StatelessWidget {
                                     // set the height to 50
                                     fixedSize:
                                     MaterialStateProperty.all<Size>(
-                                        const Size(110, 50)),
+                                         Size(110, 50)),
                                   ),
                                   child: Text(
                                     'Complete Orders',
@@ -2598,6 +2598,63 @@ class OrderHistory extends StatelessWidget {
                                                                                   )
                                                                                 ],
                                                                               ),
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                        ListView.builder(
+                                                                          shrinkWrap:
+                                                                          true,
+                                                                          physics:
+                                                                          const NeverScrollableScrollPhysics(),
+                                                                          itemCount: menuItem
+                                                                              .modifiers!
+                                                                              .length,
+                                                                          itemBuilder:
+                                                                              (context, modifiersIndex) {
+                                                                                cart.Modifier
+                                                                            modifierItem =
+                                                                            menuItem.modifiers![modifiersIndex];
+                                                                            return ListView.builder(
+                                                                              shrinkWrap:
+                                                                              true,
+                                                                              physics:
+                                                                              const NeverScrollableScrollPhysics(),
+                                                                              itemCount: modifierItem
+                                                                                  .modifierDetails!
+                                                                                  .length,
+                                                                              padding:
+                                                                              const EdgeInsets.only(left: 25),
+                                                                              itemBuilder:
+                                                                                  (context, modifierDetailIndex) {
+                                                                                    cart.ModifierDetail
+                                                                                    modifierDetailItem =
+                                                                                modifierItem
+                                                                                    .modifierDetails![modifierDetailIndex];
+                                                                                return Padding(
+                                                                                  padding: const EdgeInsets.only(top: 5.0),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      Text(
+                                                                                        '${modifierDetailItem.modifierName} ',
+                                                                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
+                                                                                      ),
+                                                                                      Container(
+                                                                                        padding: const EdgeInsets.all(4.0),
+                                                                                        decoration: const BoxDecoration(
+                                                                                          color: Colors.black,
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                                                                                        ),
+                                                                                        child: const Center(
+                                                                                          child: Text(
+                                                                                            'MODIFIERS',
+                                                                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 10),
+                                                                                          ),
+                                                                                        ),
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
+                                                                                );
+                                                                              },
                                                                             );
                                                                           },
                                                                         ),

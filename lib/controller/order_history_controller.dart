@@ -57,6 +57,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/model/cart_master.dart' as cartMasterModel;
 import 'package:pos/model/common_res.dart' as commonRes;
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
@@ -277,6 +278,50 @@ class OrderHistoryController extends GetxController {
                   width: 2,
                   styles: const PosStyles(align: PosAlign.right)),
             ]);
+          }
+
+          for (int modifierIndex = 0;
+          modifierIndex < menuItem.modifiers!.length;
+          modifierIndex++) {
+            cartMasterModel.Modifier modifierItem = menuItem.modifiers![modifierIndex];
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
+            for (int modifierDetailIndex = 0;
+            modifierDetailIndex < modifierItem.modifierDetails!.length;
+            modifierDetailIndex++) {
+              cartMasterModel.ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+              // if (addonIndex == 0) {
+              //   printer.row([
+              //     PosColumn(
+              //         text: "-ADDONS-",
+              //         width: 12,
+              //         styles: PosStyles(
+              //             width: PosTextSize.size1,
+              //             height: PosTextSize.size1,
+              //             align: PosAlign.center))
+              //   ]);
+              // }
+              printer.row([
+                PosColumn(text: '', width: 1),
+                PosColumn(text: " ${modifierDetailItem.modifierName} (Modifier)", width: 9),
+                // PosColumn(
+                // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+                PosColumn(
+                  // text:  double.parse(addonItem.price.toString()).toStringAsFixed(2),
+                    text:  '',
+                    width: 2,
+                    styles: PosStyles(align: PosAlign.right)),
+              ]);
+            }
           }
         }
       }
@@ -514,6 +559,43 @@ class OrderHistoryController extends GetxController {
               PosColumn(text: '', width: 2),
               PosColumn(text: ' ${addonItem.name} (ADDON)', width: 10),
             ]);
+          }
+
+          for (int modifierIndex = 0;
+          modifierIndex < menuItem.modifiers!.length;
+          modifierIndex++) {
+            cartMasterModel.Modifier modifierItem = menuItem.modifiers![modifierIndex];
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
+            for (int modifierDetailIndex = 0;
+            modifierDetailIndex < modifierItem.modifierDetails!.length;
+            modifierDetailIndex++) {
+              cartMasterModel.ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+              // if (addonIndex == 0) {
+              //   printer.row([
+              //     PosColumn(
+              //         text: "-ADDONS-",
+              //         width: 12,
+              //         styles: PosStyles(
+              //             width: PosTextSize.size1,
+              //             height: PosTextSize.size1,
+              //             align: PosAlign.center))
+              //   ]);
+              // }
+              printer.row([
+                PosColumn(text: '', width: 2),
+                PosColumn(text: " ${modifierDetailItem.modifierName} (Modifier)", width: 10),
+              ]);
+            }
           }
         }
       }

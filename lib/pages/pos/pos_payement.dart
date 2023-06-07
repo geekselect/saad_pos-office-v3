@@ -8,6 +8,7 @@ import 'package:pos/controller/dining_cart_controller.dart';
 
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/shift_controller.dart';
+import 'package:pos/model/cart_master.dart' as cartMasterModel;
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/model/single_restaurants_details_model.dart' as rest;
 import 'package:pos/pages/order/OrderDetailScreen.dart';
@@ -347,6 +348,50 @@ class _PosPaymentState extends State<PosPayment> {
                   width: 2,
                   styles: PosStyles(align: PosAlign.right)),
             ]);
+          }
+
+          for (int modifierIndex = 0;
+          modifierIndex < menuItem.modifiers!.length;
+          modifierIndex++) {
+            cartMasterModel.Modifier modifierItem = menuItem.modifiers![modifierIndex];
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
+            for (int modifierDetailIndex = 0;
+            modifierDetailIndex < modifierItem.modifierDetails!.length;
+            modifierDetailIndex++) {
+              cartMasterModel.ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+              // if (addonIndex == 0) {
+              //   printer.row([
+              //     PosColumn(
+              //         text: "-ADDONS-",
+              //         width: 12,
+              //         styles: PosStyles(
+              //             width: PosTextSize.size1,
+              //             height: PosTextSize.size1,
+              //             align: PosAlign.center))
+              //   ]);
+              // }
+              printer.row([
+                PosColumn(text: '', width: 1),
+                PosColumn(text: " ${modifierDetailItem.modifierName} (Modifier)", width: 9),
+                // PosColumn(
+                // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
+                PosColumn(
+                  // text:  double.parse(addonItem.price.toString()).toStringAsFixed(2),
+                    text:  '',
+                    width: 2,
+                    styles: PosStyles(align: PosAlign.right)),
+              ]);
+            }
           }
         }
       }
@@ -796,6 +841,43 @@ class _PosPaymentState extends State<PosPayment> {
               // PosColumn(
               // text: orderItems.price.toString(), width: 2, styles: PosStyles(align: PosAlign.right)),
             ]);
+          }
+
+          for (int modifierIndex = 0;
+          modifierIndex < menuItem.modifiers!.length;
+          modifierIndex++) {
+            cartMasterModel.Modifier modifierItem = menuItem.modifiers![modifierIndex];
+            // if (addonIndex == 0) {
+            //   printer.row([
+            //     PosColumn(
+            //         text: "-ADDONS-",
+            //         width: 12,
+            //         styles: PosStyles(
+            //             width: PosTextSize.size1,
+            //             height: PosTextSize.size1,
+            //             align: PosAlign.center))
+            //   ]);
+            // }
+            for (int modifierDetailIndex = 0;
+            modifierDetailIndex < modifierItem.modifierDetails!.length;
+            modifierDetailIndex++) {
+              cartMasterModel.ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+              // if (addonIndex == 0) {
+              //   printer.row([
+              //     PosColumn(
+              //         text: "-ADDONS-",
+              //         width: 12,
+              //         styles: PosStyles(
+              //             width: PosTextSize.size1,
+              //             height: PosTextSize.size1,
+              //             align: PosAlign.center))
+              //   ]);
+              // }
+              printer.row([
+                PosColumn(text: '', width: 2),
+                PosColumn(text: " ${modifierDetailItem.modifierName} (Modifier)", width: 10),
+              ]);
+            }
           }
         }
       }

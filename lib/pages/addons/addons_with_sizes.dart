@@ -66,7 +66,9 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
         quantity: 1,
         totalAmount: totalAmount,
         diningAmount: diningAmount,
-        category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+        category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,
+        modifiers: [],
+        image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
     super.initState();
   }
   @override
@@ -201,12 +203,17 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                                     quantity: 1,
                                     totalAmount: totalAmount,
                                     diningAmount: diningAmount,
-                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,
+                                    modifiers: [],
+                                    name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
                                 _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
                                     quantity: 1,
                                     totalAmount: totalAmount,
                                     diningAmount: diningAmount,
-                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(
+                                    id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                                    modifiers: [],
+                                    totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                                 setState(() {
 
                                 });
@@ -242,12 +249,17 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                                     quantity: 1,
                                     totalAmount: totalAmount,
                                     diningAmount: diningAmount,
-                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,
+                                     modifiers: [],
+                                     name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
                                 _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
                                     diningAmount: diningAmount,
                                     quantity: 1,
                                     totalAmount: totalAmount,
-                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                                    category:widget.category,menu:[cartMaster.MenuCartMaster(
+                                    id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                                    modifiers: [],
+                                    totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                                 setState(() {
 
                                 });
@@ -285,12 +297,18 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                                   quantity: 1,
                                   totalAmount: totalAmount,
                                   diningAmount: diningAmount,
-                                  category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
+                                  category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,
+                                   name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount,
+                                   modifiers: [],
+                                   addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId,context);
                               _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
                                   quantity: 1,
                                   totalAmount: totalAmount,
                                   diningAmount: diningAmount,
-                                  category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                                  category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image,
+                                  totalAmount:totalAmount, addons: addonsList,
+                                modifiers: [],
+                              )],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                               setState(() {
 
                               });
@@ -327,14 +345,19 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                               quantity: 1,
                               totalAmount: totalAmount,
                               diningAmount: diningAmount,
-                              category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                              category:widget.category,menu:[cartMaster.MenuCartMaster(id:
+                          widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                              modifiers: [],
                               totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(),
                               id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                           _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
                               quantity: 1,
                               totalAmount: totalAmount,
                               diningAmount: diningAmount,
-                              category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,
+                              category:widget.category,menu:[
+                                cartMaster.MenuCartMaster(id: widget.menu.id,
+                                    name:widget.menu.name,image:widget.menu.image ,
+                                    modifiers: [],
                               totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(),
                               id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                           // setState(() {
@@ -468,7 +491,7 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                       quantity: 1,
                       totalAmount: totalAmount,
                       diningAmount: diningAmount,
-                      category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                      category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList,  modifiers: [],)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
                   setState(() {
                   });
                 },
@@ -574,7 +597,12 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                                     quantity: 1,
                                     totalAmount: totalAmount,
                                     diningAmount: diningAmount,
-                                    category:widget.category,menu:[cartMaster.MenuCartMaster(id: widget.menu.id,name:widget.menu.name,image:widget.menu.image ,totalAmount:totalAmount, addons: addonsList)],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
+                                    category:widget.category,menu:[
+                                      cartMaster.MenuCartMaster(
+                                          id: widget.menu.id,name:widget.menu.name,
+                                          image:widget.menu.image ,totalAmount:totalAmount,
+                                          addons: addonsList,
+                                        modifiers: [])],size: Size(sizeName: widget.data[initPosition].itemSize!.name.toString(), id: widget.data[initPosition].itemSize!.id!)), widget.menu.vendorId);
 
 
                               }):Container();

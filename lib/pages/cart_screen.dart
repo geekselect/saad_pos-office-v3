@@ -1702,6 +1702,7 @@ import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/order_setting_api_model.dart';
 import 'package:pos/model/status_model.dart';
 import 'package:pos/pages/dining/dining_cart_screen.dart';
+import 'package:pos/pages/modifiers/modifiers_only.dart';
 import 'package:pos/pages/pos/pos_payement.dart';
 import 'package:pos/retrofit/base_model.dart';
 import 'package:pos/screen_animation_utils/transitions.dart';
@@ -1714,6 +1715,8 @@ import '../constant/app_strings.dart';
 import 'cart/apply_coupon.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'modifiers/modifier_controller.dart';
 
 enum DeliveryMethod { TAKEAWAY, DELIVERY }
 
@@ -1729,6 +1732,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   CartController _cartController = Get.find<CartController>();
+  ModifierDataController _modifierController = Get.put(ModifierDataController());
   DateTime? selectedDate;
   TimeOfDay? picked;
   BaseModel<OrderSettingModel>? orderSettingModel;
@@ -1836,32 +1840,30 @@ class _CartScreenState extends State<CartScreen> {
     }
     subTotal = totalAmount;
     ScreenConfig().init(context);
-    if (_cartController.cartMaster == null ||
-        _cartController.cartMaster!.cart.isEmpty) {
       return Scaffold(
         body: Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('images/bg-cart.png'),
+                  image: AssetImage('images/bg-cart.jpg'),
                   fit: BoxFit.cover,
                 )),
-            child: Center(
-              child: Text("No data in the cart"),
-            )),
-      );
-    } else {
-      return GetBuilder<CartController>(
+          child: GetBuilder<CartController>(
         init: CartController(),
         id: 'dining',
         builder: (controller) {
-          if (_cartController.diningValue) {
+    if (controller.cartMaster == null ||
+    controller.cartMaster!.cart.isEmpty) {
+    return Center(
+    child: Text("No data in the cart"),
+    );
+    } else if (_cartController.diningValue) {
             return DiningCartScreen();
           } else {
             return Scaffold(
               body: Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('images/bg-cart.png'),
+                      image: AssetImage('images/bg-cart.jpg'),
                       fit: BoxFit.cover,
                     )),
                 child: SafeArea(
@@ -2024,6 +2026,8 @@ class _CartScreenState extends State<CartScreen> {
             );
           }
         },
+    ),
+        ),
       );
       // return FutureBuilder<BaseModel<OrderSettingModel>>(
       //     future: _cartController
@@ -2047,8 +2051,10 @@ class _CartScreenState extends State<CartScreen> {
       //         ),
       //       );
       //     });
-    }
+
   }
+
+
 
   getCartData() {
     if (_cartController.cartMaster == null ||
@@ -2225,40 +2231,134 @@ class _CartScreenState extends State<CartScreen> {
                                 children: [
                                   Flexible(
                                     fit: FlexFit.loose,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          fit: FlexFit.loose,
-                                          child: Text(
-                                              menuItem.name +
-                                                  (cart.size != null
-                                                      ? ' ( ${cart.size?.sizeName}) '
-                                                      : '') +
-                                                  ' x ${cart.quantity}  ',
-                                              style: TextStyle(
-                                                  color: primaryColor,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 16)),
-                                        ),
-                                        // SizedBox(
-                                        //   height: 5,
-                                        // ),
-                                        // Align(
-                                        //   alignment: Alignment.centerLeft,
-                                        //   child: Container(
-                                        //     decoration: BoxDecoration(
-                                        //         color: primaryColor,
-                                        //         borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                        //     ),
-                                        //     child: Text('SINGLE',
-                                        //         overflow: TextOverflow.ellipsis,
-                                        //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
-                                        //   ),
-                                        // ),
-                                      ],
+                                    child: GestureDetector(
+                                      onTap: (){
+                                          print(
+                                              "ADDONS Only Dialog Modifiers");
+
+                                            showDialog(
+                                                context:
+                                                context,
+                                                builder:
+                                                    (BuildContext
+                                                context) {
+                                                  var height = MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .height;
+                                                  var width = MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width;
+                                                  return AlertDialog(
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius
+                                                            .circular(20)
+                                                    ),
+                                                    content: Container(
+                                                      height: height * 0.5,
+                                                      width: width * 0.3,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius
+                                                              .circular(20)
+                                                      ),
+                                                      child: FutureBuilder<
+                                                          BaseModel<
+                                                              ModifierModel>>(
+                                                        future: _modifierController
+                                                            .modifierDataApiCall(),
+                                                        // Replace with your actual API function
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          if (snapshot
+                                                              .connectionState ==
+                                                              ConnectionState
+                                                                  .waiting) {
+                                                            return const Center(
+                                                              child: CircularProgressIndicator(),
+                                                            );
+                                                          } else if (snapshot
+                                                              .hasError) {
+                                                            return Text(
+                                                                'Error: ${snapshot
+                                                                    .error}');
+                                                          } else if (snapshot
+                                                              .hasData) {
+                                                            List<
+                                                                Modifier> cartModifiers = [
+                                                            ];
+                                                            if (menuItem
+                                                                .modifiers
+                                                                .isNotEmpty) {
+                                                              cartModifiers =
+                                                                  menuItem
+                                                                      .modifiers;
+                                                            } else {
+                                                              cartModifiers =
+                                                              [];
+                                                            }
+                                                            return ModifiersOnly(
+                                                              cartModifiers: cartModifiers,
+                                                              modifierModel: snapshot
+                                                                  .data!.data!,
+                                                              onModifiersSelected: (
+                                                                  selectedModifiers) {
+                                                                setState(() {
+                                                                  menuItem
+                                                                      .modifiers =
+                                                                      selectedModifiers;
+                                                                });
+                                                              },
+                                                            );
+                                                          } else {
+                                                            return const Text(
+                                                                'No data available');
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  );
+                                                });
+
+
+                                      },
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            fit: FlexFit.loose,
+                                            child: Text(
+                                                menuItem.name +
+                                                    (cart.size != null
+                                                        ? ' ( ${cart.size?.sizeName}) '
+                                                        : '') +
+                                                    ' x ${cart.quantity}  ',
+                                                style: TextStyle(
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 16)),
+                                          ),
+                                          // SizedBox(
+                                          //   height: 5,
+                                          // ),
+                                          // Align(
+                                          //   alignment: Alignment.centerLeft,
+                                          //   child: Container(
+                                          //     decoration: BoxDecoration(
+                                          //         color: primaryColor,
+                                          //         borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                          //     ),
+                                          //     child: Text('SINGLE',
+                                          //         overflow: TextOverflow.ellipsis,
+                                          //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Flexible(
@@ -2291,7 +2391,37 @@ class _CartScreenState extends State<CartScreen> {
                                             ],
                                           );
                                         }),
-                                  )
+                                  ),
+
+                                  menuItem.modifiers.isNotEmpty ?  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: menuItem.modifiers.length,
+                                        itemBuilder: (context, modifierIndex) {
+                                          Modifier modifierItem = menuItem.modifiers[modifierIndex];
+                                         return  ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              itemCount: modifierItem.modifierDetails!.length,
+                                              itemBuilder: (context, modifierDetailIndex) {
+                                                ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+                                                return Row(
+                                                  children: [
+                                                    Text(modifierDetailItem.modifierName! + ' '),
+                                                    Text(
+                                                      '(MODIFIER)',
+                                                      style: TextStyle(
+                                                          color: primaryColor,
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 12),
+                                                    )
+                                                  ],
+                                                );
+                                              });
+                                        }),
+                                  ) : SizedBox()
                                 ],
                               ),
                             ),

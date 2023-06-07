@@ -73,6 +73,7 @@ class MenuCartMaster {
      this.diningAmount,
     required this.totalAmount,
     required this.addons,
+    required this.modifiers,
     this.dealsItems
 
   });
@@ -83,6 +84,7 @@ class MenuCartMaster {
   dynamic diningAmount;
   dynamic totalAmount;
   List<AddonCartMaster> addons;
+  List<Modifier> modifiers;
   DealsItems? dealsItems;
 
   factory MenuCartMaster.fromMap(Map<String, dynamic> json) => MenuCartMaster(
@@ -92,6 +94,7 @@ class MenuCartMaster {
     totalAmount: json['total_amount'],
     diningAmount: json['dining_amount'],
     addons: List<AddonCartMaster>.from(json["addons"].map((x) => AddonCartMaster.fromMap(x))),
+    modifiers: json["modifiers"] == null ? [] : List<Modifier>.from(json["modifiers"]!.map((x) => Modifier.fromJson(x))),
     dealsItems: json["deals_items"] == null ? null : DealsItems.fromMap(json["deals_items"]),
   );
 
@@ -102,6 +105,7 @@ class MenuCartMaster {
     "total_amount":totalAmount,
     "dining_amount":diningAmount,
     "addons": List<dynamic>.from(addons.map((x) => x.toMap())),
+    "modifiers": List<dynamic>.from(modifiers.map((x) => x.toJson())),
     "deals_items":dealsItems == null ?null:dealsItems!.toMap(),
   };
 }
@@ -153,6 +157,63 @@ class AddonCartMaster {
     'dining_price':diningPrice,
   };
 }
+
+class ModifierModel {
+  List<Modifier>? modifiers;
+
+  ModifierModel({
+    this.modifiers,
+  });
+
+  factory ModifierModel.fromJson(Map<String, dynamic> json) => ModifierModel(
+    modifiers: json["modifiers"] == null ? [] : List<Modifier>.from(json["modifiers"]!.map((x) => Modifier.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "modifiers": modifiers == null ? [] : List<dynamic>.from(modifiers!.map((x) => x.toJson())),
+  };
+}
+
+class Modifier {
+  String? modifierType;
+  List<ModifierDetail>? modifierDetails;
+
+  Modifier({
+    this.modifierType,
+    this.modifierDetails,
+  });
+
+  factory Modifier.fromJson(Map<String, dynamic> json) => Modifier(
+    modifierType: json["modifier_type"],
+    modifierDetails: json["modifier_details"] == null ? [] : List<ModifierDetail>.from(json["modifier_details"]!.map((x) => ModifierDetail.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "modifier_type": modifierType,
+    "modifier_details": modifierDetails == null ? [] : List<dynamic>.from(modifierDetails!.map((x) => x.toJson())),
+  };
+}
+
+class ModifierDetail {
+  String? modifierName;
+  double? modifierPrice;
+
+  ModifierDetail({
+    this.modifierName,
+    this.modifierPrice,
+  });
+
+  factory ModifierDetail.fromJson(Map<String, dynamic> json) => ModifierDetail(
+    modifierName: json["modifier_name"],
+    modifierPrice: json["modifier_price"]?.toDouble(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "modifier_name": modifierName,
+    "modifier_price": modifierPrice,
+  };
+}
+
 
 class Size {
   Size({

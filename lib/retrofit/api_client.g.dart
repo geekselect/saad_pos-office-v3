@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://v4.ozfoodz.com.au/api/pos/';
+    baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
     // baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
   }
 
@@ -1250,6 +1250,23 @@ class _RestClient implements RestClient {
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommenPaymentSwitchRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future modifiers(int? vendorId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CustomerDataModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'MenuModifiers/${vendorId}',
+                queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ModifierModel.fromJson(_result.data!);
     return value;
   }
 

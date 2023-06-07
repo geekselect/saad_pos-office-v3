@@ -3306,6 +3306,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
+import 'package:pos/pages/modifiers/modifier_controller.dart';
+import 'package:pos/pages/modifiers/modifiers_only.dart';
 import 'package:pos/pages/pos/pos_payement.dart';
 import '../../config/screen_config.dart';
 import '../../controller/auth_controller.dart';
@@ -3330,6 +3332,7 @@ class DiningCartScreen extends StatefulWidget {
 }
 
 class _DiningCartScreenState extends State<DiningCartScreen> {
+  ModifierDataController _modifierController = Get.put(ModifierDataController());
   final DiningCartController _diningCartController= Get.find<DiningCartController>();
 
   CartController _cartController = Get.find<CartController>();
@@ -3442,26 +3445,18 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
     //       _cartController.calculatedTax;
     // }
     subTotal = totalAmount;
-    return Scaffold(
-      body: _cartController.cartMaster == null ||
-          _cartController.cartMaster!.cart.isEmpty ? Container(
+    return Container(
         decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('images/bg-cart.png'),
-              fit: BoxFit.cover,
-            )),
-            child: Center(
-        child: Text("No data in the cart"),
-      ),
-          ) :
-      Container(
-        decoration: BoxDecoration(
-            color: Color(Constants.colorScreenBackGround),
-            image: DecorationImage(
-              image: AssetImage('images/bg-cart.png'),
-              fit: BoxFit.cover,
-            )),
-        child: SafeArea(
+          image: DecorationImage(
+            image: AssetImage('images/bg-cart.jpg'),
+            fit: BoxFit.cover,
+          )),
+      child: Scaffold(
+        body: _cartController.cartMaster == null ||
+            _cartController.cartMaster!.cart.isEmpty ? Center(
+          child: Text("No data in the cart"),
+        ) :
+        SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -4182,41 +4177,131 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                               children: [
                                 Flexible(
                                   fit: FlexFit.loose,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Flexible(
-                                        fit: FlexFit.loose,
-                                        child: Text(
-                                            menuItem.name +
-                                                (cart.size != null
-                                                    ? ' ( ${cart.size?.sizeName}) '
-                                                    : '') +
-                                                ' x ${cart.quantity}  ',
-                                            style: TextStyle(
-                                                color: primaryColor,
-                                                fontWeight: FontWeight.w900,
-                                                fontSize: 16)),
-                                      ),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      print(
+                                          "ADDONS Only Dialog Modifiers");
 
-                                      // SizedBox(
-                                      //   height: 5,
-                                      // ),
-                                      // Align(
-                                      //   alignment: Alignment.centerLeft,
-                                      //   child: Container(
-                                      //     decoration: BoxDecoration(
-                                      //         color: primaryColor,
-                                      //         borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                      //     ),
-                                      //     child: Text('SINGLE',
-                                      //         overflow: TextOverflow.ellipsis,
-                                      //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
-                                      //   ),
-                                      // ),
-                                    ],
+                                        showDialog(
+                                            context:
+                                            context,
+                                            builder:
+                                                (BuildContext
+                                            context) {
+                                              var height = MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height;
+                                              var width = MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width;
+                                              return AlertDialog(
+                                                clipBehavior: Clip
+                                                    .antiAliasWithSaveLayer,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(20)
+                                                ),
+                                                content: Container(
+                                                  height: height * 0.5,
+                                                  width: width * 0.3,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius
+                                                          .circular(20)
+                                                  ),
+                                                  child: FutureBuilder<
+                                                      BaseModel<ModifierModel>>(
+                                                    future: _modifierController
+                                                        .modifierDataApiCall(),
+                                                    // Replace with your actual API function
+                                                    builder: (context,
+                                                        snapshot) {
+                                                      if (snapshot
+                                                          .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const Center(
+                                                          child: CircularProgressIndicator(),
+                                                        );
+                                                      } else
+                                                      if (snapshot.hasError) {
+                                                        return Text(
+                                                            'Error: ${snapshot
+                                                                .error}');
+                                                      } else
+                                                      if (snapshot.hasData) {
+                                                        List<
+                                                            Modifier> cartModifiers = [
+                                                        ];
+                                                        if (menuItem.modifiers
+                                                            .isNotEmpty) {
+                                                          cartModifiers =
+                                                              menuItem
+                                                                  .modifiers;
+                                                        } else {
+                                                          cartModifiers = [];
+                                                        }
+                                                        return  ModifiersOnly(
+                                                          cartModifiers: cartModifiers,
+                                                          modifierModel: snapshot
+                                                              .data!.data!,
+                                                          onModifiersSelected: (
+                                                              selectedModifiers) {
+                                                            setState(() {
+                                                              menuItem
+                                                                  .modifiers =
+                                                                  selectedModifiers;
+                                                            });
+                                                          },
+                                                        );
+                                                      } else {
+                                                        return const Text(
+                                                            'No data available');
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            });
+
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          fit: FlexFit.loose,
+                                          child: Text(
+                                              menuItem.name +
+                                                  (cart.size != null
+                                                      ? ' ( ${cart.size?.sizeName}) '
+                                                      : '') +
+                                                  ' x ${cart.quantity}  ',
+                                              style: TextStyle(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 16)),
+                                        ),
+
+                                        // SizedBox(
+                                        //   height: 5,
+                                        // ),
+                                        // Align(
+                                        //   alignment: Alignment.centerLeft,
+                                        //   child: Container(
+                                        //     decoration: BoxDecoration(
+                                        //         color: primaryColor,
+                                        //         borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                        //     ),
+                                        //     child: Text('SINGLE',
+                                        //         overflow: TextOverflow.ellipsis,
+                                        //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Flexible(
@@ -4248,7 +4333,36 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                           ],
                                         );
                                       }),
-                                )
+                                ),
+                                menuItem.modifiers.isNotEmpty ?  Flexible(
+                                  fit: FlexFit.loose,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: menuItem.modifiers.length,
+                                      itemBuilder: (context, modifierIndex) {
+                                        Modifier modifierItem = menuItem.modifiers[modifierIndex];
+                                        return  ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemCount: modifierItem.modifierDetails!.length,
+                                            itemBuilder: (context, modifierDetailIndex) {
+                                              ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+                                              return Row(
+                                                children: [
+                                                  Text(modifierDetailItem.modifierName! + ' '),
+                                                  Text(
+                                                    '(MODIFIER)',
+                                                    style: TextStyle(
+                                                        color: primaryColor,
+                                                        fontWeight: FontWeight.w500,
+                                                        fontSize: 12),
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                      }),
+                                ) : SizedBox()
                               ],
                             ),
                           ),

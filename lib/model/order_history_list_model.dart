@@ -714,6 +714,8 @@
 
 import 'dart:convert';
 
+import 'package:pos/model/cart_master.dart';
+
 OrderHistoryListModel orderHistoryListModelFromJson(String str) => OrderHistoryListModel.fromJson(json.decode(str));
 
 String orderHistoryListModelToJson(OrderHistoryListModel data) => json.encode(data.toJson());
@@ -999,6 +1001,7 @@ class Menu {
   double? totalAmount;
   dynamic diningAmount;
   List<Addon>? addons;
+  List<Modifier>? modifiers;
   dynamic dealsItems;
 
   Menu({
@@ -1009,6 +1012,7 @@ class Menu {
     this.diningAmount,
     this.addons,
     this.dealsItems,
+    this.modifiers
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
@@ -1017,6 +1021,7 @@ class Menu {
     image: json["image"],
     totalAmount: json["total_amount"]?.toDouble(),
     diningAmount: json["dining_amount"],
+    modifiers: json["modifiers"] == null ? [] : List<Modifier>.from(json["modifiers"]!.map((x) => Modifier.fromJson(x))),
     addons: json["addons"] == null ? [] : List<Addon>.from(json["addons"]!.map((x) => Addon.fromMap(x))),
     dealsItems: json["deals_items"],
   );
@@ -1027,6 +1032,7 @@ class Menu {
     "image": image,
     "total_amount": totalAmount,
     "dining_amount": diningAmount,
+    "modifiers": List<dynamic>.from(modifiers!.map((x) => x.toJson())),
     "addons": addons == null ? [] : List<dynamic>.from(addons!.map((x) => x)),
     "deals_items": dealsItems,
   };

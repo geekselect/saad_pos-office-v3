@@ -254,6 +254,7 @@ class _DealsItemsState extends State<DealsItems> with SingleTickerProviderStateM
                                                 this.menu[initPosition]=cartMaster.MenuCartMaster(id: menu.id,name:menu.name,image:menu.image,
                                                     totalAmount:0.0,
                                                     addons: [],
+                                                    modifiers: [],
                                                     dealsItems:cartMaster.DealsItems(id: widget.dealsItemList[initPosition].id,name: widget.dealsItemList[initPosition].name));
 
                                                 selectItemIndex[initPosition]=index;
@@ -310,6 +311,7 @@ class _DealsItemsState extends State<DealsItems> with SingleTickerProviderStateM
                                                   this.menu[initPosition]=cartMaster.MenuCartMaster(id: menu.id,name:menu.name,image:menu.image,
                                                       totalAmount:0.0,
                                                       addons: addonsList,
+                                                      modifiers: [],
                                                       dealsItems:cartMaster.DealsItems(id: widget.dealsItemList[initPosition].id,name: widget.dealsItemList[initPosition].name)
                                                   );
                                                   selectItemIndex[initPosition]=index;

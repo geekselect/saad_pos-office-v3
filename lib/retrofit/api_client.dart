@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:pos/model/SingleVendorRetrieveSize.dart';
 import 'package:pos/model/banner_response.dart';
+import 'package:pos/model/cart_master.dart';
 import 'package:pos/model/customer_data_model.dart';
 import 'package:pos/model/deals_items_model.dart';
 import 'package:pos/model/deals_sizes.dart';
@@ -205,6 +206,9 @@ abstract class RestClient {
 
   @GET("Pos-User-record/{vendorId}/{user_id}")
   Future customerDataCall(@Path() int? vendorId, int user_id);
+
+  @GET("MenuModifiers/{vendorId}")
+  Future modifiers(@Path() int? vendorId);
 
   @GET("Pos-print-data/{id}")
   Future<PrinterModel> printerData(@Path() int? id);
