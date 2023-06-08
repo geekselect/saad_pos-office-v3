@@ -25,35 +25,146 @@ class _ItemQuantityState extends State<ItemQuantity> {
   Widget build(BuildContext context) {
     ScreenConfig().init(context);
     if(_cartController.quantity.value==0){
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
+      return LayoutBuilder(
+        builder: (constraints, context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              RoundedCornerAppButton(btnLabel: 'ADD TO CART', onPressed: ()async{
-                await widget.btnFloatOnPressed();
-                _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
-                checkCartTotalItemQuantity();
-                Constants.toastMessage('"${_cartController.quantity} Item added to cart"');
-                _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
-                // Get.back();
-                setState(() {
+              Row(
+                children: [
 
-                });
+                  RoundedCornerAppButton(btnLabel: 'ADD TO CART', onPressed: ()async{
+                    await widget.btnFloatOnPressed();
+                    _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
+                    checkCartTotalItemQuantity();
+                    Constants.toastMessage('"${_cartController.quantity} Item added to cart"');
+                    _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
+                    // Get.back();
+                    setState(() {
 
-              }),
-              SizedBox(width: 5,),
-              ElevatedButton(
-                  style: ButtonStyle(
+                    });
+
+                  }),
+                  constraints.width < 600 ? SizedBox() :   SizedBox(width: 5,),
+                  constraints.width < 600 ? SizedBox() : ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
+                          // set the height to 50
+                          fixedSize: MaterialStateProperty.all<Size>(Size(140, 40)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              )
+                          )
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 0),
+
+                        child: Text(
+                          'Close',
+                          style: TextStyle(
+                              fontFamily: Constants.appFont,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              fontSize: 16.0),
+                        ),
+                      ),
+                      onPressed: (){
+                        Get.back();
+                      }),
+                ],
+              ),
+            ],
+          );
+        }
+      );
+    }else{
+      return LayoutBuilder(
+          builder: (constraints, context) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 4.0,horizontal: 4.0),
+                    width: ScreenConfig.screenWidth,
+                    height: ScreenConfig.blockHeight*5,
+                    decoration: BoxDecoration(
+                      color: Color(Constants.colorTheme),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          // color: Colors.white,\
+                          height: 25,
+                          width: 25,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child:GestureDetector(
+                                onTap: ()async{
+                                  await widget.btnPlusOnPressed();
+                                  _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
+                                  checkCartTotalItemQuantity();
+                                  _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
+                                  // Get.back();
+                                  setState(() {
+
+                                  });
+
+                                },
+                                child: Icon(CupertinoIcons.add)),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Text('${_cartController.quantity}',style: TextStyle(
+                          color: Colors.white
+                        ),),
+                        SizedBox(width: 5,),
+                        Container(
+                          height: 25,
+                          width: 25,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child:GestureDetector(
+                                onTap: ()async{
+                                  await widget.btnMinusOnPressed();
+                                  _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
+                                 checkCartTotalItemQuantity();
+                                  Constants.toastMessage('Item removed from cart');
+                                  _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
+                                  setState(() {
+
+                                  });
+                                } ,
+                                child: Icon(CupertinoIcons.minus)),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+                constraints.width < 600 ? SizedBox() :  SizedBox(width: 5,),
+                constraints.width < 600 ? SizedBox() :  ElevatedButton(
+                    style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
                       // set the height to 50
                       fixedSize: MaterialStateProperty.all<Size>(Size(140, 40)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          )
-                      )
-                  ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                            )
+                        )
+                    ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0),
 
@@ -67,119 +178,17 @@ class _ItemQuantityState extends State<ItemQuantity> {
                     ),
                   ),
                   onPressed: (){
-                    Get.back();
-                  }),
-            ],
-          ),
-        ],
-      );
-    }else{
-      return Padding(
-        padding: const EdgeInsets.only(right: 12.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 4.0,horizontal: 4.0),
-                width: ScreenConfig.screenWidth,
-                height: ScreenConfig.blockHeight*5,
-                decoration: BoxDecoration(
-                  color: Color(Constants.colorTheme),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      // color: Colors.white,\
-                      height: 25,
-                      width: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child:GestureDetector(
-                            onTap: ()async{
-                              await widget.btnPlusOnPressed();
-                              _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
-                              checkCartTotalItemQuantity();
-                              _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
-                              // Get.back();
-                              setState(() {
-
-                              });
-
-                            },
-                            child: Icon(CupertinoIcons.add)),
-                      ),
-                    ),
-                    SizedBox(width: 5,),
-                    Text('${_cartController.quantity}',style: TextStyle(
-                      color: Colors.white
-                    ),),
-                    SizedBox(width: 5,),
-                    Container(
-                      height: 25,
-                      width: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child:GestureDetector(
-                            onTap: ()async{
-                              await widget.btnMinusOnPressed();
-                              _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
-                             checkCartTotalItemQuantity();
-                              Constants.toastMessage('Item removed from cart');
-                              _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
-                              setState(() {
-
-                              });
-                            } ,
-                            child: Icon(CupertinoIcons.minus)),
-                      ),
-                    ),
-
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: 5,),
-            ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorTheme)),
-                  // set the height to 50
-                  fixedSize: MaterialStateProperty.all<Size>(Size(140, 40)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                        )
-                    )
-                ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-
-                child: Text(
-                  'Close',
-                  style: TextStyle(
-                      fontFamily: Constants.appFont,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      fontSize: 16.0),
-                ),
-              ),
-              onPressed: (){
     Get.back();
     }),
 
 
-            // RoundedCornerAppButton(btnLabel: 'Checkout', onPressed: (){
-            //   Get.to(()=>DashboardScreen(2));
-            // })
-          ],
-        ),
+                // RoundedCornerAppButton(btnLabel: 'Checkout', onPressed: (){
+                //   Get.to(()=>DashboardScreen(2));
+                // })
+              ],
+            ),
+          );
+        }
       );
     }
 

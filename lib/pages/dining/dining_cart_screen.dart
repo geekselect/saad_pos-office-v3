@@ -3332,7 +3332,7 @@ class DiningCartScreen extends StatefulWidget {
 }
 
 class _DiningCartScreenState extends State<DiningCartScreen> {
-  ModifierDataController _modifierController = Get.put(ModifierDataController());
+  ModifierDataController _modifierDataController = Get.put(ModifierDataController());
   final DiningCartController _diningCartController= Get.find<DiningCartController>();
 
   CartController _cartController = Get.find<CartController>();
@@ -4181,7 +4181,17 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                     onTap: (){
                                       print(
                                           "ADDONS Only Dialog Modifiers");
-
+                                      List<
+                                          Modifier> cartModifiers = [
+                                      ];
+                                      if (menuItem.modifiers
+                                          .isNotEmpty) {
+                                        cartModifiers =
+                                            menuItem
+                                                .modifiers;
+                                      } else {
+                                        cartModifiers = [];
+                                      }
                                         showDialog(
                                             context:
                                             context,
@@ -4210,55 +4220,16 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                                       borderRadius: BorderRadius
                                                           .circular(20)
                                                   ),
-                                                  child: FutureBuilder<
-                                                      BaseModel<ModifierModel>>(
-                                                    future: _modifierController
-                                                        .modifierDataApiCall(),
-                                                    // Replace with your actual API function
-                                                    builder: (context,
-                                                        snapshot) {
-                                                      if (snapshot
-                                                          .connectionState ==
-                                                          ConnectionState
-                                                              .waiting) {
-                                                        return const Center(
-                                                          child: CircularProgressIndicator(),
-                                                        );
-                                                      } else
-                                                      if (snapshot.hasError) {
-                                                        return Text(
-                                                            'Error: ${snapshot
-                                                                .error}');
-                                                      } else
-                                                      if (snapshot.hasData) {
-                                                        List<
-                                                            Modifier> cartModifiers = [
-                                                        ];
-                                                        if (menuItem.modifiers
-                                                            .isNotEmpty) {
-                                                          cartModifiers =
-                                                              menuItem
-                                                                  .modifiers;
-                                                        } else {
-                                                          cartModifiers = [];
-                                                        }
-                                                        return  ModifiersOnly(
-                                                          cartModifiers: cartModifiers,
-                                                          modifierModel: snapshot
-                                                              .data!.data!,
-                                                          onModifiersSelected: (
-                                                              selectedModifiers) {
-                                                            setState(() {
-                                                              menuItem
-                                                                  .modifiers =
-                                                                  selectedModifiers;
-                                                            });
-                                                          },
-                                                        );
-                                                      } else {
-                                                        return const Text(
-                                                            'No data available');
-                                                      }
+                                                  child:  ModifiersOnly(
+                                                    cartModifiers: cartModifiers,
+                                                    modifierModel: _modifierDataController.modifierDataModel.value,
+                                                    onModifiersSelected: (
+                                                        selectedModifiers) {
+                                                      setState(() {
+                                                        menuItem
+                                                            .modifiers =
+                                                            selectedModifiers;
+                                                      });
                                                     },
                                                   ),
                                                 ),

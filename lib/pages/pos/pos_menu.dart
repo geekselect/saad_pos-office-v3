@@ -24,6 +24,7 @@ import 'package:pos/pages/addons/Half_n_half.dart';
 import 'package:pos/pages/addons/addons_only.dart';
 import 'package:pos/pages/addons/addons_with_sizes.dart';
 import 'package:pos/pages/customer_data_screen.dart';
+import 'package:pos/pages/modifiers/modifier_controller.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_menu.dart';
 import 'package:pos/printer/printer_config.dart';
@@ -58,11 +59,20 @@ class PosMenu extends StatefulWidget {
 class _PosMenuState extends State<PosMenu> {
   final ShiftController shiftController = Get.put(ShiftController());
 
+
   bool isLoading = false;
 
   void _reloadScreen() {
     setState(() {
-      _orderCustimizationController.callGetRestaurantsDetails();
+      _orderCustimizationController.callGetRestaurantsDetails().then((value) {
+        if(_orderCustimizationController.strRestaurantModifier.value == 1) {
+          print("call");
+          ModifierDataController _modifierDataController = Get.put(ModifierDataController());
+          _modifierDataController.modifierDataApiCall();
+        } else {
+          print("no call");
+        }
+      });
       isLoading = true;
     });
 
@@ -93,6 +103,8 @@ class _PosMenuState extends State<PosMenu> {
   List<SideBarGridTile> sidebarGridTileList = [];
   final OrderHistoryController _orderHistoryMainController =
       Get.put(OrderHistoryController());
+
+
 
   Future<BookTableModel> getBookTable() async {
     final prefs = await SharedPreferences.getInstance();
@@ -642,7 +654,14 @@ class _PosMenuState extends State<PosMenu> {
   getApiCAll() async {
     final prefs = await SharedPreferences.getInstance();
     vendorIdMain = prefs.getString(Constants.vendorId.toString()) ?? '';
-    _orderCustimizationController.callGetRestaurantsDetails();
+    _orderCustimizationController.callGetRestaurantsDetails().then((value) {
+      if(_orderCustimizationController.strRestaurantModifier.value == 1) {
+        print("call");
+        ModifierDataController _modifierDataController = Get.put(ModifierDataController());
+      } else {
+        print("no call");
+      }
+    });
     shiftController.getCurrentShiftDetails().then((value) => print("value...${value.data!.toJson()}"));
     shiftController.shiftNameMain.value = prefs.getString(Constants.shiftName.toString()) ?? '';
     shiftController.shiftCodeMain.value = prefs.getString(Constants.shiftCode.toString()) ?? '';

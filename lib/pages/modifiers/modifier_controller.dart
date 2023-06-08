@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/model/cart_master.dart';
 import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
@@ -8,6 +9,8 @@ import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ModifierDataController extends GetxController {
+  final OrderCustimizationController _orderCustimizationController =
+  Get.find<OrderCustimizationController>();
   Rx<ModifierModel> modifierDataModel = ModifierModel().obs;
 
   Future<BaseModel<ModifierModel>>? modifierDataApiCall() async {
@@ -25,5 +28,13 @@ class ModifierDataController extends GetxController {
       return BaseModel()..setException(ServerError.withError(error: error));
     }
     return BaseModel()..data = response;
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+
+      modifierDataApiCall();
   }
 }

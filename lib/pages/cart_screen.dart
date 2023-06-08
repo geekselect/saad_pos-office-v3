@@ -1732,7 +1732,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   CartController _cartController = Get.find<CartController>();
-  ModifierDataController _modifierController = Get.put(ModifierDataController());
   DateTime? selectedDate;
   TimeOfDay? picked;
   BaseModel<OrderSettingModel>? orderSettingModel;
@@ -1749,7 +1748,7 @@ class _CartScreenState extends State<CartScreen> {
   Future<BaseModel<StatusModel>>? statusRef;
   ScrollController _scrollController = ScrollController();
   AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
-
+  ModifierDataController _modifierDataController = Get.put(ModifierDataController());
   @override
   void initState() {
 
@@ -2224,205 +2223,180 @@ class _CartScreenState extends State<CartScreen> {
                             Flexible(
                               flex: 4,
                               fit: FlexFit.loose,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: GestureDetector(
-                                      onTap: (){
-                                          print(
-                                              "ADDONS Only Dialog Modifiers");
-
-                                            showDialog(
-                                                context:
-                                                context,
-                                                builder:
-                                                    (BuildContext
-                                                context) {
-                                                  var height = MediaQuery
-                                                      .of(context)
-                                                      .size
-                                                      .height;
-                                                  var width = MediaQuery
-                                                      .of(context)
-                                                      .size
-                                                      .width;
-                                                  return AlertDialog(
-                                                    clipBehavior: Clip
-                                                        .antiAliasWithSaveLayer,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius
-                                                            .circular(20)
-                                                    ),
-                                                    content: Container(
-                                                      height: height * 0.5,
-                                                      width: width * 0.3,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius
-                                                              .circular(20)
-                                                      ),
-                                                      child: FutureBuilder<
-                                                          BaseModel<
-                                                              ModifierModel>>(
-                                                        future: _modifierController
-                                                            .modifierDataApiCall(),
-                                                        // Replace with your actual API function
-                                                        builder: (context,
-                                                            snapshot) {
-                                                          if (snapshot
-                                                              .connectionState ==
-                                                              ConnectionState
-                                                                  .waiting) {
-                                                            return const Center(
-                                                              child: CircularProgressIndicator(),
-                                                            );
-                                                          } else if (snapshot
-                                                              .hasError) {
-                                                            return Text(
-                                                                'Error: ${snapshot
-                                                                    .error}');
-                                                          } else if (snapshot
-                                                              .hasData) {
-                                                            List<
-                                                                Modifier> cartModifiers = [
-                                                            ];
-                                                            if (menuItem
-                                                                .modifiers
-                                                                .isNotEmpty) {
-                                                              cartModifiers =
-                                                                  menuItem
-                                                                      .modifiers;
-                                                            } else {
-                                                              cartModifiers =
-                                                              [];
-                                                            }
-                                                            return ModifiersOnly(
-                                                              cartModifiers: cartModifiers,
-                                                              modifierModel: snapshot
-                                                                  .data!.data!,
-                                                              onModifiersSelected: (
-                                                                  selectedModifiers) {
-                                                                setState(() {
-                                                                  menuItem
-                                                                      .modifiers =
-                                                                      selectedModifiers;
-                                                                });
-                                                              },
-                                                            );
-                                                          } else {
-                                                            return const Text(
-                                                                'No data available');
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
-                                                  );
-                                                });
+                              child: GestureDetector(
+                                onTap: (){
+                                  print(
+                                      "ADDONS Only Dialog Modifiers");
+                                  List<
+                                      Modifier> cartModifiers = [
+                                  ];
+                                  if (menuItem
+                                      .modifiers
+                                      .isNotEmpty) {
+                                    cartModifiers =
+                                        menuItem
+                                            .modifiers;
+                                  } else {
+                                    cartModifiers =
+                                    [];
+                                  }
 
 
-                                      },
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Flexible(
-                                            fit: FlexFit.loose,
-                                            child: Text(
-                                                menuItem.name +
-                                                    (cart.size != null
-                                                        ? ' ( ${cart.size?.sizeName}) '
-                                                        : '') +
-                                                    ' x ${cart.quantity}  ',
-                                                style: TextStyle(
-                                                    color: primaryColor,
-                                                    fontWeight: FontWeight.w900,
-                                                    fontSize: 16)),
+                                  showDialog(
+                                      context:
+                                      context,
+                                      builder:
+                                          (BuildContext
+                                      context) {
+                                        var height = MediaQuery
+                                            .of(context)
+                                            .size
+                                            .height;
+                                        var width = MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width;
+                                        return AlertDialog(
+                                          clipBehavior: Clip
+                                              .antiAliasWithSaveLayer,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(20)
                                           ),
-                                          // SizedBox(
-                                          //   height: 5,
-                                          // ),
-                                          // Align(
-                                          //   alignment: Alignment.centerLeft,
-                                          //   child: Container(
-                                          //     decoration: BoxDecoration(
-                                          //         color: primaryColor,
-                                          //         borderRadius: BorderRadius.all(Radius.circular(4.0))
-                                          //     ),
-                                          //     child: Text('SINGLE',
-                                          //         overflow: TextOverflow.ellipsis,
-                                          //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
-                                          //   ),
-                                          // ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      // '${cart.menu[0].totalAmount}',
-                                      double.parse(_cartController.cartMaster!.cart[index].totalAmount.toString()).toStringAsFixed(2),
-                                      style: TextStyle(
-                                          color: Constants.yellowColor),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemCount: menuItem.addons.length,
-                                        itemBuilder: (context, addonIndex) {
-                                          AddonCartMaster addonItem =
-                                          menuItem.addons[addonIndex];
-                                          return Row(
-                                            children: [
-                                              Text(addonItem.name + ' '),
-                                              Text(
-                                                '(ADDON)',
-                                                style: TextStyle(
-                                                    color: primaryColor,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12),
-                                              )
-                                            ],
-                                          );
-                                        }),
-                                  ),
+                                          content: Container(
+                                            height: height * 0.5,
+                                            width: width * 0.3,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius
+                                                    .circular(20)
+                                            ),
+                                            child: ModifiersOnly(
+                                              cartModifiers: cartModifiers,
+                                              modifierModel: _modifierDataController.modifierDataModel.value,
+                                              onModifiersSelected: (
+                                                  selectedModifiers) {
+                                                setState(() {
+                                                  menuItem
+                                                      .modifiers =
+                                                      selectedModifiers;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      });
 
-                                  menuItem.modifiers.isNotEmpty ?  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemCount: menuItem.modifiers.length,
-                                        itemBuilder: (context, modifierIndex) {
-                                          Modifier modifierItem = menuItem.modifiers[modifierIndex];
-                                         return  ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: NeverScrollableScrollPhysics(),
-                                              itemCount: modifierItem.modifierDetails!.length,
-                                              itemBuilder: (context, modifierDetailIndex) {
-                                                ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
-                                                return Row(
-                                                  children: [
-                                                    Text(modifierDetailItem.modifierName! + ' '),
-                                                    Text(
-                                                      '(MODIFIER)',
-                                                      style: TextStyle(
-                                                          color: primaryColor,
-                                                          fontWeight: FontWeight.w500,
-                                                          fontSize: 12),
-                                                    )
-                                                  ],
-                                                );
-                                              });
-                                        }),
-                                  ) : SizedBox()
-                                ],
+
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Flexible(
+                                        fit: FlexFit.loose,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Flexible(
+                                              fit: FlexFit.loose,
+                                              child: Text(
+                                                  menuItem.name +
+                                                      (cart.size != null
+                                                          ? ' ( ${cart.size?.sizeName}) '
+                                                          : '') +
+                                                      ' x ${cart.quantity}  ',
+                                                  style: TextStyle(
+                                                      color: primaryColor,
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 16)),
+                                            ),
+                                            // SizedBox(
+                                            //   height: 5,
+                                            // ),
+                                            // Align(
+                                            //   alignment: Alignment.centerLeft,
+                                            //   child: Container(
+                                            //     decoration: BoxDecoration(
+                                            //         color: primaryColor,
+                                            //         borderRadius: BorderRadius.all(Radius.circular(4.0))
+                                            //     ),
+                                            //     child: Text('SINGLE',
+                                            //         overflow: TextOverflow.ellipsis,
+                                            //         style: TextStyle(color: Colors.white,fontWeight:FontWeight.w300 , fontSize: 16)),
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          // '${cart.menu[0].totalAmount}',
+                                          double.parse(_cartController.cartMaster!.cart[index].totalAmount.toString()).toStringAsFixed(2),
+                                          style: TextStyle(
+                                              color: Constants.yellowColor),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        fit: FlexFit.loose,
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemCount: menuItem.addons.length,
+                                            itemBuilder: (context, addonIndex) {
+                                              AddonCartMaster addonItem =
+                                              menuItem.addons[addonIndex];
+                                              return Row(
+                                                children: [
+                                                  Text(addonItem.name + ' '),
+                                                  Text(
+                                                    '(ADDON)',
+                                                    style: TextStyle(
+                                                        color: primaryColor,
+                                                        fontWeight: FontWeight.w500,
+                                                        fontSize: 12),
+                                                  )
+                                                ],
+                                              );
+                                            }),
+                                      ),
+
+                                      menuItem.modifiers.isNotEmpty ?  Flexible(
+                                        fit: FlexFit.loose,
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemCount: menuItem.modifiers.length,
+                                            itemBuilder: (context, modifierIndex) {
+                                              Modifier modifierItem = menuItem.modifiers[modifierIndex];
+                                             return  ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: NeverScrollableScrollPhysics(),
+                                                  itemCount: modifierItem.modifierDetails!.length,
+                                                  itemBuilder: (context, modifierDetailIndex) {
+                                                    ModifierDetail modifierDetailItem = modifierItem.modifierDetails![modifierDetailIndex];
+                                                    return Row(
+                                                      children: [
+                                                        Text(modifierDetailItem.modifierName! + ' '),
+                                                        Text(
+                                                          '(MODIFIER)',
+                                                          style: TextStyle(
+                                                              color: primaryColor,
+                                                              fontWeight: FontWeight.w500,
+                                                              fontSize: 12),
+                                                        )
+                                                      ],
+                                                    );
+                                                  });
+                                            }),
+                                      ) : SizedBox()
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                             Flexible(
@@ -2437,8 +2411,8 @@ class _CartScreenState extends State<CartScreen> {
                                           removeButton(index);
                                         },
                                         child: Container(
-                                          height: 19.5,
-                                          width: 19.5,
+                                          height: 20.5,
+                                          width: 20.5,
                                           decoration: BoxDecoration(
                                             color: Constants.yellowColor,
                                             shape: BoxShape.circle,
@@ -2471,8 +2445,8 @@ class _CartScreenState extends State<CartScreen> {
                                           addButton(index);
                                         },
                                         child: Container(
-                                          height: 19.5,
-                                          width: 19.5,
+                                          height: 20.5,
+                                          width: 20.5,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: Constants.yellowColor,

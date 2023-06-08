@@ -850,12 +850,14 @@ class Vendor {
     required this.cuisine,
     required this.rate,
     required this.review,
+    required this.modifiers,
   });
 
   int id;
   String image;
   String tax;
   int? taxType;
+  int modifiers;
   String name;
   String mapAddress;
   String forTwoPerson;
@@ -871,6 +873,7 @@ class Vendor {
 
   factory Vendor.fromMap(Map<String, dynamic> json) => Vendor(
     id: json["id"] == null ? null : json["id"],
+    modifiers: json["modifiers"] == null ? null : json["modifiers"],
     image: json["image"] == null ? null : json["image"],
     tax: json["tax"] == null ? null : json["tax"],
     taxType: json["tax_type"] == null ? null : json["tax_type"],
@@ -892,6 +895,7 @@ class Vendor {
     "image": image,
     "tax": tax ,
     "tax_type": taxType == null ? null : taxType,
+    "modifiers": modifiers,
     "name": name,
     "map_address": mapAddress ,
     "for_two_person": forTwoPerson,

@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class OrderCustimizationController extends GetxController {
   CartController _cartController = Get.put(CartController());
 
+  RxInt strRestaurantModifier = 0.obs;
   RxString strRestaurantsName = ''.obs,
       strRestaurantsAddress = ''.obs,
       strRestaurantsRate = ''.obs,
@@ -27,6 +28,7 @@ class OrderCustimizationController extends GetxController {
       strRestaurantsType = ''.obs,
       strRestaurantsReview = ''.obs,
       strRestaurantImage = ''.obs;
+
   SingleRestaurantsDetailsModel? response;
   singleVendorRetrieveSize.SingleVendorRetrieveSizes? singleVendorRetrieveSizes;
   List<singleVendorRetrieveSize.MenuSize> menuSizeList =
@@ -47,6 +49,7 @@ class OrderCustimizationController extends GetxController {
         strRestaurantsReview.value = response!.data!.vendor!.review.toString();
         strRestaurantsAddress.value = response!.data!.vendor!.mapAddress;
         strRestaurantImage.value = response!.data!.vendor!.image;
+        strRestaurantModifier.value = response!.data!.vendor!.modifiers;
 
       } else {
         Constants.toastMessage('Error while getting details');
