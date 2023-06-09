@@ -3325,7 +3325,8 @@ import '../cart_screen.dart';
 import '../payment_method_screen.dart';
 
 class DiningCartScreen extends StatefulWidget {
-  DiningCartScreen({Key? key}) : super(key: key);
+  final Function(bool) updateDiningValue;
+  DiningCartScreen({required this.updateDiningValue});
 
   @override
   State<DiningCartScreen> createState() => _DiningCartScreenState();
@@ -3346,7 +3347,6 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
   //double originalSubAmount=0.0;
   DeliveryMethod selectMethod = DeliveryMethod.DELIVERY;
   ScheduleMethod scheduleMethod = ScheduleMethod.DELIVERNOW;
-  Future<BaseModel<OrderSettingModel>>? callOrderSettingRef;
   Future<BaseModel<StatusModel>>? statusRef;
   Color primaryColor = Color(Constants.colorTheme);
   // BaseModel<OrderSettingModel>? orderSettingModel;
@@ -3543,16 +3543,24 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                             child: Text('Clear')),
                         TextButton(
                             onPressed: () {
-                              _cartController.cartMaster?.cart.clear();
-                              _diningCartController.diningUserName = '';
-                              _diningCartController.diningUserMobileNumber = '';
-                              _diningCartController.diningNotes = '';
-                              _diningCartController.nameController.clear();
-                              _diningCartController.phoneNoController.clear();
-                              _diningCartController.notesController.clear();
-                              _cartController.tableNumber = null;
-
-                              setState(() {});
+                              setState(() {
+                               widget.updateDiningValue(false);
+                                _cartController
+                                    .isPromocodeApplied =
+                                false;
+                                _cartController
+                                    .cartMaster =
+                                null;
+                                _cartController.cartMaster?.oldOrderId == null;
+                                _cartController.cartMaster?.cart.clear();
+                                _diningCartController.diningUserName = '';
+                                _diningCartController.diningUserMobileNumber = '';
+                                _diningCartController.diningNotes = '';
+                                _diningCartController.nameController.clear();
+                                _diningCartController.phoneNoController.clear();
+                                _diningCartController.notesController.clear();
+                                _cartController.tableNumber = null;
+                              });
                             },
                             child: Text('Clear Cart'))
                       ],
@@ -3676,7 +3684,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                         child: RoundedCornerAppButton(
                             btnLabel: "Checkout",
                             onPressed: () {
-                              if(_cartController.diningValue == true && _cartController.tableNumber != 0) {
+                              if(_cartController.diningValue == true && (_cartController.tableNumber != 0 || _cartController.tableNumber != null)) {
                                 if (scheduleMethod.index == 0) {
                                   selectedDate = null;
                                   picked = null;

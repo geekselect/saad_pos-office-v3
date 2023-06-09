@@ -51,7 +51,6 @@ class CartController extends GetxController{
   int discount=0;
   double calculatedTax = 0.0;
   double calculatedAmount=0.0;
-  OrderSettingModel? orderSettingModel;
   double deliveryCharge=0.0;
   RxInt cartItemQuantity=0.obs;
   RxInt cartTotalQuantity=0.obs;
@@ -200,22 +199,7 @@ class CartController extends GetxController{
     }
     return BaseModel()..data = response;
   }
-  Future<BaseModel<OrderSettingModel>> callOrderSetting() async {
-    final prefs = await SharedPreferences.getInstance();
-    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
-    try {
-      orderSettingModel = await RestClient(await RetroApi().dioData()).orderSetting(int.parse(vendorId.toString()));
-      if (orderSettingModel!.success!) {
 
-      } else {
-        Constants.toastMessage('OrderSetting api error occurs');
-      }
-    } catch (error, stacktrace) {
-      print("Exception occurred: $error stackTrace: $stacktrace");
-      return BaseModel()..setException(ServerError.withError(error: error));
-    }
-    return BaseModel()..data = orderSettingModel;
-  }
   Future<BaseModel<String>> callApplyPromoCall(
       BuildContext context,
       String? promocodeName,
@@ -252,7 +236,10 @@ class CartController extends GetxController{
             transitionType: TransitionType.fade,
             curve: Curves.bounceInOut,
             reverseCurve: Curves.fastLinearToSlowEaseIn,
-            widget: CartScreen(isDining: diningValue,),
+            widget: CartScreen(isDining: diningValue, updateDiningValue: (bool value) {
+          diningValue = value;
+          },
+            ),
           ),
         );
         strAppiedPromocodeId = id.toString();

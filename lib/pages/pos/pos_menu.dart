@@ -62,6 +62,8 @@ class _PosMenuState extends State<PosMenu> {
 
   bool isLoading = false;
 
+
+
   void _reloadScreen() {
     setState(() {
       _orderCustimizationController.callGetRestaurantsDetails().then((value) {
@@ -72,6 +74,13 @@ class _PosMenuState extends State<PosMenu> {
         } else {
           print("no call");
         }
+      });
+      shiftController.callOrderSetting().then((value) {
+        shiftController.cartController.taxType = value.data!.data!.taxType!;
+        shiftController.cartController.taxAmountNew =
+            double.parse(value.data!.data!.tax!.toString());
+        print("calculated Tax ${shiftController.cartController.calculatedTax}");
+        print("tax ${shiftController.cartController.taxAmountNew}");
       });
       isLoading = true;
     });
@@ -639,14 +648,6 @@ class _PosMenuState extends State<PosMenu> {
       print("---------");
     }
     print("table value after ${_cartController.tableNumber}");
-    _cartController.callOrderSetting().then((value) {
-      _cartController.taxType = value.data!.data!.taxType!;
-      _cartController.taxAmountNew =
-          double.parse(value.data!.data!.tax!.toString());
-      print("calculated Tax ${_cartController.calculatedTax}");
-      print("tax ${_cartController.taxAmountNew}");
-    });
-
     getApiCAll();
     super.initState();
   }
@@ -654,14 +655,6 @@ class _PosMenuState extends State<PosMenu> {
   getApiCAll() async {
     final prefs = await SharedPreferences.getInstance();
     vendorIdMain = prefs.getString(Constants.vendorId.toString()) ?? '';
-    _orderCustimizationController.callGetRestaurantsDetails().then((value) {
-      if(_orderCustimizationController.strRestaurantModifier.value == 1) {
-        print("call");
-        ModifierDataController _modifierDataController = Get.put(ModifierDataController());
-      } else {
-        print("no call");
-      }
-    });
     shiftController.getCurrentShiftDetails().then((value) => print("value...${value.data!.toJson()}"));
     shiftController.shiftNameMain.value = prefs.getString(Constants.shiftName.toString()) ?? '';
     shiftController.shiftCodeMain.value = prefs.getString(Constants.shiftCode.toString()) ?? '';
@@ -736,7 +729,11 @@ class _PosMenuState extends State<PosMenu> {
   //   return filteredMenuItems;
   // }
 
-
+  void updateDiningValue(bool newValue) {
+    setState(() {
+      _cartController.diningValue = newValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -933,234 +930,236 @@ class _PosMenuState extends State<PosMenu> {
                                                 ),
                                                 SizedBox(
                                                   width: Get.width * 0.3,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      if (_cartController
-                                                          .diningValue)
-                                                        Center(
-                                                          child: Text(
-                                                            'DINE IN',
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 50,
-                                                              fontWeight:
-                                                                  FontWeight.bold,
+                                                  child:  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        if (_cartController
+                                                            .diningValue)
+                                                          Center(
+                                                            child: Text(
+                                                              'DINE IN',
+                                                              style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 50,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        else
+                                                          Center(
+                                                            child: Text(
+                                                              'TAKEAWAY',
+                                                              style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 50,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                              ),
                                                             ),
                                                           ),
-                                                        )
-                                                      else
-                                                        Center(
-                                                          child: Text(
-                                                            'TAKEAWAY',
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 50,
-                                                              fontWeight:
-                                                                  FontWeight.bold,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      Switch(
-                                                        onChanged:
-                                                            (bool? value) async {
-                                                          if (value!) {
-                                                            print("if Block");
-                                                            print(
-                                                                "${_cartController.tableNumber}");
-                                                            print("if Block End");
-                                                            await showDialog<int>(
-                                                                context: context,
-                                                                builder: (_) =>
-                                                                    AlertDialog(
-                                                                      title: Center(
-                                                                          child: Text(
-                                                                              'Available table no')),
-                                                                      content:
-                                                                          SizedBox(
-                                                                        height:
-                                                                            Get.height *
-                                                                                0.4,
-                                                                        width: Get
-                                                                                .width *
-                                                                            0.5,
-                                                                        child:
-                                                                            Column(
-                                                                          children: [
-                                                                            Expanded(
-                                                                              child: FutureBuilder<BookTableModel>(
-                                                                                  future: getBookTable(),
-                                                                                  builder: (context, snapshot) {
-                                                                                    if (snapshot.hasError) {
-                                                                                      return Center(
-                                                                                        child: Text(snapshot.error.toString()),
-                                                                                      );
-                                                                                    } else if (snapshot.hasData) {
-                                                                                      return GridView.builder(
-                                                                                        itemCount: snapshot.data?.data.bookedTable.length ?? 0,
-                                                                                        itemBuilder: (builder, index) {
-                                                                                          return GestureDetector(
-                                                                                            onTap: () async {
-                                                                                              final prefs = await SharedPreferences.getInstance();
+                                                        Switch(
+                                                          onChanged:
+                                                              (bool? value) async {
+                                                            if (value!) {
+                                                              print("if Block");
+                                                              print(
+                                                                  "${_cartController.tableNumber}");
+                                                              print("if Block End");
+                                                              await showDialog<int>(
+                                                                  context: context,
+                                                                  builder: (_) =>
+                                                                      AlertDialog(
+                                                                        title: Center(
+                                                                            child: Text(
+                                                                                'Available table no')),
+                                                                        content:
+                                                                            SizedBox(
+                                                                          height:
+                                                                              Get.height *
+                                                                                  0.4,
+                                                                          width: Get
+                                                                                  .width *
+                                                                              0.5,
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: FutureBuilder<BookTableModel>(
+                                                                                    future: getBookTable(),
+                                                                                    builder: (context, snapshot) {
+                                                                                      if (snapshot.hasError) {
+                                                                                        return Center(
+                                                                                          child: Text(snapshot.error.toString()),
+                                                                                        );
+                                                                                      } else if (snapshot.hasData) {
+                                                                                        return GridView.builder(
+                                                                                          itemCount: snapshot.data?.data.bookedTable.length ?? 0,
+                                                                                          itemBuilder: (builder, index) {
+                                                                                            return GestureDetector(
+                                                                                              onTap: () async {
+                                                                                                final prefs = await SharedPreferences.getInstance();
 
-                                                                                              // int vendorId = prefs.getInt(Constants.vendorId.toString()) ?? 0;
-                                                                                              String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+                                                                                                // int vendorId = prefs.getInt(Constants.vendorId.toString()) ?? 0;
+                                                                                                String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
 
-                                                                                              _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
-                                                                                              if (snapshot.data!.data.bookedTable[index].status == 1) {
-                                                                                                Map<String, dynamic> param = {
-                                                                                                  'vendor_id': '${int.parse(vendorId.toString())}',
-                                                                                                  'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
-                                                                                                };
-                                                                                                BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
-                                                                                                BookedOrderModel bookOrderModel = baseModel.data!;
-                                                                                                if (bookOrderModel.success!) {
-                                                                                                  print("ABC");
-                                                                                                  _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
-                                                                                                  _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
-                                                                                                  _diningCartController.diningUserName = bookOrderModel.data!.userName!;
-                                                                                                  _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
-                                                                                                  _diningCartController.diningNotes = bookOrderModel.data!.notes!;
-                                                                                                  _diningCartController.nameController.text = _diningCartController.diningUserName;
-                                                                                                  _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
-                                                                                                  _diningCartController.notesController.text = _diningCartController.diningNotes;
-                                                                                                  Navigator.pop(context);
+                                                                                                _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
+                                                                                                if (snapshot.data!.data.bookedTable[index].status == 1) {
+                                                                                                  Map<String, dynamic> param = {
+                                                                                                    'vendor_id': '${int.parse(vendorId.toString())}',
+                                                                                                    'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
+                                                                                                  };
+                                                                                                  BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
+                                                                                                  BookedOrderModel bookOrderModel = baseModel.data!;
+                                                                                                  if (bookOrderModel.success!) {
+                                                                                                    print("ABC");
+                                                                                                    _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
+                                                                                                    _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                                                                                                    _diningCartController.diningUserName = bookOrderModel.data!.userName!;
+                                                                                                    _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
+                                                                                                    _diningCartController.diningNotes = bookOrderModel.data!.notes!;
+                                                                                                    _diningCartController.nameController.text = _diningCartController.diningUserName;
+                                                                                                    _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
+                                                                                                    _diningCartController.notesController.text = _diningCartController.diningNotes;
+                                                                                                    Navigator.pop(context);
+                                                                                                  } else {
+                                                                                                    print("Error");
+                                                                                                    print(bookOrderModel.toJson());
+                                                                                                    // print(baseModel.error);
+                                                                                                  }
                                                                                                 } else {
-                                                                                                  print("Error");
-                                                                                                  print(bookOrderModel.toJson());
-                                                                                                  // print(baseModel.error);
+                                                                                                  Navigator.pop(context);
                                                                                                 }
-                                                                                              } else {
-                                                                                                Navigator.pop(context);
-                                                                                              }
-                                                                                            },
-                                                                                            child: Container(
-                                                                                              margin: EdgeInsets.only(bottom: 18),
-                                                                                              child: Stack(
-                                                                                                children: [
-                                                                                                  Positioned(
-                                                                                                    child: Container(
-                                                                                                      padding: EdgeInsets.all(40.0),
-                                                                                                      decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
+                                                                                              },
+                                                                                              child: Container(
+                                                                                                margin: EdgeInsets.only(bottom: 18),
+                                                                                                child: Stack(
+                                                                                                  children: [
+                                                                                                    Positioned(
+                                                                                                      child: Container(
+                                                                                                        padding: EdgeInsets.all(40.0),
+                                                                                                        decoration: BoxDecoration(color: snapshot.data!.data.bookedTable[index].status == 1 ? Color(Constants.colorTheme) : Colors.green, shape: BoxShape.circle),
+                                                                                                      ),
                                                                                                     ),
-                                                                                                  ),
-                                                                                                  Center(
-                                                                                                    child: Text(
-                                                                                                      snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
-                                                                                                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                                                                                                    Center(
+                                                                                                      child: Text(
+                                                                                                        snapshot.data!.data.bookedTable[index].bookedTableNumber.toString(),
+                                                                                                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                                                                                                      ),
                                                                                                     ),
-                                                                                                  ),
-                                                                                                ],
+                                                                                                  ],
+                                                                                                ),
                                                                                               ),
-                                                                                            ),
-                                                                                          );
-                                                                                        },
-                                                                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                          crossAxisCount: kIsWeb ? 8 : 3,
-                                                                                          mainAxisExtent: 80,
-                                                                                        ),
+                                                                                            );
+                                                                                          },
+                                                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                            crossAxisCount: kIsWeb ? 8 : 3,
+                                                                                            mainAxisExtent: 80,
+                                                                                          ),
+                                                                                        );
+                                                                                      }
+                                                                                      return Center(
+                                                                                        child: CircularProgressIndicator(color: Color(Constants.colorTheme)),
                                                                                       );
-                                                                                    }
-                                                                                    return Center(
-                                                                                      child: CircularProgressIndicator(color: Color(Constants.colorTheme)),
-                                                                                    );
-                                                                                  }),
-                                                                            ),
-                                                                          ],
+                                                                                    }),
+                                                                              ),
+                                                                            ],
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                    ));
-                                                            setState(() {
-                                                              // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-                                                              _cartController
-                                                                      .diningValue =
-                                                                  _cartController
-                                                                              .tableNumber !=
-                                                                          null
-                                                                      ? true
-                                                                      : false;
-                                                              _cartController
-                                                                      .isPromocodeApplied =
-                                                                  false;
-                                                              _cartController
-                                                                  .userMobileNumber = '';
-                                                              _cartController
-                                                                  .userName = '';
-                                                              _cartController
-                                                                  .notes = '';
-                                                              _cartController
-                                                                      .nameController
-                                                                      .text =
-                                                                  _cartController
-                                                                      .userName;
-                                                              _cartController
-                                                                      .phoneNoController
-                                                                      .text =
-                                                                  _cartController
-                                                                      .userMobileNumber;
-                                                              _cartController
-                                                                      .notesController
-                                                                      .text =
-                                                                  _cartController
-                                                                      .notes;
-                                                            });
-                                                          } else {
-                                                            print(
-                                                                "new table select");
-                                                            setState(() {
-                                                              if (_cartController
-                                                                      .cartMaster
-                                                                      ?.oldOrderId !=
-                                                                  null) {
+                                                                      ));
+                                                              setState(() {
+                                                                // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
                                                                 _cartController
-                                                                        .cartMaster =
+                                                                        .diningValue =
+                                                                    _cartController
+                                                                                .tableNumber !=
+                                                                            null && _cartController
+                                                                        .tableNumber != 0
+                                                                        ? true
+                                                                        : false;
+                                                                _cartController
+                                                                        .isPromocodeApplied =
+                                                                    false;
+                                                                _cartController
+                                                                    .userMobileNumber = '';
+                                                                _cartController
+                                                                    .userName = '';
+                                                                _cartController
+                                                                    .notes = '';
+                                                                _cartController
+                                                                        .nameController
+                                                                        .text =
+                                                                    _cartController
+                                                                        .userName;
+                                                                _cartController
+                                                                        .phoneNoController
+                                                                        .text =
+                                                                    _cartController
+                                                                        .userMobileNumber;
+                                                                _cartController
+                                                                        .notesController
+                                                                        .text =
+                                                                    _cartController
+                                                                        .notes;
+                                                              });
+                                                            } else {
+                                                              print(
+                                                                  "new table select");
+                                                              setState(() {
+                                                                if (_cartController
+                                                                        .cartMaster
+                                                                        ?.oldOrderId !=
+                                                                    null) {
+                                                                  _cartController
+                                                                          .cartMaster =
+                                                                      null;
+                                                                }
+                                                                _cartController
+                                                                        .tableNumber =
                                                                     null;
-                                                              }
-                                                              _cartController
-                                                                      .tableNumber =
-                                                                  null;
-                                                              _cartController
-                                                                      .diningValue =
-                                                                  false;
-                                                              _diningCartController
-                                                                  .diningUserName = '';
-                                                              _diningCartController
-                                                                  .diningUserMobileNumber = '';
-                                                              _diningCartController
-                                                                  .diningNotes = '';
-                                                              _diningCartController
-                                                                      .nameController
-                                                                      .text =
-                                                                  _diningCartController
-                                                                      .diningUserName;
-                                                              _diningCartController
-                                                                      .phoneNoController
-                                                                      .text =
-                                                                  _diningCartController
-                                                                      .diningUserMobileNumber;
-                                                              _diningCartController
-                                                                      .notesController
-                                                                      .text =
-                                                                  _diningCartController
-                                                                      .diningNotes;
-                                                            });
-                                                          }
-                                                        },
-                                                        value: _cartController
-                                                            .diningValue,
-                                                        activeColor:
-                                                            Constants.yellowColor,
-                                                        activeTrackColor:
-                                                            Constants.yellowColor,
-                                                        inactiveThumbColor:
-                                                            Colors.white,
-                                                        inactiveTrackColor:
-                                                            Colors.white,
-                                                      ),
-                                                    ],
-                                                  ),
+                                                                _cartController
+                                                                        .diningValue =
+                                                                    false;
+                                                                _diningCartController
+                                                                    .diningUserName = '';
+                                                                _diningCartController
+                                                                    .diningUserMobileNumber = '';
+                                                                _diningCartController
+                                                                    .diningNotes = '';
+                                                                _diningCartController
+                                                                        .nameController
+                                                                        .text =
+                                                                    _diningCartController
+                                                                        .diningUserName;
+                                                                _diningCartController
+                                                                        .phoneNoController
+                                                                        .text =
+                                                                    _diningCartController
+                                                                        .diningUserMobileNumber;
+                                                                _diningCartController
+                                                                        .notesController
+                                                                        .text =
+                                                                    _diningCartController
+                                                                        .diningNotes;
+                                                              });
+                                                            }
+                                                          },
+                                                          value: _cartController
+                                                              .diningValue,
+                                                          activeColor:
+                                                              Constants.yellowColor,
+                                                          activeTrackColor:
+                                                              Constants.yellowColor,
+                                                          inactiveThumbColor:
+                                                              Colors.white,
+                                                          inactiveTrackColor:
+                                                              Colors.white,
+                                                        ),
+                                                      ],
+                                                    ),
+
                                                 )
                                               ],
                                             ),
@@ -2686,7 +2685,9 @@ class _PosMenuState extends State<PosMenu> {
                                                         .refreshScreen.value) {
                                                   return CartScreen(
                                                       isDining: _cartController
-                                                          .diningValue);
+                                                          .diningValue,
+                                                  updateDiningValue: updateDiningValue,
+                                                  );
                                                 } else {
                                                   return Container();
                                                 }
@@ -4376,6 +4377,7 @@ class _PosMenuState extends State<PosMenu> {
                                   singleRestaurantsDetailsModel
                                       .data!.menuCategory!;
                               return VendorMenu(
+                                updateDiningValue: updateDiningValue,
                                 vendorId: int.parse(vendorIdMain.toString()),
                                 isDininig: _cartController.diningValue,
                               );

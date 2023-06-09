@@ -38,8 +38,8 @@ import 'addons/no_addons.dart';
 class VendorMenu extends StatefulWidget {
   final int vendorId;
   final bool isDininig;
-
-  const VendorMenu({Key? key, required this.vendorId, required this.isDininig})
+  final Function(bool) updateDiningValue;
+  const VendorMenu({Key? key, required this.vendorId, required this.isDininig, required this.updateDiningValue})
       : super(key: key);
 
   @override
@@ -380,6 +380,7 @@ class _VendorMenuState extends State<VendorMenu>
                                   //splashColor: Color(Constants.colorTheme), // Splash color
                                   onTap: () {
                                     Get.to(() => CartScreen(
+                                      updateDiningValue: widget.updateDiningValue,
                                           isDining: widget.isDininig,
                                         ));
                                   },
@@ -441,7 +442,9 @@ class _VendorMenuState extends State<VendorMenu>
                 child: Obx(() {
                   if (_cartController.refreshScreen.value ||
                       !_cartController.refreshScreen.value) {
-                    return CartScreen(isDining: widget.isDininig);
+                    return CartScreen(
+                        updateDiningValue: widget.updateDiningValue,
+                        isDining: widget.isDininig);
                   } else {
                     return Container();
                   }
@@ -1227,6 +1230,7 @@ class _VendorMenuState extends State<VendorMenu>
                           GestureDetector(
                             onTap: () {
                               Get.to(() => CartScreen(
+                                updateDiningValue: widget.updateDiningValue,
                                     isDining: _cartController.diningValue,
                                   ));
                             },

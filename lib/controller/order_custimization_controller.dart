@@ -10,6 +10,7 @@ import 'package:pos/model/single_vendor_model.dart';
 import 'package:pos/model/status_model.dart';
 import 'package:pos/model/vendor_banner_model.dart';
 import 'package:pos/model/vendor_item_model.dart';
+import 'package:pos/pages/modifiers/modifier_controller.dart';
 import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
 import 'package:pos/retrofit/base_model.dart';
@@ -50,6 +51,12 @@ class OrderCustimizationController extends GetxController {
         strRestaurantsAddress.value = response!.data!.vendor!.mapAddress;
         strRestaurantImage.value = response!.data!.vendor!.image;
         strRestaurantModifier.value = response!.data!.vendor!.modifiers;
+        if(strRestaurantModifier.value == 1) {
+          print("call");
+          ModifierDataController _modifierDataController = Get.put(ModifierDataController());
+        } else {
+          print("no call");
+        }
 
       } else {
         Constants.toastMessage('Error while getting details');

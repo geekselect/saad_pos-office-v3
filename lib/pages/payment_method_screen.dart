@@ -851,7 +851,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         // ScopedModel.of<CartModel>(context, rebuildOnChange: true).clearCart();
         strPaymentToken = '';
         _orderHistoryController.callGetOrderHistoryList();
-        Get.offAll(VendorMenu(vendorId: 5,isDininig: false,));
+        Get.offAll(VendorMenu(vendorId: 5,isDininig: false,updateDiningValue: (bool value) {
+          _cartController.diningValue = value;
+        },));
         Navigator.of(context).pushAndRemoveUntil(
             Transitions(
               transitionType: TransitionType.fade,

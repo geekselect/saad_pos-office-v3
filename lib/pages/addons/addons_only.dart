@@ -717,163 +717,161 @@ class _AddonsOnlyState extends State<AddonsOnly> {
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  child: ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: widget.data.menuAddon!.length,
-                                      itemBuilder: (context, menuAddonIndex) {
-                                        if (widget
-                                            .data
-                                            .groupMenuAddon![groupMenuAddonIndex]
-                                            .addonCategoryId ==
-                                            widget.data.menuAddon![menuAddonIndex]
-                                                .addonCategoryId) {
-                                          if (widget.data.menuAddon![menuAddonIndex]
-                                              .addon!.isChecked ==
-                                              1) {}
-                                          return CustomListTile(
-                                            title: widget.data
-                                                .menuAddon![menuAddonIndex].addon!.name,
-                                            price: widget
-                                                .data.menuAddon![menuAddonIndex].price
-                                                .toString(),
-                                            checkboxValue: widget
-                                                .data
-                                                .menuAddon![menuAddonIndex]
-                                                .addon!
-                                                .isChecked ==
-                                                0
-                                                ? false
-                                                : true,
-                                            onChange: (bool? value) {
-                                              setState(() {
-                                                if (value == true) {
-                                                  int checkedCount = 0;
-                                                  for (int i = 0;
-                                                  i < widget.data.menuAddon!.length;
-                                                  i++) {
-                                                    if (widget
+                                ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: widget.data.menuAddon!.length,
+                                    itemBuilder: (context, menuAddonIndex) {
+                                      if (widget
+                                          .data
+                                          .groupMenuAddon![groupMenuAddonIndex]
+                                          .addonCategoryId ==
+                                          widget.data.menuAddon![menuAddonIndex]
+                                              .addonCategoryId) {
+                                        if (widget.data.menuAddon![menuAddonIndex]
+                                            .addon!.isChecked ==
+                                            1) {}
+                                        return CustomListTile(
+                                          title: widget.data
+                                              .menuAddon![menuAddonIndex].addon!.name,
+                                          price: widget
+                                              .data.menuAddon![menuAddonIndex].price
+                                              .toString(),
+                                          checkboxValue: widget
+                                              .data
+                                              .menuAddon![menuAddonIndex]
+                                              .addon!
+                                              .isChecked ==
+                                              0
+                                              ? false
+                                              : true,
+                                          onChange: (bool? value) {
+                                            setState(() {
+                                              if (value == true) {
+                                                int checkedCount = 0;
+                                                for (int i = 0;
+                                                i < widget.data.menuAddon!.length;
+                                                i++) {
+                                                  if (widget
+                                                      .data
+                                                      .groupMenuAddon![
+                                                  groupMenuAddonIndex]
+                                                      .addonCategoryId !=
+                                                      widget.data.menuAddon![i]
+                                                          .addonCategoryId) {
+                                                    continue;
+                                                  }
+                                                  print(widget.data.menuAddon![i]
+                                                      .addon!.isChecked);
+                                                  if (widget.data.menuAddon![i].addon!
+                                                      .isChecked ==
+                                                      1) checkedCount++;
+                                                }
+                                                print(checkedCount);
+                                                if (checkedCount <
+                                                    widget
                                                         .data
                                                         .groupMenuAddon![
                                                     groupMenuAddonIndex]
-                                                        .addonCategoryId !=
-                                                        widget.data.menuAddon![i]
-                                                            .addonCategoryId) {
-                                                      continue;
-                                                    }
-                                                    print(widget.data.menuAddon![i]
-                                                        .addon!.isChecked);
-                                                    if (widget.data.menuAddon![i].addon!
-                                                        .isChecked ==
-                                                        1) checkedCount++;
-                                                  }
-                                                  print(checkedCount);
-                                                  if (checkedCount <
-                                                      widget
-                                                          .data
-                                                          .groupMenuAddon![
-                                                      groupMenuAddonIndex]
-                                                          .addonCategory!
-                                                          .max) {
-                                                    widget
-                                                        .data
-                                                        .menuAddon![menuAddonIndex]
-                                                        .addon!
-                                                        .isChecked = 1;
-                                                  } else
-                                                    widget
-                                                        .data
-                                                        .menuAddon![menuAddonIndex]
-                                                        .addon!
-                                                        .isChecked = 0;
-                                                } else {
-                                                  widget.data.menuAddon![menuAddonIndex]
-                                                      .addon!.isChecked = 0;
-                                                }
+                                                        .addonCategory!
+                                                        .max) {
+                                                  widget
+                                                      .data
+                                                      .menuAddon![menuAddonIndex]
+                                                      .addon!
+                                                      .isChecked = 1;
+                                                } else
+                                                  widget
+                                                      .data
+                                                      .menuAddon![menuAddonIndex]
+                                                      .addon!
+                                                      .isChecked = 0;
+                                              } else {
+                                                widget.data.menuAddon![menuAddonIndex]
+                                                    .addon!.isChecked = 0;
+                                              }
 
-                                                _cartController.quantity.value =
-                                                    _cartController.getQuantity(
-                                                        getCurrentCart(),
-                                                        widget.data.vendorId);
-                                              });
-                                            },
-                                            diningPrice: widget
-                                                .data
-                                                .menuAddon![menuAddonIndex]
-                                                .addonDiningPrice
-                                                .toString(),
-                                          );
+                                              _cartController.quantity.value =
+                                                  _cartController.getQuantity(
+                                                      getCurrentCart(),
+                                                      widget.data.vendorId);
+                                            });
+                                          },
+                                          diningPrice: widget
+                                              .data
+                                              .menuAddon![menuAddonIndex]
+                                              .addonDiningPrice
+                                              .toString(),
+                                        );
 
-                                          // CheckboxListTile(
-                                          //   title: Text(widget.data.menuAddon![menuAddonIndex].addon!.name),
-                                          //   subtitle: Text("Price"+widget.data.menuAddon![menuAddonIndex].price.toString()),
-                                          //   value: widget.data.menuAddon![menuAddonIndex].addon!.isChecked==0?false:true,
-                                          //   onChanged: (bool? value){
-                                          //     setState(() {
-                                          //       if(value==true){
-                                          //         int checkedCount=0;
-                                          //         for(int i=0;i<widget.data.menuAddon!.length;i++){
-                                          //           if(widget.data.groupMenuAddon![groupMenuAddonIndex].addonCategoryId!=widget.data.menuAddon![i].addonCategoryId){
-                                          //             continue;
-                                          //           }
-                                          //           print(widget.data.menuAddon![i].addon!.isChecked);
-                                          //           if(widget.data.menuAddon![i].addon!.isChecked==1)
-                                          //             checkedCount++;
-                                          //         }
-                                          //         print(checkedCount);
-                                          //         if(checkedCount<widget.data.groupMenuAddon![groupMenuAddonIndex].addonCategory!.max){
-                                          //           widget.data.menuAddon![menuAddonIndex].addon!.isChecked=1;
-                                          //         }
-                                          //         else
-                                          //           widget.data.menuAddon![menuAddonIndex].addon!.isChecked=0;
-                                          //
-                                          //       }else{
-                                          //         widget.data.menuAddon![menuAddonIndex].addon!.isChecked=0;
-                                          //       }
-                                          //       double totalAmount=double.parse(widget.menuPrice);
-                                          //       List<cartMaster.Addon> addonsList=[];
-                                          //       Set set=Set();
-                                          //       print("selected item name");
-                                          //       for(int i=0;i<widget.data.groupMenuAddon!.length;i++){
-                                          //         if(set.contains(widget.data.groupMenuAddon![i].addonCategoryId)){
-                                          //
-                                          //         }else{
-                                          //           set.add(widget.data.groupMenuAddon![i].addonCategoryId);
-                                          //           for(int menuAddonIndex=0;menuAddonIndex<widget.data.menuAddon!.length;menuAddonIndex++){
-                                          //             if(widget.data.groupMenuAddon![i].addonCategoryId==widget.data.menuAddon![menuAddonIndex].addonCategoryId){
-                                          //               if(widget.data.menuAddon![menuAddonIndex].addon!.isChecked==1){
-                                          //                 print(widget.data.menuAddon![menuAddonIndex].addon!.name);
-                                          //                 addonsList.add(cartMaster.Addon(
-                                          //                   id: widget.data.menuAddon![menuAddonIndex].id,
-                                          //                   name:widget.data.menuAddon![menuAddonIndex].addon!.name,
-                                          //                   price: double.parse(widget.data.menuAddon![menuAddonIndex].price!),
-                                          //                 ));
-                                          //                 totalAmount+=double.parse(widget.data.menuAddon![menuAddonIndex].price!);
-                                          //
-                                          //               }
-                                          //             }
-                                          //           }
-                                          //         }
-                                          //
-                                          //
-                                          //       }
-                                          //       _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
-                                          //           quantity: 1,
-                                          //           totalAmount: totalAmount,
-                                          //           category:widget.category,
-                                          //           menu:[cartMaster.Menu(id: widget.data.id,name:widget.data.name,image:widget.data.image ,totalAmount:totalAmount, addons: addonsList)],
-                                          //           size: null), widget.data.vendorId);
-                                          //     });
-                                          //
-                                          //
-                                          //   });
-                                        } else {
-                                          return Container();
-                                        }
-                                      }),
-                                ),
+                                        // CheckboxListTile(
+                                        //   title: Text(widget.data.menuAddon![menuAddonIndex].addon!.name),
+                                        //   subtitle: Text("Price"+widget.data.menuAddon![menuAddonIndex].price.toString()),
+                                        //   value: widget.data.menuAddon![menuAddonIndex].addon!.isChecked==0?false:true,
+                                        //   onChanged: (bool? value){
+                                        //     setState(() {
+                                        //       if(value==true){
+                                        //         int checkedCount=0;
+                                        //         for(int i=0;i<widget.data.menuAddon!.length;i++){
+                                        //           if(widget.data.groupMenuAddon![groupMenuAddonIndex].addonCategoryId!=widget.data.menuAddon![i].addonCategoryId){
+                                        //             continue;
+                                        //           }
+                                        //           print(widget.data.menuAddon![i].addon!.isChecked);
+                                        //           if(widget.data.menuAddon![i].addon!.isChecked==1)
+                                        //             checkedCount++;
+                                        //         }
+                                        //         print(checkedCount);
+                                        //         if(checkedCount<widget.data.groupMenuAddon![groupMenuAddonIndex].addonCategory!.max){
+                                        //           widget.data.menuAddon![menuAddonIndex].addon!.isChecked=1;
+                                        //         }
+                                        //         else
+                                        //           widget.data.menuAddon![menuAddonIndex].addon!.isChecked=0;
+                                        //
+                                        //       }else{
+                                        //         widget.data.menuAddon![menuAddonIndex].addon!.isChecked=0;
+                                        //       }
+                                        //       double totalAmount=double.parse(widget.menuPrice);
+                                        //       List<cartMaster.Addon> addonsList=[];
+                                        //       Set set=Set();
+                                        //       print("selected item name");
+                                        //       for(int i=0;i<widget.data.groupMenuAddon!.length;i++){
+                                        //         if(set.contains(widget.data.groupMenuAddon![i].addonCategoryId)){
+                                        //
+                                        //         }else{
+                                        //           set.add(widget.data.groupMenuAddon![i].addonCategoryId);
+                                        //           for(int menuAddonIndex=0;menuAddonIndex<widget.data.menuAddon!.length;menuAddonIndex++){
+                                        //             if(widget.data.groupMenuAddon![i].addonCategoryId==widget.data.menuAddon![menuAddonIndex].addonCategoryId){
+                                        //               if(widget.data.menuAddon![menuAddonIndex].addon!.isChecked==1){
+                                        //                 print(widget.data.menuAddon![menuAddonIndex].addon!.name);
+                                        //                 addonsList.add(cartMaster.Addon(
+                                        //                   id: widget.data.menuAddon![menuAddonIndex].id,
+                                        //                   name:widget.data.menuAddon![menuAddonIndex].addon!.name,
+                                        //                   price: double.parse(widget.data.menuAddon![menuAddonIndex].price!),
+                                        //                 ));
+                                        //                 totalAmount+=double.parse(widget.data.menuAddon![menuAddonIndex].price!);
+                                        //
+                                        //               }
+                                        //             }
+                                        //           }
+                                        //         }
+                                        //
+                                        //
+                                        //       }
+                                        //       _cartController.quantity.value=_cartController.getQuantity(cartMaster.Cart(
+                                        //           quantity: 1,
+                                        //           totalAmount: totalAmount,
+                                        //           category:widget.category,
+                                        //           menu:[cartMaster.Menu(id: widget.data.id,name:widget.data.name,image:widget.data.image ,totalAmount:totalAmount, addons: addonsList)],
+                                        //           size: null), widget.data.vendorId);
+                                        //     });
+                                        //
+                                        //
+                                        //   });
+                                      } else {
+                                        return Container();
+                                      }
+                                    }),
                               ],
                             );
                           }

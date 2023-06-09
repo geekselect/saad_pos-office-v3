@@ -1724,7 +1724,8 @@ enum ScheduleMethod { DELIVERNOW, SCHEDULETIME }
 
 class CartScreen extends StatefulWidget {
   final bool isDining;
-  CartScreen({Key? key, required this.isDining}) : super(key: key);
+  final Function(bool) updateDiningValue;
+  CartScreen({Key? key, required this.isDining, required this.updateDiningValue}) : super(key: key);
 
   @override
   _CartScreenState createState() => _CartScreenState();
@@ -1744,7 +1745,6 @@ class _CartScreenState extends State<CartScreen> {
   //double originalSubAmount=0.0;
   DeliveryMethod selectMethod = DeliveryMethod.TAKEAWAY;
   ScheduleMethod scheduleMethod = ScheduleMethod.DELIVERNOW;
-  Future<BaseModel<OrderSettingModel>>? callOrderSettingRef;
   Future<BaseModel<StatusModel>>? statusRef;
   ScrollController _scrollController = ScrollController();
   AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
@@ -1768,6 +1768,8 @@ class _CartScreenState extends State<CartScreen> {
     // }
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -1856,7 +1858,9 @@ class _CartScreenState extends State<CartScreen> {
     child: Text("No data in the cart"),
     );
     } else if (_cartController.diningValue) {
-            return DiningCartScreen();
+            return DiningCartScreen(
+                updateDiningValue:  widget.updateDiningValue
+            );
           } else {
             return Scaffold(
               body: Container(
@@ -2165,15 +2169,24 @@ class _CartScreenState extends State<CartScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      _cartController.cartMaster?.cart.clear();
-                      _cartController.userName = '';
-                      _cartController.userMobileNumber = '';
-                      _cartController.notes = '';
-                      _cartController.nameController.clear();
-                      _cartController.phoneNoController.clear();
-                      _cartController.notesController.clear();
-                      // _cartController.tableNumber = null;
-                      setState(() {});
+
+                      setState(() {
+                        _cartController
+                            .cartMaster =
+                        null;
+                        _cartController.cartMaster?.oldOrderId == null;
+                        _cartController.cartMaster?.cart.clear();
+                        _cartController.userName = '';
+                        _cartController.userMobileNumber = '';
+                        _cartController.notes = '';
+                        _cartController.nameController.clear();
+                        _cartController.phoneNoController.clear();
+                        _cartController.notesController.clear();
+                        _cartController
+                            .tableNumber =
+                        null;
+                        widget.updateDiningValue(false);
+                      });
                     },
                     child: Text('Clear Cart'),
                   ),

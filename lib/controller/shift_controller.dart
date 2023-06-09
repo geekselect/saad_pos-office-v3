@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/timer_controller.dart';
 import 'package:pos/model/msg_response_model.dart';
+import 'package:pos/model/order_setting_api_model.dart';
 import 'package:pos/model/shift_model.dart';
 import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
@@ -15,6 +17,10 @@ import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShiftController extends GetxController {
+  OrderSettingModel? orderSettingModel;
+
+  final CartController cartController =
+  Get.find<CartController>();
   final TimerController timerController = Get.put(TimerController());
   RxBool createButtonEnable = false.obs;
   final TextEditingController shiftTextController = TextEditingController();
@@ -244,6 +250,36 @@ class ShiftController extends GetxController {
       return BaseModel()..setException(ServerError.withError(error: error));
     }
     return BaseModel()..data = response;
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    callOrderSetting().then((value) {
+      cartController.taxType = value.data!.data!.taxType!;
+      cartController.taxAmountNew =
+          double.parse(value.data!.data!.tax!.toString());
+      print("calculated Tax ${cartController.calculatedTax}");
+      print("tax ${cartController.taxAmountNew}");
+    });
+  }
+
+  Future<BaseModel<OrderSettingModel>> callOrderSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
+    try {
+      orderSettingModel = await RestClient(await RetroApi().dioData()).orderSetting(int.parse(vendorId.toString()));
+      if (orderSettingModel!.success!) {
+
+      } else {
+        Constants.toastMessage('OrderSetting api error occurs');
+      }
+    } catch (error, stacktrace) {
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      return BaseModel()..setException(ServerError.withError(error: error));
+    }
+    return BaseModel()..data = orderSettingModel;
   }
 }
 

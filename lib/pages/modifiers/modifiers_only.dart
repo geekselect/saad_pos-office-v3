@@ -899,7 +899,31 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
     )
         : SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Modifiers",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(Icons.clear),
+              ),
+            ],
+          ),
+
           TextField(
             controller: searchController,
             onChanged: (value) {
@@ -910,15 +934,6 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            "Modifiers",
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: Colors.black,
-              fontSize: 20,
-            ),
-          ),
-          const SizedBox(height: 5),
           ListView.builder(
             padding: EdgeInsets.zero,
             itemCount: filteredModifiers.length,
@@ -928,14 +943,19 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
               var modifierType = filteredModifiers[modifierIndex].modifierType;
               var modifierDetails = filteredModifiers[modifierIndex].modifierDetails!;
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(
-                    title: Text(
-                      modifierType.toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: Color(Constants.colorTheme),
-                        fontSize: 17,
+                  InkWell(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        modifierType.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: Color(Constants.colorTheme),
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                     onTap: () {
@@ -952,17 +972,36 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
                       itemCount: modifierDetails.length,
                       itemBuilder: (context, modifierDetailIndex) {
                         var modifierDetail = modifierDetails[modifierDetailIndex];
-                        return ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                          title: Row(
+                        return InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: () {
+                            setState(() {
+                              bool isSelected = selectedModifiers.containsKey(modifierIndex) &&
+                                  selectedModifiers[modifierIndex]!.contains(modifierDetail);
+
+                              if (isSelected) {
+                                selectedModifiers[modifierIndex]!.remove(modifierDetail);
+                                if (selectedModifiers[modifierIndex]!.isEmpty) {
+                                  selectedModifiers.remove(modifierIndex);
+                                }
+                              } else {
+                                if (!selectedModifiers.containsKey(modifierIndex)) {
+                                  selectedModifiers[modifierIndex] = [modifierDetail];
+                                } else {
+                                  selectedModifiers[modifierIndex]!.add(modifierDetail);
+                                }
+                              }
+
+                              dynamic data = convertToModifiersList(selectedModifiers);
+                              widget.onModifiersSelected(data);
+                            });
+                          },
+                          child: Row(
                             children: [
-                              Text(modifierDetail.modifierName.toString()),
-                              SizedBox(width: 10),
-                              Text(double.parse(modifierDetail.modifierPrice.toString()).toStringAsFixed(2)),
-                              SizedBox(width: 10),
                               Transform.scale(
-                                scale: 0.8,
+                                scale: 1,
                                 child: Checkbox(
                                   visualDensity: VisualDensity.adaptivePlatformDensity,
                                   checkColor: selectedModifiers.containsKey(modifierIndex) &&
@@ -991,12 +1030,17 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
                                     });
                                   },
                                 ),
-                              ),
+                                ),
+                              SizedBox(width: 10),
+                              Text(modifierDetail.modifierName.toString()),
+                              SizedBox(width: 10),
+                              Text(double.parse(modifierDetail.modifierPrice.toString()).toStringAsFixed(2)),
                             ],
                           ),
                         );
                       },
                     ),
+
                 ],
               );
             },

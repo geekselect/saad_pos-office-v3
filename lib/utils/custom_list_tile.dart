@@ -198,38 +198,48 @@ class _CustomListTileState extends State<CustomListTile> {
   @override
   Widget build(BuildContext context) {
     ScreenConfig().init(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: 18),
-      child: Row(
-        children: [
-          CustomCheckbox(
-            value: widget.checkboxValue,
-            onChanged: widget.onChange,
-          ),
-          SizedBox(width: 25),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(widget.title, style: TextStyle(fontSize: 15)),
-              SizedBox(height: 4),
-              Row(
-                children: [
-                  SizedBox(
-                    height: 4,
-                    width: 10,
-                  ),
-                  Text(widget.price, style: TextStyle(fontSize: 12)),
-                  SizedBox(
-                    height: 4,
-                    width: 10,
-                  ),
-                  Text(" Dining ${widget.diningPrice} ",
-                      style: TextStyle(fontSize: 12)),
-                ],
-              ),
-            ],
-          ),
-        ],
+    return InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: () {
+        setState(() {
+          widget.onChange(!widget.checkboxValue);
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 18),
+        child: Row(
+          children: [
+            CustomCheckbox(
+              value: widget.checkboxValue,
+              onChanged: widget.onChange,
+            ),
+            SizedBox(width: 25),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(widget.title, style: TextStyle(fontSize: 15)),
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 4,
+                      width: 10,
+                    ),
+                    Text(widget.price, style: TextStyle(fontSize: 12)),
+                    SizedBox(
+                      height: 4,
+                      width: 10,
+                    ),
+                    Text(" Dining ${widget.diningPrice} ",
+                        style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
