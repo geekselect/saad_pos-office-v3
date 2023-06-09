@@ -62,7 +62,10 @@ class _PosMenuState extends State<PosMenu> {
 
   bool isLoading = false;
 
-
+  Future<void> clearCaches() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
 
   void _reloadScreen() {
     setState(() {
@@ -631,6 +634,7 @@ class _PosMenuState extends State<PosMenu> {
           sharedPrefs.setBool(
               'autoPrintKitchen', _autoPrinterController.autoPrint.value);
           Get.offAll(() => SelectionScreen());
+          clearCaches();
         },
       ),
     ];
