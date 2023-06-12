@@ -935,21 +935,25 @@ OrderDataModel orderDataModelFromJson(String str) => OrderDataModel.fromJson(jso
 String orderDataModelToJson(OrderDataModel data) => json.encode(data.toJson());
 
 class OrderDataModel {
+  int? oldOrderId;
   int? vendorId;
   List<Cart>? cart;
 
   OrderDataModel({
     this.vendorId,
     this.cart,
+    this.oldOrderId
   });
 
   factory OrderDataModel.fromJson(Map<String, dynamic> json) => OrderDataModel(
     vendorId: json["vendor_id"],
+    oldOrderId: json["id"],
     cart: json["cart"] == null ? [] : List<Cart>.from(json["cart"]!.map((x) => Cart.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "vendor_id": vendorId,
+    "id": oldOrderId,
     "cart": cart == null ? [] : List<dynamic>.from(cart!.map((x) => x.toJson())),
   };
 }

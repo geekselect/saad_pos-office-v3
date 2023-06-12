@@ -8,14 +8,15 @@ class RetroApi {
 
   Future<Dio> dioData()
   async{
-
+    final prefs = await SharedPreferences.getInstance();
+    String headerToken = prefs.getString(Constants.headerToken.toString()) ?? '';
     final dio = Dio();
   //   "Access-Control-Allow-Origin": "*",
   // "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
   // "Access-Control-Max-Age": "86400",
     // config your dio headers globally
     dio.options.headers["Accept"] = "application/json"; // config your dio headers globally
-    dio.options.headers["Authorization"] = "Bearer ${(await SharedPreferences.getInstance()).getString(Constants.headerToken) ?? ''}"; // config your dio headers globally
+    dio.options.headers["Authorization"] = "Bearer $headerToken"; // config your dio headers globally
     dio.options.headers["Content-Type"] = "application/x-www-form-urlencoded";
     dio.options.followRedirects = false;
     //dio.options.connectTimeout = 75000; //5s

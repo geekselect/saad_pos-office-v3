@@ -25,7 +25,8 @@ class CartController extends GetxController{
   dynamic verificationItems;
   RxBool refreshScreen=false.obs;
   List<PromoCodeListData> listPromoCode = [];
-  ScrollController scrollController = ScrollController();
+  ScrollController cartScrollController = ScrollController();
+  ScrollController diningScrollController = ScrollController();
   double discountAmount=0.0;
   int taxType= 0;
   double taxAmountNew = 0.0;
@@ -189,8 +190,24 @@ class CartController extends GetxController{
     try {
       Constants.onLoading(context);
       print(param);
-      response = await RestClient(await await RetroApi().dioData()).getBookTableData(param);
+      response = await RestClient( await RetroApi().dioData()).getBookTableData(param);
 
+      Constants.hideDialog(context);
+    } catch (error, stacktrace) {
+      Constants.hideDialog(context);
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      return BaseModel()..setException(ServerError.withError(error: error));
+    }
+    return BaseModel()..data = response;
+  }
+
+  Future<BaseModel<BookedOrderModel>> getTakeAwayData(Map<String,dynamic> param,BuildContext context)async{
+    BookedOrderModel response;
+    try {
+      Constants.onLoading(context);
+      print(param);
+      response = await RestClient( await RetroApi().dioData()).editTakeawayData(param);
+print("resss ${response.toJson()}");
       Constants.hideDialog(context);
     } catch (error, stacktrace) {
       Constants.hideDialog(context);
@@ -410,12 +427,21 @@ class CartController extends GetxController{
 
      cartMaster!.cart.add(cart);
      SchedulerBinding.instance.addPostFrameCallback((_) {
-       scrollController.animateTo(
-         scrollController.position.maxScrollExtent,
+       cartScrollController.animateTo(
+         cartScrollController.position.maxScrollExtent,
          duration: const Duration(milliseconds: 300),
          curve: Curves.easeOut,
        );
      });
+     if(diningValue) {
+       SchedulerBinding.instance.addPostFrameCallback((_) {
+         diningScrollController.animateTo(
+           diningScrollController.position.maxScrollExtent,
+           duration: const Duration(milliseconds: 300),
+           curve: Curves.easeOut,
+         );
+       });
+     }
    }
    }
   void removeItem(Cart cart,int vendorId){

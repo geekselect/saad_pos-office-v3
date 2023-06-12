@@ -3445,324 +3445,335 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
     //       _cartController.calculatedTax;
     // }
     subTotal = totalAmount;
-    return Container(
+    return Scaffold(
+      body: _cartController.cartMaster == null ||
+          _cartController.cartMaster!.cart.isEmpty ? Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/bg-cart.jpg'),
-            fit: BoxFit.cover,
-          )),
-      child: Scaffold(
-        body: _cartController.cartMaster == null ||
-            _cartController.cartMaster!.cart.isEmpty ? Center(
-          child: Text("No data in the cart"),
-        ) :
-        SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color:
-                                  Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white.withOpacity(0.4)),
-                          child: TextField(
-                            controller: _diningCartController.nameController,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: (40 - 15) / 2,
-                              ),
-                              border: InputBorder.none,
-                              hintText:
-                              "Enter a Name",
-                              hintStyle: TextStyle(
-                                  color: Colors.black26,
-                                  fontSize: 15,
-                                  fontFamily: "ProximaNova"),
-                            ),
-                            style: TextStyle(
-                                color: Colors.black, fontSize: 15),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color:
-                                  Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white.withOpacity(0.4)),
-                          child: TextField(
-                            controller: _diningCartController.phoneNoController,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
+            image: DecorationImage(
+              image: AssetImage('images/bg-cart.jpg'),
+              fit: BoxFit.cover,
+            )),
+            child: Center(
+        child: Text("No data in the cart"),
+      ),
+          ) :
+      Scaffold(
+           body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/bg-cart.jpg'),
+                fit: BoxFit.cover,
+              )),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        SizedBox(width: 5),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color:
+                                    Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white.withOpacity(0.4)),
+                            child: TextField(
+                              controller: _diningCartController.nameController,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: 10,
                                   vertical: (40 - 15) / 2,
                                 ),
                                 border: InputBorder.none,
                                 hintText:
-                                "Enter phone Number",
+                                "Enter a Name",
                                 hintStyle: TextStyle(
                                     color: Colors.black26,
                                     fontSize: 15,
-                                    fontFamily: "ProximaNova")),
-                            style: TextStyle(
-                                color: Colors.black, fontSize: 15),
+                                    fontFamily: "ProximaNova"),
+                              ),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 15),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 5),
-                    ],
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color:
+                                    Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white.withOpacity(0.4)),
+                            child: TextField(
+                              controller: _diningCartController.phoneNoController,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: (40 - 15) / 2,
+                                  ),
+                                  border: InputBorder.none,
+                                  hintText:
+                                  "Enter phone Number",
+                                  hintStyle: TextStyle(
+                                      color: Colors.black26,
+                                      fontSize: 15,
+                                      fontFamily: "ProximaNova")),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                      ],
+                    ),
                   ),
-                ),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              _diningCartController.nameController.clear();
-                              _diningCartController.phoneNoController.clear();
-                              // _cartController.tableNumber = null;
-                              setState(() {});
-                            },
-                            child: Text('Clear')),
-                        TextButton(
-                            onPressed: () {
-                              setState(() {
-                               widget.updateDiningValue(false);
-                                _cartController
-                                    .isPromocodeApplied =
-                                false;
-                                _cartController
-                                    .cartMaster =
-                                null;
-                                _cartController.cartMaster?.oldOrderId == null;
-                                _cartController.cartMaster?.cart.clear();
-                                _diningCartController.diningUserName = '';
-                                _diningCartController.diningUserMobileNumber = '';
-                                _diningCartController.diningNotes = '';
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () {
                                 _diningCartController.nameController.clear();
                                 _diningCartController.phoneNoController.clear();
-                                _diningCartController.notesController.clear();
-                                _cartController.tableNumber = null;
-                              });
-                            },
-                            child: Text('Clear Cart'))
-                      ],
-                    )),
-                SizedBox(height: 2),
-                _cartController.tableNumber == null
-                    ? Container()
-                    : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Table Number'),
-                      Container(
-                          margin: EdgeInsets.only(right: 8.0),
-                          child: Text(_cartController.tableNumber
-                              .toString())),
-                    ],
-                  ),
-                ),
-                if (picked != null &&
-                    selectedDate != null &&
-                    scheduleMethod != ScheduleMethod.DELIVERNOW)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(DateFormat('yyyy-MM-dd hh:mm')
-                          .format(selectedDate!)),
-                      Text(picked!.format(context)),
-                      GestureDetector(
-                          onTap: () async {
-                            await _selectDate(context);
-                            if (selectedDate != null) {
-                              await _selectTime(context);
-                              if (picked != null) {
+                                // _cartController.tableNumber = null;
                                 setState(() {});
+                              },
+                              child: Text('Clear')),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                 widget.updateDiningValue(false);
+                                  _cartController
+                                      .isPromocodeApplied =
+                                  false;
+                                  _cartController
+                                      .cartMaster =
+                                  null;
+                                  _cartController.cartMaster?.oldOrderId == null;
+                                  _cartController.cartMaster?.cart.clear();
+                                  _diningCartController.diningUserName = '';
+                                  _diningCartController.diningUserMobileNumber = '';
+                                  _diningCartController.diningNotes = '';
+                                  _diningCartController.nameController.clear();
+                                  _diningCartController.phoneNoController.clear();
+                                  _diningCartController.notesController.clear();
+                                  _cartController.tableNumber = null;
+                                });
+                              },
+                              child: Text('Clear Cart'))
+                        ],
+                      )),
+
+                  Text("Old...${_cartController.cartMaster!.oldOrderId}"),
+                  SizedBox(height: 2),
+                  _cartController.tableNumber == null
+                      ? Container()
+                      : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Table Number'),
+                        Container(
+                            margin: EdgeInsets.only(right: 8.0),
+                            child: Text(_cartController.tableNumber
+                                .toString())),
+                      ],
+                    ),
+                  ),
+                  if (picked != null &&
+                      selectedDate != null &&
+                      scheduleMethod != ScheduleMethod.DELIVERNOW)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(DateFormat('yyyy-MM-dd hh:mm')
+                            .format(selectedDate!)),
+                        Text(picked!.format(context)),
+                        GestureDetector(
+                            onTap: () async {
+                              await _selectDate(context);
+                              if (selectedDate != null) {
+                                await _selectTime(context);
+                                if (picked != null) {
+                                  setState(() {});
+                                } else {
+                                  Get.snackbar(
+                                      'ALERT', 'Please Select Time');
+                                }
                               } else {
                                 Get.snackbar(
-                                    'ALERT', 'Please Select Time');
+                                    'ALERT', 'Please Select Date');
                               }
-                            } else {
-                              Get.snackbar(
-                                  'ALERT', 'Please Select Date');
-                            }
-                          },
-                          child: Text("  Edit here",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.blue))),
-                    ],
+                            },
+                            child: Text("  Edit here",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue))),
+                      ],
+                    ),
+
+                  SizedBox(
+                    height: ScreenConfig.blockHeight * 37,
+                    child: getCartData(),
                   ),
 
-                SizedBox(
-                  height: ScreenConfig.blockHeight * 37,
-                  child: getCartData(),
-                ),
+                  ///Coupon Widget
+                  // getCouponWidget(),
+                  SizedBox(
+                    height: !_cartController.isPromocodeApplied
+                        ? ScreenConfig.blockHeight * 22
+                        : ScreenConfig.blockHeight * 23,
+                    child: getTotalAmountWidget(),
+                    //               child: FutureBuilder<BaseModel<OrderSettingModel>>(
+                    // future: _cartController
+                    //     .callOrderSetting(_cartController.cartMaster!.vendorId),
+                    // builder: (context, snapshot) {
+                    // if (snapshot.hasData) {
+                    //   BaseModel<OrderSettingModel> orderSettingModel =
+                    //   snapshot.data!;
+                    //
+                    //   ///Inclusive tax
+                    //   if (orderSettingModel.data?.data!.taxType == 1) {
+                    //     _cartController.calculatedTax =
+                    //         _cartController.calculatedAmount *
+                    //             double.parse(orderSettingModel.data!.data!.tax!) /
+                    //             100;
+                    //     totalAmount -= _cartController.calculatedTax;
+                    //
+                    //     ///Exclusive tax
+                    //   } else if (orderSettingModel.data!.data!.taxType == 2) {
+                    //     _cartController.calculatedTax =
+                    //         _cartController.calculatedAmount *
+                    //             double.parse(orderSettingModel.data!.data!.tax!) /
+                    //             100;
+                    //     _cartController.calculatedAmount +=
+                    //         _cartController.calculatedTax;
+                    //   }
+                    //   return getTotalAmountWidget(orderSettingModel);
+                    // }
+                    // return SizedBox();
+                    // }),
+                    ///
+                    ///if (orderSettingModel!.data?.data!.taxType == 1) {
+                    //          _cartController.calculatedTax =
+                    //              _cartController.calculatedAmount *
+                    //                  double.parse(orderSettingModel!.data!.data!.tax!) /
+                    //                  100;
+                    //          totalAmount -= _cartController.calculatedTax;
+                    //
+                    //          ///Exclusive tax
+                    //        } else if (orderSettingModel!.data!.data!.taxType == 2) {
+                    //          _cartController.calculatedTax =
+                    //              _cartController.calculatedAmount *
+                    //                  double.parse(orderSettingModel!.data!.data!.tax!) /
+                    //                  100;
+                    //          _cartController.calculatedAmount +=
+                    //              _cartController.calculatedTax;
+                    //        }
 
-                ///Coupon Widget
-                // getCouponWidget(),
-                SizedBox(
-                  height: !_cartController.isPromocodeApplied
-                      ? ScreenConfig.blockHeight * 22
-                      : ScreenConfig.blockHeight * 23,
-                  child: getTotalAmountWidget(),
-                  //               child: FutureBuilder<BaseModel<OrderSettingModel>>(
-                  // future: _cartController
-                  //     .callOrderSetting(_cartController.cartMaster!.vendorId),
-                  // builder: (context, snapshot) {
-                  // if (snapshot.hasData) {
-                  //   BaseModel<OrderSettingModel> orderSettingModel =
-                  //   snapshot.data!;
-                  //
-                  //   ///Inclusive tax
-                  //   if (orderSettingModel.data?.data!.taxType == 1) {
-                  //     _cartController.calculatedTax =
-                  //         _cartController.calculatedAmount *
-                  //             double.parse(orderSettingModel.data!.data!.tax!) /
-                  //             100;
-                  //     totalAmount -= _cartController.calculatedTax;
-                  //
-                  //     ///Exclusive tax
-                  //   } else if (orderSettingModel.data!.data!.taxType == 2) {
-                  //     _cartController.calculatedTax =
-                  //         _cartController.calculatedAmount *
-                  //             double.parse(orderSettingModel.data!.data!.tax!) /
-                  //             100;
-                  //     _cartController.calculatedAmount +=
-                  //         _cartController.calculatedTax;
-                  //   }
-                  //   return getTotalAmountWidget(orderSettingModel);
-                  // }
-                  // return SizedBox();
-                  // }),
-                  ///
-                  ///if (orderSettingModel!.data?.data!.taxType == 1) {
-                  //          _cartController.calculatedTax =
-                  //              _cartController.calculatedAmount *
-                  //                  double.parse(orderSettingModel!.data!.data!.tax!) /
-                  //                  100;
-                  //          totalAmount -= _cartController.calculatedTax;
-                  //
-                  //          ///Exclusive tax
-                  //        } else if (orderSettingModel!.data!.data!.taxType == 2) {
-                  //          _cartController.calculatedTax =
-                  //              _cartController.calculatedAmount *
-                  //                  double.parse(orderSettingModel!.data!.data!.tax!) /
-                  //                  100;
-                  //          _cartController.calculatedAmount +=
-                  //              _cartController.calculatedTax;
-                  //        }
-
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 6.0, right: 6.0, bottom: 2.0, top: 0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: RoundedCornerAppButton(
-                            btnLabel: "Checkout",
-                            onPressed: () {
-                              if(_cartController.diningValue == true && (_cartController.tableNumber != 0 || _cartController.tableNumber != null)) {
-                                if (scheduleMethod.index == 0) {
-                                  selectedDate = null;
-                                  picked = null;
-                                }
-                                print(selectedDate?.toString());
-                                print(picked?.toString());
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PosPayment(
-                                            notes: _diningCartController.notesController.text,
-                                            mobileNumber:
-                                            _diningCartController.phoneNoController.text,
-                                            userName: _diningCartController.nameController
-                                                .text,
-                                            venderId: _cartController
-                                                .cartMaster!.vendorId,
-                                            orderDeliveryType: () {
-                                              if (_cartController
-                                                  .diningValue) {
-                                                return 'DINING';
-                                              } else {
-                                                if (selectMethod
-                                                    .index ==
-                                                    0) {
-                                                  return "TAKEAWAY";
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 6.0, right: 6.0, bottom: 2.0, top: 0.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: RoundedCornerAppButton(
+                              btnLabel: "Checkout",
+                              onPressed: () {
+                                if(_cartController.diningValue == true && (_cartController.tableNumber != 0 || _cartController.tableNumber != null)) {
+                                  if (scheduleMethod.index == 0) {
+                                    selectedDate = null;
+                                    picked = null;
+                                  }
+                                  print(selectedDate?.toString());
+                                  print(picked?.toString());
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PosPayment(
+                                              notes: _diningCartController.notesController.text,
+                                              mobileNumber:
+                                              _diningCartController.phoneNoController.text,
+                                              userName: _diningCartController.nameController
+                                                  .text,
+                                              venderId: _cartController
+                                                  .cartMaster!.vendorId,
+                                              orderDeliveryType: () {
+                                                if (_cartController
+                                                    .diningValue) {
+                                                  return 'DINING';
                                                 } else {
-                                                  return "DELIVERY";
+                                                  if (selectMethod
+                                                      .index ==
+                                                      0) {
+                                                    return "TAKEAWAY";
+                                                  } else {
+                                                    return "DELIVERY";
+                                                  }
                                                 }
-                                              }
-                                            }(),
-                                            orderDate: DateFormat(
-                                                'y-MM-dd')
-                                                .format(DateTime.now())
-                                                .toString(),
-                                            orderTime: DateFormat(
-                                                'hh:mm a')
-                                                .format(DateTime.now())
-                                                .toString(),
-                                            totalAmount: _cartController
-                                                .calculatedAmount,
-                                            addressId: 0,
-                                            orderDeliveryCharge:
-                                            "${_cartController
-                                                .deliveryCharge}",
-                                            orderStatus: "PENDING",
-                                            ordrePromoCode:
-                                            _cartController
-                                                .appliedCouponName,
-                                            vendorDiscountAmount:
-                                            _cartController
-                                                .discountAmount,
-                                            vendorDiscountId: int.parse(
-                                                _cartController
-                                                    .strAppiedPromocodeId),
-                                            strTaxAmount: _cartController
-                                                .calculatedTax,
-                                            allTax: [],
-                                            subTotal: subTotal,
-                                            deliveryDate:
-                                            selectedDate?.toString(),
-                                            deliveryTime:
-                                            picked?.format(context),
-                                            tableNumber: _cartController
-                                                .tableNumber,
-                                          )),
-                                );
-                                print("Test");
-                              } else {
-                                Get.snackbar("Error", "Please Re-Enter Table Number");
-                              }
-                            }),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                                              }(),
+                                              orderDate: DateFormat(
+                                                  'y-MM-dd')
+                                                  .format(DateTime.now())
+                                                  .toString(),
+                                              orderTime: DateFormat(
+                                                  'hh:mm a')
+                                                  .format(DateTime.now())
+                                                  .toString(),
+                                              totalAmount: _cartController
+                                                  .calculatedAmount,
+                                              addressId: 0,
+                                              orderDeliveryCharge:
+                                              "${_cartController
+                                                  .deliveryCharge}",
+                                              orderStatus: "PENDING",
+                                              ordrePromoCode:
+                                              _cartController
+                                                  .appliedCouponName,
+                                              vendorDiscountAmount:
+                                              _cartController
+                                                  .discountAmount,
+                                              vendorDiscountId: int.parse(
+                                                  _cartController
+                                                      .strAppiedPromocodeId),
+                                              strTaxAmount: _cartController
+                                                  .calculatedTax,
+                                              allTax: [],
+                                              subTotal: subTotal,
+                                              deliveryDate:
+                                              selectedDate?.toString(),
+                                              deliveryTime:
+                                              picked?.format(context),
+                                              tableNumber: _cartController
+                                                  .tableNumber,
+                                            )),
+                                  );
+                                  print("Test");
+                                } else {
+                                  Get.snackbar("Error", "Please Re-Enter Table Number");
+                                }
+                              }),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -4147,7 +4158,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
       children: [
         Flexible(
           child: ListView.builder(
-              controller: _cartController.scrollController,
+              controller: _cartController.diningScrollController,
               physics: const BouncingScrollPhysics(),
               shrinkWrap: true,
               itemCount: _cartController.cartMaster!.cart.length,
@@ -4214,7 +4225,14 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                                   .of(context)
                                                   .size
                                                   .width;
-                                              return AlertDialog(
+                                              return WillPopScope(
+                                                  onWillPop: () async {
+                                                // Handle back button press
+                                                // You can close the dialog and return true to allow the app to be closed,
+                                                // or return false to prevent the app from being closed.
+                                                return false;
+                                              },
+                                                  child: AlertDialog(
                                                 clipBehavior: Clip
                                                     .antiAliasWithSaveLayer,
                                                 shape: RoundedRectangleBorder(
@@ -4241,6 +4259,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                                     },
                                                   ),
                                                 ),
+                                                  ),
                                               );
                                             });
 

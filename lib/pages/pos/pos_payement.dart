@@ -2122,6 +2122,7 @@ class _PosPaymentState extends State<PosPayment> {
                            ],
                          ),
                        ),
+                            Text("Old...${_cartController.cartMaster!.oldOrderId}"),
                             Expanded(
                          flex: 5,
                          child: Container(),
@@ -2131,6 +2132,7 @@ class _PosPaymentState extends State<PosPayment> {
                          onTap: () {
                            Get.back();
                          },
+
                          child: Container(
                              decoration: BoxDecoration(
                                shape: BoxShape.circle,
@@ -5402,9 +5404,7 @@ class _PosPaymentState extends State<PosPayment> {
         'old_order_id': _cartController.cartMaster!.oldOrderId?.toString(),
       };
       res = await RestClient(await RetroApi().dioData()).bookOrder(body);
-      print("response answer ${res.toJson()}");
-      print(res.success);
-      print("Dummy test");
+
 
 
       if (res.success!) {
@@ -5413,8 +5413,8 @@ class _PosPaymentState extends State<PosPayment> {
         jsonDecode(res.orderData!.orderData!);
         OrderDataModel orderData =
         OrderDataModel.fromJson(jsonMap);
-        print("order Model ${orderData.toJson()}");
-
+        print("old_order_id ${_cartController.cartMaster!.oldOrderId.toString()}");
+        print("orderData ${orderData.oldOrderId}");
         if (value == 0) {
           if(_autoPrinterController.autoPrint.value == true) {
             if (_printerController.printerModel.value.portPos != null) {

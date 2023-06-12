@@ -6,6 +6,7 @@ String cartMasterToMap(CartMaster data) => json.encode(data.toMap());
 
 class CartMaster {
   CartMaster({
+    this.oldOrderId,
     required this.vendorId,
     required this.cart,
 
@@ -16,13 +17,13 @@ class CartMaster {
 
   factory CartMaster.fromMap(Map<String, dynamic> json) => CartMaster(
     vendorId: json["vendor_id"],
-
+    oldOrderId: json["id"],
     cart: List<Cart>.from(json["cart"].map((x) => Cart.fromMap(x))),
   );
 
   Map<String, dynamic> toMap() => {
     "vendor_id": vendorId,
-
+    "id": oldOrderId,
     "cart": List<dynamic>.from(cart.map((x) => x.toMap())),
   };
 }

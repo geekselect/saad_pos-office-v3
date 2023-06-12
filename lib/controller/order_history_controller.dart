@@ -123,9 +123,13 @@ class OrderHistoryController extends GetxController {
   }
 
   Future<BaseModel<OrderHistoryListModel>> callGetOrderHistoryList() async {
+    final prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
     OrderHistoryListModel response;
     try {
-      response = await RestClient(await RetroApi().dioData()).showOrder();
+      response = await RestClient(await RetroApi().dioData()).showOrder(
+        int.parse(userId.toString()),
+      );
       if (response.success!) {
         listOrderHistory.value = response.data!;
       } else {

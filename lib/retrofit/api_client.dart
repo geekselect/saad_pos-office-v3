@@ -161,11 +161,16 @@ abstract class RestClient {
     @Body() map,
   );
 
+  @POST("editTakeaway")
+  Future<BookedOrderModel> editTakeawayData(
+      @Body() map,
+      );
+
   @GET("user_address")
   Future<UserAddressListModel> userAddress();
 
-  @GET("show_order")
-  Future<OrderHistoryListModel> showOrder();
+  @GET("show_order/{id}")
+  Future<OrderHistoryListModel> showOrder(@Path() int? id);
 
   @GET("user_order_status")
   Future<OrderStatus> userOrderStatus();

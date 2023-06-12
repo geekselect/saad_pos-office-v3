@@ -1758,6 +1758,7 @@ import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
+import 'package:pos/model/booked_order_model.dart';
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
 import 'package:pos/printer/printer_controller.dart';
@@ -2168,6 +2169,8 @@ class OrderHistory extends StatelessWidget {
                                             ),
                                             child: Column(
                                               children: [
+                                                Text("Old...${order.id }"),
+                                                Text("Table...${order.tableNo}"),
                                                 Padding(
                                                   padding: const EdgeInsets
                                                       .symmetric(
@@ -3200,36 +3203,170 @@ class OrderHistory extends StatelessWidget {
                                                                             children: [
                                                                               Expanded(
                                                                                 child: ElevatedButton(
-                                                                                  onPressed: () {
-                                                                                    _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
-                                                                                    _cartController.cartMaster?.oldOrderId = order.id;
-                                                                                    if (order.tableNo != null) {
-                                                                                      _cartController.tableNumber = order.tableNo!;
-                                                                                    }
-                                                                                    String colorCode = order.orderId.toString();
-                                                                                    int colorInt = int.parse(colorCode.substring(1));
-                                                                                    print("color int $colorInt");
-                                                                                    SharedPreferences.getInstance().then((value) {
-                                                                                      value.setInt(Constants.order_main_id.toString(), colorInt);
-                                                                                    });
-                                                                                    if (order.deliveryType == "TAKEAWAY") {
-                                                                                      order.datumUserName == null || order.datumUserName == '' ? _cartController.userName = '' : _cartController.userName = order.datumUserName!;
-                                                                                      order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile!;
-                                                                                      order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes!;
-                                                                                      _cartController.nameController.text = _cartController.userName;
-                                                                                      _cartController.phoneNoController.text = _cartController.userMobileNumber;
-                                                                                      _cartController.notesController.text = _cartController.notes;
-                                                                                    } else {
-                                                                                      order.datumUserName == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.datumUserName!;
-                                                                                      order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile!;
-                                                                                      order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes!;
-                                                                                      _diningCartController.nameController.text = _diningCartController.diningUserName;
-                                                                                      _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
-                                                                                      _diningCartController.notesController.text = _diningCartController.diningNotes;
-                                                                                    }
-                                                                                    order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+                                                                                  onPressed: () async {
+                                                                                    final prefs = await SharedPreferences.getInstance();
+                                                                                    String vendorId =
+                                                                                        prefs.getString(Constants.vendorId.toString()) ?? '';
+                                                                                    if ((order.tableNo != null || order.tableNo != 0) && order.deliveryType == "DINING") {
+                                                                                        Map<String, dynamic> param = {
+                                                                                          'vendor_id':
+                                                                                          int.parse(vendorId.toString()),
+                                                                                          'booked_table_number': order.tableNo,
+                                                                                        };
+                                                                                        BaseModel<BookedOrderModel> baseModel =
+                                                                                        await _cartController
+                                                                                            .getBookedTableData(
+                                                                                            param, context);
+                                                                                        BookedOrderModel bookOrderModel =
+                                                                                        baseModel.data!;
+                                                                                        if (bookOrderModel.success!) {
+                                                                                          print(
+                                                                                              "ANNN  ${bookOrderModel.toJson()}");
+                                                                                          _cartController.tableNumber = order.tableNo!;
+                                                                                          _cartController.cartMaster =
+                                                                                              cart.CartMaster.fromMap(jsonDecode(
+                                                                                                  bookOrderModel
+                                                                                                      .data!.orderData!));
+                                                                                          _cartController
+                                                                                              .cartMaster?.oldOrderId =
+                                                                                              bookOrderModel.data!.orderId;
+                                                                                          _diningCartController.diningUserName =
+                                                                                          bookOrderModel.data!.userName!;
+                                                                                          _diningCartController
+                                                                                              .diningUserMobileNumber =
+                                                                                          bookOrderModel.data!.mobile!;
+                                                                                          _diningCartController.diningNotes =
+                                                                                          bookOrderModel.data!.notes!;
+                                                                                          _diningCartController
+                                                                                              .nameController.text =
+                                                                                              _diningCartController
+                                                                                                  .diningUserName;
+                                                                                          _diningCartController
+                                                                                              .phoneNoController.text =
+                                                                                              _diningCartController
+                                                                                                  .diningUserMobileNumber;
+                                                                                          _diningCartController
+                                                                                              .notesController.text =
+                                                                                              _diningCartController.diningNotes;
+                                                                                        }
+                                                                                  } else {
+                                                                                      Map<String, dynamic> param = {
+                                                                                        'order_Id': order.id,
+                                                                                      };
+                                                                                      BaseModel<BookedOrderModel> baseModel =
+                                                                                      await _cartController.getTakeAwayData
+                                                                                          (
+                                                                                          param, context);
+                                                                                      BookedOrderModel bookOrderModel =
+                                                                                      baseModel.data!;
+                                                                                      if (bookOrderModel.success!) {
+                                                                                        print(
+                                                                                            "BNNNN  ${bookOrderModel.toJson()}");
 
-                                                                                    Get.to(() => PosMenu(isDining: _cartController.diningValue));
+                                                                                        _cartController.cartMaster =
+                                                                                            cart.CartMaster.fromMap(jsonDecode(
+                                                                                                bookOrderModel
+                                                                                                    .data!.orderData!));
+                                                                                        _cartController
+                                                                                            .cartMaster?.oldOrderId =
+                                                                                            bookOrderModel.data!.orderId;
+                                                                                        String colorCode = order
+                                                                                            .orderId
+                                                                                            .toString();
+                                                                                        int colorInt = int
+                                                                                            .parse(
+                                                                                            colorCode
+                                                                                                .substring(
+                                                                                                1));
+                                                                                        print(
+                                                                                            "color int $colorInt");
+                                                                                        SharedPreferences
+                                                                                            .getInstance()
+                                                                                            .then((
+                                                                                            value) {
+                                                                                          value
+                                                                                              .setInt(
+                                                                                              Constants
+                                                                                                  .order_main_id
+                                                                                                  .toString(),
+                                                                                              colorInt);
+                                                                                        });
+                                                                                        order
+                                                                                            .datumUserName ==
+                                                                                            null ||
+                                                                                            order
+                                                                                                .datumUserName ==
+                                                                                                ''
+                                                                                            ?
+                                                                                        _cartController
+                                                                                            .userName =
+                                                                                        ''
+                                                                                            : _cartController
+                                                                                            .userName =
+                                                                                        order
+                                                                                            .datumUserName!;
+                                                                                        order
+                                                                                            .mobile ==
+                                                                                            null ||
+                                                                                            order
+                                                                                                .mobile ==
+                                                                                                ''
+                                                                                            ?
+                                                                                        _cartController
+                                                                                            .userMobileNumber =
+                                                                                        ''
+                                                                                            : _cartController
+                                                                                            .userMobileNumber =
+                                                                                        order
+                                                                                            .mobile!;
+                                                                                        order
+                                                                                            .notes ==
+                                                                                            null ||
+                                                                                            order
+                                                                                                .notes ==
+                                                                                                ''
+                                                                                            ?
+                                                                                        _cartController
+                                                                                            .notes =
+                                                                                        ''
+                                                                                            : _cartController
+                                                                                            .notes =
+                                                                                        order
+                                                                                            .notes!;
+                                                                                        _cartController
+                                                                                            .nameController
+                                                                                            .text =
+                                                                                            _cartController
+                                                                                                .userName;
+                                                                                        _cartController
+                                                                                            .phoneNoController
+                                                                                            .text =
+                                                                                            _cartController
+                                                                                                .userMobileNumber;
+                                                                                        _cartController
+                                                                                            .notesController
+                                                                                            .text =
+                                                                                            _cartController
+                                                                                                .notes;
+                                                                                      }
+
+                                                                                    }
+                                                                                    order
+                                                                                        .deliveryType ==
+                                                                                        "TAKEAWAY"
+                                                                                        ?
+                                                                                    _cartController
+                                                                                        .diningValue =
+                                                                                    false
+                                                                                        : _cartController
+                                                                                        .diningValue =
+                                                                                    true;
+
+                                                                                    Get
+                                                                                        .to(() =>
+                                                                                        PosMenu(
+                                                                                            isDining: _cartController
+                                                                                                .diningValue));
                                                                                   },
                                                                                   child: const Text(
                                                                                     "Edit / Pay",
