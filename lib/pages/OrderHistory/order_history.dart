@@ -2169,8 +2169,8 @@ class OrderHistory extends StatelessWidget {
                                             ),
                                             child: Column(
                                               children: [
-                                                Text("Old...${order.id }"),
-                                                Text("Table...${order.tableNo}"),
+                                                // Text("Old...${order.id }"),
+                                                // Text("Table...${order.tableNo}"),
                                                 Padding(
                                                   padding: const EdgeInsets
                                                       .symmetric(

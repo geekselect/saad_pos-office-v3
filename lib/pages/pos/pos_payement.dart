@@ -2122,7 +2122,7 @@ class _PosPaymentState extends State<PosPayment> {
                            ],
                          ),
                        ),
-                            Text("Old...${_cartController.cartMaster!.oldOrderId}"),
+                            // Text("Old...${_cartController.cartMaster!.oldOrderId}"),
                             Expanded(
                          flex: 5,
                          child: Container(),

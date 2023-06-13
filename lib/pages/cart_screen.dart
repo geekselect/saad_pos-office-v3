@@ -1874,7 +1874,7 @@ class _CartScreenState extends State<CartScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Text("Old...${_cartController.cartMaster!.oldOrderId}"),
+                        // Text("Old...${_cartController.cartMaster!.oldOrderId}"),
                         if (picked != null &&
                             selectedDate != null &&
                             scheduleMethod != ScheduleMethod.DELIVERNOW)
@@ -2273,10 +2273,7 @@ class _CartScreenState extends State<CartScreen> {
                                             .width;
                                         return WillPopScope(
                                             onWillPop: () async {
-                                          // Handle back button press
-                                          // You can close the dialog and return true to allow the app to be closed,
-                                          // or return false to prevent the app from being closed.
-                                          return false;
+                                          return true;
                                         },
                                             child: AlertDialog(
                                           clipBehavior: Clip
