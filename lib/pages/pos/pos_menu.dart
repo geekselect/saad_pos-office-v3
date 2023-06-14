@@ -70,6 +70,9 @@ class _PosMenuState extends State<PosMenu> {
   void _reloadScreen() {
     setState(() {
       _orderCustimizationController.callGetRestaurantsDetails().then((value) {
+        if(value.data!.success == true) {
+          _orderCustimizationController.response.value = value.data!;
+        }
         _orderCustimizationController.strRestaurantModifier.value = value.data!.data!.vendor!.modifiers;
         if(value.data!.data!.vendor!.modifiers == 1) {
           print("call");

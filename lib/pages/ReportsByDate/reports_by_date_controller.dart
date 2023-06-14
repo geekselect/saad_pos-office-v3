@@ -18,7 +18,6 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 
 class ReportByDateController extends GetxController {
-   Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   final OrderCustimizationController _orderCustimizationController =
   Get.find<OrderCustimizationController>();
   Rx<Order> reportModelOrderData = Order().obs;
@@ -68,8 +67,7 @@ class ReportByDateController extends GetxController {
     endDateSelect = false.obs;
     posIp = box.read(Constants.posIp);
     posPort = box.read(Constants.posPort);
-    callGetResturantDetailsRef = _orderCustimizationController
-        .callGetRestaurantsDetails();
+
   }
 
 
@@ -120,13 +118,12 @@ class ReportByDateController extends GetxController {
 
     if (res == PosPrintResult.success) {
       // DEMO RECEIPT
-      BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails =
-      await callGetResturantDetailsRef;
+      SingleRestaurantsDetailsModel restaurantDetails = _orderCustimizationController.response.value;
       if (restaurantDetails != null) {
 
         printPOSReceipt(printer, restaurantDetails, value);
         print(
-            'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
+            'restaurant details  ${restaurantDetails.data!.vendor!.name}');
       } else {
         print('Failed to fetch restaurant details');
       }
@@ -136,10 +133,10 @@ class ReportByDateController extends GetxController {
 
   printPOSReceipt(
       NetworkPrinter printer,
-      BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails,
+      SingleRestaurantsDetailsModel restaurantDetails,
       bool value
       ) {
-    printer.text(restaurantDetails!.data!.data!.vendor!.name,
+    printer.text(restaurantDetails.data!.vendor!.name,
         styles: PosStyles(
           align: PosAlign.center,
           height: PosTextSize.size2,

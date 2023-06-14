@@ -958,14 +958,15 @@ class ReportsByDate extends StatelessWidget {
                                                               color: Colors.white,
                                                               size: 16,),
                                                             Text(
-                                                              " Date ${DateFormat(
-                                                                  'yyyy-MM-dd')
-                                                                  .format(
-                                                                  _reportByDateController
-                                                                      .reportByDateModelData
-                                                                      .value
-                                                                      .data![index]
-                                                                      .date!)} (${_reportByDateController.reportByDateModelData.value.data![index].shiftName.toString()})",
+                                                                " Date ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data![0].date!)} (${_reportByDateController.reportByDateModelData.value.data![0].shiftName.toString()})",
+                                                              // " Date ${DateFormat(
+                                                              //     'yyyy-MM-dd')
+                                                              //     .format(
+                                                              //     _reportByDateController
+                                                              //         .reportByDateModelData
+                                                              //         .value
+                                                              //         .data![index]
+                                                              //         .date!)} (${_reportByDateController.reportByDateModelData.value.data![index].shiftName.toString()})",
                                                               style: const TextStyle(
                                                                   color: Colors
                                                                       .white,

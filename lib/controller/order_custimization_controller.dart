@@ -30,7 +30,7 @@ class OrderCustimizationController extends GetxController {
       strRestaurantsReview = ''.obs,
       strRestaurantImage = ''.obs;
 
-  SingleRestaurantsDetailsModel? response;
+  Rx<SingleRestaurantsDetailsModel> response = SingleRestaurantsDetailsModel(success: false).obs;
   singleVendorRetrieveSize.SingleVendorRetrieveSizes? singleVendorRetrieveSizes;
   List<singleVendorRetrieveSize.MenuSize> menuSizeList =
       <singleVendorRetrieveSize.MenuSize>[];
@@ -39,33 +39,38 @@ class OrderCustimizationController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
     try {
-      response = await RestClient(await RetroApi().dioData()).singleVendor(
+      await RestClient(await RetroApi().dioData()).singleVendor(
         int.parse(vendorId.toString()),
-      );
-      if (response!.success) {
-        strRestaurantsType.value = response!.data!.vendor!.vendorType;
-        strRestaurantsName.value = response!.data!.vendor!.name;
-        strRestaurantsForTwoPerson.value = response!.data!.vendor!.forTwoPerson;
-        strRestaurantsRate.value = response!.data!.vendor!.rate.toString();
-        strRestaurantsReview.value = response!.data!.vendor!.review.toString();
-        strRestaurantsAddress.value = response!.data!.vendor!.mapAddress;
-        strRestaurantImage.value = response!.data!.vendor!.image;
-        strRestaurantModifier.value = response!.data!.vendor!.modifiers;
-        if(response!.data!.vendor!.modifiers == 1) {
-          print("call modifier");
-          ModifierDataController _modifierDataController = Get.put(ModifierDataController());
+      ).then((value) {
+        if (value.success == true) {
+          response.value = value;
+          strRestaurantsType.value = response.value.data!.vendor!.vendorType;
+          strRestaurantsName.value = response.value.data!.vendor!.name;
+          strRestaurantsForTwoPerson.value =
+              response.value.data!.vendor!.forTwoPerson;
+          strRestaurantsRate.value =
+              response.value.data!.vendor!.rate.toString();
+          strRestaurantsReview.value =
+              response.value.data!.vendor!.review.toString();
+          strRestaurantsAddress.value = response.value.data!.vendor!.mapAddress;
+          strRestaurantImage.value = response.value.data!.vendor!.image;
+          strRestaurantModifier.value = response.value.data!.vendor!.modifiers;
+          if (response.value.data!.vendor!.modifiers == 1) {
+            print("call modifier");
+            ModifierDataController _modifierDataController = Get.put(
+                ModifierDataController());
+          } else {
+            print("no call");
+          }
         } else {
-          print("no call");
+          Constants.toastMessage('Error while getting details');
         }
-
-      } else {
-        Constants.toastMessage('Error while getting details');
-      }
+      });
     } catch (error, stacktrace) {
       print("Exception occurred: $error stackTrace: $stacktrace");
       return BaseModel()..setException(ServerError.withError(error: error));
     }
-    return BaseModel()..data = response;
+    return BaseModel()..data = response.value;
   }
 
   Future<BaseModel<StatusModel>> status() async {

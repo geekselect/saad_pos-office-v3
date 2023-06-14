@@ -114,7 +114,7 @@ class _VendorMenuState extends State<VendorMenu>
 
     _tabController = TabController(
         length:
-            _orderCustimizationController.response!.data!.menuCategory!.length,
+            _orderCustimizationController.response.value.data!.menuCategory!.length,
         vsync: this);
 
     ///Set State Error
@@ -221,7 +221,7 @@ class _VendorMenuState extends State<VendorMenu>
                                     image: DecorationImage(
                                         image: CachedNetworkImageProvider(
                                             _orderCustimizationController
-                                                .response!.data!.vendor!.image,
+                                                .response.value.data!.vendor!.image,
                                             headers: {
                                               "Access-Control-Allow-Origin":
                                                   "*",
@@ -239,7 +239,7 @@ class _VendorMenuState extends State<VendorMenu>
                                       children: [
                                         Text(
                                           _orderCustimizationController
-                                              .response!.data!.vendor!.name,
+                                              .response.value.data!.vendor!.name,
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontFamily: "CinzelBold"),
@@ -251,7 +251,7 @@ class _VendorMenuState extends State<VendorMenu>
                                         ),
                                         Text(
                                           _orderCustimizationController
-                                              .response!
+                                              .response.value
                                               .data!
                                               .vendor!
                                               .mapAddress,
@@ -266,7 +266,7 @@ class _VendorMenuState extends State<VendorMenu>
                                             RatingBar.builder(
                                               initialRating:
                                                   _orderCustimizationController
-                                                      .response!
+                                                      .response.value
                                                       .data!
                                                       .vendor!
                                                       .rate
@@ -285,7 +285,7 @@ class _VendorMenuState extends State<VendorMenu>
                                               },
                                             ),
                                             Text(
-                                              '(${_orderCustimizationController.response!.data!.vendor!.review})',
+                                              '(${_orderCustimizationController.response.value.data!.vendor!.review})',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 fontFamily: Constants.appFont,
@@ -315,10 +315,10 @@ class _VendorMenuState extends State<VendorMenu>
                             isScrollable: true,
                             tabs: List.generate(
                               _orderCustimizationController
-                                  .response!.data!.menuCategory!.length,
+                                  .response.value.data!.menuCategory!.length,
                               (index) => Text(
                                 _orderCustimizationController
-                                    .response!.data!.menuCategory![index].name,
+                                    .response.value.data!.menuCategory![index].name,
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),
@@ -334,7 +334,7 @@ class _VendorMenuState extends State<VendorMenu>
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
                               itemCount: _orderCustimizationController
-                                  .response!.data!.menuCategory!.length,
+                                  .response.value.data!.menuCategory!.length,
                               itemBuilder: (context, index) => Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -342,7 +342,7 @@ class _VendorMenuState extends State<VendorMenu>
                                     height: ScreenConfig.blockHeight,
                                   ),
                                   Text(
-                                    _orderCustimizationController.response!
+                                    _orderCustimizationController.response.value
                                         .data!.menuCategory![index].name,
                                     style: TextStyle(
                                         color: Colors.grey,
@@ -525,7 +525,7 @@ class _VendorMenuState extends State<VendorMenu>
                   image: DecorationImage(
                       image: CachedNetworkImageProvider(
                           _orderCustimizationController
-                              .response!.data!.vendor!.image),
+                              .response.value.data!.vendor!.image),
                       fit: BoxFit.fill),
                   borderRadius: BorderRadius.circular(12.0),
                 ),
@@ -971,7 +971,7 @@ class _VendorMenuState extends State<VendorMenu>
                           }, child: Text("Create Shift")),
                           Text(
                             _orderCustimizationController
-                                .response!.data!.vendor!.name,
+                                .response.value.data!.vendor!.name,
                             style: TextStyle(
                                 fontSize: 20, fontFamily: "CinzelBold"),
                             overflow: TextOverflow.ellipsis,
@@ -1339,10 +1339,10 @@ class _VendorMenuState extends State<VendorMenu>
                 isScrollable: true,
                 tabs: List.generate(
                   _orderCustimizationController
-                      .response!.data!.menuCategory!.length,
+                      .response.value.data!.menuCategory!.length,
                   (index) => Text(
                     _orderCustimizationController
-                        .response!.data!.menuCategory![index].name,
+                        .response.value.data!.menuCategory![index].name,
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
@@ -1357,7 +1357,7 @@ class _VendorMenuState extends State<VendorMenu>
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemCount: _orderCustimizationController
-                      .response!.data!.menuCategory!.length,
+                      .response.value.data!.menuCategory!.length,
                   itemBuilder: (context, index) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1370,7 +1370,7 @@ class _VendorMenuState extends State<VendorMenu>
                         _searchQuery.isEmpty
                             ? Text(
                                 _orderCustimizationController
-                                    .response!.data!.menuCategory![index].name,
+                                    .response.value.data!.menuCategory![index].name,
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontFamily: "ProximaBold",
@@ -1731,13 +1731,13 @@ class _VendorMenuState extends State<VendorMenu>
 
   List<Widget> getCategoriesItemList(int index) {
     if (_orderCustimizationController
-            .response!.data!.menuCategory![index].type ==
+            .response.value.data!.menuCategory![index].type ==
         'SINGLE') {
       List<SingleMenu> searchResults = _searchQuery.isEmpty
           ? _orderCustimizationController
-              .response!.data!.menuCategory![index].singleMenu!
+              .response.value.data!.menuCategory![index].singleMenu!
           : _orderCustimizationController
-              .response!.data!.menuCategory![index].singleMenu!
+              .response.value.data!.menuCategory![index].singleMenu!
               .where((menu) => menu.menu!.name
                   .toLowerCase()
                   .contains(_searchQuery.toLowerCase()))
@@ -1852,7 +1852,7 @@ class _VendorMenuState extends State<VendorMenu>
                                           menu: searchResults[i].menu!,
                                           category:
                                               _orderCustimizationController
-                                                  .response!
+                                                  .response.value
                                                   .data!
                                                   .menuCategory![index]
                                                   .type,
@@ -1882,12 +1882,12 @@ class _VendorMenuState extends State<VendorMenu>
                                             searchResults[i].menu!.price!,
                                         menuId: searchResults[i].menu!.id,
                                         category: _orderCustimizationController
-                                            .response!
+                                            .response.value
                                             .data!
                                             .menuCategory![index]
                                             .type,
                                         vendor: _orderCustimizationController
-                                            .response!.data!.vendor!,
+                                            .response.value.data!.vendor!,
                                       );
                                     });
                               }
@@ -1922,12 +1922,12 @@ class _VendorMenuState extends State<VendorMenu>
                                       child: NoAddons(
                                         menu: searchResults[i].menu!,
                                         category: _orderCustimizationController
-                                            .response!
+                                            .response.value
                                             .data!
                                             .menuCategory![index]
                                             .type,
                                         vendor: _orderCustimizationController
-                                            .response!.data!.vendor!,
+                                            .response.value.data!.vendor!,
                                       ),
                                     );
                                   });
@@ -1954,11 +1954,11 @@ class _VendorMenuState extends State<VendorMenu>
             ));
       });
     } else if (_orderCustimizationController
-            .response!.data!.menuCategory![index].type ==
+            .response.value.data!.menuCategory![index].type ==
         'HALF_N_HALF') {
       return List.generate(
         _orderCustimizationController
-            .response!.data!.menuCategory![index].halfNHalfMenu!.length,
+            .response.value.data!.menuCategory![index].halfNHalfMenu!.length,
         (i) => Column(
           children: [
             Row(
@@ -1970,7 +1970,7 @@ class _VendorMenuState extends State<VendorMenu>
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: CachedNetworkImageProvider(
-                            _orderCustimizationController.response!.data!
+                            _orderCustimizationController.response.value.data!
                                 .menuCategory![index].halfNHalfMenu![i].image),
                         fit: BoxFit.cover),
                     borderRadius: BorderRadius.circular(12.0),
@@ -1985,7 +1985,7 @@ class _VendorMenuState extends State<VendorMenu>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        _orderCustimizationController.response!.data!
+                        _orderCustimizationController.response.value.data!
                             .menuCategory![index].halfNHalfMenu![i].name,
                         maxLines: 2,
                         style: TextStyle(
@@ -1999,7 +1999,7 @@ class _VendorMenuState extends State<VendorMenu>
                         height: ScreenConfig.blockHeight * 1,
                       ),
                       Text(
-                        _orderCustimizationController.response!.data!
+                        _orderCustimizationController.response.value.data!
                             .menuCategory![index].halfNHalfMenu![i].description,
                         maxLines: 4,
                         style: TextStyle(
@@ -2044,10 +2044,10 @@ class _VendorMenuState extends State<VendorMenu>
                               height: ScreenConfig.blockHeight * 80,
                               child: HalfNHalf(
                                 category: _orderCustimizationController
-                                    .response!.data!.menuCategory![index].type,
+                                    .response.value.data!.menuCategory![index].type,
                                 vendorId: int.parse(vendorId.toString()),
                                 halfNHalfMenu: _orderCustimizationController
-                                    .response!
+                                    .response.value
                                     .data!
                                     .menuCategory![index]
                                     .halfNHalfMenu![i],
@@ -2065,13 +2065,13 @@ class _VendorMenuState extends State<VendorMenu>
         ),
       );
     } else if (_orderCustimizationController
-            .response!.data!.menuCategory![index].type ==
+            .response.value.data!.menuCategory![index].type ==
         'DEALS') {
       return List.generate(
           _orderCustimizationController
-              .response!.data!.menuCategory![index].dealsMenu!.length, (i) {
+              .response.value.data!.menuCategory![index].dealsMenu!.length, (i) {
         DealsMenu dealsMenu = _orderCustimizationController
-            .response!.data!.menuCategory![index].dealsMenu![i];
+            .response.value.data!.menuCategory![index].dealsMenu![i];
         return Column(
           children: [
             Row(
@@ -2144,14 +2144,14 @@ class _VendorMenuState extends State<VendorMenu>
                               height: ScreenConfig.blockHeight * 80,
                               child: dealsItems.DealsItems(
                                 dealsItemList: _orderCustimizationController
-                                    .response!
+                                    .response.value
                                     .data!
                                     .menuCategory![index]
                                     .dealsMenu![i]
                                     .dealsItems!,
                                 dealsMenu: dealsMenu,
                                 category: _orderCustimizationController
-                                    .response!.data!.menuCategory![index].type,
+                                    .response.value.data!.menuCategory![index].type,
                               ),
                             );
                           });

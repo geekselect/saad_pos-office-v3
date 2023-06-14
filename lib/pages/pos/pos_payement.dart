@@ -111,7 +111,6 @@ class _PosPaymentState extends State<PosPayment> {
 
   final _formKey = GlobalKey<FormState>();
   final _formDialogKey = GlobalKey<FormState>();
-  Future<BaseModel<rest.SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
   dynamic number;
@@ -122,8 +121,6 @@ class _PosPaymentState extends State<PosPayment> {
   void initState() {
     getDataShift();
     totalAmountController.text = widget.totalAmount.toString();
-    callGetResturantDetailsRef = _orderCustimizationController
-        .callGetRestaurantsDetails();
     _printerController.getPrinterDetails();
     super.initState();
   }
@@ -154,8 +151,7 @@ class _PosPaymentState extends State<PosPayment> {
 
     if (res == PosPrintResult.success) {
       // DEMO RECEIPT
-      BaseModel<rest.SingleRestaurantsDetailsModel>? restaurantDetails =
-          await callGetResturantDetailsRef;
+      rest.SingleRestaurantsDetailsModel restaurantDetails = _orderCustimizationController.response.value;
       if (restaurantDetails != null) {
         print("--------POS PRint-------");
         print(
@@ -172,7 +168,7 @@ class _PosPaymentState extends State<PosPayment> {
         print("---------------");
         printPOSReceipt(printer, restaurantDetails, orderData, orderModel);
         print(
-            'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
+            'restaurant details  ${restaurantDetails.data!.vendor!.name}');
       } else {
         print('Failed to fetch restaurant details');
       }
@@ -188,7 +184,7 @@ class _PosPaymentState extends State<PosPayment> {
 
   printPOSReceipt(
     NetworkPrinter printer,
-    BaseModel<rest.SingleRestaurantsDetailsModel>? restaurantDetails,
+      rest.SingleRestaurantsDetailsModel restaurantDetails,
       OrderHistoryData orderData,
       OrderDataModel orderModel
       ) {
@@ -196,21 +192,20 @@ class _PosPaymentState extends State<PosPayment> {
 
     List<Cart> cart = orderModel.cart!;
     // List<Cart> cart = cartMaster.cart;
-    printer.text(restaurantDetails!.data!.data!.vendor!.name,
+    printer.text(restaurantDetails.data!.vendor!.name,
         styles: PosStyles(
           align: PosAlign.center,
           height: PosTextSize.size2,
           width: PosTextSize.size2,
         ),
         linesAfter: 1);
-
-    printer.text(restaurantDetails.data!.data!.vendor!.mapAddress.toString(),
+    printer.text(restaurantDetails.data!.vendor!.mapAddress.toString(),
         styles: PosStyles(align: PosAlign.center));
     // printer.text('New Braunfels, TX',
     //     styles: PosStyles(align: PosAlign.center));
 
     printer.text(
-        "Phone : ${restaurantDetails.data!.data!.vendor!.contact.toString()}",
+        "Phone : ${restaurantDetails.data!.vendor!.contact.toString()}",
         styles: PosStyles(align: PosAlign.left));
 
     printer.text("Order Id ${orderData.orderId.toString()}",

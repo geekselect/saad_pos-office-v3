@@ -1773,7 +1773,7 @@ class OrderHistory extends StatelessWidget {
   final DiningCartController _diningCartController = Get.find<DiningCartController>();
   final PrinterController _printerController = Get.find<PrinterController>();
   final OrderHistoryController _orderHistoryMainController = Get.find<OrderHistoryController>();
-  final OrderCustimizationController _orderCustomizationController = Get.find<OrderCustimizationController>();
+  // final OrderCustimizationController _orderCustomizationController = Get.find<OrderCustimizationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -1781,7 +1781,7 @@ class OrderHistory extends StatelessWidget {
     _orderHistoryMainController.disableCompleteButton.value = false;
     return WillPopScope(
       onWillPop: () async {
-        await _orderCustomizationController.callGetRestaurantsDetails();
+        // await _orderCustomizationController.callGetRestaurantsDetails();
         Get.off(() => PosMenu(
               isDining: _cartController.diningValue,
             ));

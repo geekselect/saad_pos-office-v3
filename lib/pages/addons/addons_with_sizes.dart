@@ -113,7 +113,7 @@ class _AddonsWithSizedState extends State<AddonsWithSized> with SingleTickerProv
                           height: ScreenConfig.blockHeight*1,
                         ),
                         Text(
-                          _orderCustimizationController.response!.data!.vendor!.name,maxLines: 4,
+                          _orderCustimizationController.response.value.data!.vendor!.name,maxLines: 4,
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(Constants.colorTheme),

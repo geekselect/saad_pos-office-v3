@@ -240,7 +240,6 @@ import '../../retrofit/base_model.dart';
 ///End
 
 class ReportController extends GetxController {
-  Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
   final OrderCustimizationController _orderCustimizationController =
       Get.find<OrderCustimizationController>();
   Rx<Order> reportModelOrderData = Order().obs;
@@ -261,8 +260,6 @@ class ReportController extends GetxController {
     super.onInit();
     posIp = box.read(Constants.posIp);
     posPort = box.read(Constants.posPort);
-    callGetResturantDetailsRef =
-        _orderCustimizationController.callGetRestaurantsDetails();
   }
 
   Future<BaseModel<ReportModel>>? reportsApiCall() async {
@@ -304,16 +301,13 @@ class ReportController extends GetxController {
 
     if (res == PosPrintResult.success) {
       // DEMO RECEIPT
-      BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails =
-          await callGetResturantDetailsRef;
+      SingleRestaurantsDetailsModel restaurantDetails =  _orderCustimizationController.response.value;
       if (restaurantDetails != null) {
         var newDate = DateFormat('hh:mm a').format(DateTime.now());
         var date = DateTime.parse(DateTime.now().toString());
         var formattedDate = "${date.day}-${date.month}-${date.year} ${newDate}";
         print("date ${formattedDate}");
         printPOSReceipt(printer, restaurantDetails, formattedDate, value);
-        print(
-            'restaurant details  ${restaurantDetails.data!.data!.vendor!.name}');
       } else {
         print('Failed to fetch restaurant details');
       }
@@ -323,7 +317,7 @@ class ReportController extends GetxController {
 
   printPOSReceipt(
       NetworkPrinter printer,
-      BaseModel<SingleRestaurantsDetailsModel>? restaurantDetails,
+      SingleRestaurantsDetailsModel restaurantDetails,
       String date,
       bool value) {
     // // Print image
@@ -331,7 +325,7 @@ class ReportController extends GetxController {
     // final Uint8List bytes = data.buffer.asUint8List();
     // final img.Image? image = img.decodeImage(bytes);
     // printer.image(image!);
-    printer.text(restaurantDetails!.data!.data!.vendor!.name,
+    printer.text(restaurantDetails.data!.vendor!.name,
         styles: PosStyles(
           align: PosAlign.center,
           height: PosTextSize.size2,

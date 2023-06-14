@@ -8,7 +8,7 @@ String singleRestaurantsDetailsModelToMap(SingleRestaurantsDetailsModel data) =>
 class SingleRestaurantsDetailsModel {
   SingleRestaurantsDetailsModel({
     required this.success,
-    required this.data,
+    this.data,
   });
 
   bool success;
