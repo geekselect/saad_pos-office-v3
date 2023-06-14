@@ -47,6 +47,7 @@ class ShiftController extends GetxController {
       "user_id": userId,
       "shift_name": shiftName,
     };
+
     try {
       Constants.onLoading(context);
       response = await RestClient(await RetroApi().dioData()).createShift(body);
