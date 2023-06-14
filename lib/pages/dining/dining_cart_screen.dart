@@ -4197,7 +4197,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                 Flexible(
                                   fit: FlexFit.loose,
                                   child: GestureDetector(
-                                    onTap: (){
+                                    onTap: _orderCustimizationController.strRestaurantModifier.value == 1 ? (){
                                       print(
                                           "ADDONS Only Dialog Modifiers");
                                       List<
@@ -4263,7 +4263,7 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
                                               );
                                             });
 
-                                    },
+                                    } : (){},
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:

@@ -70,7 +70,8 @@ class _PosMenuState extends State<PosMenu> {
   void _reloadScreen() {
     setState(() {
       _orderCustimizationController.callGetRestaurantsDetails().then((value) {
-        if(_orderCustimizationController.strRestaurantModifier.value == 1) {
+        _orderCustimizationController.strRestaurantModifier.value = value.data!.data!.vendor!.modifiers;
+        if(value.data!.data!.vendor!.modifiers == 1) {
           print("call");
           ModifierDataController _modifierDataController = Get.put(ModifierDataController());
           _modifierDataController.modifierDataApiCall();
@@ -552,8 +553,10 @@ class _PosMenuState extends State<PosMenu> {
                                               if (shiftController
                                                   .timerController.timerDuration
                                                   .value != Duration.zero) {
-                                                shiftController.timerController.stopTimer();
                                                 print("Timer Send");
+                                                var startTime = DateTime.now().subtract(shiftController.timerController.timerDuration.value);
+                                                var stopTime = DateTime.now();
+                                                var elapsedTime = stopTime.difference(startTime);
                                                 shiftController
                                                     .selectShiftDetails(context,
                                                     shiftController
@@ -562,9 +565,8 @@ class _PosMenuState extends State<PosMenu> {
                                                     shiftController
                                                         .shiftsList[index]
                                                         .shiftName,
-                                                    shiftController
-                                                        .timerController
-                                                        .elapsedTime);
+                                                  elapsedTime
+                                                  );
                                               }
 
                                           },

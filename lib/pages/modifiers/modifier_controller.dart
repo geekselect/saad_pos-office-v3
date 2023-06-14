@@ -34,7 +34,6 @@ class ModifierDataController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
       modifierDataApiCall();
   }
 }

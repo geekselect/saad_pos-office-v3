@@ -903,12 +903,14 @@ class _VendorMenuState extends State<VendorMenu>
                                                               shiftController
                                                                   .shiftsList[index]
                                                                   .shiftName,
-                                                              '');
+                                                          '');
                                                         }
                                                         if (shiftController
                                                             .timerController.timerDuration
                                                             .value != Duration.zero) {
-                                                          shiftController.timerController.stopTimer();
+                                                          var startTime = DateTime.now().subtract(shiftController.timerController.timerDuration.value);
+                                                          var stopTime = DateTime.now();
+                                                          var elapsedTime = stopTime.difference(startTime);
                                                           print("Timer Send");
                                                           shiftController
                                                               .selectShiftDetails(context,
@@ -918,9 +920,8 @@ class _VendorMenuState extends State<VendorMenu>
                                                               shiftController
                                                                   .shiftsList[index]
                                                                   .shiftName,
-                                                              shiftController
-                                                                  .timerController
-                                                                  .elapsedTime);
+                                                              elapsedTime
+                                                          );
                                                         }
 
                                                       },

@@ -51,8 +51,8 @@ class OrderCustimizationController extends GetxController {
         strRestaurantsAddress.value = response!.data!.vendor!.mapAddress;
         strRestaurantImage.value = response!.data!.vendor!.image;
         strRestaurantModifier.value = response!.data!.vendor!.modifiers;
-        if(strRestaurantModifier.value == 1) {
-          print("call");
+        if(response!.data!.vendor!.modifiers == 1) {
+          print("call modifier");
           ModifierDataController _modifierDataController = Get.put(ModifierDataController());
         } else {
           print("no call");

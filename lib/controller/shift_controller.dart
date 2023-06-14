@@ -51,7 +51,7 @@ class ShiftController extends GetxController {
       Constants.onLoading(context);
       response = await RestClient(await RetroApi().dioData()).createShift(body);
       print('response ${response.toJson()}');
-      if (response.success) {
+      if (response.success == true) {
         Map<String, dynamic> res = response.msg as Map<String, dynamic>;
         ShiftModel shiftModel = ShiftModel.fromJson(res);
         prefs.setString(
@@ -61,7 +61,6 @@ class ShiftController extends GetxController {
         shiftCodeMain.value = shiftModel.shiftCode.toString();
         shiftNameMain.value = shiftModel.shiftName.toString();
         timerController.startTimer();
-
       } else {
         createButtonEnable.value = false;
         Constants.toastMessage(response.msg!.toString());
@@ -83,27 +82,27 @@ class ShiftController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
     String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
-    timerController.stopTimer();
     print("${timerController.elapsedTime}");
-    dynamic shiftTime = timerController.elapsedTime.toString();
+    var startTime = DateTime.now().subtract(timerController.timerDuration.value);
+    var stopTime = DateTime.now();
+    var elapsedTime = stopTime.difference(startTime);
     try {
       Map<String, dynamic> body = {
         "user_id": userId,
         "shift_code": shiftCode,
-        "shift_timer": shiftTime,
+        "shift_timer": elapsedTime,
       };
       Constants.onLoading(context);
       response = await RestClient(await RetroApi().dioData()).closeShift(body);
-      if (response.success) {
+      if (response.success == true) {
+        timerController.stopTimer();
         prefs.setString(Constants.shiftCode.toString(), '');
         prefs.setString(Constants.shiftName.toString(), '');
         shiftCodeMain.value = '';
         shiftNameMain.value = '';
         timerController.timerDuration.value = Duration.zero;
-        Constants.toastMessage(response.msg!.toString());
-      } else {
-        Constants.toastMessage(response.msg!);
       }
+      Constants.toastMessage(response.msg!.toString());
       Constants.hideDialog(context);
     } catch (error, stacktrace) {
       Constants.hideDialog(context);
@@ -196,16 +195,18 @@ class ShiftController extends GetxController {
     MsgResModel response;
     final prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString(Constants.loginUserId.toString()) ?? '';
+    print("timer $timer");
+
     Map<String, dynamic> body = {
       "shift_code": shiftCodeFunc,
       "user_id": userId,
       "shift_timer_old": timer,
     };
-    print("body select Shift ${body}");
     try {
       response = await RestClient(await RetroApi().dioData()).selectShift(body);
       // print('response select Shift function out ${response.toJson()}');
       if (response.success) {
+        timerController.stopTimer();
         Map<String, dynamic> res = response.msg as Map<String, dynamic>;
         ShiftModel shiftModel = ShiftModel.fromJson(res);
         prefs.setString(

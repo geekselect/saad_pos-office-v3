@@ -1741,7 +1741,6 @@ class _CartScreenState extends State<CartScreen> {
   Color primaryColor = Color(Constants.colorTheme);
   double totalAmount = 0.0;
   double subTotal = 0.0;
-
   //double originalSubAmount=0.0;
   DeliveryMethod selectMethod = DeliveryMethod.TAKEAWAY;
   ScheduleMethod scheduleMethod = ScheduleMethod.DELIVERNOW;
@@ -2239,7 +2238,7 @@ class _CartScreenState extends State<CartScreen> {
                               flex: 4,
                               fit: FlexFit.loose,
                               child: GestureDetector(
-                                onTap: (){
+                                onTap: _orderCustimizationController.strRestaurantModifier.value == 1 ? (){
                                   print(
                                       "ADDONS Only Dialog Modifiers");
                                   List<
@@ -2307,7 +2306,7 @@ class _CartScreenState extends State<CartScreen> {
                                       });
 
 
-                                },
+                                } : (){},
                                 child: Container(
                                   color: Colors.transparent,
                                   child: Column(
