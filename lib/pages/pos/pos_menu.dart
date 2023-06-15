@@ -117,8 +117,8 @@ class _PosMenuState extends State<PosMenu> {
   CartController _cartController = Get.find<CartController>();
   var _printerController = Get.put(PrinterController());
   List<SideBarGridTile> sidebarGridTileList = [];
-  final OrderHistoryController _orderHistoryMainController =
-      Get.put(OrderHistoryController());
+  // final OrderHistoryController _orderHistoryMainController =
+  //     Get.put(OrderHistoryController());
 
 
 
@@ -308,6 +308,7 @@ class _PosMenuState extends State<PosMenu> {
                                               _diningCartController.diningNotes;
                                           Navigator.pop(context);
                                         } else {
+                                          print("base eror ");
                                           print(baseModel.error);
                                         }
                                       } else {
@@ -638,6 +639,7 @@ class _PosMenuState extends State<PosMenu> {
               'autoPrintPOS', _autoPrinterController.autoPrint.value);
           sharedPrefs.setBool(
               'autoPrintKitchen', _autoPrinterController.autoPrint.value);
+          Get.deleteAll();
           Get.offAll(() => SelectionScreen());
           clearCaches();
         },
@@ -1016,6 +1018,7 @@ class _PosMenuState extends State<PosMenu> {
 
                                                                                                 _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
                                                                                                 if (snapshot.data!.data.bookedTable[index].status == 1) {
+                                                                                                  print("vjjjfvdj");
                                                                                                   Map<String, dynamic> param = {
                                                                                                     'vendor_id': '${int.parse(vendorId.toString())}',
                                                                                                     'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
@@ -1034,11 +1037,12 @@ class _PosMenuState extends State<PosMenu> {
                                                                                                     _diningCartController.notesController.text = _diningCartController.diningNotes;
                                                                                                     Navigator.pop(context);
                                                                                                   } else {
-                                                                                                    print("Error");
+                                                                                                    print("Error bbb");
                                                                                                     print(bookOrderModel.toJson());
                                                                                                     // print(baseModel.error);
                                                                                                   }
                                                                                                 } else {
+                                                                                                  print("nnnnn");
                                                                                                   Navigator.pop(context);
                                                                                                 }
                                                                                               },
@@ -1097,6 +1101,21 @@ class _PosMenuState extends State<PosMenu> {
                                                                     .userName = '';
                                                                 _cartController
                                                                     .notes = '';
+                                                                _diningCartController
+                                                                    .nameController
+                                                                    .text = _cartController
+                                                                    .nameController
+                                                                    .text;
+                                                                _diningCartController
+                                                                    .phoneNoController
+                                                                    .text = _cartController
+                                                                    .phoneNoController
+                                                                    .text;
+                                                                _diningCartController
+                                                                    .notesController
+                                                                    .text = _cartController
+                                                                    .notesController
+                                                                    .text;
                                                                 _cartController
                                                                         .nameController
                                                                         .text =
@@ -1112,19 +1131,40 @@ class _PosMenuState extends State<PosMenu> {
                                                                         .text =
                                                                     _cartController
                                                                         .notes;
+                                                                if(_cartController.diningValue == false){
+                                                                  _cartController
+                                                                      .nameController
+                                                                      .text =
+                                                                      _diningCartController
+                                                                          .nameController
+                                                                          .text;
+                                                                  _cartController
+                                                                      .phoneNoController
+                                                                      .text =
+                                                                      _diningCartController
+                                                                          .phoneNoController
+                                                                          .text;
+                                                                  _cartController
+                                                                      .notesController
+                                                                      .text =
+                                                                      _diningCartController
+                                                                          .notesController
+                                                                          .text;
+                                                                }
                                                               });
+
                                                             } else {
                                                               print(
                                                                   "new table select");
                                                               setState(() {
-                                                                if (_cartController
-                                                                        .cartMaster
-                                                                        ?.oldOrderId !=
-                                                                    null) {
-                                                                  _cartController
-                                                                          .cartMaster =
-                                                                      null;
-                                                                }
+                                                                // if (_cartController
+                                                                //         .cartMaster
+                                                                //         ?.oldOrderId !=
+                                                                //     null) {
+                                                                //   _cartController
+                                                                //           .cartMaster =
+                                                                //       null;
+                                                                // }
                                                                 _cartController
                                                                         .tableNumber =
                                                                     null;
@@ -1137,6 +1177,21 @@ class _PosMenuState extends State<PosMenu> {
                                                                     .diningUserMobileNumber = '';
                                                                 _diningCartController
                                                                     .diningNotes = '';
+                                                                _cartController
+                                                                    .nameController
+                                                                    .text =  _diningCartController
+                                                                    .nameController
+                                                                    .text;
+                                                                _cartController
+                                                                    .phoneNoController
+                                                                    .text =  _diningCartController
+                                                                    .phoneNoController
+                                                                    .text;
+                                                                _cartController
+                                                                    .notesController
+                                                                    .text = _diningCartController
+                                                                    .notesController
+                                                                    .text;
                                                                 _diningCartController
                                                                         .nameController
                                                                         .text =
@@ -1154,6 +1209,8 @@ class _PosMenuState extends State<PosMenu> {
                                                                         .diningNotes;
                                                               });
                                                             }
+                                                            print("mmm");
+
                                                           },
                                                           value: _cartController
                                                               .diningValue,

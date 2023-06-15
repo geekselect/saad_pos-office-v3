@@ -165,8 +165,8 @@ class Constants extends GetxController{
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.black54,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Color(Constants.colorTheme),
         textColor: Colors.white,
         fontSize: 16.0);
   }

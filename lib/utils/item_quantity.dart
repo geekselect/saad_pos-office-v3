@@ -37,7 +37,7 @@ class _ItemQuantityState extends State<ItemQuantity> {
                     await widget.btnFloatOnPressed();
                     _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
                     checkCartTotalItemQuantity();
-                    Constants.toastMessage('"${_cartController.quantity} Item added to cart"');
+                    // Constants.toastMessage('"${_cartController.quantity} Item added to cart"');
                     _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
                     // Get.back();
                     setState(() {
@@ -139,7 +139,7 @@ class _ItemQuantityState extends State<ItemQuantity> {
                                   await widget.btnMinusOnPressed();
                                   _cartController.cartItemQuantity.value=_cartController.cartMaster!.cart.length;
                                  checkCartTotalItemQuantity();
-                                  Constants.toastMessage('Item removed from cart');
+                                  // Constants.toastMessage('Item removed from cart');
                                   _cartController.refreshScreen.value=toggleBoolValue(_cartController.refreshScreen.value);
                                   setState(() {
 

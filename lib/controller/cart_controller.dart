@@ -34,6 +34,15 @@ class CartController extends GetxController{
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController notesController = TextEditingController();
+  @override
+  void onClose() {
+    if(cartMaster != null) {
+      cartMaster!.cart.clear();
+      cartMaster!.oldOrderId = 0;
+      cartMaster!.vendorId = 0;
+    }
+    super.onClose();
+  }
 
   String? appliedCouponName='';
 

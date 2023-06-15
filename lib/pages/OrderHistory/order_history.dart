@@ -1772,7 +1772,9 @@ class OrderHistory extends StatelessWidget {
   final CartController _cartController = Get.find<CartController>();
   final DiningCartController _diningCartController = Get.find<DiningCartController>();
   final PrinterController _printerController = Get.find<PrinterController>();
-  final OrderHistoryController _orderHistoryMainController = Get.find<OrderHistoryController>();
+  // final OrderHistoryController _orderHistoryMainController = Get.find<OrderHistoryController>();
+  final OrderHistoryController _orderHistoryMainController =
+  Get.put(OrderHistoryController());
   // final OrderCustimizationController _orderCustomizationController = Get.find<OrderCustimizationController>();
 
   @override
@@ -3204,10 +3206,21 @@ class OrderHistory extends StatelessWidget {
                                                                               Expanded(
                                                                                 child: ElevatedButton(
                                                                                   onPressed: () async {
+                                                                                    order
+                                                                                        .deliveryType ==
+                                                                                        "TAKEAWAY"
+                                                                                        ?
+                                                                                    _cartController
+                                                                                        .diningValue =
+                                                                                    false
+                                                                                        : _cartController
+                                                                                        .diningValue =
+                                                                                    true;
                                                                                     final prefs = await SharedPreferences.getInstance();
                                                                                     String vendorId =
                                                                                         prefs.getString(Constants.vendorId.toString()) ?? '';
                                                                                     if ((order.tableNo != null || order.tableNo != 0) && order.deliveryType == "DINING") {
+                                                                                      print("ASSSSSS");
                                                                                         Map<String, dynamic> param = {
                                                                                           'vendor_id':
                                                                                           int.parse(vendorId.toString()),
@@ -3351,17 +3364,6 @@ class OrderHistory extends StatelessWidget {
                                                                                       }
 
                                                                                     }
-                                                                                    order
-                                                                                        .deliveryType ==
-                                                                                        "TAKEAWAY"
-                                                                                        ?
-                                                                                    _cartController
-                                                                                        .diningValue =
-                                                                                    false
-                                                                                        : _cartController
-                                                                                        .diningValue =
-                                                                                    true;
-
                                                                                     Get
                                                                                         .to(() =>
                                                                                         PosMenu(

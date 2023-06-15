@@ -11,6 +11,7 @@ import 'package:pos/controller/shift_controller.dart';
 import 'package:pos/model/cart_master.dart' as cartMasterModel;
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/model/single_restaurants_details_model.dart' as rest;
+import 'package:pos/pages/OrderHistory/order_history.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
 import 'package:pos/printer/printer_controller.dart';
@@ -92,8 +93,6 @@ class _PosPaymentState extends State<PosPayment> {
     final TextEditingController posCashAmountController = TextEditingController();
     final TextEditingController posCardAmountController = TextEditingController();
   CartController _cartController = Get.find<CartController>();
-  OrderHistoryController _orderHistoryController =
-      Get.find<OrderHistoryController>();
   PrinterController _printerController = Get.find<PrinterController>();
   AutoPrinterController _autoPrinterController = Get.find<AutoPrinterController>();
 
@@ -5526,11 +5525,13 @@ class _PosPaymentState extends State<PosPayment> {
             : false;
         _cartController.cartMaster = null;
         _cartController.cartTotalQuantity.value = 0;
-        _orderHistoryController.callGetOrderHistoryList();
+        // _orderHistoryController.callGetOrderHistoryList();
 
         // Future.delayed(Duration(seconds: 3), () {
         Get.offAll(
           () => PosMenu(isDining: false),
+          //   Get.offAll(
+          // () => OrderHistory(),
         );
         // });
       } else {
