@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:pos/controller/cart_controller.dart';
@@ -144,6 +145,8 @@ class _PosMenuState extends State<PosMenu> {
   // }
 
   String vendorIdMain = '';
+
+
 
 
   int _getMenuItemCount(List<MenuCategory> _menuCategories) {
@@ -633,6 +636,7 @@ class _PosMenuState extends State<PosMenu> {
           }
           SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
           sharedPrefs.remove(Constants.isLoggedIn);
+
           _autoPrinterController.autoPrint.value = true;
           _autoPrinterController.autoPrintKitchen.value = true;
           sharedPrefs.setBool(
@@ -640,8 +644,10 @@ class _PosMenuState extends State<PosMenu> {
           sharedPrefs.setBool(
               'autoPrintKitchen', _autoPrinterController.autoPrint.value);
           Get.deleteAll();
-          Get.offAll(() => SelectionScreen());
+          DefaultCacheManager manager =  DefaultCacheManager();
+          manager.emptyCache();
           clearCaches();
+          Get.offAll(() => SelectionScreen());
         },
       ),
     ];
@@ -2656,11 +2662,11 @@ class _PosMenuState extends State<PosMenu> {
                                                                           decoration:
                                                                               BoxDecoration(
                                                                             image: DecorationImage(
-                                                                                // image: CachedNetworkImageProvider(
-                                                                                //     singleMenu
-                                                                                //         .menu!
-                                                                                //         .image),
-                                                                                image: NetworkImage(singleMenu.menu!.image),
+                                                                                image: CachedNetworkImageProvider(
+                                                                                    singleMenu
+                                                                                        .menu!
+                                                                                        .image),
+                                                                                // image: NetworkImage(singleMenu.menu!.image),
                                                                                 fit: BoxFit.fill),
                                                                             borderRadius:
                                                                                 BorderRadius.circular(12.0),

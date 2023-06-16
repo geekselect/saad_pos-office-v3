@@ -112,7 +112,7 @@ class Constants extends GetxController{
   static String kitchenIp = 'kitchenIp';
   static String kitchenPort = 'kitchenPort';
   static String vendorName = 'vendorName';
-  static String baseLink = 'https://v4.ozfoodz.com.au/api';
+  static String baseLink = 'https://v3.ozfoodz.com.au/api';
   static String vendorBaseLink = '$baseLink/kitchen/';
   static String vendorId = 'vendorId';
   static String shiftName = 'auto_generated_shift_code';
@@ -161,14 +161,15 @@ class Constants extends GetxController{
   );
 
   static toastMessage(String msg) {
+
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 3,
         backgroundColor: Color(Constants.colorTheme),
         textColor: Colors.white,
         fontSize: 16.0);
+    // Toast.show(msg, duration: 8, gravity: 0);
   }
 
   static onLoading(BuildContext context) {

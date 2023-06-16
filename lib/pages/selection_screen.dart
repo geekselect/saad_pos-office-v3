@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos/common/theme_helper.dart';
 import 'package:pos/controller/auth_controller.dart';
+import 'package:pos/controller/auto_printer_controller.dart';
+import 'package:pos/controller/cart_controller.dart';
+import 'package:pos/controller/dining_cart_controller.dart';
+import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/pages/auth/kichen_login.dart';
 import 'package:pos/pages/auth/login_page.dart';
 import 'package:pos/utils/constants.dart';
@@ -23,6 +27,11 @@ class SelectionScreen extends StatefulWidget {
 }
 
 class _SelectionScreenState extends State<SelectionScreen> {
+  final OrderCustimizationController _orderCustimizationController=  Get.put(OrderCustimizationController());
+  final CartController _cartController=  Get.put(CartController());
+  final DiningCartController _diningController=  Get.put(DiningCartController());
+  final AutoPrinterController _autoPrinterController=  Get.put(AutoPrinterController());
+  final AuthController _authController=   Get.put(AuthController());
   double _headerHeight = 250;
   List<MyCard> orderList=[
     MyCard(isActive: false,),

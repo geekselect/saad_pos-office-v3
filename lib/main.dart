@@ -56,12 +56,6 @@ void main() async {
     CustomImageCache();
   }
   await GetStorage.init();
-  Get.put(OrderCustimizationController());
-  Get.put(CartController());
-  Get.put(DiningCartController());
-  Get.put(OrderController());
-  Get.put(AuthController());
-  Get.put(AutoPrinterController());
   final prefs = await SharedPreferences.getInstance();
   runApp(LoginUiApp(
     sharedPreferences: prefs,
@@ -79,7 +73,8 @@ class LoginUiApp extends StatefulWidget {
 
 class _LoginUiAppState extends State<LoginUiApp> {
   Future<FirebaseApp>? fbApp;
-  OrderController orderController = Get.find<OrderController>();
+
+  OrderController orderController =   Get.put(OrderController());
   @override
   void initState() {
     if (kIsWeb) {
@@ -146,6 +141,7 @@ class _LoginUiAppState extends State<LoginUiApp> {
           future: fbApp,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+
               if (widget.sharedPreferences.getBool(Constants.isLoggedIn) ??
                   false) {
                 return PosMenu(isDining: false);
