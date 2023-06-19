@@ -2282,8 +2282,8 @@ class _CartScreenState extends State<CartScreen> {
                                                   .circular(20)
                                           ),
                                           content: Container(
-                                            height: height * 0.5,
-                                            width: width * 0.3,
+                                            height: height * 0.6,
+                                            width: width * 0.4,
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius
                                                     .circular(20)
