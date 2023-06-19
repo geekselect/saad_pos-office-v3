@@ -733,620 +733,1234 @@ class ReportsByDate extends StatelessWidget {
                               child:  _reportByDateController.reportByDateModelData.value.data!.isNotEmpty ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(height: 10,),
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: Container(
-                                        padding: EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius: BorderRadius.circular(5)
-                                        ),
-                                        child: IntrinsicWidth(
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.calendar_today_outlined, color: Colors.white, size: 16,),
-                                              _reportByDateController.reportByDateModelData.value.data!.isNotEmpty ? Text(" From : ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.first.date!)} to ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.last.date!)}",
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold),) : Text("No Data",  style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold), ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 10,),
                                     Expanded(
-                                      child: ListView.builder(
-                                        itemCount: _reportByDateController.reportByDateModelData.value.data!.length + 1,
-                                        itemBuilder: (context, index) {
-                                          if(index == _reportByDateController.reportByDateModelData.value.data!.length){
-                                            return Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(height: 10,),
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(2),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black,
-                                                        borderRadius: BorderRadius.circular(5)
-                                                    ),
-                                                    child: IntrinsicWidth(
-                                                      child: Center(
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(Icons.money, color: Colors.white, size: 16,),
-                                                            _reportByDateController.reportByDateModelData.value.data!.isNotEmpty ? Text(" Total Item Sold (From : ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.first.date!)}  to ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.last.date!)})",
-                                                              style: const TextStyle(
-                                                                color: Colors.white,
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.bold),
-                                                              textAlign: TextAlign.center,
-
-                                                            )  : Text("No Data",  style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold), ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 10,),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: Container(
+                                              padding: EdgeInsets.all(2),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.black,
+                                                  borderRadius: BorderRadius.circular(5)
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.calendar_today_outlined, color: Colors.white, size: 16,),
+                                                    _reportByDateController.reportByDateModelData.value.data!.isNotEmpty ? Text(" From : ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.first.date!)} to ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.last.date!)}",
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight.bold),) : Text("No Data",  style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold), ),
+                                                  ],
                                                 ),
-                                                SizedBox(height: 10),
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey.withOpacity(0.3),
-                                                          spreadRadius: 5,
-                                                          blurRadius: 7,
-                                                          offset: Offset(0, 6), // changes position of shadow
-                                                        ),
-                                                      ],
-                                                      borderRadius: BorderRadius
-                                                          .circular(10)
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10,),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemCount: _reportByDateController.reportByDateModelData.value.data!.length + 1,
+                                              itemBuilder: (context, index) {
+                                                if(index == _reportByDateController.reportByDateModelData.value.data!.length){
+                                                  return Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children:  [
-                                                          Text("Total Sum", style: TextStyle(
-                                                              color: Color(Constants.colorTheme)
-                                                          ),),
-                                                          Text("Total Amount", style: TextStyle(
-                                                              color: Color(Constants.colorTheme)
-                                                          ),),
-                                                        ],
-                                                      ),
-                                                      CustomNewRow("Total Sum Pos Cash", _reportByDateController.reportByDateModelData.value.sumPosCash!.toStringAsFixed(2)),
-                                                      CustomNewRow("Total Sum Pos Card", _reportByDateController.reportByDateModelData.value.sumPosCard!.toStringAsFixed(2)),
-                                                      CustomNewRow("Total Sum Pos", double.parse(_reportByDateController.reportByDateModelData.value.sumPosTotal!.toString()).toStringAsFixed(2)),
-                                                      CustomNewRow("Total Orders", _reportByDateController.reportByDateModelData.value.sumTotalOrders!.toString()),
-                                                      CustomNewRow("Total TakeAway Orders", _reportByDateController.reportByDateModelData.value.sumTotalTakeaway!.toString()),
-                                                      CustomNewRow("Total Dining Orders", _reportByDateController.reportByDateModelData.value.sumTotalDining!.toString()),
-                                                      CustomNewRow("Total Discounts", double.parse(_reportByDateController.reportByDateModelData.value.sumTotalDiscounts!.toString()).toStringAsFixed(2)),
-                                                      CustomNewRow("Total InComplete", _reportByDateController.reportByDateModelData.value.sunTotalIncomplete!.toString()),
-                                                      CustomNewRow("Total Cancelled", _reportByDateController.reportByDateModelData.value.sumTotalCanceled!.toString()),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: ElevatedButton(
-                                                      style: ButtonStyle(
-                                                        // backgroundColor: MaterialStateProperty.all<Color>(Color(CO)),
-                                                        // set the height to 50
-                                                        fixedSize: MaterialStateProperty.all<Size>(const Size(120, 30)),
-                                                      ),
-                                                      onPressed: () {
-                                                        Get.dialog(
-                                                          AlertDialog(
-                                                            title: Text('Print Confirmation'),
-                                                            content: Text('Do you want to print with items?'),
-                                                            actions: [
-                                                              TextButton(
-                                                                onPressed: () {
-                                                                  if (_printerController.printerModel.value.ipPos !=
-                                                                      null) {
-                                                                    print("POS ADDED");
-                                                                    if (_printerController
-                                                                        .printerModel.value.ipPos ==
-                                                                        '' &&
-                                                                        _printerController
-                                                                            .printerModel.value.portPos ==
-                                                                            '' ||
-                                                                        _printerController
-                                                                            .printerModel.value.ipPos ==
-                                                                            null &&
-                                                                            _printerController
-                                                                                .printerModel.value.portPos ==
-                                                                                null) {
-                                                                      print("pos ip empty");
-                                                                    } else {
-                                                                      _reportByDateController.testPrintPOS(
-                                                                          _printerController
-                                                                              .printerModel.value.ipPos!,
-                                                                          int.parse(_printerController
-                                                                              .printerModel.value.portPos!),
-                                                                          context,
-                                                                          true
-                                                                      );
-                                                                    }
-                                                                  }
-                                                                  Get.back();
-                                                                },
-                                                                child: Text('Yes'),
+                                                      SizedBox(height: 10,),
+                                                      Align(
+                                                        alignment: Alignment.center,
+                                                        child: Container(
+                                                          padding: EdgeInsets.all(2),
+                                                          decoration: BoxDecoration(
+                                                              color: Colors.black,
+                                                              borderRadius: BorderRadius.circular(5)
+                                                          ),
+                                                          child: IntrinsicWidth(
+                                                            child: Center(
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(Icons.money, color: Colors.white, size: 16,),
+                                                                  _reportByDateController.reportByDateModelData.value.data!.isNotEmpty ? Text(" Total Item Sold (From : ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.first.date!)}  to ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data!.last.date!)})",
+                                                                    style: const TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.bold),
+                                                                    textAlign: TextAlign.center,
+
+                                                                  )  : Text("No Data",  style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold), ),
+                                                                ],
                                                               ),
-                                                              TextButton(
-                                                                onPressed: () {
-                                                                  if (_printerController.printerModel.value.ipPos !=
-                                                                      null) {
-                                                                    print("POS ADDED");
-                                                                    if (_printerController
-                                                                        .printerModel.value.ipPos ==
-                                                                        '' &&
-                                                                        _printerController
-                                                                            .printerModel.value.portPos ==
-                                                                            '' ||
-                                                                        _printerController
-                                                                            .printerModel.value.ipPos ==
-                                                                            null &&
-                                                                            _printerController
-                                                                                .printerModel.value.portPos ==
-                                                                                null) {
-                                                                      print("pos ip empty");
-                                                                    } else {
-                                                                      _reportByDateController.testPrintPOS(
-                                                                          _printerController
-                                                                              .printerModel.value.ipPos!,
-                                                                          int.parse(_printerController
-                                                                              .printerModel.value.portPos!),
-                                                                          context,
-                                                                          false
-                                                                      );
-                                                                    }
-                                                                  }
-                                                                  Get.back();
-                                                                },
-                                                                child: Text('No'),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.grey.withOpacity(0.3),
+                                                                spreadRadius: 5,
+                                                                blurRadius: 7,
+                                                                offset: Offset(0, 6), // changes position of shadow
                                                               ),
                                                             ],
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Text("All Report", style: TextStyle(fontSize: 16))),
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                              ],
-                                            );
-                                          } else {
-                                            return Container(
-                                              margin: EdgeInsets.all(4),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 10,),
-                                                  Align(
-                                                    alignment: Alignment.center,
-                                                    child: Container(
-                                                      padding: EdgeInsets.all(2),
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.black,
-                                                          borderRadius: BorderRadius
-                                                              .circular(5)
-                                                      ),
-                                                      child: IntrinsicWidth(
-                                                        child: Row(
+                                                            borderRadius: BorderRadius
+                                                                .circular(10)
+                                                        ),
+                                                        child: Column(
                                                           children: [
-                                                            Icon(Icons
-                                                                .calendar_today_outlined,
-                                                              color: Colors.white,
-                                                              size: 16,),
-                                                            Text(
-                                                                " Date ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data![0].date!)} (${_reportByDateController.reportByDateModelData.value.data![0].shiftName.toString()})",
-                                                              // " Date ${DateFormat(
-                                                              //     'yyyy-MM-dd')
-                                                              //     .format(
-                                                              //     _reportByDateController
-                                                              //         .reportByDateModelData
-                                                              //         .value
-                                                              //         .data![index]
-                                                              //         .date!)} (${_reportByDateController.reportByDateModelData.value.data![index].shiftName.toString()})",
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight
-                                                                      .bold),),
+                                                            // Row(
+                                                            //                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            //                                                               children:  [
+                                                            //                                                                 Text("Total Product Sale",style: TextStyle(
+                                                            //                                                                   color: Color(
+                                                            //                                                                       Constants
+                                                            //                                                                           .colorTheme),
+                                                            //                                                                   fontSize: 16,
+                                                            //                                                                   fontWeight: FontWeight
+                                                            //                                                                       .w600,
+                                                            //                                                                 ),),
+                                                            //                                                                 Text("Total Quantity", style: TextStyle(
+                                                            //                                                                   color: Color(
+                                                            //                                                                       Constants
+                                                            //                                                                           .colorTheme),
+                                                            //                                                                   fontSize: 16,
+                                                            //                                                                   fontWeight: FontWeight
+                                                            //                                                                       .w600,
+                                                            //                                                                 ),),
+                                                            //                                                               ],
+                                                            //                                                             ),
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children:  [
+                                                                Text("Total Product Sale", style: TextStyle(
+                                                                    color: Color(Constants.colorTheme)
+                                                                ),),
+                                                                Text("Total Quantity", style: TextStyle(
+                                                                    color: Color(Constants.colorTheme)
+                                                                ),),
+                                                              ],
+                                                            ),
+                                                            ListView.builder(
+                                                                shrinkWrap: true,
+                                                                physics: ClampingScrollPhysics(),
+                                                                padding: EdgeInsets.zero,
+                                                                itemCount: _reportByDateController.reportByDateModelData.value.totalItemSold!.length,
+                                                                itemBuilder: (BuildContext context, int index) {
+                                                                  TotalItemSold totalItemSold = _reportByDateController.reportByDateModelData.value.totalItemSold![index];
+                                                                  return Padding(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 2),
+                                                                    child: Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                      children: [
+                                                                        Text(
+                                                                          "${totalItemSold.itemName.toString()}",
+                                                                          style: TextStyle(
+                                                                              color: Colors.black, fontSize: 14),
+                                                                        ),
+                                                                        Text(
+                                                                          "${totalItemSold.quantity.toString()}",
+                                                                          style: TextStyle(
+                                                                              color: Colors.black, fontSize: 14),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                }),
                                                           ],
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10,),
-                                                  Container(
-                                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                                                    margin: EdgeInsets.symmetric(
-                                                        vertical: 5),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(0.3),
-                                                            spreadRadius: 5,
-                                                            blurRadius: 7,
-                                                            offset: Offset(0,
-                                                                6), // changes position of shadow
-                                                          ),
-                                                        ],
-                                                        borderRadius: BorderRadius
-                                                            .circular(10)),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        Text(
-                                                          '${_reportByDateController
-                                                              .reportByDateModelData
-                                                              .value.data![index]
-                                                              .posCash!.name
-                                                              .toString()}',
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight
-                                                                  .w700,
-                                                              fontSize: 16),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.grey.withOpacity(0.3),
+                                                                spreadRadius: 5,
+                                                                blurRadius: 7,
+                                                                offset: Offset(0, 6), // changes position of shadow
+                                                              ),
+                                                            ],
+                                                            borderRadius: BorderRadius
+                                                                .circular(10)
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Column(
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Row(
-                                                              children: const [
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Pos Card",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Pos Cash",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Sale",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Takeaway",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Dining",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Incomplete",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Cancelled",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Discounts",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Total Orders",
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w600),
-                                                                    ),
-                                                                  ),
-                                                                ),
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children:  [
+                                                                Text("Total Sum", style: TextStyle(
+                                                                    color: Color(Constants.colorTheme)
+                                                                ),),
+                                                                Text("Total Amount", style: TextStyle(
+                                                                    color: Color(Constants.colorTheme)
+                                                                ),),
                                                               ],
                                                             ),
-                                                            SizedBox(height: 10),
-                                                            Row(children: [
-
-                                                              Expanded(
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          double
-                                                                              .parse(
-                                                                              _reportByDateController
-                                                                                  .reportByDateModelData
-                                                                                  .value
-                                                                                  .data![index]
-                                                                                  .posCard!
-                                                                                  .amount!
-                                                                                  .toString())
-                                                                              .toStringAsFixed(
-                                                                              2)))),
-                                                              Expanded(
-                                                                child: Center(
-                                                                  child: Text(
-
-                                                                      double
-                                                                          .parse(
-                                                                          _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value
-                                                                              .data![index]
-                                                                              .posCash!
-                                                                              .amount!
-                                                                              .toString())
-                                                                          .toStringAsFixed(
-                                                                          2)),
+                                                            CustomNewRow("Total Sum Pos Cash", _reportByDateController.reportByDateModelData.value.sumPosCash!.toStringAsFixed(2)),
+                                                            CustomNewRow("Total Sum Pos Card", _reportByDateController.reportByDateModelData.value.sumPosCard!.toStringAsFixed(2)),
+                                                            CustomNewRow("Total Sum Pos", double.parse(_reportByDateController.reportByDateModelData.value.sumPosTotal!.toString()).toStringAsFixed(2)),
+                                                            CustomNewRow("Total Orders", _reportByDateController.reportByDateModelData.value.sumTotalOrders!.toString()),
+                                                            CustomNewRow("Total TakeAway Orders", _reportByDateController.reportByDateModelData.value.sumTotalTakeaway!.toString()),
+                                                            CustomNewRow("Total Dining Orders", _reportByDateController.reportByDateModelData.value.sumTotalDining!.toString()),
+                                                            CustomNewRow("Total Discounts", double.parse(_reportByDateController.reportByDateModelData.value.sumTotalDiscounts!.toString()).toStringAsFixed(2)),
+                                                            CustomNewRow("Total InComplete", _reportByDateController.reportByDateModelData.value.sunTotalIncomplete!.toString()),
+                                                            CustomNewRow("Total Cancelled", _reportByDateController.reportByDateModelData.value.sumTotalCanceled!.toString()),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment.center,
+                                                        child: ElevatedButton(
+                                                            style: ButtonStyle(
+                                                              // backgroundColor: MaterialStateProperty.all<Color>(Color(CO)),
+                                                              // set the height to 50
+                                                              fixedSize: MaterialStateProperty.all<Size>(const Size(120, 30)),
+                                                            ),
+                                                            onPressed: () {
+                                                              Get.dialog(
+                                                                AlertDialog(
+                                                                  title: Text('Print Confirmation'),
+                                                                  content: Text('Do you want to print with items?'),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed: () {
+                                                                        if (_printerController.printerModel.value.ipPos !=
+                                                                            null) {
+                                                                          print("POS ADDED");
+                                                                          if (_printerController
+                                                                              .printerModel.value.ipPos ==
+                                                                              '' &&
+                                                                              _printerController
+                                                                                  .printerModel.value.portPos ==
+                                                                                  '' ||
+                                                                              _printerController
+                                                                                  .printerModel.value.ipPos ==
+                                                                                  null &&
+                                                                                  _printerController
+                                                                                      .printerModel.value.portPos ==
+                                                                                      null) {
+                                                                            print("pos ip empty");
+                                                                          } else {
+                                                                            _reportByDateController.testPrintPOS(
+                                                                                _printerController
+                                                                                    .printerModel.value.ipPos!,
+                                                                                int.parse(_printerController
+                                                                                    .printerModel.value.portPos!),
+                                                                                context,
+                                                                                true
+                                                                            );
+                                                                          }
+                                                                        }
+                                                                        Get.back();
+                                                                      },
+                                                                      child: Text('Yes'),
+                                                                    ),
+                                                                    TextButton(
+                                                                      onPressed: () {
+                                                                        if (_printerController.printerModel.value.ipPos !=
+                                                                            null) {
+                                                                          print("POS ADDED");
+                                                                          if (_printerController
+                                                                              .printerModel.value.ipPos ==
+                                                                              '' &&
+                                                                              _printerController
+                                                                                  .printerModel.value.portPos ==
+                                                                                  '' ||
+                                                                              _printerController
+                                                                                  .printerModel.value.ipPos ==
+                                                                                  null &&
+                                                                                  _printerController
+                                                                                      .printerModel.value.portPos ==
+                                                                                      null) {
+                                                                            print("pos ip empty");
+                                                                          } else {
+                                                                            _reportByDateController.testPrintPOS(
+                                                                                _printerController
+                                                                                    .printerModel.value.ipPos!,
+                                                                                int.parse(_printerController
+                                                                                    .printerModel.value.portPos!),
+                                                                                context,
+                                                                                false
+                                                                            );
+                                                                          }
+                                                                        }
+                                                                        Get.back();
+                                                                      },
+                                                                      child: Text('No'),
+                                                                    ),
+                                                                  ],
                                                                 ),
+                                                              );
+                                                            },
+                                                            child: Text("All Report", style: TextStyle(fontSize: 16))),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 30,
+                                                      ),
+
+                                                      ///List
+                                                      // return Column(
+                                                      //                                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                                      //                                                   children: [
+                                                      //                                                     SizedBox(height: 10),
+                                                      //                                                     Text(
+                                                      //                                                       "Total Item Sold",
+                                                      //                                                       style: TextStyle(
+                                                      //                                                           color: Colors.red.shade400,
+                                                      //                                                           fontSize: 18,
+                                                      //                                                           fontWeight: FontWeight.w600),
+                                                      //                                                     ),
+                                                      //                                                     ListView.builder(
+                                                      //                                                         shrinkWrap: true,
+                                                      //                                                         physics: ClampingScrollPhysics(),
+                                                      //                                                         padding: EdgeInsets.zero,
+                                                      //                                                         itemCount: data.totalItemSold!.length,
+                                                      //                                                         itemBuilder: (BuildContext context, int index) {
+                                                      //                                                           TotalItemSold totalItemSold = data.totalItemSold![index];
+                                                      //                                                           return Container(
+                                                      //                                                             color: Colors.white,
+                                                      //                                                             margin: EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                                                      //                                                             child: ListTile(
+                                                      //                                                               dense: true,
+                                                      //                                                               contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                                      //                                                               title: Row(
+                                                      //                                                                 mainAxisAlignment: MainAxisAlignment.start,
+                                                      //                                                                 children: [
+                                                      //                                                                   Expanded(
+                                                      //                                                                     child: Text(
+                                                      //                                                                       "Item Name: ${totalItemSold.itemName.toString()}",
+                                                      //                                                                       style: TextStyle(
+                                                      //                                                                           color: Colors.black, fontSize: 14),
+                                                      //                                                                     ),
+                                                      //                                                                   ),
+                                                      //                                                                   Expanded(
+                                                      //                                                                     flex: 2,
+                                                      //                                                                     child: Text(
+                                                      //                                                                       "Quantity : ${totalItemSold.quantity.toString()}",
+                                                      //                                                                       style: TextStyle(
+                                                      //                                                                           color: Colors.black, fontSize: 14),
+                                                      //                                                                     ),
+                                                      //                                                                   ),
+                                                      //
+                                                      //                                                                 ],
+                                                      //                                                               ),
+                                                      //                                                             ), // title: Text("List item $index")),
+                                                      //                                                           );
+                                                      //                                                         }),
+                                                      //                                                     SizedBox(height: 10),
+                                                      //                                                   ],
+                                                      //                                                 );
+                                                    ],
+                                                  );
+                                                  // return Column(
+                                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                                  //   children: [
+                                                  //     SizedBox(height: 10),
+                                                  //     Text(
+                                                  //       "Total Item Sold",
+                                                  //       style: TextStyle(
+                                                  //           color: Colors.red.shade400,
+                                                  //           fontSize: 18,
+                                                  //           fontWeight: FontWeight.w600),
+                                                  //     ),
+                                                  //     ListView.builder(
+                                                  //         shrinkWrap: true,
+                                                  //         physics: ClampingScrollPhysics(),
+                                                  //         padding: EdgeInsets.zero,
+                                                  //         itemCount: _reportByDateController.reportByDateModelData.value.totalItemSold!.length,
+                                                  //         itemBuilder: (BuildContext context, int index) {
+                                                  //           TotalItemSold totalItemSold = _reportByDateController.reportByDateModelData.value.totalItemSold![index];
+                                                  //           return Container(
+                                                  //             color: Colors.white,
+                                                  //             margin: EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                                                  //             child: ListTile(
+                                                  //               dense: true,
+                                                  //               contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                                  //               title: Row(
+                                                  //                 mainAxisAlignment: MainAxisAlignment.start,
+                                                  //                 children: [
+                                                  //                   Expanded(
+                                                  //                     child: Text(
+                                                  //                       "Item Name: ${totalItemSold.itemName.toString()}",
+                                                  //                       style: TextStyle(
+                                                  //                           color: Colors.black, fontSize: 14),
+                                                  //                     ),
+                                                  //                   ),
+                                                  //                   Expanded(
+                                                  //                     flex: 2,
+                                                  //                     child: Text(
+                                                  //                       "Quantity : ${totalItemSold.quantity.toString()}",
+                                                  //                       style: TextStyle(
+                                                  //                           color: Colors.black, fontSize: 14),
+                                                  //                     ),
+                                                  //                   ),
+                                                  //
+                                                  //                 ],
+                                                  //               ),
+                                                  //             ), // title: Text("List item $index")),
+                                                  //           );
+                                                  //         }),
+                                                  //     SizedBox(height: 10),
+                                                  //   ],
+                                                  // );
+                                                } else {
+                                                  return Container(
+                                                    margin: EdgeInsets.all(4),
+                                                    child: Column(
+                                                      children: [
+                                                        SizedBox(height: 10,),
+                                                        Align(
+                                                          alignment: Alignment.center,
+                                                          child: Container(
+                                                            padding: EdgeInsets.all(2),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors.black,
+                                                                borderRadius: BorderRadius
+                                                                    .circular(5)
+                                                            ),
+                                                            child: IntrinsicWidth(
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(Icons
+                                                                      .calendar_today_outlined,
+                                                                    color: Colors.white,
+                                                                    size: 16,),
+                                                                  Text(
+                                                                      " Date ${DateFormat('yyyy-MM-dd').format(_reportByDateController.reportByDateModelData.value.data![0].date!)} (${_reportByDateController.reportByDateModelData.value.data![0].shiftName.toString()})",
+                                                                    // " Date ${DateFormat(
+                                                                    //     'yyyy-MM-dd')
+                                                                    //     .format(
+                                                                    //     _reportByDateController
+                                                                    //         .reportByDateModelData
+                                                                    //         .value
+                                                                    //         .data![index]
+                                                                    //         .date!)} (${_reportByDateController.reportByDateModelData.value.data![index].shiftName.toString()})",
+                                                                    style: const TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight
+                                                                            .bold),),
+                                                                ],
                                                               ),
-                                                              Expanded(
-                                                                child: Center(
-                                                                    child: Text(
-                                                                        double
-                                                                            .parse(
-                                                                            _reportByDateController
-                                                                                .reportByDateModelData
-                                                                                .value
-                                                                                .data![index]
-                                                                                .posTotalSale!
-                                                                                .amount!
-                                                                                .toString())
-                                                                            .toStringAsFixed(
-                                                                            2))),),
-                                                              Expanded(
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value
-                                                                              .data![index]
-                                                                              .orderPlaced!
-                                                                              .totalTakeaway
-                                                                              .toString()))),
-                                                              Expanded(
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value
-                                                                              .data![index]
-                                                                              .orderPlaced!
-                                                                              .totalDining
-                                                                              .toString()))),
-                                                              Expanded(
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value
-                                                                              .data![index]
-                                                                              .orderPlaced!
-                                                                              .totalIncomplete
-                                                                              .toString()))),
-                                                              Expanded(
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value
-                                                                              .data![index]
-                                                                              .orderPlaced!
-                                                                              .totalCanceled
-                                                                              .toString()))),
-                                                              Expanded(
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          double
-                                                                              .parse(
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                                          margin: EdgeInsets.symmetric(
+                                                              vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.grey
+                                                                      .withOpacity(0.3),
+                                                                  spreadRadius: 5,
+                                                                  blurRadius: 7,
+                                                                  offset: Offset(0,
+                                                                      6), // changes position of shadow
+                                                                ),
+                                                              ],
+                                                              borderRadius: BorderRadius
+                                                                  .circular(10)),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(
+                                                                '${_reportByDateController
+                                                                    .reportByDateModelData
+                                                                    .value.data![index]
+                                                                    .posCash!.name
+                                                                    .toString()}',
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight
+                                                                        .w700,
+                                                                    fontSize: 16),
+                                                              ),
+                                                              SizedBox(height: 10),
+                                                              Column(
+                                                                children: [
+                                                                  Row(
+                                                                    children: const [
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Pos Card",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Pos Cash",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Sale",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Takeaway",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Dining",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Incomplete",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Cancelled",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Discounts",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Center(
+                                                                          child: Text(
+                                                                            "Total Orders",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight
+                                                                                    .w600),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(height: 10),
+                                                                  Row(children: [
+
+                                                                    Expanded(
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                                double
+                                                                                    .parse(
+                                                                                    _reportByDateController
+                                                                                        .reportByDateModelData
+                                                                                        .value
+                                                                                        .data![index]
+                                                                                        .posCard!
+                                                                                        .amount!
+                                                                                        .toString())
+                                                                                    .toStringAsFixed(
+                                                                                    2)))),
+                                                                    Expanded(
+                                                                      child: Center(
+                                                                        child: Text(
+
+                                                                            double
+                                                                                .parse(
+                                                                                _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value
+                                                                                    .data![index]
+                                                                                    .posCash!
+                                                                                    .amount!
+                                                                                    .toString())
+                                                                                .toStringAsFixed(
+                                                                                2)),
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Center(
+                                                                          child: Text(
+                                                                              double
+                                                                                  .parse(
+                                                                                  _reportByDateController
+                                                                                      .reportByDateModelData
+                                                                                      .value
+                                                                                      .data![index]
+                                                                                      .posTotalSale!
+                                                                                      .amount!
+                                                                                      .toString())
+                                                                                  .toStringAsFixed(
+                                                                                  2))),),
+                                                                    Expanded(
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                                _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value
+                                                                                    .data![index]
+                                                                                    .orderPlaced!
+                                                                                    .totalTakeaway
+                                                                                    .toString()))),
+                                                                    Expanded(
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                                _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value
+                                                                                    .data![index]
+                                                                                    .orderPlaced!
+                                                                                    .totalDining
+                                                                                    .toString()))),
+                                                                    Expanded(
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                                _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value
+                                                                                    .data![index]
+                                                                                    .orderPlaced!
+                                                                                    .totalIncomplete
+                                                                                    .toString()))),
+                                                                    Expanded(
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                                _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value
+                                                                                    .data![index]
+                                                                                    .orderPlaced!
+                                                                                    .totalCanceled
+                                                                                    .toString()))),
+                                                                    Expanded(
+                                                                        child: Center(
+                                                                            child: Text(
+                                                                                double
+                                                                                    .parse(
+                                                                                    _reportByDateController
+                                                                                        .reportByDateModelData
+                                                                                        .value
+                                                                                        .data![index]
+                                                                                        .orderPlaced!
+                                                                                        .totalDiscounts
+                                                                                        .toString())
+                                                                                    .toStringAsFixed(
+                                                                                    2)))),
+                                                                    Expanded(
+                                                                      child: Center(
+                                                                          child: Text(
                                                                               _reportByDateController
                                                                                   .reportByDateModelData
                                                                                   .value
                                                                                   .data![index]
                                                                                   .orderPlaced!
-                                                                                  .totalDiscounts
-                                                                                  .toString())
-                                                                              .toStringAsFixed(
-                                                                              2)))),
-                                                              Expanded(
-                                                                child: Center(
-                                                                    child: Text(
-                                                                        _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value
-                                                                            .data![index]
-                                                                            .orderPlaced!
-                                                                            .totalOrders
-                                                                            .toString())),),
-                                                            ]),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10,),
-                                                  Align(
-                                                    alignment: Alignment.center,
-                                                    child: Container(
-                                                      padding: EdgeInsets.all(2),
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.black,
-                                                          borderRadius: BorderRadius
-                                                              .circular(5)
-                                                      ),
-                                                      child: IntrinsicWidth(
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset("assets/images/fork.png", color: Colors.white, width: 15, height: 15,),
-                                                            SizedBox(width: 5,),
-                                                            Text("Orders ${DateFormat(
-                                                                'yyyy-MM-dd')
-                                                                .format(
-                                                                _reportByDateController
-                                                                    .reportByDateModelData
-                                                                    .value
-                                                                    .data![index]
-                                                                    .date!)} (${_reportByDateController.reportByDateModelData.value.data![index].shiftName.toString()})",
-                                                              style: const TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight
-                                                                      .bold),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10,),
-                                                  constraints.width > 650 ? Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 3,
-                                                        child: Container(
-                                                          height: Get.height / 4,
-                                                          padding: EdgeInsets.symmetric(
-                                                              vertical: 16,
-                                                              horizontal: 16),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.grey
-                                                                    .withOpacity(0.3),
-                                                                spreadRadius: 5,
-                                                                blurRadius: 7,
-                                                                offset: Offset(0, 6),
+                                                                                  .totalOrders
+                                                                                  .toString())),),
+                                                                  ]),
+                                                                ],
                                                               ),
                                                             ],
-                                                            borderRadius: BorderRadius
-                                                                .circular(15),
                                                           ),
-                                                          child: _reportByDateController
-                                                              .reportByDateModelData
-                                                              .value.data![index]
-                                                              .orders!.isNotEmpty ? SingleChildScrollView(
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment
-                                                                      .spaceBetween,
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        Align(
+                                                          alignment: Alignment.center,
+                                                          child: Container(
+                                                            padding: EdgeInsets.all(2),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors.black,
+                                                                borderRadius: BorderRadius
+                                                                    .circular(5)
+                                                            ),
+                                                            child: IntrinsicWidth(
+                                                              child: Row(
+                                                                children: [
+                                                                  Image.asset("assets/images/fork.png", color: Colors.white, width: 15, height: 15,),
+                                                                  SizedBox(width: 5,),
+                                                                  Text("Orders ${DateFormat(
+                                                                      'yyyy-MM-dd')
+                                                                      .format(
+                                                                      _reportByDateController
+                                                                          .reportByDateModelData
+                                                                          .value
+                                                                          .data![index]
+                                                                          .date!)} (${_reportByDateController.reportByDateModelData.value.data![index].shiftName.toString()})",
+                                                                    style: const TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight
+                                                                            .bold),),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        constraints.width > 650 ? Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 3,
+                                                              child: Container(
+                                                                height: Get.height / 4,
+                                                                padding: EdgeInsets.symmetric(
+                                                                    vertical: 16,
+                                                                    horizontal: 16),
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors.grey
+                                                                          .withOpacity(0.3),
+                                                                      spreadRadius: 5,
+                                                                      blurRadius: 7,
+                                                                      offset: Offset(0, 6),
+                                                                    ),
+                                                                  ],
+                                                                  borderRadius: BorderRadius
+                                                                      .circular(15),
+                                                                ),
+                                                                child: _reportByDateController
+                                                                    .reportByDateModelData
+                                                                    .value.data![index]
+                                                                    .orders!.isNotEmpty ? SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                        children: [
+                                                                          Text(
+                                                                            "Item Name",
+                                                                            style: TextStyle(
+                                                                              color: Color(
+                                                                                  Constants
+                                                                                      .colorTheme),
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight
+                                                                                  .w600,
+                                                                            ),
+                                                                          ),
+                                                                          Text(
+                                                                            "Quantity",
+                                                                            style: TextStyle(
+                                                                              color: Color(
+                                                                                  Constants
+                                                                                      .colorTheme),
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight
+                                                                                  .w600,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(height: 5),
+                                                                      ListView.builder(
+                                                                        shrinkWrap: true,
+                                                                        physics: NeverScrollableScrollPhysics(),
+                                                                        itemCount: _reportByDateController
+                                                                            .reportByDateModelData
+                                                                            .value.data![index]
+                                                                            .orders!.length,
+                                                                        itemBuilder: (context,
+                                                                            i) {
+                                                                          return  Row(
+                                                                            mainAxisAlignment: MainAxisAlignment
+                                                                                .spaceBetween,
+                                                                            children: [
+                                                                              Row(
+                                                                                children: [
+                                                                                  Image.asset(
+                                                                                      "assets/images/fork.png",
+                                                                                      height: 10,
+                                                                                      width: 10),
+                                                                                  SizedBox(
+                                                                                      width: 5),
+                                                                                  Text(
+                                                                                    _reportByDateController
+                                                                                        .reportByDateModelData
+                                                                                        .value
+                                                                                        .data![index]
+                                                                                        .orders![i]
+                                                                                        .itemName
+                                                                                        .toString(),
+                                                                                    style: TextStyle(
+                                                                                      color: Colors
+                                                                                          .black,
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight
+                                                                                          .w400,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              Text(
+                                                                                _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value
+                                                                                    .data![index]
+                                                                                    .orders![i]
+                                                                                    .quantity
+                                                                                    .toString(),
+                                                                                style: TextStyle(
+                                                                                  color: Colors
+                                                                                      .black,
+                                                                                  fontSize: 14,
+                                                                                  fontWeight: FontWeight
+                                                                                      .w400,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ) : Column(
                                                                   children: [
                                                                     Text(
-                                                                      "Item Name",
+                                                                      "Orders",
                                                                       style: TextStyle(
                                                                         color: Color(
                                                                             Constants
                                                                                 .colorTheme),
-                                                                        fontSize: 16,
+                                                                        fontSize: 14,
                                                                         fontWeight: FontWeight
                                                                             .w600,
                                                                       ),
                                                                     ),
-                                                                    Text(
-                                                                      "Quantity",
-                                                                      style: TextStyle(
-                                                                        color: Color(
-                                                                            Constants
-                                                                                .colorTheme),
-                                                                        fontSize: 16,
-                                                                        fontWeight: FontWeight
-                                                                            .w600,
-                                                                      ),
+                                                                    Expanded(
+                                                                      child: Align(
+                                                                          alignment: Alignment.center,
+                                                                          child: Text("No Items", style: TextStyle(color: Colors.black),)),
                                                                     ),
                                                                   ],
                                                                 ),
-                                                                SizedBox(height: 5),
-                                                                ListView.builder(
-                                                                  shrinkWrap: true,
-                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                  itemCount: _reportByDateController
-                                                                      .reportByDateModelData
-                                                                      .value.data![index]
-                                                                      .orders!.length,
-                                                                  itemBuilder: (context,
-                                                                      i) {
-                                                                    return  Row(
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Expanded(
+                                                              child: Container(
+                                                                height: Get.height / 4,
+                                                                padding: EdgeInsets.symmetric(
+                                                                    vertical: 16,
+                                                                    horizontal: 8),
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors.grey
+                                                                          .withOpacity(0.3),
+                                                                      spreadRadius: 5,
+                                                                      blurRadius: 7,
+                                                                      offset: Offset(0, 6),
+                                                                    ),
+                                                                  ],
+                                                                  borderRadius: BorderRadius
+                                                                      .circular(15),
+                                                                ),
+                                                                child:  _reportByDateController
+                                                                    .reportByDateModelData
+                                                                    .value.data![index]
+                                                                    .orderPlaced!.incompleteOrdersDetail!.isNotEmpty ? SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "Incomplete Orders",
+                                                                        style: TextStyle(
+                                                                          color: Color(
+                                                                              Constants
+                                                                                  .colorTheme),
+                                                                          fontSize: 16,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(height: 5),
+                                                                      ListView.separated(
+                                                                        shrinkWrap: true,
+                                                                        physics: NeverScrollableScrollPhysics(),
+                                                                        itemCount: _reportByDateController
+                                                                            .reportByDateModelData
+                                                                            .value.data![index]
+                                                                            .orderPlaced!.incompleteOrdersDetail!.length,
+                                                                        itemBuilder: (context,
+                                                                            incompleteIndex) {
+                                                                          return Padding(
+                                                                            padding: const EdgeInsets
+                                                                                .symmetric(
+                                                                                vertical: 5,
+                                                                                horizontal: 5),
+                                                                            child: Column(
+                                                                              children: [
+                                                                                CustomNewRow('Order ID', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderId.toString()),
+                                                                                CustomNewRow('User Name', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].userName.toString()),
+                                                                                CustomNewRow('Mobile',_reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].mobile.toString()),
+                                                                                CustomNewRow('Cancel By', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelBy ?? 'No Cancel'),
+                                                                                CustomNewRow('Order Status', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderStatus.toString()),
+                                                                                CustomNewRow('Payment Type', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].paymentType.toString()),
+                                                                                CustomNewRow('Amount', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].amount.toString()),
+                                                                                CustomNewRow('Delivery Type', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].deliveryType.toString()),
+                                                                                CustomNewRow('Discounts', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].discounts.toString()),
+                                                                                CustomNewRow('Notes', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].notes.toString()),
+                                                                                CustomNewRow('Cancel Reason', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelReason ?? 'No Cancel'),
+
+
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        }, separatorBuilder: (BuildContext context, int incompleteIndex) {
+                                                                        return Container(
+                                                                            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                                            child: LineWithCircles());
+                                                                      },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ) : Column(
+                                                                  children: [
+                                                                    Text(
+                                                                      "Incomplete Orders",
+                                                                      style: TextStyle(
+                                                                        color: Color(
+                                                                            Constants
+                                                                                .colorTheme),
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight
+                                                                            .w600,
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Align(
+                                                                          alignment: Alignment.center,
+                                                                          child: Text("No Incomplete Orders", style: TextStyle(color: Colors.black),)),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Expanded(
+                                                              child: Container(
+                                                                height: Get.height / 4,
+                                                                padding: EdgeInsets.symmetric(
+                                                                    vertical: 16,
+                                                                    horizontal: 8),
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors.grey
+                                                                          .withOpacity(0.3),
+                                                                      spreadRadius: 5,
+                                                                      blurRadius: 7,
+                                                                      offset: Offset(0, 6),
+                                                                    ),
+                                                                  ],
+                                                                  borderRadius: BorderRadius
+                                                                      .circular(15),
+                                                                ),
+                                                                child: _reportByDateController
+                                                                    .reportByDateModelData
+                                                                    .value.data![index]
+                                                                    .orderPlaced!.cancelledOrdersDetail!.isNotEmpty ?  SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "Cancelled Orders",
+                                                                        style: TextStyle(
+                                                                          color: Color(
+                                                                              Constants
+                                                                                  .colorTheme),
+                                                                          fontSize: 16,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(height: 5),
+                                                                      ListView.separated(
+                                                                        shrinkWrap: true,
+                                                                        physics: NeverScrollableScrollPhysics(),
+                                                                        itemCount: _reportByDateController
+                                                                            .reportByDateModelData
+                                                                            .value.data![index]
+                                                                            .orderPlaced!.cancelledOrdersDetail!.length,
+                                                                        itemBuilder: (context,
+                                                                            cancelledIndex) {
+                                                                          return Padding(
+                                                                            padding: const EdgeInsets
+                                                                                .symmetric(
+                                                                                vertical: 5,
+                                                                                horizontal: 5),
+                                                                            child: Column(
+                                                                              children: [
+                                                                                CustomNewRow('Order ID', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderId.toString()),
+                                                                                CustomNewRow('User Name', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].userName.toString()),
+                                                                                CustomNewRow('Mobile',_reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].mobile.toString()),
+                                                                                CustomNewRow('Cancel By', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelBy ?? 'No Cancel'),
+                                                                                CustomNewRow('Order Status', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderStatus.toString()),
+                                                                                CustomNewRow('Payment Type', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].paymentType.toString()),
+                                                                                CustomNewRow('Amount', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].amount.toString()),
+                                                                                CustomNewRow('Delivery Type', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].deliveryType.toString()),
+                                                                                CustomNewRow('Discounts', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].discounts.toString()),
+                                                                                CustomNewRow('Notes', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].notes.toString()),
+                                                                                CustomNewRow('Cancel Reason', _reportByDateController
+                                                                                    .reportByDateModelData
+                                                                                    .value.data![index]
+                                                                                    .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelReason ?? 'No Cancel'),
+
+
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        }, separatorBuilder: (BuildContext context, int cancelledIndex) {
+                                                                        return Container(
+                                                                            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                                            child: LineWithCircles());
+                                                                      },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ) : Column(
+                                                                  children: [
+                                                                    Text(
+                                                                      "Cancelled Orders",
+                                                                      style: TextStyle(
+                                                                        color: Color(
+                                                                            Constants
+                                                                                .colorTheme),
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight
+                                                                            .w600,
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Align(
+                                                                          alignment: Alignment.center,
+                                                                          child: Text("No Cancelled Orders", style: TextStyle(color: Colors.black),)),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ) :  Column(
+                                                          children: [
+                                                            Container(
+                                                              height: Get.height / 4,
+                                                              padding: EdgeInsets.symmetric(
+                                                                  vertical: 16,
+                                                                  horizontal: 16),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey
+                                                                        .withOpacity(0.3),
+                                                                    spreadRadius: 5,
+                                                                    blurRadius: 7,
+                                                                    offset: Offset(0, 6),
+                                                                  ),
+                                                                ],
+                                                                borderRadius: BorderRadius
+                                                                    .circular(15),
+                                                              ),
+                                                              child: _reportByDateController
+                                                                  .reportByDateModelData
+                                                                  .value.data![index]
+                                                                  .orders!.isNotEmpty ? SingleChildScrollView(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
                                                                       mainAxisAlignment: MainAxisAlignment
                                                                           .spaceBetween,
                                                                       children: [
-                                                                        Row(
+                                                                        Text(
+                                                                          "Item Name",
+                                                                          style: TextStyle(
+                                                                            color: Color(
+                                                                                Constants
+                                                                                    .colorTheme),
+                                                                            fontSize: 16,
+                                                                            fontWeight: FontWeight
+                                                                                .w600,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          "Quantity",
+                                                                          style: TextStyle(
+                                                                            color: Color(
+                                                                                Constants
+                                                                                    .colorTheme),
+                                                                            fontSize: 16,
+                                                                            fontWeight: FontWeight
+                                                                                .w600,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(height: 5),
+                                                                    ListView.builder(
+                                                                      shrinkWrap: true,
+                                                                      physics: NeverScrollableScrollPhysics(),
+                                                                      itemCount: _reportByDateController
+                                                                          .reportByDateModelData
+                                                                          .value.data![index]
+                                                                          .orders!.length,
+                                                                      itemBuilder: (context,
+                                                                          i) {
+                                                                        return  Row(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .spaceBetween,
                                                                           children: [
-                                                                            Image.asset(
-                                                                                "assets/images/fork.png",
-                                                                                height: 10,
-                                                                                width: 10),
-                                                                            SizedBox(
-                                                                                width: 5),
+                                                                            Row(
+                                                                              children: [
+                                                                                Image.asset(
+                                                                                    "assets/images/fork.png",
+                                                                                    height: 10,
+                                                                                    width: 10),
+                                                                                SizedBox(
+                                                                                    width: 5),
+                                                                                Text(
+                                                                                  _reportByDateController
+                                                                                      .reportByDateModelData
+                                                                                      .value
+                                                                                      .data![index]
+                                                                                      .orders![i]
+                                                                                      .itemName
+                                                                                      .toString(),
+                                                                                  style: TextStyle(
+                                                                                    color: Colors
+                                                                                        .black,
+                                                                                    fontSize: 14,
+                                                                                    fontWeight: FontWeight
+                                                                                        .w400,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
                                                                             Text(
                                                                               _reportByDateController
                                                                                   .reportByDateModelData
                                                                                   .value
                                                                                   .data![index]
                                                                                   .orders![i]
-                                                                                  .itemName
+                                                                                  .quantity
                                                                                   .toString(),
                                                                               style: TextStyle(
                                                                                 color: Colors
@@ -1357,733 +1971,310 @@ class ReportsByDate extends StatelessWidget {
                                                                               ),
                                                                             ),
                                                                           ],
-                                                                        ),
-                                                                        Text(
-                                                                          _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value
-                                                                              .data![index]
-                                                                              .orders![i]
-                                                                              .quantity
-                                                                              .toString(),
-                                                                          style: TextStyle(
-                                                                            color: Colors
-                                                                                .black,
-                                                                            fontSize: 14,
-                                                                            fontWeight: FontWeight
-                                                                                .w400,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  },
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ) : Column(
-                                                            children: [
-                                                              Text(
-                                                                "Orders",
-                                                                style: TextStyle(
-                                                                  color: Color(
-                                                                      Constants
-                                                                          .colorTheme),
-                                                                  fontSize: 14,
-                                                                  fontWeight: FontWeight
-                                                                      .w600,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Align(
-                                                                    alignment: Alignment.center,
-                                                                    child: Text("No Items", style: TextStyle(color: Colors.black),)),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: Get.height / 4,
-                                                          padding: EdgeInsets.symmetric(
-                                                              vertical: 16,
-                                                              horizontal: 8),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.grey
-                                                                    .withOpacity(0.3),
-                                                                spreadRadius: 5,
-                                                                blurRadius: 7,
-                                                                offset: Offset(0, 6),
-                                                              ),
-                                                            ],
-                                                            borderRadius: BorderRadius
-                                                                .circular(15),
-                                                          ),
-                                                          child:  _reportByDateController
-                                                              .reportByDateModelData
-                                                              .value.data![index]
-                                                              .orderPlaced!.incompleteOrdersDetail!.isNotEmpty ? SingleChildScrollView(
-                                                            child: Column(
-                                                              children: [
-                                                                Text(
-                                                                  "Incomplete Orders",
-                                                                  style: TextStyle(
-                                                                    color: Color(
-                                                                        Constants
-                                                                            .colorTheme),
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .w600,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(height: 5),
-                                                                ListView.separated(
-                                                                  shrinkWrap: true,
-                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                  itemCount: _reportByDateController
-                                                                      .reportByDateModelData
-                                                                      .value.data![index]
-                                                                      .orderPlaced!.incompleteOrdersDetail!.length,
-                                                                  itemBuilder: (context,
-                                                                      incompleteIndex) {
-                                                                    return Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical: 5,
-                                                                          horizontal: 5),
-                                                                      child: Column(
-                                                                        children: [
-                                                                          CustomNewRow('Order ID', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderId.toString()),
-                                                                          CustomNewRow('User Name', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].userName.toString()),
-                                                                          CustomNewRow('Mobile',_reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].mobile.toString()),
-                                                                          CustomNewRow('Cancel By', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelBy ?? 'No Cancel'),
-                                                                          CustomNewRow('Order Status', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderStatus.toString()),
-                                                                          CustomNewRow('Payment Type', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].paymentType.toString()),
-                                                                          CustomNewRow('Amount', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].amount.toString()),
-                                                                          CustomNewRow('Delivery Type', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].deliveryType.toString()),
-                                                                          CustomNewRow('Discounts', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].discounts.toString()),
-                                                                          CustomNewRow('Notes', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].notes.toString()),
-                                                                          CustomNewRow('Cancel Reason', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelReason ?? 'No Cancel'),
-
-
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  }, separatorBuilder: (BuildContext context, int incompleteIndex) {
-                                                                  return Container(
-                                                                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                                                      child: LineWithCircles());
-                                                                },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ) : Column(
-                                                            children: [
-                                                              Text(
-                                                                "Incomplete Orders",
-                                                                style: TextStyle(
-                                                                  color: Color(
-                                                                      Constants
-                                                                          .colorTheme),
-                                                                  fontSize: 14,
-                                                                  fontWeight: FontWeight
-                                                                      .w600,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Align(
-                                                                    alignment: Alignment.center,
-                                                                    child: Text("No Incomplete Orders", style: TextStyle(color: Colors.black),)),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: Get.height / 4,
-                                                          padding: EdgeInsets.symmetric(
-                                                              vertical: 16,
-                                                              horizontal: 8),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.grey
-                                                                    .withOpacity(0.3),
-                                                                spreadRadius: 5,
-                                                                blurRadius: 7,
-                                                                offset: Offset(0, 6),
-                                                              ),
-                                                            ],
-                                                            borderRadius: BorderRadius
-                                                                .circular(15),
-                                                          ),
-                                                          child: _reportByDateController
-                                                              .reportByDateModelData
-                                                              .value.data![index]
-                                                              .orderPlaced!.cancelledOrdersDetail!.isNotEmpty ?  SingleChildScrollView(
-                                                            child: Column(
-                                                              children: [
-                                                                Text(
-                                                                  "Cancelled Orders",
-                                                                  style: TextStyle(
-                                                                    color: Color(
-                                                                        Constants
-                                                                            .colorTheme),
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight
-                                                                        .w600,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(height: 5),
-                                                                ListView.separated(
-                                                                  shrinkWrap: true,
-                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                  itemCount: _reportByDateController
-                                                                      .reportByDateModelData
-                                                                      .value.data![index]
-                                                                      .orderPlaced!.cancelledOrdersDetail!.length,
-                                                                  itemBuilder: (context,
-                                                                      cancelledIndex) {
-                                                                    return Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical: 5,
-                                                                          horizontal: 5),
-                                                                      child: Column(
-                                                                        children: [
-                                                                          CustomNewRow('Order ID', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderId.toString()),
-                                                                          CustomNewRow('User Name', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].userName.toString()),
-                                                                          CustomNewRow('Mobile',_reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].mobile.toString()),
-                                                                          CustomNewRow('Cancel By', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelBy ?? 'No Cancel'),
-                                                                          CustomNewRow('Order Status', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderStatus.toString()),
-                                                                          CustomNewRow('Payment Type', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].paymentType.toString()),
-                                                                          CustomNewRow('Amount', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].amount.toString()),
-                                                                          CustomNewRow('Delivery Type', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].deliveryType.toString()),
-                                                                          CustomNewRow('Discounts', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].discounts.toString()),
-                                                                          CustomNewRow('Notes', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].notes.toString()),
-                                                                          CustomNewRow('Cancel Reason', _reportByDateController
-                                                                              .reportByDateModelData
-                                                                              .value.data![index]
-                                                                              .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelReason ?? 'No Cancel'),
-
-
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  }, separatorBuilder: (BuildContext context, int cancelledIndex) {
-                                                                  return Container(
-                                                                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                                                      child: LineWithCircles());
-                                                                },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ) : Column(
-                                                            children: [
-                                                              Text(
-                                                                "Cancelled Orders",
-                                                                style: TextStyle(
-                                                                  color: Color(
-                                                                      Constants
-                                                                          .colorTheme),
-                                                                  fontSize: 14,
-                                                                  fontWeight: FontWeight
-                                                                      .w600,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Align(
-                                                                    alignment: Alignment.center,
-                                                                    child: Text("No Cancelled Orders", style: TextStyle(color: Colors.black),)),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ) :  Column(
-                                                    children: [
-                                                      Container(
-                                                        height: Get.height / 4,
-                                                        padding: EdgeInsets.symmetric(
-                                                            vertical: 16,
-                                                            horizontal: 16),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.white,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(0.3),
-                                                              spreadRadius: 5,
-                                                              blurRadius: 7,
-                                                              offset: Offset(0, 6),
-                                                            ),
-                                                          ],
-                                                          borderRadius: BorderRadius
-                                                              .circular(15),
-                                                        ),
-                                                        child: _reportByDateController
-                                                            .reportByDateModelData
-                                                            .value.data![index]
-                                                            .orders!.isNotEmpty ? SingleChildScrollView(
-                                                          child: Column(
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .spaceBetween,
+                                                              ) : Column(
                                                                 children: [
                                                                   Text(
-                                                                    "Item Name",
+                                                                    "Orders",
                                                                     style: TextStyle(
                                                                       color: Color(
                                                                           Constants
                                                                               .colorTheme),
-                                                                      fontSize: 16,
+                                                                      fontSize: 14,
                                                                       fontWeight: FontWeight
                                                                           .w600,
                                                                     ),
                                                                   ),
-                                                                  Text(
-                                                                    "Quantity",
-                                                                    style: TextStyle(
-                                                                      color: Color(
-                                                                          Constants
-                                                                              .colorTheme),
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight
-                                                                          .w600,
-                                                                    ),
+                                                                  Expanded(
+                                                                    child: Align(
+                                                                        alignment: Alignment.center,
+                                                                        child: Text("No Items", style: TextStyle(color: Colors.black),)),
                                                                   ),
                                                                 ],
                                                               ),
-                                                              SizedBox(height: 5),
-                                                              ListView.builder(
-                                                                shrinkWrap: true,
-                                                                physics: NeverScrollableScrollPhysics(),
-                                                                itemCount: _reportByDateController
-                                                                    .reportByDateModelData
-                                                                    .value.data![index]
-                                                                    .orders!.length,
-                                                                itemBuilder: (context,
-                                                                    i) {
-                                                                  return  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          Image.asset(
-                                                                              "assets/images/fork.png",
-                                                                              height: 10,
-                                                                              width: 10),
-                                                                          SizedBox(
-                                                                              width: 5),
-                                                                          Text(
-                                                                            _reportByDateController
-                                                                                .reportByDateModelData
-                                                                                .value
-                                                                                .data![index]
-                                                                                .orders![i]
-                                                                                .itemName
-                                                                                .toString(),
-                                                                            style: TextStyle(
-                                                                              color: Colors
-                                                                                  .black,
-                                                                              fontSize: 14,
-                                                                              fontWeight: FontWeight
-                                                                                  .w400,
-                                                                            ),
+                                                            ),
+                                                            SizedBox(height: 10),
+                                                            Container(
+                                                              height: Get.height / 4,
+                                                              padding: EdgeInsets.symmetric(
+                                                                  vertical: 16,
+                                                                  horizontal: 8),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey
+                                                                        .withOpacity(0.3),
+                                                                    spreadRadius: 5,
+                                                                    blurRadius: 7,
+                                                                    offset: Offset(0, 6),
+                                                                  ),
+                                                                ],
+                                                                borderRadius: BorderRadius
+                                                                    .circular(15),
+                                                              ),
+                                                              child:  _reportByDateController
+                                                                  .reportByDateModelData
+                                                                  .value.data![index]
+                                                                  .orderPlaced!.incompleteOrdersDetail!.isNotEmpty ? SingleChildScrollView(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Text(
+                                                                      "Incomplete Orders",
+                                                                      style: TextStyle(
+                                                                        color: Color(
+                                                                            Constants
+                                                                                .colorTheme),
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight
+                                                                            .w600,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 5),
+                                                                    ListView.separated(
+                                                                      shrinkWrap: true,
+                                                                      physics: NeverScrollableScrollPhysics(),
+                                                                      itemCount: _reportByDateController
+                                                                          .reportByDateModelData
+                                                                          .value.data![index]
+                                                                          .orderPlaced!.incompleteOrdersDetail!.length,
+                                                                      itemBuilder: (context,
+                                                                          incompleteIndex) {
+                                                                        return Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical: 5,
+                                                                              horizontal: 5),
+                                                                          child: Column(
+                                                                            children: [
+                                                                              CustomNewRow('Order ID', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderId.toString()),
+                                                                              CustomNewRow('User Name', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].userName.toString()),
+                                                                              CustomNewRow('Mobile',_reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].mobile.toString()),
+                                                                              CustomNewRow('Cancel By', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelBy ?? 'No Cancel'),
+                                                                              CustomNewRow('Order Status', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderStatus.toString()),
+                                                                              CustomNewRow('Payment Type', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].paymentType.toString()),
+                                                                              CustomNewRow('Amount', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].amount.toString()),
+                                                                              CustomNewRow('Delivery Type', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].deliveryType.toString()),
+                                                                              CustomNewRow('Discounts', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].discounts.toString()),
+                                                                              CustomNewRow('Notes', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].notes.toString()),
+                                                                              CustomNewRow('Cancel Reason', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelReason ?? 'No Cancel'),
+
+
+                                                                            ],
                                                                           ),
-                                                                        ],
-                                                                      ),
-                                                                      Text(
-                                                                        _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value
-                                                                            .data![index]
-                                                                            .orders![i]
-                                                                            .quantity
-                                                                            .toString(),
-                                                                        style: TextStyle(
-                                                                          color: Colors
-                                                                              .black,
-                                                                          fontSize: 14,
-                                                                          fontWeight: FontWeight
-                                                                              .w400,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ) : Column(
-                                                          children: [
-                                                            Text(
-                                                              "Orders",
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    Constants
-                                                                        .colorTheme),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight
-                                                                    .w600,
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Align(
-                                                                  alignment: Alignment.center,
-                                                                  child: Text("No Items", style: TextStyle(color: Colors.black),)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Container(
-                                                        height: Get.height / 4,
-                                                        padding: EdgeInsets.symmetric(
-                                                            vertical: 16,
-                                                            horizontal: 8),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.white,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(0.3),
-                                                              spreadRadius: 5,
-                                                              blurRadius: 7,
-                                                              offset: Offset(0, 6),
-                                                            ),
-                                                          ],
-                                                          borderRadius: BorderRadius
-                                                              .circular(15),
-                                                        ),
-                                                        child:  _reportByDateController
-                                                            .reportByDateModelData
-                                                            .value.data![index]
-                                                            .orderPlaced!.incompleteOrdersDetail!.isNotEmpty ? SingleChildScrollView(
-                                                          child: Column(
-                                                            children: [
-                                                              Text(
-                                                                "Incomplete Orders",
-                                                                style: TextStyle(
-                                                                  color: Color(
-                                                                      Constants
-                                                                          .colorTheme),
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight
-                                                                      .w600,
-                                                                ),
-                                                              ),
-                                                              SizedBox(height: 5),
-                                                              ListView.separated(
-                                                                shrinkWrap: true,
-                                                                physics: NeverScrollableScrollPhysics(),
-                                                                itemCount: _reportByDateController
-                                                                    .reportByDateModelData
-                                                                    .value.data![index]
-                                                                    .orderPlaced!.incompleteOrdersDetail!.length,
-                                                                itemBuilder: (context,
-                                                                    incompleteIndex) {
-                                                                  return Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical: 5,
-                                                                        horizontal: 5),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        CustomNewRow('Order ID', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderId.toString()),
-                                                                        CustomNewRow('User Name', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].userName.toString()),
-                                                                        CustomNewRow('Mobile',_reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].mobile.toString()),
-                                                                        CustomNewRow('Cancel By', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelBy ?? 'No Cancel'),
-                                                                        CustomNewRow('Order Status', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].orderStatus.toString()),
-                                                                        CustomNewRow('Payment Type', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].paymentType.toString()),
-                                                                        CustomNewRow('Amount', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].amount.toString()),
-                                                                        CustomNewRow('Delivery Type', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].deliveryType.toString()),
-                                                                        CustomNewRow('Discounts', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].discounts.toString()),
-                                                                        CustomNewRow('Notes', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].notes.toString()),
-                                                                        CustomNewRow('Cancel Reason', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.incompleteOrdersDetail![incompleteIndex].cancelReason ?? 'No Cancel'),
-
-
-                                                                      ],
+                                                                        );
+                                                                      }, separatorBuilder: (BuildContext context, int incompleteIndex) {
+                                                                      return Container(
+                                                                          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                                          child: LineWithCircles());
+                                                                    },
                                                                     ),
-                                                                  );
-                                                                }, separatorBuilder: (BuildContext context, int incompleteIndex) {
-                                                                return Container(
-                                                                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                                                    child: LineWithCircles());
-                                                              },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ) : Column(
-                                                          children: [
-                                                            Text(
-                                                              "Incomplete Orders",
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    Constants
-                                                                        .colorTheme),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight
-                                                                    .w600,
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Align(
-                                                                  alignment: Alignment.center,
-                                                                  child: Text("No Incomplete Orders", style: TextStyle(color: Colors.black),)),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Container(
-                                                        height: Get.height / 4,
-                                                        padding: EdgeInsets.symmetric(
-                                                            vertical: 16,
-                                                            horizontal: 8),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.white,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(0.3),
-                                                              spreadRadius: 5,
-                                                              blurRadius: 7,
-                                                              offset: Offset(0, 6),
-                                                            ),
-                                                          ],
-                                                          borderRadius: BorderRadius
-                                                              .circular(15),
-                                                        ),
-                                                        child: _reportByDateController
-                                                            .reportByDateModelData
-                                                            .value.data![index]
-                                                            .orderPlaced!.cancelledOrdersDetail!.isNotEmpty ?  SingleChildScrollView(
-                                                          child: Column(
-                                                            children: [
-                                                              Text(
-                                                                "Cancelled Orders",
-                                                                style: TextStyle(
-                                                                  color: Color(
-                                                                      Constants
-                                                                          .colorTheme),
-                                                                  fontSize: 16,
-                                                                  fontWeight: FontWeight
-                                                                      .w600,
+                                                                  ],
                                                                 ),
-                                                              ),
-                                                              SizedBox(height: 5),
-                                                              ListView.separated(
-                                                                shrinkWrap: true,
-                                                                physics: NeverScrollableScrollPhysics(),
-                                                                itemCount: _reportByDateController
-                                                                    .reportByDateModelData
-                                                                    .value.data![index]
-                                                                    .orderPlaced!.cancelledOrdersDetail!.length,
-                                                                itemBuilder: (context,
-                                                                    cancelledIndex) {
-                                                                  return Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical: 5,
-                                                                        horizontal: 5),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        CustomNewRow('Order ID', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderId.toString()),
-                                                                        CustomNewRow('User Name', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].userName.toString()),
-                                                                        CustomNewRow('Mobile',_reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].mobile.toString()),
-                                                                        CustomNewRow('Cancel By', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelBy ?? 'No Cancel'),
-                                                                        CustomNewRow('Order Status', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderStatus.toString()),
-                                                                        CustomNewRow('Payment Type', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].paymentType.toString()),
-                                                                        CustomNewRow('Amount', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].amount.toString()),
-                                                                        CustomNewRow('Delivery Type', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].deliveryType.toString()),
-                                                                        CustomNewRow('Discounts', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].discounts.toString()),
-                                                                        CustomNewRow('Notes', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].notes.toString()),
-                                                                        CustomNewRow('Cancel Reason', _reportByDateController
-                                                                            .reportByDateModelData
-                                                                            .value.data![index]
-                                                                            .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelReason ?? 'No Cancel'),
-
-
-                                                                      ],
+                                                              ) : Column(
+                                                                children: [
+                                                                  Text(
+                                                                    "Incomplete Orders",
+                                                                    style: TextStyle(
+                                                                      color: Color(
+                                                                          Constants
+                                                                              .colorTheme),
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight
+                                                                          .w600,
                                                                     ),
-                                                                  );
-                                                                }, separatorBuilder: (BuildContext context, int cancelledIndex) {
-                                                                return Container(
-                                                                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                                                    child: LineWithCircles());
-                                                              },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ) : Column(
-                                                          children: [
-                                                            Text(
-                                                              "Cancelled Orders",
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    Constants
-                                                                        .colorTheme),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight
-                                                                    .w600,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Align(
+                                                                        alignment: Alignment.center,
+                                                                        child: Text("No Incomplete Orders", style: TextStyle(color: Colors.black),)),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
-                                                            Expanded(
-                                                              child: Align(
-                                                                  alignment: Alignment.center,
-                                                                  child: Text("No Cancelled Orders", style: TextStyle(color: Colors.black),)),
+                                                            SizedBox(height: 10),
+                                                            Container(
+                                                              height: Get.height / 4,
+                                                              padding: EdgeInsets.symmetric(
+                                                                  vertical: 16,
+                                                                  horizontal: 8),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey
+                                                                        .withOpacity(0.3),
+                                                                    spreadRadius: 5,
+                                                                    blurRadius: 7,
+                                                                    offset: Offset(0, 6),
+                                                                  ),
+                                                                ],
+                                                                borderRadius: BorderRadius
+                                                                    .circular(15),
+                                                              ),
+                                                              child: _reportByDateController
+                                                                  .reportByDateModelData
+                                                                  .value.data![index]
+                                                                  .orderPlaced!.cancelledOrdersDetail!.isNotEmpty ?  SingleChildScrollView(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Text(
+                                                                      "Cancelled Orders",
+                                                                      style: TextStyle(
+                                                                        color: Color(
+                                                                            Constants
+                                                                                .colorTheme),
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight
+                                                                            .w600,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(height: 5),
+                                                                    ListView.separated(
+                                                                      shrinkWrap: true,
+                                                                      physics: NeverScrollableScrollPhysics(),
+                                                                      itemCount: _reportByDateController
+                                                                          .reportByDateModelData
+                                                                          .value.data![index]
+                                                                          .orderPlaced!.cancelledOrdersDetail!.length,
+                                                                      itemBuilder: (context,
+                                                                          cancelledIndex) {
+                                                                        return Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical: 5,
+                                                                              horizontal: 5),
+                                                                          child: Column(
+                                                                            children: [
+                                                                              CustomNewRow('Order ID', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderId.toString()),
+                                                                              CustomNewRow('User Name', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].userName.toString()),
+                                                                              CustomNewRow('Mobile',_reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].mobile.toString()),
+                                                                              CustomNewRow('Cancel By', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelBy ?? 'No Cancel'),
+                                                                              CustomNewRow('Order Status', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].orderStatus.toString()),
+                                                                              CustomNewRow('Payment Type', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].paymentType.toString()),
+                                                                              CustomNewRow('Amount', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].amount.toString()),
+                                                                              CustomNewRow('Delivery Type', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].deliveryType.toString()),
+                                                                              CustomNewRow('Discounts', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].discounts.toString()),
+                                                                              CustomNewRow('Notes', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].notes.toString()),
+                                                                              CustomNewRow('Cancel Reason', _reportByDateController
+                                                                                  .reportByDateModelData
+                                                                                  .value.data![index]
+                                                                                  .orderPlaced!.cancelledOrdersDetail![cancelledIndex].cancelReason ?? 'No Cancel'),
+
+
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      }, separatorBuilder: (BuildContext context, int cancelledIndex) {
+                                                                      return Container(
+                                                                          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                                          child: LineWithCircles());
+                                                                    },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ) : Column(
+                                                                children: [
+                                                                  Text(
+                                                                    "Cancelled Orders",
+                                                                    style: TextStyle(
+                                                                      color: Color(
+                                                                          Constants
+                                                                              .colorTheme),
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight
+                                                                          .w600,
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Align(
+                                                                        alignment: Alignment.center,
+                                                                        child: Text("No Cancelled Orders", style: TextStyle(color: Colors.black),)),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 10,),
-                                                ],
-                                              ),
-                                            );
-                                          }
-                                        },
+                                                        SizedBox(height: 10,),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(height: 10,),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(height: 10,),
                                   ]
                               ) : Center(
                                 child: Text("No Data"),

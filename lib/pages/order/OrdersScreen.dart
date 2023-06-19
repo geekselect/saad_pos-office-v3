@@ -36,7 +36,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  final OrderController _orderController = Get.find<OrderController>();
+  final OrderController _orderController = Get.put(OrderController());
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);

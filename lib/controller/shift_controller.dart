@@ -18,9 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ShiftController extends GetxController {
   OrderSettingModel? orderSettingModel;
-
-  final CartController cartController =
-  Get.find<CartController>();
+  final CartController cartController=  Get.put(CartController());
   final TimerController timerController = Get.put(TimerController());
   RxBool createButtonEnable = false.obs;
   final TextEditingController shiftTextController = TextEditingController();

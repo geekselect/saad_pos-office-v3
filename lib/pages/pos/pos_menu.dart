@@ -101,21 +101,21 @@ class _PosMenuState extends State<PosMenu> {
     });
   }
 
-  final DiningCartController _diningCartController =
-      Get.find<DiningCartController>();
+  final DiningCartController _diningCartController=  Get.put(DiningCartController());
+
 
   AutoPrinterController _autoPrinterController =
-      Get.find<AutoPrinterController>();
+  Get.put(AutoPrinterController());
 
   final OrderCustimizationController _orderCustimizationController =
-      Get.find<OrderCustimizationController>();
+  Get.put(OrderCustimizationController());
 
   // int selectedMenuCategoryIndex = 0;
   int _selectedCategoryIndex = 0;
   bool runFirstTime = true;
 
   // Future<BaseModel<SingleRestaurantsDetailsModel>>? callGetResturantDetailsRef;
-  CartController _cartController = Get.find<CartController>();
+
   var _printerController = Get.put(PrinterController());
   List<SideBarGridTile> sidebarGridTileList = [];
   // final OrderHistoryController _orderHistoryMainController =
@@ -234,7 +234,7 @@ class _PosMenuState extends State<PosMenu> {
                                     //   // print("B ${snapshot.data?.data.bookedTable[index].}");
                                     // },
                                     onTap: () async {
-                                      _cartController.tableNumber = snapshot
+                                      shiftController.cartController.tableNumber = snapshot
                                           .data!
                                           .data
                                           .bookedTable[index]
@@ -271,7 +271,7 @@ class _PosMenuState extends State<PosMenu> {
                                               .bookedTableNumber,
                                         };
                                         BaseModel<BookedOrderModel> baseModel =
-                                            await _cartController
+                                            await shiftController.cartController
                                                 .getBookedTableData(
                                                     param, context);
                                         BookedOrderModel bookOrderModel =
@@ -284,11 +284,11 @@ class _PosMenuState extends State<PosMenu> {
                                         if (bookOrderModel.success!) {
                                           print(
                                               "ANNN  ${bookOrderModel.toJson()}");
-                                          _cartController.cartMaster =
+                                          shiftController.cartController.cartMaster =
                                               cm.CartMaster.fromMap(jsonDecode(
                                                   bookOrderModel
                                                       .data!.orderData!));
-                                          _cartController
+                                          shiftController.cartController
                                                   .cartMaster?.oldOrderId =
                                               bookOrderModel.data!.orderId;
                                           _diningCartController.diningUserName =
@@ -394,9 +394,9 @@ class _PosMenuState extends State<PosMenu> {
             ));
             setState(() {
               // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-              _cartController.diningValue =
-                  _cartController.tableNumber != null ? true : false;
-              _cartController.isPromocodeApplied = false;
+              shiftController.cartController.diningValue =
+              shiftController.cartController.tableNumber != null ? true : false;
+              shiftController.cartController.isPromocodeApplied = false;
             });
           }
         },
@@ -631,8 +631,8 @@ class _PosMenuState extends State<PosMenu> {
         icon: Icons.logout,
         title: 'Logout',
         onTap: () async {
-          if (_cartController.cartMaster != null) {
-            _cartController.cartMaster!.cart.clear();
+          if (shiftController.cartController.cartMaster != null) {
+            shiftController.cartController.cartMaster!.cart.clear();
           }
           SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
           sharedPrefs.remove(Constants.isLoggedIn);
@@ -652,19 +652,19 @@ class _PosMenuState extends State<PosMenu> {
       ),
     ];
 
-    print("dining value before ${_cartController.diningValue}");
-    _cartController.diningValue = widget.isDining;
+    print("dining value before ${shiftController.cartController.diningValue}");
+    shiftController.cartController.diningValue = widget.isDining;
 
-    print("dining value after ${_cartController.diningValue}");
-    print("table value before ${_cartController.tableNumber}");
-    if (_cartController.diningValue == false) {
+    print("dining value after ${shiftController.cartController.diningValue}");
+    print("table value before ${shiftController.cartController.tableNumber}");
+    if (shiftController.cartController.diningValue == false) {
       print("Dining false");
-      _cartController.tableNumber = null;
+      shiftController.cartController.tableNumber = null;
     } else {
       print("Dining true");
       print("---------");
     }
-    print("table value after ${_cartController.tableNumber}");
+    print("table value after ${shiftController.cartController.tableNumber}");
     getApiCAll();
     super.initState();
   }
@@ -748,13 +748,13 @@ class _PosMenuState extends State<PosMenu> {
 
   void updateDiningValue(bool newValue) {
     setState(() {
-      _cartController.diningValue = newValue;
+      shiftController.cartController.diningValue = newValue;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print("dining value before dining ${_cartController.diningValue}");
+    print("dining value before dining ${shiftController.cartController.diningValue}");
     print("elappsed time ${shiftController.timerController.elapsedTime}");
     return Container(
       decoration: BoxDecoration(
@@ -952,7 +952,7 @@ class _PosMenuState extends State<PosMenu> {
                                                           MainAxisAlignment
                                                               .spaceAround,
                                                       children: [
-                                                        if (_cartController
+                                                        if (shiftController.cartController
                                                             .diningValue)
                                                           Center(
                                                             child: Text(
@@ -983,7 +983,7 @@ class _PosMenuState extends State<PosMenu> {
                                                             if (value!) {
                                                               print("if Block");
                                                               print(
-                                                                  "${_cartController.tableNumber}");
+                                                                  "${shiftController.cartController.tableNumber}");
                                                               print("if Block End");
                                                               await showDialog<int>(
                                                                   context: context,
@@ -1022,19 +1022,19 @@ class _PosMenuState extends State<PosMenu> {
                                                                                                 // int vendorId = prefs.getInt(Constants.vendorId.toString()) ?? 0;
                                                                                                 String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
 
-                                                                                                _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
+                                                                                                shiftController.cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
                                                                                                 if (snapshot.data!.data.bookedTable[index].status == 1) {
                                                                                                   print("vjjjfvdj");
                                                                                                   Map<String, dynamic> param = {
                                                                                                     'vendor_id': '${int.parse(vendorId.toString())}',
                                                                                                     'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
                                                                                                   };
-                                                                                                  BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
+                                                                                                  BaseModel<BookedOrderModel> baseModel = await shiftController.cartController.getBookedTableData(param, context);
                                                                                                   BookedOrderModel bookOrderModel = baseModel.data!;
                                                                                                   if (bookOrderModel.success!) {
                                                                                                     print("ABC");
-                                                                                                    _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
-                                                                                                    _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                                                                                                    shiftController.cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
+                                                                                                    shiftController.cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
                                                                                                     _diningCartController.diningUserName = bookOrderModel.data!.userName!;
                                                                                                     _diningCartController.diningUserMobileNumber = bookOrderModel.data!.mobile!;
                                                                                                     _diningCartController.diningNotes = bookOrderModel.data!.notes!;
@@ -1089,68 +1089,68 @@ class _PosMenuState extends State<PosMenu> {
                                                                         ),
                                                                       ));
                                                               setState(() {
-                                                                // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-                                                                _cartController
+                                                                // shiftController.cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
+                                                                shiftController.cartController
                                                                         .diningValue =
-                                                                    _cartController
+                                                                shiftController.cartController
                                                                                 .tableNumber !=
-                                                                            null && _cartController
+                                                                            null && shiftController.cartController
                                                                         .tableNumber != 0
                                                                         ? true
                                                                         : false;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                         .isPromocodeApplied =
                                                                     false;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                     .userMobileNumber = '';
-                                                                _cartController
+                                                                shiftController.cartController
                                                                     .userName = '';
-                                                                _cartController
+                                                                shiftController.cartController
                                                                     .notes = '';
                                                                 _diningCartController
                                                                     .nameController
-                                                                    .text = _cartController
+                                                                    .text = shiftController.cartController
                                                                     .nameController
                                                                     .text;
                                                                 _diningCartController
                                                                     .phoneNoController
-                                                                    .text = _cartController
+                                                                    .text = shiftController.cartController
                                                                     .phoneNoController
                                                                     .text;
                                                                 _diningCartController
                                                                     .notesController
-                                                                    .text = _cartController
+                                                                    .text = shiftController.cartController
                                                                     .notesController
                                                                     .text;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                         .nameController
                                                                         .text =
-                                                                    _cartController
+                                                                    shiftController.cartController
                                                                         .userName;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                         .phoneNoController
                                                                         .text =
-                                                                    _cartController
+                                                                    shiftController.cartController
                                                                         .userMobileNumber;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                         .notesController
                                                                         .text =
-                                                                    _cartController
+                                                                    shiftController.cartController
                                                                         .notes;
-                                                                if(_cartController.diningValue == false){
-                                                                  _cartController
+                                                                if(shiftController.cartController.diningValue == false){
+                                                                  shiftController.cartController
                                                                       .nameController
                                                                       .text =
                                                                       _diningCartController
                                                                           .nameController
                                                                           .text;
-                                                                  _cartController
+                                                                  shiftController.cartController
                                                                       .phoneNoController
                                                                       .text =
                                                                       _diningCartController
                                                                           .phoneNoController
                                                                           .text;
-                                                                  _cartController
+                                                                  shiftController.cartController
                                                                       .notesController
                                                                       .text =
                                                                       _diningCartController
@@ -1163,18 +1163,18 @@ class _PosMenuState extends State<PosMenu> {
                                                               print(
                                                                   "new table select");
                                                               setState(() {
-                                                                // if (_cartController
+                                                                // if (shiftController.cartController
                                                                 //         .cartMaster
                                                                 //         ?.oldOrderId !=
                                                                 //     null) {
-                                                                //   _cartController
+                                                                //   shiftController.cartController
                                                                 //           .cartMaster =
                                                                 //       null;
                                                                 // }
-                                                                _cartController
+                                                                shiftController.cartController
                                                                         .tableNumber =
                                                                     null;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                         .diningValue =
                                                                     false;
                                                                 _diningCartController
@@ -1183,17 +1183,17 @@ class _PosMenuState extends State<PosMenu> {
                                                                     .diningUserMobileNumber = '';
                                                                 _diningCartController
                                                                     .diningNotes = '';
-                                                                _cartController
+                                                                shiftController.cartController
                                                                     .nameController
                                                                     .text =  _diningCartController
                                                                     .nameController
                                                                     .text;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                     .phoneNoController
                                                                     .text =  _diningCartController
                                                                     .phoneNoController
                                                                     .text;
-                                                                _cartController
+                                                                shiftController.cartController
                                                                     .notesController
                                                                     .text = _diningCartController
                                                                     .notesController
@@ -1218,7 +1218,7 @@ class _PosMenuState extends State<PosMenu> {
                                                             print("mmm");
 
                                                           },
-                                                          value: _cartController
+                                                          value: shiftController.cartController
                                                               .diningValue,
                                                           activeColor:
                                                               Constants.yellowColor,
@@ -2007,7 +2007,7 @@ class _PosMenuState extends State<PosMenu> {
                                                   //                     });
                                                   //               }
                                                   //             } else {
-                                                  //               _cartController.addItem(
+                                                  //               shiftController.cartController.addItem(
                                                   //                   cart.Cart(
                                                   //                       diningAmount: double
                                                   //                           .parse(singleMenu
@@ -2044,11 +2044,11 @@ class _PosMenuState extends State<PosMenu> {
                                                   //                       quantity: 1),
                                                   //                   Constants.vendorId,
                                                   //                   context);
-                                                  //               _cartController
+                                                  //               shiftController.cartController
                                                   //                       .refreshScreen
                                                   //                       .value =
                                                   //                   toggleBoolValue(
-                                                  //                       _cartController
+                                                  //                       shiftController.cartController
                                                   //                           .refreshScreen
                                                   //                           .value);
                                                   //             }
@@ -2337,7 +2337,7 @@ class _PosMenuState extends State<PosMenu> {
                                                   //                                                           });
                                                   //                                                     }
                                                   //                                                   } else {
-                                                  //                                                     _cartController.addItem(
+                                                  //                                                     shiftController.cartController.addItem(
                                                   //                                                         cart.Cart(
                                                   //                                                             diningAmount: double
                                                   //                                                                 .parse(singleMenu
@@ -2374,11 +2374,11 @@ class _PosMenuState extends State<PosMenu> {
                                                   //                                                             quantity: 1),
                                                   //                                                         Constants.vendorId,
                                                   //                                                         context);
-                                                  //                                                     _cartController
+                                                  //                                                     shiftController.cartController
                                                   //                                                         .refreshScreen
                                                   //                                                         .value =
                                                   //                                                         toggleBoolValue(
-                                                  //                                                             _cartController
+                                                  //                                                             shiftController.cartController
                                                   //                                                                 .refreshScreen
                                                   //                                                                 .value);
                                                   //                                                   }
@@ -2600,7 +2600,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                     } else {
                                                                       print(
                                                                           "Empty addon");
-                                                                      _cartController.addItem(
+                                                                      shiftController.cartController.addItem(
                                                                           cart.Cart(
                                                                               diningAmount: double.parse(singleMenu.menu!.diningPrice!),
                                                                               category: "SINGLE",
@@ -2619,10 +2619,10 @@ class _PosMenuState extends State<PosMenu> {
                                                                               quantity: 1),
                                                                           int.parse(vendorId.toString()),
                                                                           context);
-                                                                      _cartController
+                                                                      shiftController.cartController
                                                                               .refreshScreen
                                                                               .value =
-                                                                          toggleBoolValue(_cartController
+                                                                          toggleBoolValue(shiftController.cartController
                                                                               .refreshScreen
                                                                               .value);
                                                                     }
@@ -2751,12 +2751,12 @@ class _PosMenuState extends State<PosMenu> {
                                                       Radius.circular(8))),
                                               width: Get.width * 0.3,
                                               child: Obx(() {
-                                                if (_cartController
+                                                if (shiftController.cartController
                                                         .refreshScreen.value ||
-                                                    !_cartController
+                                                    !shiftController.cartController
                                                         .refreshScreen.value) {
                                                   return CartScreen(
-                                                      isDining: _cartController
+                                                      isDining: shiftController.cartController
                                                           .diningValue,
                                                   updateDiningValue: updateDiningValue,
                                                   );
@@ -2923,7 +2923,7 @@ class _PosMenuState extends State<PosMenu> {
                   //                                     MainAxisAlignment
                   //                                         .spaceAround,
                   //                                 children: [
-                  //                                   if (_cartController
+                  //                                   if (shiftController.cartController
                   //                                       .diningValue)
                   //                                     Center(
                   //                                       child: Text(
@@ -2985,13 +2985,13 @@ class _PosMenuState extends State<PosMenu> {
                   //                                                                             onTap: () async {
                   //                                                                               final prefs = await SharedPreferences.getInstance();
                   //                                                                               String vendorId = prefs.getString(Constants.vendorId.toString()) ?? '';
-                  //                                                                               _cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
+                  //                                                                               shiftController.cartController.tableNumber = snapshot.data!.data.bookedTable[index].bookedTableNumber;
                   //                                                                               if (snapshot.data!.data.bookedTable[index].status == 1) {
                   //                                                                                 Map<String, dynamic> param = {
                   //                                                                                   'vendor_id': int.parse(vendorId.toString()),
                   //                                                                                   'booked_table_number': snapshot.data!.data.bookedTable[index].bookedTableNumber,
                   //                                                                                 };
-                  //                                                                                 BaseModel<BookedOrderModel> baseModel = await _cartController.getBookedTableData(param, context);
+                  //                                                                                 BaseModel<BookedOrderModel> baseModel = await shiftController.cartController.getBookedTableData(param, context);
                   //                                                                                 BookedOrderModel bookOrderModel = baseModel.data!;
                   //                                                                                 if (bookOrderModel.success!) {
                   //                                                                                   print('order');
@@ -3013,8 +3013,8 @@ class _PosMenuState extends State<PosMenu> {
                   //                                                                                   print(bookOrderModel.data!.notes);
                   //                                                                                   print("----------------");
                   //                                                                                   print(bookOrderModel.data!.orderId);
-                  //                                                                                   _cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
-                  //                                                                                   _cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
+                  //                                                                                   shiftController.cartController.cartMaster = cm.CartMaster.fromMap(jsonDecode(bookOrderModel.data!.orderData!));
+                  //                                                                                   shiftController.cartController.cartMaster?.oldOrderId = bookOrderModel.data!.orderId;
                   //                                                                                   Navigator.pop(context);
                   //                                                                                 } else {
                   //                                                                                   print(bookOrderModel.toJson());
@@ -3061,38 +3061,38 @@ class _PosMenuState extends State<PosMenu> {
                   //                                                       ),
                   //                                                     ));
                   //                                         setState(() {
-                  //                                           // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-                  //                                           _cartController
+                  //                                           // shiftController.cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
+                  //                                           shiftController.cartController
                   //                                                   .diningValue =
-                  //                                               _cartController
+                  //                                               shiftController.cartController
                   //                                                           .tableNumber !=
                   //                                                       null
                   //                                                   ? true
                   //                                                   : false;
-                  //                                           _cartController
+                  //                                           shiftController.cartController
                   //                                                   .isPromocodeApplied =
                   //                                               false;
                   //                                         });
                   //                                       } else {
                   //                                         setState(() {
-                  //                                           if (_cartController
+                  //                                           if (shiftController.cartController
                   //                                                   .cartMaster
                   //                                                   ?.oldOrderId !=
                   //                                               null) {
-                  //                                             _cartController
+                  //                                             shiftController.cartController
                   //                                                     .cartMaster =
                   //                                                 null;
                   //                                           }
-                  //                                           _cartController
+                  //                                           shiftController.cartController
                   //                                                   .tableNumber =
                   //                                               null;
-                  //                                           _cartController
+                  //                                           shiftController.cartController
                   //                                                   .diningValue =
                   //                                               false;
                   //                                         });
                   //                                       }
                   //                                     },
-                  //                                     value: _cartController
+                  //                                     value: shiftController.cartController
                   //                                         .diningValue,
                   //                                     activeColor:
                   //                                         Constants.yellowColor,
@@ -3880,7 +3880,7 @@ class _PosMenuState extends State<PosMenu> {
                   //                                 //                     });
                   //                                 //               }
                   //                                 //             } else {
-                  //                                 //               _cartController.addItem(
+                  //                                 //               shiftController.cartController.addItem(
                   //                                 //                   cart.Cart(
                   //                                 //                       diningAmount: double
                   //                                 //                           .parse(singleMenu
@@ -3917,11 +3917,11 @@ class _PosMenuState extends State<PosMenu> {
                   //                                 //                       quantity: 1),
                   //                                 //                   Constants.vendorId,
                   //                                 //                   context);
-                  //                                 //               _cartController
+                  //                                 //               shiftController.cartController
                   //                                 //                       .refreshScreen
                   //                                 //                       .value =
                   //                                 //                   toggleBoolValue(
-                  //                                 //                       _cartController
+                  //                                 //                       shiftController.cartController
                   //                                 //                           .refreshScreen
                   //                                 //                           .value);
                   //                                 //             }
@@ -4237,7 +4237,7 @@ class _PosMenuState extends State<PosMenu> {
                   //                                                         });
                   //                                                   }
                   //                                                 } else {
-                  //                                                   _cartController.addItem(
+                  //                                                   shiftController.cartController.addItem(
                   //                                                       cart.Cart(
                   //                                                           diningAmount: double.parse(singleMenu.menu!.diningPrice ?? '0.0'),
                   //                                                           category: "SINGLE",
@@ -4255,10 +4255,10 @@ class _PosMenuState extends State<PosMenu> {
                   //                                                           quantity: 1),
                   //                                                       int.parse(vendorId.toString()),
                   //                                                       context);
-                  //                                                   _cartController
+                  //                                                   shiftController.cartController
                   //                                                           .refreshScreen
                   //                                                           .value =
-                  //                                                       toggleBoolValue(_cartController
+                  //                                                       toggleBoolValue(shiftController.cartController
                   //                                                           .refreshScreen
                   //                                                           .value);
                   //                                                 }
@@ -4389,12 +4389,12 @@ class _PosMenuState extends State<PosMenu> {
                   //                                     Radius.circular(8))),
                   //                             width: Get.width * 0.25,
                   //                             child: Obx(() {
-                  //                               if (_cartController
+                  //                               if (shiftController.cartController
                   //                                       .refreshScreen.value ||
-                  //                                   !_cartController
+                  //                                   !shiftController.cartController
                   //                                       .refreshScreen.value) {
                   //                                 return CartScreen(
-                  //                                     isDining: _cartController.diningValue);
+                  //                                     isDining: shiftController.cartController.diningValue);
                   //                               } else {
                   //                                 return Container();
                   //                               }
@@ -4451,7 +4451,7 @@ class _PosMenuState extends State<PosMenu> {
                               return VendorMenu(
                                 updateDiningValue: updateDiningValue,
                                 vendorId: int.parse(vendorIdMain.toString()),
-                                isDininig: _cartController.diningValue,
+                                isDininig: shiftController.cartController.diningValue,
                               );
                             }
                           }
@@ -4589,7 +4589,7 @@ class _PosMenuState extends State<PosMenu> {
                         });
                   }
                 } else {
-                  _cartController.addItem(
+                  shiftController.cartController.addItem(
                       cart.Cart(
                           diningAmount:
                               double.parse(singleMenu.diningPrice ?? '0.0'),
@@ -4609,8 +4609,8 @@ class _PosMenuState extends State<PosMenu> {
                           quantity: 1),
                       int.parse(vendorId.toString()),
                       context);
-                  _cartController.refreshScreen.value =
-                      toggleBoolValue(_cartController.refreshScreen.value);
+                  shiftController.cartController.refreshScreen.value =
+                      toggleBoolValue(shiftController.cartController.refreshScreen.value);
                 }
               },
               child: Container(
