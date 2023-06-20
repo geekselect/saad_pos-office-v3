@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pos/controller/cart_controller.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
@@ -26,6 +27,10 @@ import 'package:pos/pages/addons/addons_only.dart';
 import 'package:pos/pages/addons/addons_with_sizes.dart';
 import 'package:pos/pages/customer_data_screen.dart';
 import 'package:pos/pages/modifiers/modifier_controller.dart';
+import 'package:pos/pages/pos/Paymmmm/home_pay.dart';
+import 'package:pos/pages/pos/Paymmmm/linkly_controller.dart';
+import 'package:pos/pages/pos/Paymmmm/my_app_pay.dart';
+import 'package:pos/pages/pos/Paymmmm/pay_screen.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_menu.dart';
 import 'package:pos/printer/printer_config.dart';
@@ -76,11 +81,20 @@ class _PosMenuState extends State<PosMenu> {
         }
         _orderCustimizationController.strRestaurantModifier.value = value.data!.data!.vendor!.modifiers;
         if(value.data!.data!.vendor!.modifiers == 1) {
-          print("call");
+          print("call modifier");
           ModifierDataController _modifierDataController = Get.put(ModifierDataController());
           _modifierDataController.modifierDataApiCall();
         } else {
-          print("no call");
+          print("no call modifier");
+        }
+
+        _orderCustimizationController.strRestaurantLinkly.value = value.data!.data!.vendor!.linkly;
+        if(value.data!.data!.vendor!.linkly == 1) {
+          print("call linkly");
+          LinklyDataController _linklyDataController = Get.put(LinklyDataController());
+          _linklyDataController.linklyDataApiCall();
+        } else {
+          print("no call linkly");
         }
       });
       shiftController.callOrderSetting().then((value) {
@@ -182,6 +196,7 @@ class _PosMenuState extends State<PosMenu> {
       return total;
     }
   }
+  List<Widget> sideBarGridTiles = [];
 
   @override
   void initState() {
@@ -650,7 +665,26 @@ class _PosMenuState extends State<PosMenu> {
           Get.offAll(() => SelectionScreen());
         },
       ),
+      SideBarGridTile(
+        icon: Icons.payments,
+        title: 'Payment',
+        onTap: _orderCustimizationController.strRestaurantLinkly.value == 1 ? () {
+          print("Linkly");
+          final LinklyDataController _linklyDataController=  Get.put(LinklyDataController());
+          if( _linklyDataController.linklyDataModel.value.data!.secretKey == null) {
+            print("My Home Pay Screen");
+            Get.to(() => HomePayPage());
+          } else if( _linklyDataController.linklyDataModel.value.data!.secretKey != null && _linklyDataController.linklyDataModel.value.data!.token == null) {
+            print("Secret Key Present");
+            Get.to(() => SecretKeyScreen());
+          } else {
+            print("All Data present");
+          }
+        } : (){},
+      ),
     ];
+
+
 
     print("dining value before ${shiftController.cartController.diningValue}");
     shiftController.cartController.diningValue = widget.isDining;

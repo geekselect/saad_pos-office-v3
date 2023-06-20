@@ -16,6 +16,7 @@ import 'package:pos/model/shift_model.dart';
 import 'package:pos/model/single_vendor_model.dart';
 import 'package:pos/model/vendor_banner_model.dart';
 import 'package:pos/model/vendor_item_model.dart';
+import 'package:pos/pages/pos/Paymmmm/linkly_pair_model.dart';
 import 'package:pos/printer/printer_model.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:retrofit/retrofit.dart';
@@ -214,6 +215,9 @@ abstract class RestClient {
 
   @GET("MenuModifiers/{vendorId}")
   Future modifiers(@Path() int? vendorId);
+
+  @GET("linklyGetVedorData/{vendorId}")
+  Future linklyGet(@Path() int? vendorId);
 
   @GET("Pos-print-data/{id}")
   Future<PrinterModel> printerData(@Path() int? id);

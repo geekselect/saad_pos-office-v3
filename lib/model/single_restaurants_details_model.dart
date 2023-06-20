@@ -851,6 +851,7 @@ class Vendor {
     required this.rate,
     required this.review,
     required this.modifiers,
+    required this.linkly,
   });
 
   int id;
@@ -858,6 +859,7 @@ class Vendor {
   String tax;
   int? taxType;
   int modifiers;
+  int linkly;
   String name;
   String mapAddress;
   String forTwoPerson;
@@ -874,6 +876,7 @@ class Vendor {
   factory Vendor.fromMap(Map<String, dynamic> json) => Vendor(
     id: json["id"] == null ? null : json["id"],
     modifiers: json["modifiers"] == null ? null : json["modifiers"],
+    linkly: json["linkly"] == null ? null : json["linkly"],
     image: json["image"] == null ? null : json["image"],
     tax: json["tax"] == null ? null : json["tax"],
     taxType: json["tax_type"] == null ? null : json["tax_type"],
@@ -896,6 +899,7 @@ class Vendor {
     "tax": tax ,
     "tax_type": taxType == null ? null : taxType,
     "modifiers": modifiers,
+    "linkly": linkly,
     "name": name,
     "map_address": mapAddress ,
     "for_two_person": forTwoPerson,
