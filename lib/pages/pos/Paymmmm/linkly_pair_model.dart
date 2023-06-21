@@ -46,7 +46,7 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    vendorId: json["vendorId"],
+    vendorId: json["vendor_id"],
     id: json["id"],
     userName: json["user_name"],
     password: json["password"],
@@ -55,7 +55,7 @@ class Data {
   );
 
   Map<String, dynamic> toJson() => {
-    "vendorId": vendorId,
+    "vendor_id": vendorId,
     "id": id,
     "user_name": userName,
     "password": password,

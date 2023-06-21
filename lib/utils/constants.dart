@@ -112,7 +112,7 @@ class Constants extends GetxController{
   static String kitchenIp = 'kitchenIp';
   static String kitchenPort = 'kitchenPort';
   static String vendorName = 'vendorName';
-  static String baseLink = 'https://v4.ozfoodz.com.au/api';
+  static String baseLink = 'https://v3.ozfoodz.com.au/api';
   static String vendorBaseLink = '$baseLink/kitchen/';
   static String vendorId = 'vendorId';
   static String shiftName = 'auto_generated_shift_code';

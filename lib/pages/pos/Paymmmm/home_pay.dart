@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePayPage> {
   final LinklyDataController _linklyDataController=  Get.find<LinklyDataController>();
   TextEditingController pairCodeController = TextEditingController();
 
-  Future<void> connectLinkly() async {
+  Future<void> connectLinkly(BuildContext context) async {
     var url = Uri.parse('https://auth.sandbox.cloud.pceftpos.com/v1/pairing/cloudpos');
     var headers = {
       'Content-Type': 'application/json',
@@ -25,8 +25,6 @@ class _HomePageState extends State<HomePayPage> {
     var body = jsonEncode({
       "username": _linklyDataController.linklyDataModel.value.data!.userName ?? '',
       "password": _linklyDataController.linklyDataModel.value.data!.password ?? '',
-      // "username": '53400785001',
-      // "password": 'Y96LBF4NP52MLVX3',
       "paircode": pairCodeController.text,
     });
     // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -35,10 +33,13 @@ class _HomePageState extends State<HomePayPage> {
       print("response status ${response.statusCode}");
       print("response ${response.body}");
       if (response.statusCode == 200) {
-        // var responseBody = jsonDecode(response.body);
-        // var Secret = SecretModel.fromJson(responseBody);
-        // sharedPreferences.setString('secret', Secret.secret.toString());
-        Get.to(()=> SecretKeyScreen());
+        var responseBody = jsonDecode(response.body);
+        var Secret = SecretModel.fromJson(responseBody);
+        _linklyDataController.linklyDataModel.value.data!.secretKey = Secret.secret.toString();
+        _linklyDataController.calllinklyUpdate(context).then((value) {
+          pairCodeController.clear();
+          Get.off(()=> SecretKeyScreen());
+        });
       } else {
         print("status code not same");
       }
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePayPage> {
             TextField(controller: pairCodeController, decoration: InputDecoration(labelText: 'Pair Code')),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: connectLinkly,
+              onPressed: (){connectLinkly(context);},
               child: Text('Connect Linkly'),
             ),
           ],
@@ -96,3 +97,5 @@ class SecretModel {
     "secret": secret,
   };
 }
+
+

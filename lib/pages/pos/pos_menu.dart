@@ -668,19 +668,26 @@ class _PosMenuState extends State<PosMenu> {
       SideBarGridTile(
         icon: Icons.payments,
         title: 'Payment',
-        onTap: _orderCustimizationController.strRestaurantLinkly.value == 1 ? () {
-          print("Linkly");
-          final LinklyDataController _linklyDataController=  Get.put(LinklyDataController());
-          if( _linklyDataController.linklyDataModel.value.data!.secretKey == null) {
-            print("My Home Pay Screen");
-            Get.to(() => HomePayPage());
-          } else if( _linklyDataController.linklyDataModel.value.data!.secretKey != null && _linklyDataController.linklyDataModel.value.data!.token == null) {
-            print("Secret Key Present");
-            Get.to(() => SecretKeyScreen());
+        onTap:  (){
+          if( _orderCustimizationController.strRestaurantLinkly.value == 1 ) {
+              print("Linkly");
+              final LinklyDataController _linklyDataController=  Get.put(LinklyDataController());
+              print("linkly data ${_linklyDataController.linklyDataModel.value.data!.toJson()}");
+              if( _linklyDataController.linklyDataModel.value.data!.secretKey == null) {
+                print("My Home Pay Screen");
+                Get.to(() => HomePayPage());
+              } else if( _linklyDataController.linklyDataModel.value.data!.secretKey != null && (_linklyDataController.linklyDataModel.value.data!.token == "null" || _linklyDataController.linklyDataModel.value.data!.token == null)) {
+                print("Secret Key Present");
+                Get.to(() => SecretKeyScreen());
+              } else {
+                print("All Data present");
+              }
           } else {
-            print("All Data present");
+            print("value ${_orderCustimizationController.strRestaurantLinkly
+                .value}");
           }
-        } : (){},
+        } ,
+
       ),
     ];
 

@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://v4.ozfoodz.com.au/api/pos/';
+    baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
     // baseUrl ??= 'https://v3.ozfoodz.com.au/api/pos/';
   }
 
@@ -1298,6 +1298,23 @@ class _RestClient implements RestClient {
         _setStreamType<CustomerDataModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'linklyGetVedorData/${vendorId}',
+                queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = LinklyPairModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<LinklyPairModel> linklyUpdate(Map<String, String> map) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(map);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<LinklyPairModel>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'linklyUpdateVedorData',
                 queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = LinklyPairModel.fromJson(_result.data!);

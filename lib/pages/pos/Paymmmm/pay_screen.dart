@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:pos/pages/pos/Paymmmm/linkly_controller.dart';
 import 'package:pos/pages/pos/Paymmmm/transaction_screen.dart';
+import 'package:pos/pages/pos/pos_menu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SecretKeyScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class SecretKeyScreen extends StatefulWidget {
 
 class _SecretKeyScreenState extends State<SecretKeyScreen> {
   final LinklyDataController _linklyDataController=  Get.find<LinklyDataController>();
-  Future<void> initiatePayment() async {
+  Future<void> GetToken() async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String secretKey = prefs.getString('secret') ?? '';
     var url = Uri.parse('https://auth.sandbox.cloud.pceftpos.com/v1/tokens/cloudpos'); // Replace with the actual payment API endpoint provided by Linkly
@@ -36,15 +37,23 @@ class _SecretKeyScreenState extends State<SecretKeyScreen> {
 
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.body);
-        // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-        // sharedPreferences.setString('token', responseBody['token'].toString());
-        Get.to(()=> TransactionScreen());
+        _linklyDataController.linklyDataModel.value.data!.token = responseBody['token'].toString();
+        _linklyDataController.calllinklyUpdate(context).then((value) {
+          Get.offAll(()=> PosMenu(isDining: false));
+        });
       } else {
         print("status code not same");
       }
     } catch (e) {
       print("server error");
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("ON INIT ${_linklyDataController.linklyDataModel.value.toJson()}");
   }
   @override
   Widget build(BuildContext context) {
@@ -56,8 +65,8 @@ class _SecretKeyScreenState extends State<SecretKeyScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
-              onPressed: initiatePayment,
-              child: Text('Initiate Payment'),
+              onPressed: GetToken,
+              child: Text('Get Token'),
             ),
           ],
         ),

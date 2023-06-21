@@ -219,6 +219,9 @@ abstract class RestClient {
   @GET("linklyGetVedorData/{vendorId}")
   Future linklyGet(@Path() int? vendorId);
 
+  @POST("linklyUpdateVedorData")
+  Future<LinklyPairModel> linklyUpdate(@Body() Map<String, String> map);
+
   @GET("Pos-print-data/{id}")
   Future<PrinterModel> printerData(@Path() int? id);
 
