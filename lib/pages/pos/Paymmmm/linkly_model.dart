@@ -10,7 +10,7 @@ String linklyModelToJson(LinklyModel data) => json.encode(data.toJson());
 
 class LinklyModel {
   bool? success;
-  Data? data;
+  dynamic data;
 
   LinklyModel({
     this.success,
@@ -19,33 +19,37 @@ class LinklyModel {
 
   factory LinklyModel.fromJson(Map<String, dynamic> json) => LinklyModel(
     success: json["success"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    data: json["data"] is String
+        ? json["data"]
+        : DataLinkly.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
-    "data": data?.toJson(),
+    "data": data is DataLinkly ? data.toJson() : data,
   };
 }
 
-class Data {
+class DataLinkly {
   int? id;
   String? sessionId;
   String? type;
   Request? request;
 
-  Data({
+  DataLinkly({
     this.id,
     this.sessionId,
     this.type,
     this.request,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DataLinkly.fromJson(Map<String, dynamic> json) => DataLinkly(
     id: json["id"],
     sessionId: json["session_id"],
     type: json["type"],
-    request: json["request"] == null ? null : Request.fromJson(json["request"]),
+    request: json["request"] == null
+        ? null
+        : Request.fromJson(json["request"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -55,6 +59,7 @@ class Data {
     "request": request?.toJson(),
   };
 }
+
 
 class Request {
   String? sessionId;

@@ -24,8 +24,8 @@ class _LoginPageState extends State<LoginPage>{
   @override
   void initState() {
     super.initState();
-    // _textEmail.text = "pos@gmail.com";
-    // _textPassword.text = "Ahmed33!!";
+    _textEmail.text = "pos@gmail.com";
+    _textPassword.text = "Ahmed33!!";
     // _textEmail.text = "lahoripos@gmail.com";
     // _textPassword.text = "lahoripos3322";
   }

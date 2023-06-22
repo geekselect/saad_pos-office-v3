@@ -31,6 +31,8 @@ import '../../utils/constants.dart';
 import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 
+import 'Paymmmm/linkly_model.dart';
+
 class PosPayment extends StatefulWidget {
   double totalAmount;
   double strTaxAmount;
@@ -123,6 +125,8 @@ class _PosPaymentState extends State<PosPayment> {
     getDataShift();
     totalAmountController.text = widget.totalAmount.toString();
     _printerController.getPrinterDetails();
+    _linklyDataController.dialogTitle.value = '';
+    _linklyDataController.dialogContent.value = '';
     super.initState();
   }
 
@@ -4524,7 +4528,9 @@ class _PosPaymentState extends State<PosPayment> {
       }),
 
                   if (_linklyDataController.showDialogvalue.value == true &&
-                      _linklyDataController.linklyModel.value.data?.request?.response?.displayText?.isNotEmpty == true)
+                      (_linklyDataController.linklyModel.value.data is DataLinkly &&
+                          (_linklyDataController.linklyModel.value.data!.request?.response?.displayText?.isNotEmpty == true ||
+                              _linklyDataController.linklyModel.value.data?.request.responseType == 'receipt')))
                     Stack(
           children: [
             // Black background overlay
@@ -5500,6 +5506,8 @@ class _PosPaymentState extends State<PosPayment> {
 
 
       if (res.success!) {
+        _linklyDataController.dialogTitle.value = '';
+        _linklyDataController.dialogContent.value = '';
         Constants.toastMessage(res.data!);
         Map<String, dynamic> jsonMap =
         jsonDecode(res.orderData!.orderData!);

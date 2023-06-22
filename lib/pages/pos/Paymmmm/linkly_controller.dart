@@ -21,7 +21,7 @@ class LinklyDataController extends GetxController {
   final OrderCustimizationController _orderCustimizationController =
   Get.find<OrderCustimizationController>();
   RxInt placeValue = 0.obs;
-
+  Timer? delayedCall;
   Rx<LinklyPairModel> linklyDataModel = LinklyPairModel().obs;
 
   Future<BaseModel<LinklyPairModel>>? linklyDataApiCall() async {
@@ -62,6 +62,15 @@ class LinklyDataController extends GetxController {
       return BaseModel()..setException(ServerError.withError(error: error));
     }
     return BaseModel()..data = response;
+  }
+
+  RxString dialogTitle = ''.obs;
+  RxString dialogContent = ''.obs;
+
+  @override
+  void onClose() {
+    super.onClose();
+    timer?.cancel();
   }
 
   var uuid = Uuid();
@@ -122,6 +131,8 @@ class LinklyDataController extends GetxController {
     });
 
     var responseMessage;
+    dialogTitle.value = 'Check Pin Pad';
+    dialogContent.value = 'Please follow the instructions on the pin pad';
     try {
       Constants.onLoading(context);
       var response = await http.post(url, headers: headers, body: body);
@@ -129,6 +140,10 @@ class LinklyDataController extends GetxController {
       print('res status ${response.statusCode}');
       if (response.statusCode == 202) {
         Constants.hideDialog(context);
+        linklyModel.value = LinklyModel(
+          success: null,
+          data: null,
+        );
         fetchDataRepeatedly(id, onApproved);
       }  else {
         linklyDataModel.value.data!.secretKey = null;
@@ -147,98 +162,113 @@ class LinklyDataController extends GetxController {
     print(responseMessage);
     return completer.future;
   }
-
   Rx<LinklyModel> linklyModel = LinklyModel().obs;
   RxBool showDialogvalue = false.obs;
-
-  RxString dialogTitle = 'Dialog Title'.obs;
-  RxString dialogContent = 'Dialog Desc'.obs;
-
-   fetchDataRepeatedly(String sessionId,
-       Function(int) onApproved) {
+  Timer? timer;
+  void fetchDataRepeatedly(String sessionId, Function(int) onApproved) {
+    print("linkly Model data ${linklyModel.value.toJson()}");
     fetchData(sessionId);
-
-    Future.delayed(Duration(seconds: 1), () {
-      if (linklyModel.value.data != null) {
-        List<String>? displayText = linklyModel.value.data!.request!.response!.displayText
-            ?.map((text) => text ?? '') // Replace null values with empty strings
-            .toList();
-        if (displayText != null && displayText.isNotEmpty) {
-          String responseText = displayText[0].toString();
-          String responseType = linklyModel.value.data!.request!.responseType.toString();
-          print("res text ${responseText}");
-
-          if (responseText.isNotEmpty && responseText.toUpperCase() == 'APPROVED') {
-            linklyModel.value.data!.request!.response!.displayText![0] = '';
-            dialogTitle.value = 'Approved';
-            dialogContent.value = 'Please take your items and receipt. Thank you for shopping with us.';
-            Future.delayed(Duration(seconds: 2), (){
-              onApproved(placeValue.value);
-              dialogTitle.value = 'Check Pin Pad';
-              dialogContent.value = 'Please follow the instructions on the pin pad';
-              showDialogvalue.value = false;
-            });
-          } else {
-            if(responseText== 'SWIPE CARD') {
-              Future.delayed(Duration(seconds: 2), (){
-                dialogTitle.value = 'Swipe Card';
-                dialogContent.value = 'Please swipe the card';
-              });
-            }
-            if(responseText== 'ENTER ACCOUNT') {
-              dialogTitle.value = 'Enter Account Title';
-              dialogContent.value = 'Please select the account title';
-            }
-            if(responseText== 'ENTER PIN') {
-              dialogTitle.value = 'Enter Pin';
-              dialogContent.value = 'Please enter the pin';
-            }
-            if(responseText== 'PROCESSING') {
-              dialogTitle.value = 'PROCESSING';
-              dialogContent.value = 'Please wait, payment finalisation is in progress';
-            }
-            if(responseType== 'receipt') {
-              dialogTitle.value = 'PROCESSING';
-              dialogContent.value = 'Please wait, payment finalisation is in progress';
-            }
-
-            fetchDataRepeatedly(sessionId, onApproved);
-          }
-        } else {
-          fetchDataRepeatedly(sessionId, onApproved);
-        }
-      } else {
-        dialogTitle.value = 'Check Pin Pad';
-        dialogContent.value = 'Please follow the instructions on the pin pad';
-        fetchDataRepeatedly(sessionId, onApproved);
-      }
-    });
+    showDialogvalue.value = true;
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      fetchData(sessionId);
+      if (linklyModel.value.data is DataLinkly) {
+        DataLinkly data = linklyModel.value.data;
+        print("daaaa ${data.type}");
+        if(linklyModel.value.success != null) {
+  if (data.request?.response?.displayText?.isNotEmpty == true &&
+      data.request!.response!.displayText![0] == 'APPROVED' ||
+          data.request?.responseType == 'receipt') {
+    print("timer cancel");
+    timer.cancel();
+    showDialogvalue.value = false;
+    resetVariables();
+    onApproved(placeValue.value);
+    return;
   }
 
+
+  // Map display text values to variable values
+  dialogTitle.value =
+      mapDisplayTextToTitle(data.request?.response?.displayText?[0]);
+  dialogContent.value =
+      mapDisplayTextToVariable(data.request?.response?.displayText?[0]);
+
+  // Print the updated values
+  print('Variable 1 fetchDataRepeatedly: $dialogTitle');
+  print('Variable 2 fetchDataRepeatedly: $dialogContent');
+}
+      }
+      print("-------------------------");
+      print(linklyModel.value.toJson());
+      print("-------------------------");
+    });
+  }
   Future<void> fetchData(String sessionId) async {
     final url = 'https://v4.ozfoodz.com.au/api/pos/getLinklydata/$sessionId';
     final response = await http.get(Uri.parse(url));
+    try {
+      if (response.statusCode == 200) {
+        // Check if the response body is a JSON object
 
-    if (response.statusCode == 200) {
-      // Check if the response body is a JSON object
-      try {
-        final responseBody = jsonDecode(response.body);
-        print('response $responseBody');
-        if (responseBody['success'] == true) {
-          // Handle the case where success is true
-          LinklyModel linklyModelNew = LinklyModel.fromJson(responseBody);
-          linklyModel.value = linklyModelNew;
-          showDialogvalue.value = true;
+        // Handle the case where success is true
+        LinklyModel linklyModelNew =
+        LinklyModel.fromJson(jsonDecode(response.body));
+        linklyModel.value = linklyModelNew;
+        print("*************************");
+        print(linklyModelNew.toJson());
+        print("*************************");
 
-        } else {
-          // Handle the case where success is false
-          print("success is false");
+        if (linklyModelNew.data is DataLinkly) {
+          DataLinkly data = linklyModelNew.data!;
+          dialogTitle.value = mapDisplayTextToTitle(data.request?.response?.displayText?[0]);
+          dialogContent.value = mapDisplayTextToVariable(data.request?.response?.displayText?[0]);
+
+          // Print the updated values
+          print('Variable 1: $dialogTitle');
+          print('Variable 2: $dialogContent');
+
+          // Perform any additional logic or actions with the updated variables
         }
-      } catch (e) {
-        print("Error: Failed to parse response body");
+
+      } else {
+        print("Error: HTTP request failed with status code ${response.statusCode}");
       }
+    } catch (e) {
+      print("Error: Failed to parse response body");
+    }
+  }
+  void resetVariables() {
+    dialogContent.value = '';
+    dialogTitle.value = '';
+  }
+  String mapDisplayTextToTitle(String? displayText) {
+    if (displayText == "SWIPE CARD") {
+      return "SWIPE CARD";
+    } else if (displayText == "ENTER ACCOUNT") {
+      return "ENTER ACCOUNT";
+    } else if (displayText == "ENTER PIN") {
+      return "ENTER PIN";
+    } else if (displayText == "PROCESSING") {
+      return "PROCESSING";
+    } else if (displayText == "APPROVED") {
+      return "APPROVED";
     } else {
-      print("Error: HTTP request failed with status code ${response.statusCode}");
+      return "";
+    }
+  }
+  String mapDisplayTextToVariable(String? displayText) {
+    if (displayText == "SWIPE CARD") {
+      return "Please swipe a card";
+    } else if (displayText == "ENTER ACCOUNT") {
+      return "Please enter an account";
+    } else if (displayText == "ENTER PIN") {
+      return "Please enter a pin";
+    } else if (displayText == "PROCESSING") {
+      return "Processing... Please wait";
+    } else if (displayText == "APPROVED") {
+      return "Transaction approved";
+    } else {
+      return "";
     }
   }
 
@@ -249,3 +279,5 @@ class LinklyDataController extends GetxController {
     linklyDataApiCall();
   }
 }
+
+///Old
