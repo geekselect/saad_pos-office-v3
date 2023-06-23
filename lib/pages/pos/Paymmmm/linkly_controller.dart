@@ -45,7 +45,7 @@ class LinklyDataController extends GetxController {
   Future<BaseModel<LinklyPairModel>> calllinklyUpdate(BuildContext context) async {
     LinklyPairModel response;
     try {
-      Constants.onLoading(context);
+
       Map<String, String> body = {
         'vendorId': linklyDataModel.value.data!.vendorId.toString(),
         'user_name': linklyDataModel.value.data!.userName.toString(),
@@ -54,7 +54,7 @@ class LinklyDataController extends GetxController {
         'secret_key': linklyDataModel.value.data!.secretKey ?? '',
       };
       response = await RestClient(await RetroApi().dioData()).linklyUpdate(body);
-      Constants.hideDialog(context);
+
       linklyDataModel.value = response;
     } catch (error, stacktrace) {
       Constants.hideDialog(context);

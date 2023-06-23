@@ -676,9 +676,6 @@ class _PosMenuState extends State<PosMenu> {
               if( _linklyDataController.linklyDataModel.value.data!.secretKey == null) {
                 print("My Home Pay Screen");
                 Get.to(() => HomePayPage());
-              } else if( _linklyDataController.linklyDataModel.value.data!.secretKey != null && (_linklyDataController.linklyDataModel.value.data!.token == "null" || _linklyDataController.linklyDataModel.value.data!.token == null)) {
-                print("Secret Key Present");
-                Get.to(() => SecretKeyScreen());
               } else {
                 print("All Data present");
               }
