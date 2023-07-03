@@ -1779,6 +1779,34 @@ class _CartScreenState extends State<CartScreen> {
       for (int i = 0;
       i < _cartController.cartMaster!.cart.length;
       i++) {
+        _cartController.cartMaster!.cart[i].menu[0].modifiers.forEach((element) {
+          print("e");
+          element.modifierDetails!.forEach((
+              newElement) {
+            print("e 2 ${newElement.modifierPrice
+                .toString()}");
+            print(
+                "e totalAmount main ${totalAmount}");
+            print(
+                "e totalAmount cart[index].totalAmount ${_cartController
+                    .cartMaster!.cart[i]
+                    .totalAmount}");
+            totalAmount +=
+                    newElement.modifierPrice!;
+            print("e totalAmount ${totalAmount}");
+            totalAmount =
+                double.parse(
+                    (totalAmount).toStringAsFixed(
+                        2));
+            print(
+                "e totalAmount new  ${totalAmount}");
+            _cartController.calculatedAmount =
+                totalAmount;
+            print(
+                "e calculatedAmount ${ _cartController
+                    .calculatedAmount}");
+          });
+        });
         totalAmount +=
             _cartController.cartMaster!.cart[i].totalAmount;
         totalAmount =
@@ -2290,6 +2318,45 @@ class _CartScreenState extends State<CartScreen> {
                                                   menuItem
                                                       .modifiers =
                                                       selectedModifiers;
+
+                                                  // if (_cartController.taxType != 1) {
+                                                  //   ///Last Change Start
+                                                  //   double taxAmount =   ((totalAmount - _cartController.discount) * (_cartController.taxAmountNew / 100));
+                                                  //   _cartController.calculatedAmount = totalAmount + taxAmount;
+                                                  //   _cartController.calculatedTax = taxAmount;
+                                                  //   ///Last Change End
+                                                  //   // _cartController.calculatedAmount = totalAmount;
+                                                  //
+                                                  //   // double discountedTotal = double.parse(totalAmountController.text) -
+                                                  //   //     discountAmount;
+                                                  //   // _cartController.calculatedTax =
+                                                  //   //     _cartController.calculatedAmount *
+                                                  //   //         double.parse(_cartController.taxType.toString()) /
+                                                  //   //         100;
+                                                  //   // totalAmount -= _cartController.calculatedTax;
+                                                  //
+                                                  //   ///Exclusive tax
+                                                  // } else  {
+                                                  //   ///Last Change Start
+                                                  //   double taxAmount =  (totalAmount - _cartController.discount) - ((totalAmount) - (_cartController.discount) / (1+ (_cartController.taxAmountNew / 100)));
+                                                  //   _cartController.calculatedAmount = totalAmount + taxAmount;
+                                                  //   var subTotalAmount = ((totalAmount - _cartController.discount) / (1+ (_cartController.taxAmountNew / 100)));
+                                                  //   totalAmount = subTotalAmount;
+                                                  //   _cartController.calculatedTax = _cartController.calculatedAmount - totalAmount;
+                                                  //   ///Last Change End
+                                                  //
+                                                  //
+                                                  //
+                                                  //
+                                                  //   ///Fazool
+                                                  //   // _cartController.calculatedTax =
+                                                  //   //     _cartController.calculatedAmount *
+                                                  //   //         double.parse(_cartController.taxType.toString()) /
+                                                  //   //         100;
+                                                  //   // _cartController.calculatedAmount +=
+                                                  //   //     _cartController.calculatedTax;
+                                                  // }
+                                                  // subTotal = totalAmount;
                                                 });
                                               },
                                             ),

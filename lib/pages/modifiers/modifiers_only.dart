@@ -3606,6 +3606,7 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
                                     }
                                     dynamic data = convertToModifiersList(selectedModifiers);
                                     // Pass the selected modifiers to the callback function
+
                                     widget.onModifiersSelected(data);
                                   });
                                 },

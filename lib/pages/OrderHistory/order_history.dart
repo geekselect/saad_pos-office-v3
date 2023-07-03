@@ -1767,8 +1767,11 @@ import 'package:pos/utils/app_toolbar_with_btn_clr.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/cart_master.dart' as cart;
+import '../pos/Core Payments/linkly_core_payment_controller.dart';
+import '../pos/Paymmmm/linkly_controller.dart';
 
 class OrderHistory extends StatelessWidget {
+  final LinklyDataController _linklyDataController=  Get.put(LinklyDataController());
   final CartController _cartController = Get.find<CartController>();
   final DiningCartController _diningCartController = Get.find<DiningCartController>();
   final PrinterController _printerController = Get.find<PrinterController>();
@@ -3700,6 +3703,12 @@ class OrderHistory extends StatelessWidget {
                                                           // ),
                                                         ],
                                                       ),
+                                                      const SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      ElevatedButton(onPressed: (){
+                                                        // _linklyDataController.sendPurchaseRequest();
+                                                      }, child: Text("Purchase Request")),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),

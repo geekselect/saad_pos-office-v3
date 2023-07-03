@@ -3366,6 +3366,34 @@ class _DiningCartScreenState extends State<DiningCartScreen> {
       for (int i = 0;
       i < _cartController.cartMaster!.cart.length;
       i++) {
+        _cartController.cartMaster!.cart[i].menu[0].modifiers.forEach((element) {
+          print("e");
+          element.modifierDetails!.forEach((
+              newElement) {
+            print("e 2 ${newElement.modifierPrice
+                .toString()}");
+            print(
+                "e totalAmount main ${totalAmount}");
+            print(
+                "e totalAmount cart[index].totalAmount ${_cartController
+                    .cartMaster!.cart[i]
+                    .totalAmount}");
+            totalAmount +=
+            newElement.modifierPrice!;
+            print("e totalAmount ${totalAmount}");
+            totalAmount =
+                double.parse(
+                    (totalAmount).toStringAsFixed(
+                        2));
+            print(
+                "e totalAmount new  ${totalAmount}");
+            _cartController.calculatedAmount =
+                totalAmount;
+            print(
+                "e calculatedAmount ${ _cartController
+                    .calculatedAmount}");
+          });
+        });
         totalAmount +=
         _cartController.cartMaster!.cart[i].diningAmount!;
         totalAmount = double.parse((totalAmount).toStringAsFixed(2));
