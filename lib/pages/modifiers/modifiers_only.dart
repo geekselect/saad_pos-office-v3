@@ -3551,10 +3551,85 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
                     },
                   ),
                   if (isExpanded)
-                    ListView.builder(
+                    // ListView.builder(
+                    //   padding: EdgeInsets.zero,
+                    //   shrinkWrap: true,
+                    //   physics: const NeverScrollableScrollPhysics(),
+                    //   itemCount: modifierDetails.length,
+                    //   itemBuilder: (context, modifierDetailIndex) {
+                    //     var modifierDetail = modifierDetails[modifierDetailIndex];
+                    //     var isDetailSelected = isSelected && selectedModifiers[modifierType]!.contains(modifierDetail);
+                    //     return InkWell(
+                    //       splashColor: Colors.transparent,
+                    //       highlightColor: Colors.transparent,
+                    //       hoverColor: Colors.transparent,
+                    //       onTap: () {
+                    //         setState(() {
+                    //           isDetailSelected = !isDetailSelected;
+                    //           if (isDetailSelected) {
+                    //             if (!selectedModifiers.containsKey(modifierType)) {
+                    //               selectedModifiers[modifierType!] = [modifierDetail];
+                    //             } else {
+                    //               selectedModifiers[modifierType]!.add(modifierDetail);
+                    //             }
+                    //           } else {
+                    //             selectedModifiers[modifierType]!.remove(modifierDetail);
+                    //             if (selectedModifiers[modifierType]!.isEmpty) {
+                    //               selectedModifiers.remove(modifierType);
+                    //             }
+                    //           }
+                    //           dynamic data = convertToModifiersList(selectedModifiers);
+                    //           // Pass the selected modifiers to the callback function
+                    //           widget.onModifiersSelected(data);
+                    //         });
+                    //       },
+                    //       child: Row(
+                    //         children: [
+                    //           Checkbox(
+                    //             visualDensity: VisualDensity.compact, // Reduce the size of the checkbox
+                    //             checkColor: isDetailSelected ? Color(Constants.colorTheme) : null,
+                    //             value: isDetailSelected,
+                    //             onChanged: (bool? value) {
+                    //               setState(() {
+                    //                 isDetailSelected = value ?? false;
+                    //                 if (isDetailSelected) {
+                    //                   if (!selectedModifiers.containsKey(modifierType)) {
+                    //                     selectedModifiers[modifierType!] = [modifierDetail];
+                    //                   } else {
+                    //                     selectedModifiers[modifierType]!.add(modifierDetail);
+                    //                   }
+                    //                 } else {
+                    //                   selectedModifiers[modifierType]!.remove(modifierDetail);
+                    //                   if (selectedModifiers[modifierType]!.isEmpty) {
+                    //                     selectedModifiers.remove(modifierType);
+                    //                   }
+                    //                 }
+                    //                 dynamic data = convertToModifiersList(selectedModifiers);
+                    //                 // Pass the selected modifiers to the callback function
+                    //
+                    //                 widget.onModifiersSelected(data);
+                    //               });
+                    //             },
+                    //           ),
+                    //           SizedBox(width: 10),
+                    //           Text(modifierDetail.modifierName.toString()),
+                    //           SizedBox(width: 10),
+                    //           Text(double.parse(modifierDetail.modifierPrice.toString()).toStringAsFixed(2)),
+                    //         ],
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+                    GridView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        mainAxisExtent: 30,
+                        crossAxisCount: 2, // Number of columns in the grid
+                        crossAxisSpacing: 8, // Spacing between columns
+                        mainAxisSpacing: 8, // Spacing between rows
+                      ),
                       itemCount: modifierDetails.length,
                       itemBuilder: (context, modifierDetailIndex) {
                         var modifierDetail = modifierDetails[modifierDetailIndex];
@@ -3606,7 +3681,6 @@ class _ModifiersOnlyState extends State<ModifiersOnly> {
                                     }
                                     dynamic data = convertToModifiersList(selectedModifiers);
                                     // Pass the selected modifiers to the callback function
-
                                     widget.onModifiersSelected(data);
                                   });
                                 },

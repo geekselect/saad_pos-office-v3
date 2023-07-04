@@ -2615,7 +2615,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                           });
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
-                                                          placeOrder(1);
+                                                          placeOrder(1,'');
                                                           // if (kitchenPort != null) {
                                                           //   print("kitchen Added");
                                                           //   if (kitchenIp == '' &&
@@ -2653,7 +2653,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                               paymentButtonSelect = true;
                                                             });
                                                             orderPaymentType = 'POS CASH';
-                                                            placeOrder(0);
+                                                            placeOrder(0,'');
                                                           }
 
                                                           ///Last Changing
@@ -2726,7 +2726,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                                   .value = '';
                                                             });
                                                           } else {
-                                                            placeOrder(0);
+                                                            placeOrder(0, '');
                                                           }
 
 
@@ -2792,7 +2792,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                           });
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
-                                                          placeOrder(1);
+                                                          placeOrder(1, '');
                                                           // if (kitchenPort != null) {
                                                           //   print("kitchen Added");
                                                           //   if (kitchenIp == '' &&
@@ -2836,7 +2836,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                             });
                                                             orderPaymentType =
                                                                 'POS CASH TAKEAWAY';
-                                                            placeOrder(0);
+                                                            placeOrder(0, '');
                                                           }
 
                                                           ///Last Changing
@@ -2894,7 +2894,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                           _linklyDataController.placeValue.value = 0;
                                                           _linklyDataController.transactionPayment(totalAmountController.text, id, placeOrder, context);
                                                           } else {
-                                                            placeOrder(0);
+                                                            placeOrder(0, '');
                                                           }
                                                           ///Last Changing
                                                           // if (posPort != null) {
@@ -2958,7 +2958,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                           print("Takeaway older id");
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
-                                                          placeOrder(1);
+                                                          placeOrder(1, '');
                                                           // testPrintKitchen(
                                                           //     "203.175.78.102",
                                                           //     8888,
@@ -3056,7 +3056,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                               paymentButtonSelect = true;
                                                             });
                                                             orderPaymentType = 'POS CASH';
-                                                            placeOrder(2);
+                                                            placeOrder(2, '');
                                                           }
                                                           print("********");
 
@@ -3129,7 +3129,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                           _linklyDataController.placeValue.value = 2;
                                                           _linklyDataController.transactionPayment(totalAmountController.text, id, placeOrder, context);
                                                           } else {
-                                                            placeOrder(2);
+                                                            placeOrder(2, '');
                                                           }
 
                                                           ///Last Changing
@@ -3192,7 +3192,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                           print("Takeaway first older");
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
-                                                          placeOrder(1);
+                                                          placeOrder(1, '');
 
                                                           ///Last Changing
                                                           // if (kitchenPort != null) {
@@ -3919,7 +3919,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         btnColor: Color(Constants.colorTheme),
                                         onTapped: () {
                                           orderPaymentType = 'INCOMPLETE ORDER';
-                                          placeOrder(1);
+                                          placeOrder(1, '');
                                           // if (kitchenPort != null) {
                                           //   print("kitchen Added");
                                           //   if (kitchenIp == '' &&
@@ -3955,7 +3955,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         onTapped: () {
                                           if (_formKey.currentState!.validate()) {
                                             orderPaymentType = 'POS CASH';
-                                            placeOrder(0);
+                                            placeOrder(0, '');
                                           }
 
                                           ///Last Changing
@@ -4011,7 +4011,7 @@ class _PosPaymentState extends State<PosPayment> {
                                           _linklyDataController.placeValue.value = 0;
                                           _linklyDataController.transactionPayment(totalAmountController.text, id, placeOrder, context);
                                           } else {
-                                            placeOrder(0);
+                                            placeOrder(0, '');
                                           }
                                           ///Last Changing
                                           // if (posPort != null) {
@@ -4072,7 +4072,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         btnColor: Color(Constants.colorTheme),
                                         onTapped: () {
                                           orderPaymentType = 'INCOMPLETE ORDER';
-                                          placeOrder(1);
+                                          placeOrder(1, '');
                                           // if (kitchenPort != null) {
                                           //   print("kitchen Added");
                                           //   if (kitchenIp == '' &&
@@ -4111,7 +4111,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         onTapped: () {
                                           if (_formKey.currentState!.validate()) {
                                             orderPaymentType = 'POS CASH TAKEAWAY';
-                                            placeOrder(0);
+                                            placeOrder(0, '');
                                           }
 
                                           ///Last Changing
@@ -4167,7 +4167,7 @@ class _PosPaymentState extends State<PosPayment> {
                                           _linklyDataController.placeValue.value = 2;
                                           _linklyDataController.transactionPayment(totalAmountController.text, id, placeOrder, context);
                                           } else {
-                                            placeOrder(2);
+                                            placeOrder(2, '');
                                           }
                                           ///Last Changing
                                           // if (posPort != null) {
@@ -4229,7 +4229,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         onTapped: () {
                                           print("lllllll");
                                           orderPaymentType = 'INCOMPLETE ORDER';
-                                          placeOrder(1);
+                                          placeOrder(1, '');
                                           // if (kitchenPort != null) {
                                           //   print("kitchen Added");
                                           //   if (kitchenIp == '' &&
@@ -4316,7 +4316,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         onTapped: () {
                                           if (_formKey.currentState!.validate()) {
                                             orderPaymentType = 'POS CASH';
-                                            placeOrder(2);
+                                            placeOrder(2, '');
                                           }
                                           print("********");
 
@@ -4388,7 +4388,7 @@ class _PosPaymentState extends State<PosPayment> {
                                           _linklyDataController.placeValue.value = 2;
                                           _linklyDataController.transactionPayment(totalAmountController.text, id, placeOrder, context);
                                           } else {
-                                            placeOrder(2);
+                                            placeOrder(2, '');
                                           }
                                           ///Last Changing
                                           // if (posPort != null) {
@@ -4447,7 +4447,7 @@ class _PosPaymentState extends State<PosPayment> {
                                         btnColor: Color(Constants.colorTheme),
                                         onTapped: () {
                                           orderPaymentType = 'INCOMPLETE ORDER';
-                                          placeOrder(1);
+                                          placeOrder(1, '');
 
                                           ///Last Changing
                                           // if (kitchenPort != null) {
@@ -5451,7 +5451,7 @@ class _PosPaymentState extends State<PosPayment> {
   //     });
   //   }
   // }
-  Future<BaseModel<common.CommenRes>> placeOrder(int value) async {
+  Future<BaseModel<common.CommenRes>> placeOrder(int value, String id) async {
     final prefs = await SharedPreferences.getInstance();
     // String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';
     String shiftCode = prefs.getString(Constants.shiftCode.toString()) ?? '';
@@ -5474,6 +5474,7 @@ class _PosPaymentState extends State<PosPayment> {
                         ? discount
                         : null,
         'vendor_id': widget.venderId.toString(),
+        'linkly_id': id,
         'date': widget.orderDate,
         'shift_code': shiftCode,
         'time': widget.orderTime,
@@ -5729,7 +5730,7 @@ class _PosPaymentState extends State<PosPayment> {
                         print("card ${poscardController.text} cash ${poscashController.text}");
                         if(_formDialogKey.currentState!.validate()) {
                           Constants.onLoading(context);
-                          placeOrder(0);
+                          placeOrder(0, '');
                           // Constants.hideDialog(context);
                         }// Go back to the previous screen
                       },

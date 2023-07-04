@@ -3703,12 +3703,13 @@ class OrderHistory extends StatelessWidget {
                                                           // ),
                                                         ],
                                                       ),
-                                                      const SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      ElevatedButton(onPressed: (){
-                                                        // _linklyDataController.sendPurchaseRequest();
-                                                      }, child: Text("Purchase Request")),
+
+                                                      // const SizedBox(
+                                                      //   height: 5,
+                                                      // ),
+                                                      // ElevatedButton(onPressed: (){
+                                                      //   _linklyDataController.sendRefundRequest(order.linkly_id, order.amount!);
+                                                      // }, child: Text("Refund")),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),

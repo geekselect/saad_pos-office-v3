@@ -7,7 +7,7 @@ class AppbarClipper extends CustomClipper<Path>{
     path.lineTo(0, size.height);
     path.lineTo(30, size.height);
     path.arcTo(    Rect.fromCenter(
-      center: Offset(72, 100),
+      center: Offset(100, 100),
       height: 110,
       width: 100,
     ),  math.pi,

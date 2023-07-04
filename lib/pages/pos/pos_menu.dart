@@ -31,6 +31,7 @@ import 'package:pos/pages/pos/Paymmmm/home_pay.dart';
 import 'package:pos/pages/pos/Paymmmm/linkly_controller.dart';
 import 'package:pos/pages/pos/Paymmmm/my_app_pay.dart';
 import 'package:pos/pages/pos/Paymmmm/pay_screen.dart';
+import 'package:pos/pages/pos/visibility_controller.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_menu.dart';
 import 'package:pos/printer/printer_config.dart';
@@ -198,6 +199,29 @@ class _PosMenuState extends State<PosMenu> {
   }
   List<Widget> sideBarGridTiles = [];
 
+  bool isVisibleImage = true;
+  VisibilityController controller = VisibilityController();
+
+  Future<void> _loadVisibility() async {
+    final visibility = await controller.getVisibility();
+    setState(() {
+      isVisibleImage = visibility;
+    });
+  }
+
+  Future<void> _toggleVisibility() async {
+    final newVisibility = !isVisibleImage;
+    await controller.setVisibility(newVisibility);
+    setState(() {
+      isVisibleImage = newVisibility;
+    });
+  }
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState?.openDrawer();
+  }
   @override
   void initState() {
     sidebarGridTileList = [
@@ -686,7 +710,15 @@ class _PosMenuState extends State<PosMenu> {
         } ,
 
       ),
+      SideBarGridTile(
+        icon: Icons.view_day_outlined,
+        title: 'View Changed',
+        onTap: _toggleVisibility,
+      ),
     ];
+
+    _loadVisibility();
+
 
 
 
@@ -801,6 +833,70 @@ class _PosMenuState extends State<PosMenu> {
             fit: BoxFit.cover,
           )),
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: sidebarGridTileList.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      hoverColor: Color(Constants.colorTheme),
+                      contentPadding: EdgeInsets.symmetric(vertical: 8),
+                      leading: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Icon(sidebarGridTileList[index].icon, size: 30),
+                      ),
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(sidebarGridTileList[index].title, style: TextStyle(
+                          fontSize: 20,
+
+                        ),),
+                      ),
+                      onTap: sidebarGridTileList[index].onTap as void Function()?,
+                    );
+                  },
+                //   separatorBuilder: (BuildContext context, int index) {
+                //     return Divider();
+                // },
+                ),
+              ),
+            ],
+          ),
+        ),
+        // drawer: Drawer(
+        //   child: ListView(
+        //     padding: EdgeInsets.zero,
+        //     children: [
+        //       DrawerHeader(
+        //         decoration: BoxDecoration(
+        //           color: Colors.blue,
+        //         ),
+        //         child: Text(
+        //           'Drawer Header',
+        //           style: TextStyle(
+        //             color: Colors.white,
+        //             fontSize: 24,
+        //           ),
+        //         ),
+        //       ),
+        //       ListTile(
+        //         title: Text('Item 1'),
+        //         onTap: () {
+        //           // Handle item 1 tap
+        //         },
+        //       ),
+        //       ListTile(
+        //         title: Text('Item 2'),
+        //         onTap: () {
+        //           // Handle item 2 tap
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // ),
         body: isLoading
             ? Center(child: CircularProgressIndicator())
             : LayoutBuilder(
@@ -846,7 +942,7 @@ class _PosMenuState extends State<PosMenu> {
                                                       MainAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
-                                                      width: 10,
+                                                      width: 50,
                                                     ),
                                                     Padding(
                                                       padding:
@@ -1399,44 +1495,46 @@ class _PosMenuState extends State<PosMenu> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
-                                            Container(
-                                              height: Get.height,
-                                              width: Get.width * 0.1,
-                                              margin: EdgeInsets.only(top: 5),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 70,
-                                                  ),
-                                                  GridView.builder(
-                                                    shrinkWrap: true,
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    // physics: const NeverScrollableScrollPhysics(),
-                                                    gridDelegate:
-                                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 2,
-                                                      mainAxisExtent:
-                                                          Get.height * 0.1,
-                                                    ),
-                                                    itemCount: sidebarGridTileList
-                                                        .length,
-                                                    itemBuilder: (BuildContext
-                                                            context,
-                                                        int sidebarGridTileListIndex) {
-                                                      return sidebarGridTileList[
-                                                          sidebarGridTileListIndex];
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(width: 5),
+                                            ///New
+                                            // Container(
+                                            //   height: Get.height,
+                                            //   width: Get.width * 0.1,
+                                            //   margin: EdgeInsets.only(top: 5),
+                                            //   decoration: BoxDecoration(
+                                            //     color: Colors.red,
+                                            //     borderRadius:
+                                            //         BorderRadius.circular(16.0),
+                                            //   ),
+                                            //   child: Column(
+                                            //     children: [
+                                            //       SizedBox(
+                                            //         height: 70,
+                                            //       ),
+                                            //       GridView.builder(
+                                            //         shrinkWrap: true,
+                                            //         scrollDirection:
+                                            //             Axis.vertical,
+                                            //         // physics: const NeverScrollableScrollPhysics(),
+                                            //         gridDelegate:
+                                            //             SliverGridDelegateWithFixedCrossAxisCount(
+                                            //           crossAxisCount: 2,
+                                            //           mainAxisExtent:
+                                            //               Get.height * 0.1,
+                                            //         ),
+                                            //         itemCount: sidebarGridTileList
+                                            //             .length,
+                                            //         itemBuilder: (BuildContext
+                                            //                 context,
+                                            //             int sidebarGridTileListIndex) {
+                                            //           return sidebarGridTileList[
+                                            //               sidebarGridTileListIndex];
+                                            //         },
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
+                                            // SizedBox(width: 5),
+                                            ///Old
                                             //                             child: ListView.builder(
                                             //                                 itemCount:
                                             //                                     singleRestaurantsDetailsModel
@@ -1530,7 +1628,15 @@ class _PosMenuState extends State<PosMenu> {
                                             // }),
                                             Container(
                                               height: Get.height,
-                                              width: Get.width * 0.58,
+                                              width: Get.width * 0.72,
+                                              padding: EdgeInsets.symmetric(horizontal: 10),
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('images/bg-full.jpg'),
+                                                    fit: BoxFit.cover,
+                                                  )),
+
+                                              ///old
                                               // child: Column(
                                               //   children: [
                                               //     TextField(
@@ -1558,241 +1664,253 @@ class _PosMenuState extends State<PosMenu> {
                                                       SizedBox(
                                                         height: 5,
                                                       ),
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius
-                                                                        .circular(
-                                                                            8))),
-                                                        height: 60,
-                                                        width: Get.width * 0.9,
-
-                                                        // child: ListView.builder(
-                                                        //   itemCount:
-                                                        //       singleRestaurantsDetailsModel
-                                                        //               .data!
-                                                        //               .menuCategory!
-                                                        //               .length +
-                                                        //           1,
-                                                        //   shrinkWrap: true,
-                                                        //   scrollDirection:
-                                                        //       Axis.horizontal,
-                                                        //   itemBuilder:
-                                                        //       (context, index) {
-                                                        //     if (index == 0) {
-                                                        //       // Render a custom container for index 0
-                                                        //       return Padding(
-                                                        //         padding:
-                                                        //             const EdgeInsets
-                                                        //                 .all(8.0),
-                                                        //         child: GestureDetector(
-                                                        //           onTap: () {
-                                                        //             // setState(() {
-                                                        //             //   showAllMenuItems =
-                                                        //             //       true; // Update the state when custom container is pressed
-                                                        //             // });
-                                                        //           },
-                                                        //           child: Container(
-                                                        //             padding:
-                                                        //                 const EdgeInsets
-                                                        //                         .symmetric(
-                                                        //                     vertical:
-                                                        //                         10.0,
-                                                        //                     horizontal:
-                                                        //                         25.0),
-                                                        //             decoration:
-                                                        //                 BoxDecoration(
-                                                        //               borderRadius:
-                                                        //                   BorderRadius
-                                                        //                       .circular(
-                                                        //                           24),
-                                                        //               border: Border.all(
-                                                        //                   color: Colors
-                                                        //                       .redAccent,
-                                                        //                   width: 1),
-                                                        //             ),
-                                                        //             child: const Center(
-                                                        //               child: Text(
-                                                        //                 'All',
-                                                        //                 style:
-                                                        //                     TextStyle(
-                                                        //                   fontSize: 11,
-                                                        //                   fontWeight:
-                                                        //                       FontWeight
-                                                        //                           .w700,
-                                                        //                 ),
-                                                        //               ),
-                                                        //             ),
-                                                        //           ),
-                                                        //         ),
-                                                        //       );
-                                                        //     } else {
-                                                        //       // Render the remaining menu categories
-                                                        //       List<MenuCategory> menu =
-                                                        //           singleRestaurantsDetailsModel
-                                                        //               .data!
-                                                        //               .menuCategory!;
-                                                        //       MenuCategory
-                                                        //           menuCategory =
-                                                        //           menu[index - 1];
-                                                        //       menu[selectedMenuCategoryIndex]
-                                                        //           .selected = true;
-                                                        //       return Padding(
-                                                        //         padding:
-                                                        //             const EdgeInsets
-                                                        //                 .all(8.0),
-                                                        //         child: GestureDetector(
-                                                        //           onTap: () {
-                                                        //             setState(() {
-                                                        //               for (MenuCategory _menuCategory
-                                                        //                   in menu) {
-                                                        //                 _menuCategory
-                                                        //                         .selected =
-                                                        //                     false;
-                                                        //               }
-                                                        //               selectedMenuCategoryIndex =
-                                                        //                   index - 1;
-                                                        //             });
-                                                        //           },
-                                                        //           child: Container(
-                                                        //             padding: EdgeInsets
-                                                        //                 .symmetric(
-                                                        //                     vertical:
-                                                        //                         10.0,
-                                                        //                     horizontal:
-                                                        //                         25.0),
-                                                        //             decoration:
-                                                        //                 BoxDecoration(
-                                                        //               color: menuCategory
-                                                        //                       .selected
-                                                        //                   ? Color(Constants
-                                                        //                       .colorTheme)
-                                                        //                   : null,
-                                                        //               borderRadius:
-                                                        //                   BorderRadius
-                                                        //                       .circular(
-                                                        //                           24),
-                                                        //               border: Border.all(
-                                                        //                   color: Colors
-                                                        //                       .redAccent,
-                                                        //                   width: 1),
-                                                        //             ),
-                                                        //             child: Align(
-                                                        //               alignment:
-                                                        //                   Alignment
-                                                        //                       .center,
-                                                        //               child: Column(
-                                                        //                 mainAxisAlignment:
-                                                        //                     MainAxisAlignment
-                                                        //                         .center,
-                                                        //                 children: [
-                                                        //                   Text(
-                                                        //                     menuCategory
-                                                        //                         .name,
-                                                        //                     style:
-                                                        //                         TextStyle(
-                                                        //                       fontSize:
-                                                        //                           11,
-                                                        //                       fontWeight:
-                                                        //                           FontWeight
-                                                        //                               .w700,
-                                                        //                       color: menuCategory
-                                                        //                               .selected
-                                                        //                           ? Colors
-                                                        //                               .white
-                                                        //                           : null,
-                                                        //                     ),
-                                                        //                   ),
-                                                        //                 ],
-                                                        //               ),
-                                                        //             ),
-                                                        //           ),
-                                                        //         ),
-                                                        //       );
-                                                        //     }
-                                                        //   },
-                                                        // )
-                                                        child: ListView.builder(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemCount:
-                                                              singleRestaurantsDetailsModel
-                                                                      .data!
-                                                                      .menuCategory!
-                                                                      .length +
-                                                                  1,
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child:
-                                                                  GestureDetector(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    _selectedCategoryIndex =
-                                                                        index;
-                                                                  });
-                                                                },
-                                                                child: Container(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          vertical:
-                                                                              10.0,
-                                                                          horizontal:
-                                                                              25.0),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: _selectedCategoryIndex ==
-                                                                            index
-                                                                        ? Color(Constants
-                                                                            .colorTheme)
-                                                                        : null,
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                24),
-                                                                    border: Border.all(
-                                                                        color: Colors
-                                                                            .redAccent,
-                                                                        width: 1),
-                                                                  ),
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child: Text(
-                                                                    index == 0
-                                                                        ? "All"
-                                                                        : singleRestaurantsDetailsModel
-                                                                            .data!
-                                                                            .menuCategory![index -
-                                                                                1]
-                                                                            .name,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: _selectedCategoryIndex ==
-                                                                              index
-                                                                          ? Colors
-                                                                              .white
-                                                                          : Colors
-                                                                              .black,
-                                                                    ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            height: 60,
+                                                            width: Get.width * 0.10,
+                                                              // color: Colors.red,
+                                                              child: Align(
+                                                                alignment: Alignment.centerLeft,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                                  child: IconButton(
+                                                                      onPressed:  _openDrawer,
+                                                                    icon: Icon(Icons.menu),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
+                                                              )
+                                                          ),
+                                                          Container(
+                                                            height: 60,
+                                                            width: Get.width * 0.6,
+
+                                                            // child: ListView.builder(
+                                                            //   itemCount:
+                                                            //       singleRestaurantsDetailsModel
+                                                            //               .data!
+                                                            //               .menuCategory!
+                                                            //               .length +
+                                                            //           1,
+                                                            //   shrinkWrap: true,
+                                                            //   scrollDirection:
+                                                            //       Axis.horizontal,
+                                                            //   itemBuilder:
+                                                            //       (context, index) {
+                                                            //     if (index == 0) {
+                                                            //       // Render a custom container for index 0
+                                                            //       return Padding(
+                                                            //         padding:
+                                                            //             const EdgeInsets
+                                                            //                 .all(8.0),
+                                                            //         child: GestureDetector(
+                                                            //           onTap: () {
+                                                            //             // setState(() {
+                                                            //             //   showAllMenuItems =
+                                                            //             //       true; // Update the state when custom container is pressed
+                                                            //             // });
+                                                            //           },
+                                                            //           child: Container(
+                                                            //             padding:
+                                                            //                 const EdgeInsets
+                                                            //                         .symmetric(
+                                                            //                     vertical:
+                                                            //                         10.0,
+                                                            //                     horizontal:
+                                                            //                         25.0),
+                                                            //             decoration:
+                                                            //                 BoxDecoration(
+                                                            //               borderRadius:
+                                                            //                   BorderRadius
+                                                            //                       .circular(
+                                                            //                           24),
+                                                            //               border: Border.all(
+                                                            //                   color: Colors
+                                                            //                       .redAccent,
+                                                            //                   width: 1),
+                                                            //             ),
+                                                            //             child: const Center(
+                                                            //               child: Text(
+                                                            //                 'All',
+                                                            //                 style:
+                                                            //                     TextStyle(
+                                                            //                   fontSize: 11,
+                                                            //                   fontWeight:
+                                                            //                       FontWeight
+                                                            //                           .w700,
+                                                            //                 ),
+                                                            //               ),
+                                                            //             ),
+                                                            //           ),
+                                                            //         ),
+                                                            //       );
+                                                            //     } else {
+                                                            //       // Render the remaining menu categories
+                                                            //       List<MenuCategory> menu =
+                                                            //           singleRestaurantsDetailsModel
+                                                            //               .data!
+                                                            //               .menuCategory!;
+                                                            //       MenuCategory
+                                                            //           menuCategory =
+                                                            //           menu[index - 1];
+                                                            //       menu[selectedMenuCategoryIndex]
+                                                            //           .selected = true;
+                                                            //       return Padding(
+                                                            //         padding:
+                                                            //             const EdgeInsets
+                                                            //                 .all(8.0),
+                                                            //         child: GestureDetector(
+                                                            //           onTap: () {
+                                                            //             setState(() {
+                                                            //               for (MenuCategory _menuCategory
+                                                            //                   in menu) {
+                                                            //                 _menuCategory
+                                                            //                         .selected =
+                                                            //                     false;
+                                                            //               }
+                                                            //               selectedMenuCategoryIndex =
+                                                            //                   index - 1;
+                                                            //             });
+                                                            //           },
+                                                            //           child: Container(
+                                                            //             padding: EdgeInsets
+                                                            //                 .symmetric(
+                                                            //                     vertical:
+                                                            //                         10.0,
+                                                            //                     horizontal:
+                                                            //                         25.0),
+                                                            //             decoration:
+                                                            //                 BoxDecoration(
+                                                            //               color: menuCategory
+                                                            //                       .selected
+                                                            //                   ? Color(Constants
+                                                            //                       .colorTheme)
+                                                            //                   : null,
+                                                            //               borderRadius:
+                                                            //                   BorderRadius
+                                                            //                       .circular(
+                                                            //                           24),
+                                                            //               border: Border.all(
+                                                            //                   color: Colors
+                                                            //                       .redAccent,
+                                                            //                   width: 1),
+                                                            //             ),
+                                                            //             child: Align(
+                                                            //               alignment:
+                                                            //                   Alignment
+                                                            //                       .center,
+                                                            //               child: Column(
+                                                            //                 mainAxisAlignment:
+                                                            //                     MainAxisAlignment
+                                                            //                         .center,
+                                                            //                 children: [
+                                                            //                   Text(
+                                                            //                     menuCategory
+                                                            //                         .name,
+                                                            //                     style:
+                                                            //                         TextStyle(
+                                                            //                       fontSize:
+                                                            //                           11,
+                                                            //                       fontWeight:
+                                                            //                           FontWeight
+                                                            //                               .w700,
+                                                            //                       color: menuCategory
+                                                            //                               .selected
+                                                            //                           ? Colors
+                                                            //                               .white
+                                                            //                           : null,
+                                                            //                     ),
+                                                            //                   ),
+                                                            //                 ],
+                                                            //               ),
+                                                            //             ),
+                                                            //           ),
+                                                            //         ),
+                                                            //       );
+                                                            //     }
+                                                            //   },
+                                                            // )
+                                                            child: ListView.builder(
+                                                              padding: EdgeInsets.zero,
+                                                              scrollDirection:
+                                                                  Axis.horizontal,
+                                                              itemCount:
+                                                                  singleRestaurantsDetailsModel
+                                                                          .data!
+                                                                          .menuCategory!
+                                                                          .length +
+                                                                      1,
+                                                              itemBuilder:
+                                                                  (context, index) {
+                                                                return Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .symmetric(vertical: 8, horizontal: 4.0),
+                                                                  child:
+                                                                      GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        _selectedCategoryIndex =
+                                                                            index;
+                                                                      });
+                                                                    },
+                                                                    child: Container(
+                                                                      padding: EdgeInsets
+                                                                          .symmetric(
+                                                                              vertical:
+                                                                                  10.0,
+                                                                              horizontal:
+                                                                                  25.0),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: _selectedCategoryIndex ==
+                                                                                index
+                                                                            ? Color(Constants
+                                                                                .colorTheme)
+                                                                            : null,
+                                                                        borderRadius:
+                                                                            BorderRadius
+                                                                                .circular(
+                                                                                    10),
+                                                                        border: Border.all(
+                                                                            color: Colors
+                                                                                .redAccent,
+                                                                            width: 1),
+                                                                      ),
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .center,
+                                                                      child: Text(
+                                                                        index == 0
+                                                                            ? "All"
+                                                                            : singleRestaurantsDetailsModel
+                                                                                .data!
+                                                                                .menuCategory![index -
+                                                                                    1]
+                                                                                .name,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color: _selectedCategoryIndex ==
+                                                                                  index
+                                                                              ? Colors
+                                                                                  .white
+                                                                              : Colors
+                                                                                  .black,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                       const SizedBox(
-                                                        height: 20,
+                                                        height: 5,
                                                       ),
                                                     ],
                                                   ),
-
                                                   ///Second Last Grid View///
                                                   // Expanded(
                                                   //
@@ -2423,52 +2541,32 @@ class _PosMenuState extends State<PosMenu> {
                                                   //                                                   // _addToCart(singleMenu!, index);
                                                   //                                                 },
                                                   Expanded(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                            image: AssetImage('images/bg-full.jpg'),
-                                                            fit: BoxFit.cover,
-                                                          )),
-                                                      child: GridView.builder(
-                                                        shrinkWrap: true,
-                                                        gridDelegate:
-                                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                                          crossAxisCount: 5,
-                                                          mainAxisExtent:
-                                                              Get.height * 0.25,
-                                                        ),
-                                                        itemCount: _getMenuItemCount(
-                                                            singleRestaurantsDetailsModel
-                                                                .data!
-                                                                .menuCategory!),
-                                                        itemBuilder:
-                                                            (BuildContext context,
-                                                                int index) {
-                                                          SingleMenu? singleMenu;
-                                                          List<SingleMenu>
-                                                              filteredMenus = [];
-                                                          if (_selectedCategoryIndex ==
-                                                              0) {
-                                                            for (MenuCategory category
-                                                                in singleRestaurantsDetailsModel
-                                                                    .data!
-                                                                    .menuCategory!) {
-                                                              filteredMenus.addAll(category
-                                                                  .singleMenu!
-                                                                  .where((menu) => menu
-                                                                      .menu!.name
-                                                                      .toLowerCase()
-                                                                      .contains(
-                                                                          _searchQuery
-                                                                              .toLowerCase()))
-                                                                  .toList());
-                                                            }
-                                                          } else {
-                                                            filteredMenus.addAll(singleRestaurantsDetailsModel
-                                                                .data!
-                                                                .menuCategory![
-                                                                    _selectedCategoryIndex -
-                                                                        1]
+                                                    child: GridView.builder(
+                                                      shrinkWrap: true,
+                                                      gridDelegate:
+                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisSpacing: 10,
+                                                        mainAxisSpacing: 10,
+                                                        crossAxisCount: 6,
+                                                        mainAxisExtent: isVisibleImage == true ? Get.height * 0.24 : Get.height * 0.095,
+                                                      ),
+                                                      itemCount: _getMenuItemCount(
+                                                          singleRestaurantsDetailsModel
+                                                              .data!
+                                                              .menuCategory!),
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        SingleMenu? singleMenu;
+                                                        List<SingleMenu>
+                                                            filteredMenus = [];
+                                                        if (_selectedCategoryIndex ==
+                                                            0) {
+                                                          for (MenuCategory category
+                                                              in singleRestaurantsDetailsModel
+                                                                  .data!
+                                                                  .menuCategory!) {
+                                                            filteredMenus.addAll(category
                                                                 .singleMenu!
                                                                 .where((menu) => menu
                                                                     .menu!.name
@@ -2478,219 +2576,247 @@ class _PosMenuState extends State<PosMenu> {
                                                                             .toLowerCase()))
                                                                 .toList());
                                                           }
-                                                          if (index <
-                                                              filteredMenus
-                                                                  .length) {
-                                                            singleMenu =
-                                                                filteredMenus[
-                                                                    index];
-                                                          }
-                                                          return singleMenu == null
-                                                              ? SizedBox.shrink()
-                                                              : GestureDetector(
-                                                                  onTap: () async {
-                                                                    final prefs =
-                                                                        await SharedPreferences
-                                                                            .getInstance();
-                                                                    String
-                                                                        vendorId =
-                                                                        prefs.getString(Constants
-                                                                                .vendorId
-                                                                                .toString()) ??
-                                                                            '';
-                                                                    // TODO: && operator added
-                                                                    if (singleMenu!
-                                                                                .menu!
-                                                                                .price ==
-                                                                            null ||
-                                                                        singleMenu
-                                                                            .menu!
-                                                                            .menuAddon!
-                                                                            .isNotEmpty) {
-                                                                      print(
-                                                                          "not empty addon");
-                                                                      List<MenuSize>
-                                                                          tempList =
-                                                                          [];
-                                                                      tempList.addAll(
-                                                                          singleMenu
-                                                                              .menu!
-                                                                              .menuSize!);
-                                                                      if (singleMenu
+                                                        } else {
+                                                          filteredMenus.addAll(singleRestaurantsDetailsModel
+                                                              .data!
+                                                              .menuCategory![
+                                                                  _selectedCategoryIndex -
+                                                                      1]
+                                                              .singleMenu!
+                                                              .where((menu) => menu
+                                                                  .menu!.name
+                                                                  .toLowerCase()
+                                                                  .contains(
+                                                                      _searchQuery
+                                                                          .toLowerCase()))
+                                                              .toList());
+                                                        }
+                                                        if (index <
+                                                            filteredMenus
+                                                                .length) {
+                                                          singleMenu =
+                                                              filteredMenus[
+                                                                  index];
+                                                        }
+                                                        return singleMenu == null
+                                                            ? SizedBox.shrink()
+                                                            : GestureDetector(
+                                                                onTap: () async {
+                                                                  final prefs =
+                                                                      await SharedPreferences
+                                                                          .getInstance();
+                                                                  String
+                                                                      vendorId =
+                                                                      prefs.getString(Constants
+                                                                              .vendorId
+                                                                              .toString()) ??
+                                                                          '';
+                                                                  // TODO: && operator added
+                                                                  if (singleMenu!
                                                                               .menu!
                                                                               .price ==
-                                                                          null) {
-                                                                        print(
-                                                                            "ADDONS Only");
-                                                                        List<MenuSize>
-                                                                            menuSizeList =
-                                                                            singleMenu
-                                                                                .menu!
-                                                                                .menuSize!;
-                                                                        for (int menuSizeIndex =
-                                                                                0;
-                                                                            menuSizeIndex <
-                                                                                menuSizeList.length;
-                                                                            menuSizeIndex++) {
-                                                                          List<MenuAddon>
-                                                                              groupMenuAddon =
-                                                                              menuSizeList[menuSizeIndex]
-                                                                                  .groupMenuAddon!;
-                                                                          Set set =
-                                                                              {};
-                                                                          for (int groupMenuAddonIndex =
-                                                                                  0;
-                                                                              groupMenuAddonIndex <
-                                                                                  groupMenuAddon.length;
-                                                                              groupMenuAddonIndex++) {
-                                                                            if (set.contains(
-                                                                                groupMenuAddon[groupMenuAddonIndex].addonCategoryId)) {
-                                                                              //duplicate
-                                                                              groupMenuAddon[groupMenuAddonIndex].isDuplicate =
-                                                                                  true;
-                                                                            } else {
-                                                                              //unique
-                                                                              set.add(
-                                                                                  groupMenuAddon[groupMenuAddonIndex].addonCategoryId);
-                                                                            }
-                                                                          }
-                                                                        }
-                                                                        showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
-                                                                                (BuildContext
-                                                                                    context) {
-                                                                              return AlertDialog(
-                                                                                contentPadding:
-                                                                                    EdgeInsets.all(0.0),
-                                                                                shape:
-                                                                                    RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.all(
-                                                                                    Radius.circular(20),
-                                                                                  ),
-                                                                                ),
-                                                                                clipBehavior:
-                                                                                    Clip.antiAliasWithSaveLayer,
-                                                                                content:
-                                                                                    Builder(
-                                                                                  builder: (context) {
-                                                                                    var height = MediaQuery.of(context).size.height;
-                                                                                    var width = MediaQuery.of(context).size.width;
-                                                                                    return Container(
-                                                                                        height: height - 100,
-                                                                                        width: width * 0.5,
-                                                                                        child: AddonsWithSized(
-                                                                                          menu: singleMenu!.menu!,
-                                                                                          category: "SINGLE",
-                                                                                          data: singleMenu.menu!.menuSize!,
-                                                                                        ));
-                                                                                  },
-                                                                                ),
-                                                                              );
-                                                                            });
-                                                                      } else if (singleMenu
+                                                                          null ||
+                                                                      singleMenu
                                                                           .menu!
                                                                           .menuAddon!
                                                                           .isNotEmpty) {
-                                                                        print(
-                                                                            "ADDONS Only Dialog");
-
-                                                                        showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
-                                                                                (BuildContext
-                                                                                    context) {
-                                                                              return AlertDialog(
-                                                                                contentPadding:
-                                                                                    const EdgeInsets.all(0.0),
-                                                                                shape:
-                                                                                    const RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.all(
-                                                                                    Radius.circular(20),
-                                                                                  ),
-                                                                                ),
-                                                                                clipBehavior:
-                                                                                    Clip.antiAliasWithSaveLayer,
-                                                                                content:
-                                                                                    Builder(
-                                                                                  builder: (context) {
-                                                                                    var height = MediaQuery.of(context).size.height;
-                                                                                    var width = MediaQuery.of(context).size.width;
-                                                                                    return Container(
-                                                                                      height: height - 300,
-                                                                                      // height: height - 100,
-                                                                                      width: width * 0.5,
-                                                                                      child: AddonsOnly(
-                                                                                        data: singleMenu!.menu!,
-                                                                                        menuPrice: singleMenu.menu!.price!,
-                                                                                        menuId: singleMenu.id,
-                                                                                        category: "SINGLE",
-                                                                                        vendor: singleRestaurantsDetailsModel.data!.vendor!,
-                                                                                      ),
-                                                                                    );
-                                                                                  },
-                                                                                ),
-                                                                              );
-                                                                            });
-                                                                      }
-                                                                    } else {
+                                                                    print(
+                                                                        "not empty addon");
+                                                                    List<MenuSize>
+                                                                        tempList =
+                                                                        [];
+                                                                    tempList.addAll(
+                                                                        singleMenu
+                                                                            .menu!
+                                                                            .menuSize!);
+                                                                    if (singleMenu
+                                                                            .menu!
+                                                                            .price ==
+                                                                        null) {
                                                                       print(
-                                                                          "Empty addon");
-                                                                      shiftController.cartController.addItem(
-                                                                          cart.Cart(
-                                                                              diningAmount: double.parse(singleMenu.menu!.diningPrice!),
-                                                                              category: "SINGLE",
-                                                                              menu: [
-                                                                                cart.MenuCartMaster(
-                                                                                  name: singleMenu.menu!.name,
-                                                                                  totalAmount: double.parse(singleMenu.menu!.price!),
-                                                                                  id: singleMenu.id,
-                                                                                  addons: [],
-                                                                                  modifiers: [],
-                                                                                  image: singleMenu.menu!.image,
-                                                                                )
-                                                                              ],
-                                                                              size: null,
-                                                                              totalAmount: double.parse(singleMenu.menu!.price!),
-                                                                              quantity: 1),
-                                                                          int.parse(vendorId.toString()),
-                                                                          context);
-                                                                      shiftController.cartController
-                                                                              .refreshScreen
-                                                                              .value =
-                                                                          toggleBoolValue(shiftController.cartController
-                                                                              .refreshScreen
-                                                                              .value);
+                                                                          "ADDONS Only");
+                                                                      List<MenuSize>
+                                                                          menuSizeList =
+                                                                          singleMenu
+                                                                              .menu!
+                                                                              .menuSize!;
+                                                                      for (int menuSizeIndex =
+                                                                              0;
+                                                                          menuSizeIndex <
+                                                                              menuSizeList.length;
+                                                                          menuSizeIndex++) {
+                                                                        List<MenuAddon>
+                                                                            groupMenuAddon =
+                                                                            menuSizeList[menuSizeIndex]
+                                                                                .groupMenuAddon!;
+                                                                        Set set =
+                                                                            {};
+                                                                        for (int groupMenuAddonIndex =
+                                                                                0;
+                                                                            groupMenuAddonIndex <
+                                                                                groupMenuAddon.length;
+                                                                            groupMenuAddonIndex++) {
+                                                                          if (set.contains(
+                                                                              groupMenuAddon[groupMenuAddonIndex].addonCategoryId)) {
+                                                                            //duplicate
+                                                                            groupMenuAddon[groupMenuAddonIndex].isDuplicate =
+                                                                                true;
+                                                                          } else {
+                                                                            //unique
+                                                                            set.add(
+                                                                                groupMenuAddon[groupMenuAddonIndex].addonCategoryId);
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (BuildContext
+                                                                                  context) {
+                                                                            return AlertDialog(
+                                                                              contentPadding:
+                                                                                  EdgeInsets.all(0.0),
+                                                                              shape:
+                                                                                  RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.all(
+                                                                                  Radius.circular(20),
+                                                                                ),
+                                                                              ),
+                                                                              clipBehavior:
+                                                                                  Clip.antiAliasWithSaveLayer,
+                                                                              content:
+                                                                                  Builder(
+                                                                                builder: (context) {
+                                                                                  var height = MediaQuery.of(context).size.height;
+                                                                                  var width = MediaQuery.of(context).size.width;
+                                                                                  return Container(
+                                                                                      height: height - 100,
+                                                                                      width: width * 0.5,
+                                                                                      child: AddonsWithSized(
+                                                                                        menu: singleMenu!.menu!,
+                                                                                        category: "SINGLE",
+                                                                                        data: singleMenu.menu!.menuSize!,
+                                                                                      ));
+                                                                                },
+                                                                              ),
+                                                                            );
+                                                                          });
+                                                                    } else if (singleMenu
+                                                                        .menu!
+                                                                        .menuAddon!
+                                                                        .isNotEmpty) {
+                                                                      print(
+                                                                          "ADDONS Only Dialog");
+
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (BuildContext
+                                                                                  context) {
+                                                                            return AlertDialog(
+                                                                              contentPadding:
+                                                                                  const EdgeInsets.all(0.0),
+                                                                              shape:
+                                                                                  const RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.all(
+                                                                                  Radius.circular(20),
+                                                                                ),
+                                                                              ),
+                                                                              clipBehavior:
+                                                                                  Clip.antiAliasWithSaveLayer,
+                                                                              content:
+                                                                                  Builder(
+                                                                                builder: (context) {
+                                                                                  var height = MediaQuery.of(context).size.height;
+                                                                                  var width = MediaQuery.of(context).size.width;
+                                                                                  return Container(
+                                                                                    height: height - 300,
+                                                                                    // height: height - 100,
+                                                                                    width: width * 0.5,
+                                                                                    child: AddonsOnly(
+                                                                                      data: singleMenu!.menu!,
+                                                                                      menuPrice: singleMenu.menu!.price!,
+                                                                                      menuId: singleMenu.id,
+                                                                                      category: "SINGLE",
+                                                                                      vendor: singleRestaurantsDetailsModel.data!.vendor!,
+                                                                                    ),
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                            );
+                                                                          });
                                                                     }
-                                                                  },
-                                                                  child: Container(
-                                                                    // alignment: Alignment.center,
-                                                                    margin:
-                                                                        const EdgeInsets
-                                                                                .only(
-                                                                            left:
-                                                                                8.0,
-                                                                            right:
-                                                                                8.0,
-                                                                            bottom:
-                                                                                8.0),
-                                                                    decoration: const BoxDecoration(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        borderRadius:
-                                                                            BorderRadius.all(
-                                                                                Radius.circular(8))),
-                                                                    child: Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .center,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Container(
+                                                                  } else {
+                                                                    print(
+                                                                        "Empty addon");
+                                                                    shiftController.cartController.addItem(
+                                                                        cart.Cart(
+                                                                            diningAmount: double.parse(singleMenu.menu!.diningPrice!),
+                                                                            category: "SINGLE",
+                                                                            menu: [
+                                                                              cart.MenuCartMaster(
+                                                                                name: singleMenu.menu!.name,
+                                                                                totalAmount: double.parse(singleMenu.menu!.price!),
+                                                                                id: singleMenu.id,
+                                                                                addons: [],
+                                                                                modifiers: [],
+                                                                                image: singleMenu.menu!.image,
+                                                                              )
+                                                                            ],
+                                                                            size: null,
+                                                                            totalAmount: double.parse(singleMenu.menu!.price!),
+                                                                            quantity: 1),
+                                                                        int.parse(vendorId.toString()),
+                                                                        context);
+                                                                    shiftController.cartController
+                                                                            .refreshScreen
+                                                                            .value =
+                                                                        toggleBoolValue(shiftController.cartController
+                                                                            .refreshScreen
+                                                                            .value);
+                                                                  }
+                                                                },
+                                                                child: Container(
+                                                                  // alignment: Alignment.center,
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              8.0,
+                                                                          right:
+                                                                              8.0,
+                                                                          top:
+                                                                              8.0,
+                                                                      bottom: 8.0,
+                                                                      ),
+                                                                  decoration:  BoxDecoration(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      boxShadow: [
+                                                                        BoxShadow(
+                                                                          // color: Colors.grey.withOpacity(0.5),
+                                                                          color: Colors.grey.withOpacity(0.2),
+                                                                          spreadRadius: 5,
+                                                                          blurRadius: 7,
+                                                                          offset: Offset(0, 3), // changes position of shadow
+                                                                        ),
+                                                                      ],
+                                                                      borderRadius:
+                                                                          BorderRadius.all(
+                                                                              Radius.circular(8))),
+                                                                  child: Column(
+                                                                    // crossAxisAlignment:
+                                                                    //     CrossAxisAlignment
+                                                                    //         .center,
+                                                                    // mainAxisAlignment:
+                                                                    //     MainAxisAlignment
+                                                                    //         .center,
+                                                                    children: [
+                                                                      Visibility(
+                                                                        visible: isVisibleImage,
+                                                                        child: Container(
                                                                           height:
                                                                               100,
                                                                           width:
@@ -2710,84 +2836,92 @@ class _PosMenuState extends State<PosMenu> {
                                                                                 BorderRadius.circular(12.0),
                                                                           ),
                                                                         ),
-                                                                        Text(
-                                                                          singleMenu
-                                                                              .menu!
-                                                                              .name,
-                                                                          textAlign:
-                                                                              TextAlign
-                                                                                  .center,
-                                                                          maxLines:
-                                                                              2,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                            fontFamily:
-                                                                                "ProximaBold",
-                                                                            color: Color(
-                                                                                Constants.colorTheme),
-                                                                            fontSize:
-                                                                                17,
-                                                                          ),
+                                                                      ),
+                                                                      Text(
+                                                                        singleMenu
+                                                                            .menu!
+                                                                            .name,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .center,
+                                                                        maxLines:
+                                                                            2,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          fontFamily:
+                                                                              "ProximaBold",
+                                                                          color: Color(
+                                                                              Constants.colorTheme),
+                                                                          fontSize:
+                                                                              17,
                                                                         ),
-                                                                        singleMenu.menu!.price.toString() ==
-                                                                                    'null' &&
-                                                                                singleMenu.menu!.diningPrice ==
-                                                                                    null
-                                                                            ? Text(
-                                                                                "Customizable",
-                                                                                style:
-                                                                                    TextStyle(color: Theme.of(context).primaryColor),
-                                                                              )
-                                                                            : Column(
-                                                                                children: [
-                                                                                  Text(
-                                                                                    "Normal ${singleMenu.menu!.price}" ?? "Price In Addons",
+                                                                      ),
+                                                                      singleMenu.menu!.price.toString() ==
+                                                                                  'null' &&
+                                                                              singleMenu.menu!.diningPrice ==
+                                                                                  null
+                                                                          ? Text(
+                                                                              "Customizable",
+                                                                              style:
+                                                                                  TextStyle(color: Theme.of(context).primaryColor),
+                                                                            )
+                                                                          : isVisibleImage == false ?  Text(
+                                                                        "\$ ${singleMenu.menu!.price}",
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                        maxLines: 1,
+                                                                        style: const TextStyle(
+                                                                          fontWeight: FontWeight.w500,
+                                                                          color: Colors.red,
+                                                                          fontSize: 13,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ) : Column(
+                                                                              children: [
+
+                                                                                Text(
+                                                                                  "Normal ${singleMenu.menu!.price}" ?? "Price In Addons",
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  maxLines: 1,
+                                                                                  style: const TextStyle(
+                                                                                    fontWeight: FontWeight.w500,
+                                                                                    color: Colors.red,
+                                                                                    fontSize: 13,
                                                                                     overflow: TextOverflow.ellipsis,
-                                                                                    maxLines: 1,
-                                                                                    style: const TextStyle(
-                                                                                      fontWeight: FontWeight.w500,
-                                                                                      color: Colors.red,
-                                                                                      fontSize: 13,
-                                                                                      overflow: TextOverflow.ellipsis,
-                                                                                    ),
                                                                                   ),
-                                                                                  Text(
-                                                                                    "Dining ${singleMenu.menu!.diningPrice}" ?? "0.0",
+                                                                                ),
+                                                                                Text(
+                                                                                  "Dining ${singleMenu.menu!.diningPrice}" ?? "0.0",
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  maxLines: 1,
+                                                                                  style: const TextStyle(
+                                                                                    fontWeight: FontWeight.w500,
+                                                                                    color: Colors.red,
+                                                                                    fontSize: 13,
                                                                                     overflow: TextOverflow.ellipsis,
-                                                                                    maxLines: 1,
-                                                                                    style: const TextStyle(
-                                                                                      fontWeight: FontWeight.w500,
-                                                                                      color: Colors.red,
-                                                                                      fontSize: 13,
-                                                                                      overflow: TextOverflow.ellipsis,
-                                                                                    ),
                                                                                   ),
-                                                                                ],
-                                                                              ),
-                                                                        const SizedBox(
-                                                                          height: 5,
-                                                                        )
-                                                                      ],
-                                                                    ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+
+                                                                    ],
                                                                   ),
-                                                                );
-                                                        },
-                                                      ),
+                                                                ),
+                                                              );
+                                                      },
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                            SizedBox(width: 5),
                                             Container(
                                               margin: EdgeInsets.only(top: 5),
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius: BorderRadius.all(
                                                       Radius.circular(8))),
-                                              width: Get.width * 0.3,
+                                              width: Get.width * 0.27,
                                               child: Obx(() {
                                                 if (shiftController.cartController
                                                         .refreshScreen.value ||
@@ -2808,7 +2942,7 @@ class _PosMenuState extends State<PosMenu> {
                                     ],
                                   ),
                                   Positioned(
-                                    left: 35,
+                                    left: 65,
                                     top: Get.height * 0.07,
                                     child: CircleAvatar(
                                         radius: 36,

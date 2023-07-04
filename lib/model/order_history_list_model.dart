@@ -753,6 +753,7 @@ class OrderHistoryData {
   dynamic shift_code;
   String? paymentStatus;
   String? amount;
+  String? linkly_id;
   String? adminCommission;
   String? vendorAmount;
   String? deliveryType;
@@ -789,6 +790,7 @@ class OrderHistoryData {
   OrderHistoryData({
     this.id,
     this.orderId,
+    this.linkly_id,
     this.vendorId,
     this.userId,
     this.deliveryPersonId,
@@ -837,6 +839,7 @@ class OrderHistoryData {
     id: json["id"],
     orderId: json["order_id"],
     vendorId: json["vendor_id"],
+    linkly_id: json["linkly_id"],
     shift_code: json["shift_code"],
     userId: json["user_id"],
     deliveryPersonId: json["delivery_person_id"],
@@ -884,6 +887,7 @@ class OrderHistoryData {
     "id": id,
     "order_id": orderId,
     "vendor_id": vendorId,
+    "linkly_id": linkly_id,
     "shift_code": shift_code,
     "user_id": userId,
     "delivery_person_id": deliveryPersonId,
