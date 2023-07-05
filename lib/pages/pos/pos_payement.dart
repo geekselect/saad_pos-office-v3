@@ -2598,48 +2598,52 @@ class _PosPaymentState extends State<PosPayment> {
                                         Expanded(
                                             flex: 1,
                                             child: () {
-                                              if (_cartController
-                                                          .cartMaster?.oldOrderId ==
-                                                      null &&
-                                                  widget.orderDeliveryType == 'DINING') {
-                                                return Column(
-                                                  children: [
+                                              // if (_cartController
+                                              //             .cartMaster?.oldOrderId ==
+                                              //         null &&
+                                              //     widget.orderDeliveryType == 'DINING') {
+                                              //   return Column(
+                                              //     children: [
+                                              //
+                                              //       NumberButton(
+                                              //           value: 'Pay Later',
+                                              //           btnColor:
+                                              //               Color(Constants.colorTheme),
+                                              //           onTapped: paymentButtonSelect == true ? (){} :  () {
+                                              //             setState(() {
+                                              //               paymentButtonSelect = true;
+                                              //             });
+                                              //             orderPaymentType =
+                                              //                 'INCOMPLETE ORDER';
+                                              //             placeOrder(1,'');
+                                              //             // if (kitchenPort != null) {
+                                              //             //   print("kitchen Added");
+                                              //             //   if (kitchenIp == '' &&
+                                              //             //       kitchenPort == '' ||
+                                              //             //       kitchenIp == null &&
+                                              //             //           kitchenPort == null) {
+                                              //             //     print("kitchen ip empty");
+                                              //             //   } else {
+                                              //             //     print(
+                                              //             //         " kitchen ip not empty");
+                                              //             //     testPrintKitchen(
+                                              //             //         kitchenIp!,
+                                              //             //         kitchenPort!,
+                                              //             //         context,
+                                              //             //         _cartController
+                                              //             //             .cartMaster!);
+                                              //             //   }
+                                              //             // }
+                                              //           }),
+                                              //     ],
+                                              //   );
+                                              // } else
 
-                                                    NumberButton(
-                                                        value: 'Pay Later',
-                                                        btnColor:
-                                                            Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
-                                                          orderPaymentType =
-                                                              'INCOMPLETE ORDER';
-                                                          placeOrder(1,'');
-                                                          // if (kitchenPort != null) {
-                                                          //   print("kitchen Added");
-                                                          //   if (kitchenIp == '' &&
-                                                          //       kitchenPort == '' ||
-                                                          //       kitchenIp == null &&
-                                                          //           kitchenPort == null) {
-                                                          //     print("kitchen ip empty");
-                                                          //   } else {
-                                                          //     print(
-                                                          //         " kitchen ip not empty");
-                                                          //     testPrintKitchen(
-                                                          //         kitchenIp!,
-                                                          //         kitchenPort!,
-                                                          //         context,
-                                                          //         _cartController
-                                                          //             .cartMaster!);
-                                                          //   }
-                                                          // }
-                                                        }),
-                                                  ],
-                                                );
-                                              } else if (_cartController
-                                                          .cartMaster?.oldOrderId !=
-                                                      null &&
+
+                                                if (
+                                                // _cartController
+                                                //           .cartMaster?.oldOrderId !=
+                                                //       null &&
                                                   widget.orderDeliveryType == 'DINING') {
                                                 return Column(
                                                   children: [
@@ -5451,6 +5455,7 @@ class _PosPaymentState extends State<PosPayment> {
   //     });
   //   }
   // }
+
   Future<BaseModel<common.CommenRes>> placeOrder(int value, String id) async {
     final prefs = await SharedPreferences.getInstance();
     // String shiftName = prefs.getString(Constants.shiftName.toString()) ?? '';

@@ -66,7 +66,6 @@ class PosMenu extends StatefulWidget {
 class _PosMenuState extends State<PosMenu> {
   final ShiftController shiftController = Get.put(ShiftController());
 
-
   bool isLoading = false;
 
   Future<void> clearCaches() async {
@@ -225,13 +224,13 @@ class _PosMenuState extends State<PosMenu> {
   @override
   void initState() {
     sidebarGridTileList = [
-      SideBarGridTile(
-        icon: Icons.card_travel,
-        title: 'Order',
-        onTap: () {
-          Get.to(() => OrderHistory());
-        },
-      ),
+      // SideBarGridTile(
+      //   icon: Icons.card_travel,
+      //   title: 'Order',
+      //   onTap: () {
+      //     Get.to(() => OrderHistory());
+      //   },
+      // ),
       SideBarGridTile(
         icon: Icons.print,
         title: 'Printer',
@@ -239,207 +238,211 @@ class _PosMenuState extends State<PosMenu> {
           Get.to(() => PrinterConfig());
         },
       ),
-      SideBarGridTile(
-        icon: Icons.table_bar,
-        title: 'Table',
-        onTap: () async {
-          final prefs = await SharedPreferences.getInstance();
-          String vendorId =
-              prefs.getString(Constants.vendorId.toString()) ?? '';
-          bool value = true;
-          if (value) {
-            await Get.dialog(AlertDialog(
-              title: Center(child: Text('Available table no')),
-              content: SizedBox(
-                height: Get.height * 0.4,
-                width: Get.width * 0.5,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: FutureBuilder<BookTableModel>(
-                          future: getBookTable(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return Center(
-                                child: Text(snapshot.error.toString()),
-                              );
-                            } else if (snapshot.hasData) {
-                              return GridView.builder(
-                                itemCount:
-                                    snapshot.data?.data.bookedTable.length ?? 0,
-                                itemBuilder: (builder, index) {
-                                  return GestureDetector(
-                                    // onTap: (){
-                                    //   // print("B ${snapshot.data?.data.bookedTable[index].}");
-                                    // },
-                                    onTap: () async {
-                                      shiftController.cartController.tableNumber = snapshot
-                                          .data!
-                                          .data
-                                          .bookedTable[index]
-                                          .bookedTableNumber;
-                                      // if (bookOrderModel.data!.mobile !=
-                                      //     null &&
-                                      //     bookOrderModel.data!.userName!
-                                      //         .isNotEmpty) {
-                                      //   _diningCartController
-                                      //       .diningUserMobileNumber =
-                                      //   bookOrderModel.data!.mobile!;
-                                      // }
-                                      // print(bookOrderModel.data!.mobile);
-                                      //
-                                      // if (bookOrderModel.data!.notes !=
-                                      //     null &&
-                                      //     bookOrderModel.data!.userName!
-                                      //         .isNotEmpty) {
-                                      //   _diningCartController
-                                      //       .diningNotes =
-                                      //   bookOrderModel.data!.notes!;
-                                      // }
-                                      // print(bookOrderModel.data!.notes);
-                                      if (snapshot.data!.data.bookedTable[index]
-                                              .status ==
-                                          1) {
-                                        Map<String, dynamic> param = {
-                                          'vendor_id':
-                                              int.parse(vendorId.toString()),
-                                          'booked_table_number': snapshot
-                                              .data!
-                                              .data
-                                              .bookedTable[index]
-                                              .bookedTableNumber,
-                                        };
-                                        BaseModel<BookedOrderModel> baseModel =
-                                            await shiftController.cartController
-                                                .getBookedTableData(
-                                                    param, context);
-                                        BookedOrderModel bookOrderModel =
-                                            baseModel.data!;
-                                        print("------------------");
-                                        print(
-                                            "CHECK DATA ${snapshot.data?.data.bookedTable[index].toJson()}");
-                                        print("------------------");
-
-                                        if (bookOrderModel.success!) {
-                                          print(
-                                              "ANNN  ${bookOrderModel.toJson()}");
-                                          shiftController.cartController.cartMaster =
-                                              cm.CartMaster.fromMap(jsonDecode(
-                                                  bookOrderModel
-                                                      .data!.orderData!));
-                                          shiftController.cartController
-                                                  .cartMaster?.oldOrderId =
-                                              bookOrderModel.data!.orderId;
-                                          _diningCartController.diningUserName =
-                                              bookOrderModel.data!.userName!;
-                                          _diningCartController
-                                                  .diningUserMobileNumber =
-                                              bookOrderModel.data!.mobile!;
-                                          _diningCartController.diningNotes =
-                                              bookOrderModel.data!.notes!;
-                                          _diningCartController
-                                                  .nameController.text =
-                                              _diningCartController
-                                                  .diningUserName;
-                                          _diningCartController
-                                                  .phoneNoController.text =
-                                              _diningCartController
-                                                  .diningUserMobileNumber;
-                                          _diningCartController
-                                                  .notesController.text =
-                                              _diningCartController.diningNotes;
-                                          Navigator.pop(context);
-                                        } else {
-                                          print("base eror ");
-                                          print(baseModel.error);
-                                        }
-                                      } else {
-                                        print("new table select");
-                                        _diningCartController.diningUserName =
-                                            '';
-                                        _diningCartController
-                                            .diningUserMobileNumber = '';
-                                        _diningCartController.diningNotes = '';
-                                        _diningCartController
-                                                .nameController.text =
-                                            _diningCartController
-                                                .diningUserName;
-                                        _diningCartController
-                                                .phoneNoController.text =
-                                            _diningCartController
-                                                .diningUserMobileNumber;
-                                        _diningCartController
-                                                .notesController.text =
-                                            _diningCartController.diningNotes;
-                                        Navigator.pop(context);
-                                      }
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(bottom: 18),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            child: Container(
-                                              padding: EdgeInsets.all(40.0),
-                                              decoration: BoxDecoration(
-                                                  color: snapshot
-                                                              .data!
-                                                              .data
-                                                              .bookedTable[
-                                                                  index]
-                                                              .status ==
-                                                          1
-                                                      ? Color(
-                                                          Constants.colorTheme)
-                                                      : Colors.green,
-                                                  shape: BoxShape.circle),
-                                            ),
-                                          ),
-                                          Center(
-                                            child: Text(
-                                              snapshot
-                                                  .data!
-                                                  .data
-                                                  .bookedTable[index]
-                                                  .bookedTableNumber
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w800),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: kIsWeb ? 8 : 3,
-                                  mainAxisExtent: 80,
-                                ),
-                              );
-                            }
-                            return Center(
-                                child: CircularProgressIndicator(
-                              color: Color(Constants.colorTheme),
-                            ));
-                          }),
-                    ),
-                  ],
-                ),
-              ),
-            ));
-            setState(() {
-              // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
-              shiftController.cartController.diningValue =
-              shiftController.cartController.tableNumber != null ? true : false;
-              shiftController.cartController.isPromocodeApplied = false;
-            });
-          }
-        },
-      ),
+      // SideBarGridTile(
+      //   icon: Icons.table_bar,
+      //   title: 'Table',
+      //   onTap: () async {
+      //     final prefs = await SharedPreferences.getInstance();
+      //     String vendorId =
+      //         prefs.getString(Constants.vendorId.toString()) ?? '';
+      //     bool value = true;
+      //     if (value) {
+      //       await Get.dialog(AlertDialog(
+      //         title: Center(child: Text('Available table no')),
+      //         content: SizedBox(
+      //           height: Get.height * 0.4,
+      //           width: Get.width * 0.5,
+      //           child: Column(
+      //             children: [
+      //               Expanded(
+      //                 child: FutureBuilder<BookTableModel>(
+      //                     future: getBookTable(),
+      //                     builder: (context, snapshot) {
+      //                       if (snapshot.hasError) {
+      //                         return Center(
+      //                           child: Text(snapshot.error.toString()),
+      //                         );
+      //                       } else if (snapshot.hasData) {
+      //                         return GridView.builder(
+      //                           itemCount:
+      //                               snapshot.data?.data.bookedTable.length ?? 0,
+      //                           itemBuilder: (builder, index) {
+      //                             return GestureDetector(
+      //                               // onTap: (){
+      //                               //   // print("B ${snapshot.data?.data.bookedTable[index].}");
+      //                               // },
+      //                               onTap: () async {
+      //                                 shiftController.cartController.tableNumber = snapshot
+      //                                     .data!
+      //                                     .data
+      //                                     .bookedTable[index]
+      //                                     .bookedTableNumber;
+      //                                 // if (bookOrderModel.data!.mobile !=
+      //                                 //     null &&
+      //                                 //     bookOrderModel.data!.userName!
+      //                                 //         .isNotEmpty) {
+      //                                 //   _diningCartController
+      //                                 //       .diningUserMobileNumber =
+      //                                 //   bookOrderModel.data!.mobile!;
+      //                                 // }
+      //                                 // print(bookOrderModel.data!.mobile);
+      //                                 //
+      //                                 // if (bookOrderModel.data!.notes !=
+      //                                 //     null &&
+      //                                 //     bookOrderModel.data!.userName!
+      //                                 //         .isNotEmpty) {
+      //                                 //   _diningCartController
+      //                                 //       .diningNotes =
+      //                                 //   bookOrderModel.data!.notes!;
+      //                                 // }
+      //                                 // print(bookOrderModel.data!.notes);
+      //                                 if (snapshot.data!.data.bookedTable[index]
+      //                                         .status ==
+      //                                     1) {
+      //                                   Map<String, dynamic> param = {
+      //                                     'vendor_id':
+      //                                         int.parse(vendorId.toString()),
+      //                                     'booked_table_number': snapshot
+      //                                         .data!
+      //                                         .data
+      //                                         .bookedTable[index]
+      //                                         .bookedTableNumber,
+      //                                   };
+      //                                   BaseModel<BookedOrderModel> baseModel =
+      //                                       await shiftController.cartController
+      //                                           .getBookedTableData(
+      //                                               param, context);
+      //                                   BookedOrderModel bookOrderModel =
+      //                                       baseModel.data!;
+      //                                   print("------------------");
+      //                                   print(
+      //                                       "CHECK DATA ${snapshot.data?.data.bookedTable[index].toJson()}");
+      //                                   print("------------------");
+      //
+      //                                   if (bookOrderModel.success!) {
+      //                                     print(
+      //                                         "ANNN  ${bookOrderModel.toJson()}");
+      //                                     shiftController.cartController.cartMaster =
+      //                                         cm.CartMaster.fromMap(jsonDecode(
+      //                                             bookOrderModel
+      //                                                 .data!.orderData!));
+      //                                     shiftController.cartController
+      //                                             .cartMaster?.oldOrderId =
+      //                                         bookOrderModel.data!.orderId;
+      //                                     _diningCartController.diningUserName =
+      //                                         bookOrderModel.data!.userName!;
+      //                                     _diningCartController
+      //                                             .diningUserMobileNumber =
+      //                                         bookOrderModel.data!.mobile!;
+      //                                     _diningCartController.diningNotes =
+      //                                         bookOrderModel.data!.notes!;
+      //                                     _diningCartController
+      //                                             .nameController.text =
+      //                                         _diningCartController
+      //                                             .diningUserName;
+      //                                     _diningCartController
+      //                                             .phoneNoController.text =
+      //                                         _diningCartController
+      //                                             .diningUserMobileNumber;
+      //                                     _diningCartController
+      //                                             .notesController.text =
+      //                                         _diningCartController.diningNotes;
+      //                                     Navigator.pop(context);
+      //                                   } else {
+      //                                     print("base eror ");
+      //                                     print(baseModel.error);
+      //                                   }
+      //                                 } else {
+      //                                   print("new table select");
+      //                                setState(() {
+      //                                  shiftController.cartController.cartMaster?.oldOrderId = null;
+      //                                });
+      //                                   print("${shiftController.cartController.cartMaster?.oldOrderId}");
+      //                                   _diningCartController.diningUserName =
+      //                                       '';
+      //                                   _diningCartController
+      //                                       .diningUserMobileNumber = '';
+      //                                   _diningCartController.diningNotes = '';
+      //                                   _diningCartController
+      //                                           .nameController.text =
+      //                                       _diningCartController
+      //                                           .diningUserName;
+      //                                   _diningCartController
+      //                                           .phoneNoController.text =
+      //                                       _diningCartController
+      //                                           .diningUserMobileNumber;
+      //                                   _diningCartController
+      //                                           .notesController.text =
+      //                                       _diningCartController.diningNotes;
+      //                                   Navigator.pop(context);
+      //                                 }
+      //                               },
+      //                               child: Container(
+      //                                 margin: EdgeInsets.only(bottom: 18),
+      //                                 child: Stack(
+      //                                   children: [
+      //                                     Positioned(
+      //                                       child: Container(
+      //                                         padding: EdgeInsets.all(40.0),
+      //                                         decoration: BoxDecoration(
+      //                                             color: snapshot
+      //                                                         .data!
+      //                                                         .data
+      //                                                         .bookedTable[
+      //                                                             index]
+      //                                                         .status ==
+      //                                                     1
+      //                                                 ? Color(
+      //                                                     Constants.colorTheme)
+      //                                                 : Colors.green,
+      //                                             shape: BoxShape.circle),
+      //                                       ),
+      //                                     ),
+      //                                     Center(
+      //                                       child: Text(
+      //                                         snapshot
+      //                                             .data!
+      //                                             .data
+      //                                             .bookedTable[index]
+      //                                             .bookedTableNumber
+      //                                             .toString(),
+      //                                         style: TextStyle(
+      //                                             color: Colors.white,
+      //                                             fontSize: 18,
+      //                                             fontWeight: FontWeight.w800),
+      //                                       ),
+      //                                     ),
+      //                                   ],
+      //                                 ),
+      //                               ),
+      //                             );
+      //                           },
+      //                           gridDelegate:
+      //                               SliverGridDelegateWithFixedCrossAxisCount(
+      //                             crossAxisCount: kIsWeb ? 8 : 3,
+      //                             mainAxisExtent: 80,
+      //                           ),
+      //                         );
+      //                       }
+      //                       return Center(
+      //                           child: CircularProgressIndicator(
+      //                         color: Color(Constants.colorTheme),
+      //                       ));
+      //                     }),
+      //               ),
+      //             ],
+      //           ),
+      //         ),
+      //       ));
+      //       setState(() {
+      //         // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
+      //         shiftController.cartController.diningValue =
+      //         shiftController.cartController.tableNumber != null ? true : false;
+      //         shiftController.cartController.isPromocodeApplied = false;
+      //       });
+      //     }
+      //   },
+      // ),
       SideBarGridTile(
         icon: Icons.report,
         title: 'Reports',
@@ -1023,8 +1026,271 @@ class _PosMenuState extends State<PosMenu> {
                                                           ),
                                                         ) ;
                                                 }),
-
                                                 Spacer(),
+                                                Row(
+                                                  children: [
+                                                    ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorBlack)),
+                                                        // set the height to 50
+                                                        fixedSize: MaterialStateProperty.all<Size>(const Size(120, 50)),
+                                                      ),
+                                                      onPressed: (){
+                                                        Get.to(() => OrderHistory());
+                                                      },
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/orders.png',
+                                                            color: Colors.white,
+                                                            height: 20,
+                                                          ),
+                                                          Text(
+                                                            'Orders',
+                                                            style: TextStyle(
+                                                                fontSize: 20,
+                                                                color:  Colors.white),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+
+
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        backgroundColor: MaterialStateProperty.all<Color>(Color(Constants.colorBlack)),
+                                                        // set the height to 50
+                                                        fixedSize: MaterialStateProperty.all<Size>(const Size(120, 50)),
+                                                      ),
+                                                      onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          String vendorId =
+                          prefs.getString(Constants.vendorId.toString()) ?? '';
+                          bool value = true;
+                          if (value) {
+                          await Get.dialog(AlertDialog(
+                          title: Center(child: Text('Available table no')),
+                          content: SizedBox(
+                          height: Get.height * 0.4,
+                          width: Get.width * 0.5,
+                          child: Column(
+                          children: [
+                          Expanded(
+                          child: FutureBuilder<BookTableModel>(
+                          future: getBookTable(),
+                          builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                          return Center(
+                          child: Text(snapshot.error.toString()),
+                          );
+                          } else if (snapshot.hasData) {
+                          return GridView.builder(
+                          itemCount:
+                          snapshot.data?.data.bookedTable.length ?? 0,
+                          itemBuilder: (builder, index) {
+                          return GestureDetector(
+                          // onTap: (){
+                          //   // print("B ${snapshot.data?.data.bookedTable[index].}");
+                          // },
+                          onTap: () async {
+                          shiftController.cartController.tableNumber = snapshot
+                              .data!
+                              .data
+                              .bookedTable[index]
+                              .bookedTableNumber;
+                          // if (bookOrderModel.data!.mobile !=
+                          //     null &&
+                          //     bookOrderModel.data!.userName!
+                          //         .isNotEmpty) {
+                          //   _diningCartController
+                          //       .diningUserMobileNumber =
+                          //   bookOrderModel.data!.mobile!;
+                          // }
+                          // print(bookOrderModel.data!.mobile);
+                          //
+                          // if (bookOrderModel.data!.notes !=
+                          //     null &&
+                          //     bookOrderModel.data!.userName!
+                          //         .isNotEmpty) {
+                          //   _diningCartController
+                          //       .diningNotes =
+                          //   bookOrderModel.data!.notes!;
+                          // }
+                          // print(bookOrderModel.data!.notes);
+                          if (snapshot.data!.data.bookedTable[index]
+                              .status ==
+                          1) {
+                          Map<String, dynamic> param = {
+                          'vendor_id':
+                          int.parse(vendorId.toString()),
+                          'booked_table_number': snapshot
+                              .data!
+                              .data
+                              .bookedTable[index]
+                              .bookedTableNumber,
+                          };
+                          BaseModel<BookedOrderModel> baseModel =
+                          await shiftController.cartController
+                              .getBookedTableData(
+                          param, context);
+                          BookedOrderModel bookOrderModel =
+                          baseModel.data!;
+                          print("------------------");
+                          print(
+                          "CHECK DATA ${snapshot.data?.data.bookedTable[index].toJson()}");
+                          print("------------------");
+
+                          if (bookOrderModel.success!) {
+                          print(
+                          "ANNN  ${bookOrderModel.toJson()}");
+                          shiftController.cartController.cartMaster =
+                          cm.CartMaster.fromMap(jsonDecode(
+                          bookOrderModel
+                              .data!.orderData!));
+                          shiftController.cartController
+                              .cartMaster?.oldOrderId =
+                          bookOrderModel.data!.orderId;
+                          _diningCartController.diningUserName =
+                          bookOrderModel.data!.userName!;
+                          _diningCartController
+                              .diningUserMobileNumber =
+                          bookOrderModel.data!.mobile!;
+                          _diningCartController.diningNotes =
+                          bookOrderModel.data!.notes!;
+                          _diningCartController
+                              .nameController.text =
+                          _diningCartController
+                              .diningUserName;
+                          _diningCartController
+                              .phoneNoController.text =
+                          _diningCartController
+                              .diningUserMobileNumber;
+                          _diningCartController
+                              .notesController.text =
+                          _diningCartController.diningNotes;
+                          Navigator.pop(context);
+                          } else {
+                          print("base eror ");
+                          print(baseModel.error);
+                          }
+                          } else {
+                          print("new table select");
+                          setState(() {
+                          shiftController.cartController.cartMaster?.oldOrderId = null;
+                          });
+                          print("${shiftController.cartController.cartMaster?.oldOrderId}");
+                          _diningCartController.diningUserName =
+                          '';
+                          _diningCartController
+                              .diningUserMobileNumber = '';
+                          _diningCartController.diningNotes = '';
+                          _diningCartController
+                              .nameController.text =
+                          _diningCartController
+                              .diningUserName;
+                          _diningCartController
+                              .phoneNoController.text =
+                          _diningCartController
+                              .diningUserMobileNumber;
+                          _diningCartController
+                              .notesController.text =
+                          _diningCartController.diningNotes;
+                          Navigator.pop(context);
+                          }
+                          },
+                          child: Container(
+                          margin: EdgeInsets.only(bottom: 18),
+                          child: Stack(
+                          children: [
+                          Positioned(
+                          child: Container(
+                          padding: EdgeInsets.all(40.0),
+                          decoration: BoxDecoration(
+                          color: snapshot
+                              .data!
+                              .data
+                              .bookedTable[
+                          index]
+                              .status ==
+                          1
+                          ? Color(
+                          Constants.colorTheme)
+                              : Colors.green,
+                          shape: BoxShape.circle),
+                          ),
+                          ),
+                          Center(
+                          child: Text(
+                          snapshot
+                              .data!
+                              .data
+                              .bookedTable[index]
+                              .bookedTableNumber
+                              .toString(),
+                          style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800),
+                          ),
+                          ),
+                          ],
+                          ),
+                          ),
+                          );
+                          },
+                          gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: kIsWeb ? 8 : 3,
+                          mainAxisExtent: 80,
+                          ),
+                          );
+                          }
+                          return Center(
+                          child: CircularProgressIndicator(
+                          color: Color(Constants.colorTheme),
+                          ));
+                          }),
+                          ),
+                          ],
+                          ),
+                          ),
+                          ));
+                          setState(() {
+                          // _cartController.tableNumber!=null?selectMethod=DeliveryMethod.TAKEAWAY:null;
+                          shiftController.cartController.diningValue =
+                          shiftController.cartController.tableNumber != null ? true : false;
+                          shiftController.cartController.isPromocodeApplied = false;
+                          });
+                          }
+                          },
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/tables.png',
+                                                            color: Colors.white,
+                                                            height: 20,
+                                                          ),
+                                                          Text(
+                                                            'Tables',
+                                                            style: TextStyle(
+                                                                fontSize: 20,
+                                                                color:  Colors.white),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
                                                 // Container(
                                                 //   child: GestureDetector(
                                                 //       onTap: () {
@@ -1183,6 +1449,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                                                   }
                                                                                                 } else {
                                                                                                   print("nnnnn");
+                                                                                                  shiftController.cartController.cartMaster?.oldOrderId = null;
                                                                                                   Navigator.pop(context);
                                                                                                 }
                                                                                               },
@@ -1305,6 +1572,7 @@ class _PosMenuState extends State<PosMenu> {
                                                                 //           .cartMaster =
                                                                 //       null;
                                                                 // }
+                                                                shiftController.cartController.cartMaster?.oldOrderId = null;
                                                                 shiftController.cartController
                                                                         .tableNumber =
                                                                     null;
@@ -1674,10 +1942,17 @@ class _PosMenuState extends State<PosMenu> {
                                                                 alignment: Alignment.centerLeft,
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                                  child: IconButton(
-                                                                      onPressed:  _openDrawer,
-                                                                    icon: Icon(Icons.menu),
-                                                                  ),
+                                                                  child:  InkWell(
+                                                                    onTap: _openDrawer,
+                                                                    child: Container(
+                                                                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(Constants.colorTheme),
+                                                                        borderRadius: BorderRadius.circular(5)
+                                                                      ),
+                                                                      child: Icon(Icons.menu, color: Colors.white,),
+                                                                    ),
+                                                                  )
                                                                 ),
                                                               )
                                                           ),
