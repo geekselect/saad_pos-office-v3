@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,7 @@ import '../../utils/constants.dart';
 import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 
+import 'Core Payments/linkly_refund_response_model.dart';
 import 'Paymmmm/linkly_model.dart';
 
 class PosPayment extends StatefulWidget {
@@ -86,7 +88,7 @@ class _PosPaymentState extends State<PosPayment> {
   final LinklyDataController _linklyDataController=  Get.put(LinklyDataController());
   final ShiftController shiftController = Get.find<ShiftController>();
 
-    bool paymentButtonSelect = false;
+
 
   String input = "";
   String? orderPaymentType;
@@ -2650,12 +2652,10 @@ class _PosPaymentState extends State<PosPayment> {
                                                     NumberButton(
                                                         value: 'POS CASH',
                                                         btnColor: Colors.black,
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                        onTapped: () {
                                                           if (_formKey.currentState!
                                                               .validate()) {
-                                                            setState(() {
-                                                              paymentButtonSelect = true;
-                                                            });
+
                                                             orderPaymentType = 'POS CASH';
                                                             placeOrder(0,'');
                                                           }
@@ -2704,10 +2704,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                         value: 'POS CARD',
                                                         btnColor:
                                                             Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
+                                                        onTapped:  () {
                                                           orderPaymentType = 'POS CARD';
                                                           if(_orderCustimizationController.strRestaurantLinkly.value == 1) {
                                                             var id = _linklyDataController
@@ -2790,10 +2787,8 @@ class _PosPaymentState extends State<PosPayment> {
                                                         value: 'Pay Later',
                                                         btnColor:
                                                             Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
+                                                        onTapped:  () {
+
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
                                                           placeOrder(1, '');
@@ -2831,13 +2826,11 @@ class _PosPaymentState extends State<PosPayment> {
                                                     NumberButton(
                                                         value: 'POS CASH',
                                                         btnColor: Colors.black,
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                        onTapped:  () {
 
                                                           if (_formKey.currentState!
                                                               .validate()) {
-                                                            setState(() {
-                                                              paymentButtonSelect = true;
-                                                            });
+
                                                             orderPaymentType =
                                                                 'POS CASH TAKEAWAY';
                                                             placeOrder(0, '');
@@ -2887,10 +2880,8 @@ class _PosPaymentState extends State<PosPayment> {
                                                         value: 'POS CARD',
                                                         btnColor:
                                                             Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
+                                                        onTapped:   () {
+
                                                           orderPaymentType =
                                                               'POS CARD TAKEAWAY';
                                                           if(_orderCustimizationController.strRestaurantLinkly.value == 1){
@@ -2955,10 +2946,8 @@ class _PosPaymentState extends State<PosPayment> {
                                                         value: 'Pay Later',
                                                         btnColor:
                                                             Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
+                                                        onTapped:  () {
+
                                                           print("Takeaway older id");
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
@@ -3052,13 +3041,11 @@ class _PosPaymentState extends State<PosPayment> {
                                                     NumberButton(
                                                         value: 'POS CASH',
                                                         btnColor: Colors.black,
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
+                                                        onTapped:   () {
 
                                                           if (_formKey.currentState!
                                                               .validate()) {
-                                                            setState(() {
-                                                              paymentButtonSelect = true;
-                                                            });
+
                                                             orderPaymentType = 'POS CASH';
                                                             placeOrder(2, '');
                                                           }
@@ -3123,10 +3110,8 @@ class _PosPaymentState extends State<PosPayment> {
                                                         value: 'POS CARD',
                                                         btnColor:
                                                             Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
+                                                        onTapped:  () {
+
                                                           orderPaymentType = 'POS CARD';
                                                           if(_orderCustimizationController.strRestaurantLinkly.value == 1){
                                                           var id = _linklyDataController.uuid.v4();
@@ -3189,10 +3174,8 @@ class _PosPaymentState extends State<PosPayment> {
                                                         value: 'Pay Later',
                                                         btnColor:
                                                             Color(Constants.colorTheme),
-                                                        onTapped: paymentButtonSelect == true ? (){} :  () {
-                                                          setState(() {
-                                                            paymentButtonSelect = true;
-                                                          });
+                                                        onTapped:  () {
+
                                                           print("Takeaway first older");
                                                           orderPaymentType =
                                                               'INCOMPLETE ORDER';
@@ -4531,10 +4514,20 @@ class _PosPaymentState extends State<PosPayment> {
         );
       }),
 
-                  if (_linklyDataController.showDialogvalue.value == true &&
-                      (_linklyDataController.linklyModel.value.data is DataLinkly &&
-                          (_linklyDataController.linklyModel.value.data!.request?.response?.displayText?.isNotEmpty == true ||
-                              _linklyDataController.linklyModel.value.data?.request.responseType == 'receipt')))
+                  // if (_linklyDataController.showDialogvalue.value == true &&
+                  //     (_linklyDataController.linklyModel.value.data is DataLinkly &&
+                  //         (_linklyDataController.linklyModel.value.data!.request?.response?.displayText?.isNotEmpty == true ||
+                  //             _linklyDataController.linklyModel.value.data?.request.responseType == 'receipt')))
+
+                    if (_linklyDataController.showDialogvalue.value == true &&
+                        _linklyDataController.linklyModel.value.data is DataLinkly &&
+                        (
+                            (_linklyDataController.linklyModel.value.data!.request?.response is AboveResponse &&
+                                _linklyDataController.linklyModel.value.data!.request?.response?.displayText?.isNotEmpty == true) ||
+                                (_linklyDataController.linklyModel.value.data!.request?.response is BeneathResponse &&
+                                    _linklyDataController.linklyModel.value.data!.request?.responseType == 'transaction')
+                        )
+                    )
                     Stack(
           children: [
             // Black background overlay
@@ -5467,6 +5460,14 @@ class _PosPaymentState extends State<PosPayment> {
     common.CommenRes res;
     try {
       Constants.onLoading(context);
+      var random = Random();
+      var uniqueId = '';
+      print("value id $value");
+      if(value == 0 || value == 2){
+         uniqueId = random.nextInt(999999999).toString().padRight(10, '0');
+         print("unique id $uniqueId");
+      }
+      print(uniqueId);
       Map<String, dynamic> body = {
         'notes': widget.notes,
         'discounts': _selectedButton == -1
@@ -5479,7 +5480,7 @@ class _PosPaymentState extends State<PosPayment> {
                         ? discount
                         : null,
         'vendor_id': widget.venderId.toString(),
-        'linkly_id': id,
+        'linkly_id': uniqueId,
         'date': widget.orderDate,
         'shift_code': shiftCode,
         'time': widget.orderTime,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ import 'package:pos/pages/pos/Paymmmm/home_pay.dart';
 import 'package:pos/pages/pos/Paymmmm/linkly_controller.dart';
 import 'package:pos/pages/pos/Paymmmm/my_app_pay.dart';
 import 'package:pos/pages/pos/Paymmmm/pay_screen.dart';
+import 'package:pos/pages/pos/Paymmmm/transaction_screen.dart';
 import 'package:pos/pages/pos/visibility_controller.dart';
 import 'package:pos/pages/selection_screen.dart';
 import 'package:pos/pages/vendor_menu.dart';
@@ -224,13 +226,7 @@ class _PosMenuState extends State<PosMenu> {
   @override
   void initState() {
     sidebarGridTileList = [
-      // SideBarGridTile(
-      //   icon: Icons.card_travel,
-      //   title: 'Order',
-      //   onTap: () {
-      //     Get.to(() => OrderHistory());
-      //   },
-      // ),
+
       SideBarGridTile(
         icon: Icons.print,
         title: 'Printer',
@@ -717,6 +713,13 @@ class _PosMenuState extends State<PosMenu> {
         icon: Icons.view_day_outlined,
         title: 'View Changed',
         onTap: _toggleVisibility,
+      ),
+      SideBarGridTile(
+        icon: Icons.track_changes,
+        title: 'Payments Checks',
+        onTap: () {
+          Get.to(() => TransactionScreen());
+        },
       ),
     ];
 
@@ -1944,6 +1947,14 @@ class _PosMenuState extends State<PosMenu> {
                                                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                                                   child:  InkWell(
                                                                     onTap: _openDrawer,
+                                                                    // onTap: (){
+                                                                    //   var random = Random();
+                                                                    //   var uniqueId = '';
+                                                                    //     uniqueId = random.nextInt(999999999).toString().padRight(10, '0');
+                                                                    //     print("unique id $uniqueId");
+                                                                    //
+                                                                    //   print(uniqueId);
+                                                                    // },
                                                                     child: Container(
                                                                       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                                                                       decoration: BoxDecoration(
