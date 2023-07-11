@@ -67,17 +67,43 @@ class RequestRefund {
     this.response,
   });
 
+  // factory RequestRefund.fromJson(Map<String, dynamic> json) {
+  //   return RequestRefund(
+  //     sessionId: json["SessionId"],
+  //     responseType: json["ResponseType"],
+  //     response: json["Response"] == null
+  //         ? null
+  //         : json["ResponseType"] == "display"
+  //         ? AboveResponse.fromJson(json["Response"])
+  //         : BeneathResponse.fromJson(json["Response"]),
+  //   );
+  // }
+
   factory RequestRefund.fromJson(Map<String, dynamic> json) {
+    dynamic responseJson = json["Response"];
+
+    if (responseJson != null) {
+      if (responseJson is Map<String, dynamic> && responseJson.containsKey("DisplayText")) {
+        return RequestRefund(
+          sessionId: json["SessionId"],
+          response:  AboveResponse.fromJson(responseJson),
+        );
+      }
+      else{
+        return RequestRefund(
+          sessionId: json["SessionId"],
+          response: BeneathResponse.fromJson(responseJson),
+        );
+      }
+    }
+
     return RequestRefund(
       sessionId: json["SessionId"],
-      responseType: json["ResponseType"],
-      response: json["Response"] == null
-          ? null
-          : json["ResponseType"] == "display"
-          ? AboveResponse.fromJson(json["Response"])
-          : BeneathResponse.fromJson(json["Response"]),
+      response: null,
     );
   }
+
+
 
   // factory RequestRefund.fromJson(Map<String, dynamic> json) {
   //   // if (json["ResponseType"] == "display" &&
@@ -266,8 +292,8 @@ class BeneathResponse {
       merchant: json["Merchant"],
       cardType: json["CardType"],
       cardName: json["CardName"],
-      rrn: json["RRN"],
-      dateSettlement: DateTime.parse(json["DateSettlement"]),
+      rrn: json["RRN"] == null ? null : json["RRN"],
+      dateSettlement: json["DateSettlement"] != null ? DateTime.tryParse(json["DateSettlement"]) : null,
       amtCash: json["AmtCash"],
       amtPurchase: json["AmtPurchase"],
       amtTip: json["AmtTip"],
@@ -284,12 +310,14 @@ class BeneathResponse {
       success: json["Success"],
       responseCode: json["ResponseCode"],
       responseText: json["ResponseText"],
-      date: DateTime.parse(json["Date"]),
+      date: json["Date"] != null ? DateTime.tryParse(json["Date"]) : null,
       catid: json["Catid"],
       caid: json["Caid"],
       stan: json["Stan"],
+      // purchaseAnalysisData: List<dynamic>.from(json["PurchaseAnalysisData"].map((x) => x)),
+      // receipts: List<Map<String, dynamic>>.from(json["Receipts"].map((x) => x)),
       purchaseAnalysisData: List<dynamic>.from(json["PurchaseAnalysisData"].map((x) => x)),
-      receipts: List<Map<String, dynamic>>.from(json["Receipts"].map((x) => x)),
+      receipts: json["Receipts"] == null ? null : List<Map<String, dynamic>>.from(json["Receipts"].map((x) => Map<String, dynamic>.from(x))),
       responseType: json["ResponseType"],
     );
   }
@@ -327,6 +355,34 @@ class BeneathResponse {
       "ResponseType": responseType,
     };
   }
+}
+
+class RecieptModel {
+  String? type;
+  List<String?>? receiptText;
+  bool? isPrePrint;
+  String? responseType;
+
+  RecieptModel({
+    this.type,
+    this.receiptText,
+    this.isPrePrint,
+    this.responseType,
+  });
+
+  factory RecieptModel.fromJson(Map<String, dynamic> json) => RecieptModel(
+    type: json["Type"],
+    receiptText: json["ReceiptText"] == null ? [] : List<String?>.from(json["ReceiptText"]!.map((x) => x)),
+    isPrePrint: json["IsPrePrint"],
+    responseType: json["ResponseType"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "Type": type,
+    "ReceiptText": receiptText == null ? [] : List<dynamic>.from(receiptText!.map((x) => x)),
+    "IsPrePrint": isPrePrint,
+    "ResponseType": responseType,
+  };
 }
 
 

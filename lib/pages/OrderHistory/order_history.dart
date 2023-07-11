@@ -1786,1462 +1786,1503 @@ class OrderHistory extends StatelessWidget {
     _orderHistoryMainController.filterType.value = FilterType.None;
     _orderHistoryMainController.disableCompleteButton.value = false;
     return WillPopScope(
-        onWillPop: () async {
-          // await _orderCustomizationController.callGetRestaurantsDetails();
-          Get.off(() => PosMenu(
-                isDining: _cartController.diningValue,
-              ));
-          return Future.value(true);
-        },
-        child: Scaffold(
-          appBar: ApplicationToolbarWithClrBtn(
-            appbarTitle: 'Order History',
-            strButtonTitle: "",
-            btnColor: Color(Constants.colorLike),
-            onBtnPress: () {},
-          ),
-          // body: LayoutBuilder(builder: (constraints, mainContext) {
-          //   final itemWidth = constraints.width / 4.1;
-          //   return GetBuilder<OrderHistoryController>(
-          //       init: _orderHistoryMainController,
-          //       builder: (orderHistoryController) {
-          //         return FutureBuilder<BaseModel<OrderHistoryListModel>>(
-          //           future: orderHistoryController.callGetOrderHistoryList(),
-          //           builder: (context, snapshot) {
-          //             if (snapshot.connectionState ==
-          //                 ConnectionState.waiting) {
-          //               return const Center(
-          //                 child: CircularProgressIndicator(),
-          //               );
-          //             } else if (snapshot.hasData) {
-          //               final value = snapshot.data;
-          //               if (value!.data!.data!.isNotEmpty) {
-          //                 _orderHistoryMainController.totalOrders.addAll(value.data!.data!);
-          //                 for (final element in value.data!.data!) {
-          //                   if (element.deliveryType == "TAKEAWAY") {
-          //                     _orderHistoryMainController.takeAwayOrders.add(element);
-          //                   } else if (element.deliveryType == "DINING") {
-          //                     _orderHistoryMainController.DineInOrders.add(element);
-          //                   }
-          //                 }
-          //               } else {
-          //                 // handle error case
-          //               }
-          //               print('order data ${snapshot.data!.data!.data!.length}');
-          //               return SingleChildScrollView(
-          //                 child: Padding(
-          //                   padding: const EdgeInsets.symmetric(
-          //                       horizontal: 8.0),
-          //                   child: Wrap(
-          //                     children: List.generate(
-          //                         snapshot.data!.data!.data!.length, (index) {
-          //                       final order =  snapshot.data!.data!.data![index];
-          //                       return Container(
-          //                         width: itemWidth,
-          //                         margin: const EdgeInsets.symmetric(
-          //                             vertical: 5),
-          //                         // Adjust the width of each card as desired
-          //                         child: Card(
-          //                             color: Color(0XFFFFFFFF),
-          //                             shadowColor: Color(0XFFD5D4D4),
-          //                             shape: RoundedRectangleBorder(
-          //                               borderRadius:
-          //                               BorderRadius.circular(30.0),
-          //                             ),
-          //                             child : Text("${order.orderId.toString()}")
-          //
-          //                         ),
-          //                       );
-          //                     }),
-          //                   ),
-          //                 ),
-          //               );
-          //
-          //             } else if (snapshot.hasError) {
-          //               // handle the error here
-          //               return Center(
-          //                   child: Text('Error: ${snapshot.error}'));
-          //             } else {
-          //               return const Center(
-          //                   child: Text('No Orders History'));
-          //             }
-          //           },
-          //         );
-          //       });
-          // }),
-          body: LayoutBuilder(builder: (constraints, mainContext) {
-                final itemWidth = constraints.width > 600 ?  constraints.width / 4.1 : constraints.width;
-                return GetBuilder<OrderHistoryController>(
-                    init: _orderHistoryMainController,
-                    builder: (orderHistoryController) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height,
-                        decoration: BoxDecoration(
-                            color: Color(Constants.colorScreenBackGround),
-                            image: const DecorationImage(
-                              image: AssetImage('images/ic_background_image.png'),
-                              fit: BoxFit.cover,
-                            )),
-                        child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 5),
+          onWillPop: () async {
+            // await _orderCustomizationController.callGetRestaurantsDetails();
+            Get.off(() => PosMenu(
+                  isDining: _cartController.diningValue,
+                ));
+            return Future.value(true);
+          },
+          child: Scaffold(
+            appBar: ApplicationToolbarWithClrBtn(
+              appbarTitle: 'Order History',
+              strButtonTitle: "",
+              btnColor: Color(Constants.colorLike),
+              onBtnPress: () {},
+            ),
+            // body: LayoutBuilder(builder: (constraints, mainContext) {
+            //   final itemWidth = constraints.width / 4.1;
+            //   return GetBuilder<OrderHistoryController>(
+            //       init: _orderHistoryMainController,
+            //       builder: (orderHistoryController) {
+            //         return FutureBuilder<BaseModel<OrderHistoryListModel>>(
+            //           future: orderHistoryController.callGetOrderHistoryList(),
+            //           builder: (context, snapshot) {
+            //             if (snapshot.connectionState ==
+            //                 ConnectionState.waiting) {
+            //               return const Center(
+            //                 child: CircularProgressIndicator(),
+            //               );
+            //             } else if (snapshot.hasData) {
+            //               final value = snapshot.data;
+            //               if (value!.data!.data!.isNotEmpty) {
+            //                 _orderHistoryMainController.totalOrders.addAll(value.data!.data!);
+            //                 for (final element in value.data!.data!) {
+            //                   if (element.deliveryType == "TAKEAWAY") {
+            //                     _orderHistoryMainController.takeAwayOrders.add(element);
+            //                   } else if (element.deliveryType == "DINING") {
+            //                     _orderHistoryMainController.DineInOrders.add(element);
+            //                   }
+            //                 }
+            //               } else {
+            //                 // handle error case
+            //               }
+            //               print('order data ${snapshot.data!.data!.data!.length}');
+            //               return SingleChildScrollView(
+            //                 child: Padding(
+            //                   padding: const EdgeInsets.symmetric(
+            //                       horizontal: 8.0),
+            //                   child: Wrap(
+            //                     children: List.generate(
+            //                         snapshot.data!.data!.data!.length, (index) {
+            //                       final order =  snapshot.data!.data!.data![index];
+            //                       return Container(
+            //                         width: itemWidth,
+            //                         margin: const EdgeInsets.symmetric(
+            //                             vertical: 5),
+            //                         // Adjust the width of each card as desired
+            //                         child: Card(
+            //                             color: Color(0XFFFFFFFF),
+            //                             shadowColor: Color(0XFFD5D4D4),
+            //                             shape: RoundedRectangleBorder(
+            //                               borderRadius:
+            //                               BorderRadius.circular(30.0),
+            //                             ),
+            //                             child : Text("${order.orderId.toString()}")
+            //
+            //                         ),
+            //                       );
+            //                     }),
+            //                   ),
+            //                 ),
+            //               );
+            //
+            //             } else if (snapshot.hasError) {
+            //               // handle the error here
+            //               return Center(
+            //                   child: Text('Error: ${snapshot.error}'));
+            //             } else {
+            //               return const Center(
+            //                   child: Text('No Orders History'));
+            //             }
+            //           },
+            //         );
+            //       });
+            // }),
+            body: LayoutBuilder(builder: (constraints, mainContext) {
+                  final itemWidth = constraints.width > 600 ?  constraints.width / 4.1 : constraints.width;
+                  return GetBuilder<OrderHistoryController>(
+                      init: _orderHistoryMainController,
+                      builder: (orderHistoryController) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height,
+                          decoration: BoxDecoration(
+                              color: Color(Constants.colorScreenBackGround),
+                              image: const DecorationImage(
+                                image: AssetImage('images/ic_background_image.png'),
+                                fit: BoxFit.cover,
+                              )),
+                          child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 5),
 
-                                constraints.width > 650
-                                    ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.symmetric(horizontal: 10),
-                                        child: Row(
+                                  constraints.width > 650
+                                      ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.symmetric(horizontal: 10),
+                                          child: Row(
+                                            children: [
+                                              Obx(
+                                                () => orderHistoryController.deliveryTypeButton(
+                                                    onTap: () => orderHistoryController
+                                                        .applyFilterType(FilterType.DineIn),
+                                                    icon: 'assets/images/dining.png',
+                                                    title: "Dine In",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        color: orderHistoryController
+                                                                    .filterType.value ==
+                                                                FilterType.DineIn
+                                                            ? Colors.white
+                                                            : Colors.black),
+                                                    color: orderHistoryController
+                                                                .filterType.value ==
+                                                            FilterType.DineIn
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    buttonColor: orderHistoryController
+                                                                .filterType.value ==
+                                                            FilterType.DineIn
+                                                        ? Colors.red.shade500
+                                                        : Colors.white),
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Obx(
+                                                () => orderHistoryController.deliveryTypeButton(
+                                                    onTap: () => orderHistoryController
+                                                        .applyFilterType(
+                                                            FilterType.TakeAway),
+                                                    icon: 'assets/images/takeaway.png',
+                                                    title: "TakeAway",
+                                                    style: TextStyle(
+                                                            fontSize: 20,
+                                                        color: orderHistoryController
+                                                                    .filterType.value ==
+                                                                FilterType.TakeAway
+                                                            ? Colors.white
+                                                            : Colors.black),
+                                                    color: orderHistoryController.filterType.value ==
+                                                            FilterType.TakeAway
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    buttonColor: orderHistoryController
+                                                                .filterType.value ==
+                                                            FilterType.TakeAway
+                                                        ? Colors.red.shade500
+                                                        : Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                       Row(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
+                                                ElevatedButton(
+                                                  onPressed:  () async {
+                                                    if(orderHistoryController.disableCompleteButton.value == false) {
+                                                      await orderHistoryController
+                                                          .completeOrders()
+                                                          .then((value) {
+                                                        print("Done");
+                                                        Get.to(
+                                                                () =>
+                                                                PosMenu(isDining: false));
+                                                      }).catchError((error) {
+                                                        print("error");
+                                                        orderHistoryController
+                                                            .disableCompleteButton.value =
+                                                        true;
+                                                        Future.delayed(
+                                                            Duration(seconds: 30), () {
+                                                          orderHistoryController
+                                                              .disableCompleteButton.value =
+                                                          false;
+                                                        });
+                                                      });
+                                                    }
+                                                  },
+                                                  style: ButtonStyle(
+                                                    // set the height to 50
+                                                    fixedSize:
+                                                        MaterialStateProperty.all<Size>(
+                                                            const Size(200, 30)),
+                                                  ),
+                                                  child: Text(
+                                                    'Complete All Orders',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15,
+                                                        fontFamily: Constants.appFont),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Container(
+                                                  width: 180,
+                                                  margin: const EdgeInsets.only(right: 10),
+                                                  child: TextField(
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    onChanged: (value) {
+                                                      orderHistoryController
+                                                          .searchQuery.value = value;
+                                                      print(
+                                                          "search ${orderHistoryController.searchQuery.value}");
+                                                    },
+                                                    decoration: const InputDecoration(
+                                                        labelText: 'Search',
+                                                        labelStyle:
+                                                            TextStyle(color: Colors.black)
+                                                        // border: OutlineInputBorder(),
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                    ],
+                                  ) : Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal : 8.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
                                           children: [
-                                            Obx(
-                                              () => orderHistoryController.deliveryTypeButton(
-                                                  onTap: () => orderHistoryController
-                                                      .applyFilterType(FilterType.DineIn),
-                                                  icon: 'assets/images/dining.png',
-                                                  title: "Dine In",
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      color: orderHistoryController
-                                                                  .filterType.value ==
-                                                              FilterType.DineIn
-                                                          ? Colors.white
-                                                          : Colors.black),
-                                                  color: orderHistoryController
-                                                              .filterType.value ==
-                                                          FilterType.DineIn
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  buttonColor: orderHistoryController
-                                                              .filterType.value ==
-                                                          FilterType.DineIn
-                                                      ? Colors.red.shade500
-                                                      : Colors.white),
+                                            Expanded(
+                                                 child: Obx(
+                                                    () => orderHistoryController.deliveryTypeButton(
+                                                    onTap: () => orderHistoryController
+                                                        .applyFilterType(FilterType.DineIn),
+                                                    icon: 'assets/images/dining.png',
+                                                    title: "Dine In",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        color: orderHistoryController
+                                                            .filterType.value ==
+                                                            FilterType.DineIn
+                                                            ? Colors.white
+                                                            : Colors.black),
+                                                    color: orderHistoryController
+                                                        .filterType.value ==
+                                                        FilterType.DineIn
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    buttonColor: orderHistoryController
+                                                        .filterType.value ==
+                                                        FilterType.DineIn
+                                                        ? Colors.red.shade500
+                                                        : Colors.white),
+                                              ),
                                             ),
                                             const SizedBox(
                                               width: 5,
                                             ),
-                                            Obx(
-                                              () => orderHistoryController.deliveryTypeButton(
-                                                  onTap: () => orderHistoryController
-                                                      .applyFilterType(
-                                                          FilterType.TakeAway),
-                                                  icon: 'assets/images/takeaway.png',
-                                                  title: "TakeAway",
-                                                  style: TextStyle(
-                                                          fontSize: 20,
-                                                      color: orderHistoryController
-                                                                  .filterType.value ==
-                                                              FilterType.TakeAway
-                                                          ? Colors.white
-                                                          : Colors.black),
-                                                  color: orderHistoryController.filterType.value ==
-                                                          FilterType.TakeAway
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  buttonColor: orderHistoryController
-                                                              .filterType.value ==
-                                                          FilterType.TakeAway
-                                                      ? Colors.red.shade500
-                                                      : Colors.white),
+                                            Expanded(
+                                                 child: Obx(
+                                                    () => orderHistoryController.deliveryTypeButton(
+                                                    onTap: () => orderHistoryController
+                                                        .applyFilterType(
+                                                        FilterType.TakeAway),
+                                                    icon: 'assets/images/takeaway.png',
+                                                    title: "TakeAway",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        color: orderHistoryController
+                                                            .filterType.value ==
+                                                            FilterType.TakeAway
+                                                            ? Colors.white
+                                                            : Colors.black),
+                                                    color: orderHistoryController.filterType.value ==
+                                                        FilterType.TakeAway
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    buttonColor: orderHistoryController
+                                                        .filterType.value ==
+                                                        FilterType.TakeAway
+                                                        ? Colors.red.shade500
+                                                        : Colors.white),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ),
-                                     Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed:  () async {
-                                                  if(orderHistoryController.disableCompleteButton.value == false) {
-                                                    await orderHistoryController
-                                                        .completeOrders()
-                                                        .then((value) {
-                                                      print("Done");
-                                                      Get.to(
-                                                              () =>
-                                                              PosMenu(isDining: false));
-                                                    }).catchError((error) {
-                                                      print("error");
-                                                      orderHistoryController
-                                                          .disableCompleteButton.value =
-                                                      true;
-                                                      Future.delayed(
-                                                          Duration(seconds: 30), () {
-                                                        orderHistoryController
-                                                            .disableCompleteButton.value =
-                                                        false;
-                                                      });
-                                                    });
-                                                  }
-                                                },
-                                                style: ButtonStyle(
-                                                  // set the height to 50
-                                                  fixedSize:
-                                                      MaterialStateProperty.all<Size>(
-                                                          const Size(200, 30)),
-                                                ),
-                                                child: Text(
-                                                  'Complete All Orders',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontFamily: Constants.appFont),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 8,
-                                              ),
-                                              Container(
-                                                width: 180,
-                                                margin: const EdgeInsets.only(right: 10),
-                                                child: TextField(
-                                                  style: const TextStyle(
-                                                      color: Colors.black),
-                                                  onChanged: (value) {
-                                                    orderHistoryController
-                                                        .searchQuery.value = value;
-                                                    print(
-                                                        "search ${orderHistoryController.searchQuery.value}");
-                                                  },
-                                                  decoration: const InputDecoration(
-                                                      labelText: 'Search',
-                                                      labelStyle:
-                                                          TextStyle(color: Colors.black)
-                                                      // border: OutlineInputBorder(),
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                  ],
-                                ) : Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal : 8.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                               child: Obx(
-                                                  () => orderHistoryController.deliveryTypeButton(
-                                                  onTap: () => orderHistoryController
-                                                      .applyFilterType(FilterType.DineIn),
-                                                  icon: 'assets/images/dining.png',
-                                                  title: "Dine In",
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      color: orderHistoryController
-                                                          .filterType.value ==
-                                                          FilterType.DineIn
-                                                          ? Colors.white
-                                                          : Colors.black),
-                                                  color: orderHistoryController
-                                                      .filterType.value ==
-                                                      FilterType.DineIn
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  buttonColor: orderHistoryController
-                                                      .filterType.value ==
-                                                      FilterType.DineIn
-                                                      ? Colors.red.shade500
-                                                      : Colors.white),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Expanded(
-                                               child: Obx(
-                                                  () => orderHistoryController.deliveryTypeButton(
-                                                  onTap: () => orderHistoryController
-                                                      .applyFilterType(
-                                                      FilterType.TakeAway),
-                                                  icon: 'assets/images/takeaway.png',
-                                                  title: "TakeAway",
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      color: orderHistoryController
-                                                          .filterType.value ==
-                                                          FilterType.TakeAway
-                                                          ? Colors.white
-                                                          : Colors.black),
-                                                  color: orderHistoryController.filterType.value ==
-                                                      FilterType.TakeAway
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  buttonColor: orderHistoryController
-                                                      .filterType.value ==
-                                                      FilterType.TakeAway
-                                                      ? Colors.red.shade500
-                                                      : Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              await orderHistoryController
-                                                  .completeOrders()
-                                                  .then((value) {
-                                                Get.to(
-                                                        () => PosMenu(isDining: false));
-                                              });
-                                            },
-                                            style: ButtonStyle(
-                                              // set the height to 50
-                                              fixedSize:
-                                              MaterialStateProperty.all<Size>(
-                                                   Size(110, 50)),
-                                            ),
-                                            child: Text(
-                                              'Complete Orders',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontFamily: Constants.appFont),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 8,
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: TextField(
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              onChanged: (value) {
-                                                orderHistoryController
-                                                    .searchQuery.value = value;
+                                        Row(
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                await orderHistoryController
+                                                    .completeOrders()
+                                                    .then((value) {
+                                                  Get.to(
+                                                          () => PosMenu(isDining: false));
+                                                });
                                               },
-                                              decoration: const InputDecoration(
-                                                  labelText: 'Search',
-                                                  labelStyle:
-                                                  TextStyle(color: Colors.black)
-                                                // border: OutlineInputBorder(),
+                                              style: ButtonStyle(
+                                                // set the height to 50
+                                                fixedSize:
+                                                MaterialStateProperty.all<Size>(
+                                                     Size(110, 50)),
+                                              ),
+                                              child: Text(
+                                                'Complete Orders',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontFamily: Constants.appFont),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: TextField(
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                                onChanged: (value) {
+                                                  orderHistoryController
+                                                      .searchQuery.value = value;
+                                                },
+                                                decoration: const InputDecoration(
+                                                    labelText: 'Search',
+                                                    labelStyle:
+                                                    TextStyle(color: Colors.black)
+                                                  // border: OutlineInputBorder(),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: FutureBuilder<BaseModel<OrderHistoryListModel>>(
-                                    future: orderHistoryController.callGetOrderHistoryList(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      } else if (snapshot.hasData) {
-                                        return Obx(() {
-                                          final filteredOrders =
-                                              orderHistoryController.getFilteredOrders();
-                                          return Stack(
-                                            children: [
-                                              SingleChildScrollView(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 8.0),
-                                                  child: Wrap(
-                                                    children: List.generate(
-                                                        filteredOrders.length, (index) {
-                                                      final order = filteredOrders[index];
-                                                      print(
-                                                          "*******${order.toJson()}*******");
-                                                      Map<String, dynamic> jsonMap =
-                                                          jsonDecode(filteredOrders[index]
-                                                              .orderData!);
-                                                      OrderDataModel orderData =
-                                                          OrderDataModel.fromJson(jsonMap);
-                                                      return Container(
-                                                        width: itemWidth,
-                                                        margin: const EdgeInsets.symmetric(
-                                                            vertical: 5),
-                                                        // Adjust the width of each card as desired
-                                                        child: Card(
-                                                          color: Color(0XFFFFFFFF),
-                                                          shadowColor: Color(0XFFD5D4D4),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(30.0),
-                                                          ),
-                                                          child: Column(
-                                                            children: [
-                                                              // Text("Old...${order.id }"),
-                                                              // Text("Table...${order.tableNo}"),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                  horizontal: 15,
-                                                                  vertical: 20,
-                                                                ),
-                                                                child: Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Align(
-                                                                      alignment:
-                                                                          Alignment.center,
-                                                                      child: Text(
-                                                                        (() {
-                                                                              if (order
-                                                                                      .addressId !=
-                                                                                  null) {
+                                  Expanded(
+                                    child: FutureBuilder<BaseModel<OrderHistoryListModel>>(
+                                      future: orderHistoryController.callGetOrderHistoryList(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          return Obx(() {
+                                            final filteredOrders =
+                                                orderHistoryController.getFilteredOrders();
+                                            return Stack(
+
+                                              children: [
+                                                SingleChildScrollView(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                    child: Wrap(
+                                                      children: List.generate(
+                                                          filteredOrders.length, (index) {
+                                                        final order = filteredOrders[index];
+                                                        print(
+                                                            "*******${order.toJson()}*******");
+                                                        Map<String, dynamic> jsonMap =
+                                                            jsonDecode(filteredOrders[index]
+                                                                .orderData!);
+                                                        OrderDataModel orderData =
+                                                            OrderDataModel.fromJson(jsonMap);
+                                                        return Container(
+                                                          width: itemWidth,
+                                                          margin: const EdgeInsets.symmetric(
+                                                              vertical: 5),
+                                                          // Adjust the width of each card as desired
+                                                          child: Card(
+                                                            color: Color(0XFFFFFFFF),
+                                                            shadowColor: Color(0XFFD5D4D4),
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(30.0),
+                                                            ),
+                                                            child: Column(
+                                                              children: [
+                                                                // Text("Old...${order.id }"),
+                                                                // Text("Table...${order.tableNo}"),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                    horizontal: 15,
+                                                                    vertical: 20,
+                                                                  ),
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.center,
+                                                                        child: Text(
+                                                                          (() {
                                                                                 if (order
-                                                                                        .orderStatus ==
-                                                                                    'PENDING') {
-                                                                                  return '${'Ordered On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'ACCEPT') {
-                                                                                  return '${'Accepted On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'APPROVE') {
-                                                                                  return '${'Approve On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'REJECT') {
-                                                                                  return '${'Rejected On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'PICKUP') {
-                                                                                  return '${'Pickedup On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'DELIVERED') {
-                                                                                  return '${'Delivered On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'CANCEL') {
-                                                                                  return 'Canceled On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'COMPLETE') {
-                                                                                  return 'Delivered On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                        .addressId !=
+                                                                                    null) {
+                                                                                  if (order
+                                                                                          .orderStatus ==
+                                                                                      'PENDING') {
+                                                                                    return '${'Ordered On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'ACCEPT') {
+                                                                                    return '${'Accepted On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'APPROVE') {
+                                                                                    return '${'Approve On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'REJECT') {
+                                                                                    return '${'Rejected On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'PICKUP') {
+                                                                                    return '${'Pickedup On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'DELIVERED') {
+                                                                                    return '${'Delivered On'} ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'CANCEL') {
+                                                                                    return 'Canceled On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'COMPLETE') {
+                                                                                    return 'Delivered On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  }
+                                                                                } else {
+                                                                                  if (order
+                                                                                          .orderStatus ==
+                                                                                      'PENDING') {
+                                                                                    return 'Ordered On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'ACCEPT') {
+                                                                                    return 'Accepted On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'APPROVE') {
+                                                                                    return 'Approve On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'REJECT') {
+                                                                                    return 'Rejected On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'PREPARE_FOR_ORDER') {
+                                                                                    return 'PREPARE FOR ORDER ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'READY_FOR_ORDER') {
+                                                                                    return 'READY FOR ORDER ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'CANCEL') {
+                                                                                    return 'Canceled On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  } else if (order
+                                                                                          .orderStatus ==
+                                                                                      'COMPLETE') {
+                                                                                    return 'Delivered On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
+                                                                                  }
                                                                                 }
-                                                                              } else {
-                                                                                if (order
-                                                                                        .orderStatus ==
-                                                                                    'PENDING') {
-                                                                                  return 'Ordered On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'ACCEPT') {
-                                                                                  return 'Accepted On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'APPROVE') {
-                                                                                  return 'Approve On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'REJECT') {
-                                                                                  return 'Rejected On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'PREPARE_FOR_ORDER') {
-                                                                                  return 'PREPARE FOR ORDER ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'READY_FOR_ORDER') {
-                                                                                  return 'READY FOR ORDER ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'CANCEL') {
-                                                                                  return 'Canceled On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                } else if (order
-                                                                                        .orderStatus ==
-                                                                                    'COMPLETE') {
-                                                                                  return 'Delivered On ${DateFormat('yyyy-MM-dd').format(order.date!)}, ${order.time}';
-                                                                                }
-                                                                              }
-                                                                            }()) ??
-                                                                            '',
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight
-                                                                                    .w700,
-                                                                            color: Color(
-                                                                                0XFF000000),
-                                                                            fontFamily:
-                                                                                Constants
-                                                                                    .appFont,
-                                                                            fontSize: 10),
-                                                                        textAlign:
-                                                                            TextAlign.center,
+                                                                              }()) ??
+                                                                              '',
+                                                                          style: TextStyle(
+                                                                              fontWeight:
+                                                                                  FontWeight
+                                                                                      .w700,
+                                                                              color: Color(
+                                                                                  0XFF000000),
+                                                                              fontFamily:
+                                                                                  Constants
+                                                                                      .appFont,
+                                                                              fontSize: 10),
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 15,
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment
-                                                                                .spaceBetween,
+                                                                      const SizedBox(
+                                                                        height: 15,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment
+                                                                                  .spaceBetween,
+                                                                          children: [
+                                                                            Text(
+                                                                              order.deliveryType ==
+                                                                                      "DINING"
+                                                                                  ? "Dine-In"
+                                                                                  : "TAKEAWAY",
+                                                                              style: TextStyle(
+                                                                                  fontWeight:
+                                                                                      FontWeight
+                                                                                          .w700,
+                                                                                  color: Color(
+                                                                                      0XFFF44336),
+                                                                                  fontFamily:
+                                                                                      Constants
+                                                                                          .appFont,
+                                                                                  fontSize: 22),
+                                                                            ),
+                                                                            Text(order.paymentType.toString(),style: TextStyle(
+                                                                              color: const Color(
+                                                                                  0XFF000000),
+                                                                              decoration:
+                                                                              TextDecoration
+                                                                                  .none,
+                                                                              fontWeight:
+                                                                              FontWeight
+                                                                                  .w700,
+                                                                              fontFamily:
+                                                                              Constants
+                                                                                  .appFont,
+                                                                              fontSize: 15,
+                                                                            ), ),
+                                                                          ]),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      order.tableNo == 0 ||
+                                                                              order.tableNo ==
+                                                                                  null
+                                                                          ? const SizedBox()
+                                                                          : Text(
+                                                                              "Table No ${order.tableNo.toString()}",
+                                                                              overflow:
+                                                                                  TextOverflow
+                                                                                      .ellipsis,
+                                                                              style: TextStyle(
+                                                                                  color: Colors
+                                                                                      .black,
+                                                                                  fontFamily:
+                                                                                      Constants
+                                                                                          .appFontBold,
+                                                                                  fontSize: 24),
+                                                                            ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+
+                                                                      ),
+                                                                      order.datumUserName ==
+                                                                                  null ||
+                                                                              order.mobile ==
+                                                                                  null
+                                                                          ? Column(
+                                                                              children: [
+                                                                                order.datumUserName ==
+                                                                                        null
+                                                                                    ? const SizedBox()
+                                                                                    : Text(
+                                                                                        order
+                                                                                            .datumUserName
+                                                                                            .toString(),
+                                                                                        overflow:
+                                                                                            TextOverflow.ellipsis,
+                                                                                        style: TextStyle(
+                                                                                            color:
+                                                                                                Colors.black,
+                                                                                            fontWeight: FontWeight.w700,
+                                                                                            fontSize: 14),
+                                                                                      ),
+                                                                                order.mobile ==
+                                                                                        null
+                                                                                    ? const SizedBox()
+                                                                                    : Text(
+                                                                                        order
+                                                                                            .mobile
+                                                                                            .toString(),
+                                                                                        overflow:
+                                                                                            TextOverflow.ellipsis,
+                                                                                        style: TextStyle(
+                                                                                            color:
+                                                                                                Colors.black,
+                                                                                            fontWeight: FontWeight.w700,
+                                                                                            fontSize: 14),
+                                                                                      ),
+                                                                                order.mobile ==
+                                                                                        null
+                                                                                    ? const SizedBox()
+                                                                                    : const SizedBox(
+                                                                                        height:
+                                                                                            5,
+                                                                                      ),
+                                                                                order.datumUserName ==
+                                                                                        null
+                                                                                    ? const SizedBox()
+                                                                                    : const SizedBox(
+                                                                                        height:
+                                                                                            5,
+                                                                                      ),
+                                                                              ],
+                                                                            )
+                                                                          : Column(
+                                                                              children: [
+                                                                                Text(
+                                                                                  "${order.datumUserName.toString()} (${order.mobile.toString()})",
+                                                                                  overflow:
+                                                                                      TextOverflow
+                                                                                          .ellipsis,
+                                                                                  style: TextStyle(
+                                                                                      color: Colors
+                                                                                          .black,
+                                                                                      fontWeight:
+                                                                                          FontWeight
+                                                                                              .w700,
+                                                                                      fontSize:
+                                                                                          14),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 5,
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                         children: [
                                                                           Text(
-                                                                            order.deliveryType ==
-                                                                                    "DINING"
-                                                                                ? "Dine-In"
-                                                                                : "TAKEAWAY",
+                                                                            "Order ${order.orderId.toString()}",
+                                                                            overflow: TextOverflow
+                                                                                .ellipsis,
                                                                             style: TextStyle(
-                                                                                fontWeight:
-                                                                                    FontWeight
-                                                                                        .w700,
                                                                                 color: Color(
                                                                                     0XFFF44336),
-                                                                                fontFamily:
-                                                                                    Constants
-                                                                                        .appFont,
-                                                                                fontSize: 22),
+                                                                                fontFamily: Constants
+                                                                                    .appFontBold,
+                                                                                fontSize: 17),
                                                                           ),
-                                                                          Text(order.paymentType.toString(),style: TextStyle(
-                                                                            color: const Color(
-                                                                                0XFF000000),
-                                                                            decoration:
-                                                                            TextDecoration
-                                                                                .none,
-                                                                            fontWeight:
-                                                                            FontWeight
-                                                                                .w700,
-                                                                            fontFamily:
-                                                                            Constants
-                                                                                .appFont,
-                                                                            fontSize: 15,
-                                                                          ), ),
-                                                                        ]),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    order.tableNo == 0 ||
-                                                                            order.tableNo ==
-                                                                                null
-                                                                        ? const SizedBox()
-                                                                        : Text(
-                                                                            "Table No ${order.tableNo.toString()}",
-                                                                            overflow:
-                                                                                TextOverflow
-                                                                                    .ellipsis,
+                                                                          Text(
+                                                                            order.paymentType == "POS CASH" ||
+                                                                                order.paymentType ==
+                                                                                    "POS CARD" ||
+                                                                                order.paymentType ==
+                                                                                    "POS CASH TAKEAWAY" ||
+                                                                                order.paymentType ==
+                                                                                    "POS CARD TAKEAWAY" ||
+                                                                            order.paymentType ==
+                                                                          "CASH+CARD"
+                                                                                ? '(PAID)'
+                                                                                : '(UNPAID)',
                                                                             style: TextStyle(
-                                                                                color: Colors
-                                                                                    .black,
-                                                                                fontFamily:
-                                                                                    Constants
-                                                                                        .appFontBold,
-                                                                                fontSize: 24),
-                                                                          ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-
-                                                                    ),
-                                                                    order.datumUserName ==
-                                                                                null ||
-                                                                            order.mobile ==
-                                                                                null
-                                                                        ? Column(
-                                                                            children: [
-                                                                              order.datumUserName ==
-                                                                                      null
-                                                                                  ? const SizedBox()
-                                                                                  : Text(
-                                                                                      order
-                                                                                          .datumUserName
-                                                                                          .toString(),
-                                                                                      overflow:
-                                                                                          TextOverflow.ellipsis,
-                                                                                      style: TextStyle(
-                                                                                          color:
-                                                                                              Colors.black,
-                                                                                          fontWeight: FontWeight.w700,
-                                                                                          fontSize: 14),
-                                                                                    ),
-                                                                              order.mobile ==
-                                                                                      null
-                                                                                  ? const SizedBox()
-                                                                                  : Text(
-                                                                                      order
-                                                                                          .mobile
-                                                                                          .toString(),
-                                                                                      overflow:
-                                                                                          TextOverflow.ellipsis,
-                                                                                      style: TextStyle(
-                                                                                          color:
-                                                                                              Colors.black,
-                                                                                          fontWeight: FontWeight.w700,
-                                                                                          fontSize: 14),
-                                                                                    ),
-                                                                              order.mobile ==
-                                                                                      null
-                                                                                  ? const SizedBox()
-                                                                                  : const SizedBox(
-                                                                                      height:
-                                                                                          5,
-                                                                                    ),
-                                                                              order.datumUserName ==
-                                                                                      null
-                                                                                  ? const SizedBox()
-                                                                                  : const SizedBox(
-                                                                                      height:
-                                                                                          5,
-                                                                                    ),
-                                                                            ],
-                                                                          )
-                                                                        : Column(
-                                                                            children: [
-                                                                              Text(
-                                                                                "${order.datumUserName.toString()} (${order.mobile.toString()})",
-                                                                                overflow:
-                                                                                    TextOverflow
-                                                                                        .ellipsis,
-                                                                                style: TextStyle(
-                                                                                    color: Colors
-                                                                                        .black,
-                                                                                    fontWeight:
-                                                                                        FontWeight
-                                                                                            .w700,
-                                                                                    fontSize:
-                                                                                        14),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 5,
-                                                                              )
-                                                                            ],
-                                                                          ),
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                      children: [
-                                                                        Text(
-                                                                          "Order ${order.orderId.toString()}",
-                                                                          overflow: TextOverflow
-                                                                              .ellipsis,
-                                                                          style: TextStyle(
-                                                                              color: Color(
+                                                                              color: const Color(
                                                                                   0XFFF44336),
-                                                                              fontFamily: Constants
-                                                                                  .appFontBold,
-                                                                              fontSize: 17),
-                                                                        ),
-                                                                        Text(
-                                                                          order.paymentType == "POS CASH" ||
-                                                                              order.paymentType ==
-                                                                                  "POS CARD" ||
-                                                                              order.paymentType ==
-                                                                                  "POS CASH TAKEAWAY" ||
-                                                                              order.paymentType ==
-                                                                                  "POS CARD TAKEAWAY" ||
-                                                                          order.paymentType ==
-                                                                        "CASH+CARD"
-                                                                              ? '(PAID)'
-                                                                              : '(UNPAID)',
-                                                                          style: TextStyle(
-                                                                            color: const Color(
-                                                                                0XFFF44336),
-                                                                            decoration:
-                                                                            TextDecoration
-                                                                                .none,
-                                                                            fontWeight:
-                                                                            FontWeight
-                                                                                .w700,
-                                                                            fontFamily:
-                                                                            Constants
-                                                                                .appFont,
-                                                                            fontSize: 15,
+                                                                              decoration:
+                                                                              TextDecoration
+                                                                                  .none,
+                                                                              fontWeight:
+                                                                              FontWeight
+                                                                                  .w700,
+                                                                              fontFamily:
+                                                                              Constants
+                                                                                  .appFont,
+                                                                              fontSize: 15,
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    ListView.builder(
-                                                                      physics:
-                                                                          NeverScrollableScrollPhysics(),
-                                                                      shrinkWrap: true,
-                                                                      itemCount: orderData
-                                                                          .cart!.length,
-                                                                      itemBuilder: (context,
-                                                                          itemIndex) {
-                                                                        String category =
-                                                                            orderData
+                                                                        ],
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      ListView.builder(
+                                                                        physics:
+                                                                            NeverScrollableScrollPhysics(),
+                                                                        shrinkWrap: true,
+                                                                        itemCount: orderData
+                                                                            .cart!.length,
+                                                                        itemBuilder: (context,
+                                                                            itemIndex) {
+                                                                          String category =
+                                                                              orderData
+                                                                                  .cart![
+                                                                                      itemIndex]
+                                                                                  .category!;
+                                                                          MenuCategory?
+                                                                              menuCategory =
+                                                                              orderData
+                                                                                  .cart![
+                                                                                      itemIndex]
+                                                                                  .menuCategory;
+                                                                          List<Menu> menu =
+                                                                              orderData
+                                                                                  .cart![
+                                                                                      itemIndex]
+                                                                                  .menu!;
+                                                                          var price;
+                                                                          if (filteredOrders[
+                                                                                      index]
+                                                                                  .deliveryType ==
+                                                                              'DINING') {
+                                                                            price = orderData
                                                                                 .cart![
                                                                                     itemIndex]
-                                                                                .category!;
-                                                                        MenuCategory?
-                                                                            menuCategory =
-                                                                            orderData
+                                                                                .diningAmount;
+                                                                          } else {
+                                                                            price = orderData
                                                                                 .cart![
                                                                                     itemIndex]
-                                                                                .menuCategory;
-                                                                        List<Menu> menu =
-                                                                            orderData
-                                                                                .cart![
-                                                                                    itemIndex]
-                                                                                .menu!;
-                                                                        var price;
-                                                                        if (filteredOrders[
-                                                                                    index]
-                                                                                .deliveryType ==
-                                                                            'DINING') {
-                                                                          price = orderData
-                                                                              .cart![
-                                                                                  itemIndex]
-                                                                              .diningAmount;
-                                                                        } else {
-                                                                          price = orderData
-                                                                              .cart![
-                                                                                  itemIndex]
-                                                                              .totalAmount;
-                                                                        }
-                                                                        if (category ==
-                                                                            'SINGLE') {
-                                                                          return Column(
-                                                                            children: [
-                                                                              ListView
-                                                                                  .builder(
-                                                                                shrinkWrap:
-                                                                                    true,
-                                                                                itemCount: menu
-                                                                                    .length,
-                                                                                physics:
-                                                                                    const NeverScrollableScrollPhysics(),
-                                                                                itemBuilder:
-                                                                                    (context,
-                                                                                        menuIndex) {
-                                                                                  Menu
-                                                                                      menuItem =
-                                                                                      menu[
-                                                                                          menuIndex];
-                                                                                  return Column(
-                                                                                    mainAxisSize:
-                                                                                        MainAxisSize
-                                                                                            .min,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.symmetric(
-                                                                                            horizontal: 10.0,
-                                                                                            vertical: 3),
-                                                                                        child:
-                                                                                            Row(
-                                                                                          mainAxisAlignment:
-                                                                                              MainAxisAlignment.spaceBetween,
-                                                                                          children: [
-                                                                                            Text.rich(
-                                                                                              TextSpan(
-                                                                                                text: "${menu[menuIndex].name!}${orderData.cart![itemIndex].size != null ? ' ( ${orderData.cart![itemIndex].size['size_name']}) ' : ''} ",
+                                                                                .totalAmount;
+                                                                          }
+                                                                          if (category ==
+                                                                              'SINGLE') {
+                                                                            return Column(
+                                                                              children: [
+                                                                                ListView
+                                                                                    .builder(
+                                                                                  shrinkWrap:
+                                                                                      true,
+                                                                                  itemCount: menu
+                                                                                      .length,
+                                                                                  physics:
+                                                                                      const NeverScrollableScrollPhysics(),
+                                                                                  itemBuilder:
+                                                                                      (context,
+                                                                                          menuIndex) {
+                                                                                    Menu
+                                                                                        menuItem =
+                                                                                        menu[
+                                                                                            menuIndex];
+                                                                                    return Column(
+                                                                                      mainAxisSize:
+                                                                                          MainAxisSize
+                                                                                              .min,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.symmetric(
+                                                                                              horizontal: 10.0,
+                                                                                              vertical: 3),
+                                                                                          child:
+                                                                                              Row(
+                                                                                            mainAxisAlignment:
+                                                                                                MainAxisAlignment.spaceBetween,
+                                                                                            children: [
+                                                                                              Text.rich(
+                                                                                                TextSpan(
+                                                                                                  text: "${menu[menuIndex].name!}${orderData.cart![itemIndex].size != null ? ' ( ${orderData.cart![itemIndex].size['size_name']}) ' : ''} ",
+                                                                                                  style: const TextStyle(
+                                                                                                    decorationColor: Color(0XFF000000),
+                                                                                                    fontWeight: FontWeight.w400,
+                                                                                                    fontSize: 12,
+                                                                                                  ),
+                                                                                                  children: <TextSpan>[
+                                                                                                    TextSpan(
+                                                                                                      text: "x ${orderData.cart![itemIndex].quantity}",
+                                                                                                      style: TextStyle(
+                                                                                                        color: Color(Constants.colorTheme),
+                                                                                                        fontWeight: FontWeight.w400,
+                                                                                                        fontSize: 12,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                double.parse(price.toString()).toStringAsFixed(2),
                                                                                                 style: const TextStyle(
-                                                                                                  decorationColor: Color(0XFF000000),
+                                                                                                  color: Color(0XFF000000),
                                                                                                   fontWeight: FontWeight.w400,
                                                                                                   fontSize: 12,
                                                                                                 ),
-                                                                                                children: <TextSpan>[
-                                                                                                  TextSpan(
-                                                                                                    text: "x ${orderData.cart![itemIndex].quantity}",
-                                                                                                    style: TextStyle(
-                                                                                                      color: Color(Constants.colorTheme),
-                                                                                                      fontWeight: FontWeight.w400,
-                                                                                                      fontSize: 12,
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ],
-                                                                                              ),
-                                                                                            ),
-                                                                                            Text(
-                                                                                              double.parse(price.toString()).toStringAsFixed(2),
-                                                                                              style: const TextStyle(
-                                                                                                color: Color(0XFF000000),
-                                                                                                fontWeight: FontWeight.w400,
-                                                                                                fontSize: 12,
-                                                                                              ),
-                                                                                            )
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      ListView
-                                                                                          .builder(
-                                                                                        shrinkWrap:
-                                                                                            true,
-                                                                                        physics:
-                                                                                            const NeverScrollableScrollPhysics(),
-                                                                                        itemCount: menuItem
-                                                                                            .addons!
-                                                                                            .length,
-                                                                                        padding:
-                                                                                            const EdgeInsets.only(left: 25),
-                                                                                        itemBuilder:
-                                                                                            (context, addonIndex) {
-                                                                                          Addon
-                                                                                              addonItem =
-                                                                                              menuItem.addons![addonIndex];
-                                                                                          return Padding(
-                                                                                            padding: const EdgeInsets.only(top: 5.0),
-                                                                                            child: Row(
-                                                                                              children: [
-                                                                                                Text(
-                                                                                                  '${addonItem.name} ',
-                                                                                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
-                                                                                                ),
-                                                                                                Container(
-                                                                                                  padding: const EdgeInsets.all(4.0),
-                                                                                                  decoration: const BoxDecoration(
-                                                                                                    color: Colors.black,
-                                                                                                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                                                                                                  ),
-                                                                                                  child: const Center(
-                                                                                                    child: Text(
-                                                                                                      'ADDONS',
-                                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 10),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                )
-                                                                                              ],
-                                                                                            ),
-                                                                                          );
-                                                                                        },
-                                                                                      ),
-                                                                                      ListView.builder(
-                                                                                        shrinkWrap:
-                                                                                        true,
-                                                                                        physics:
-                                                                                        const NeverScrollableScrollPhysics(),
-                                                                                        itemCount: menuItem
-                                                                                            .modifiers!
-                                                                                            .length,
-                                                                                        itemBuilder:
-                                                                                            (context, modifiersIndex) {
-                                                                                              cart.Modifier
-                                                                                          modifierItem =
-                                                                                          menuItem.modifiers![modifiersIndex];
-                                                                                          return ListView.builder(
-                                                                                            shrinkWrap:
-                                                                                            true,
-                                                                                            physics:
-                                                                                            const NeverScrollableScrollPhysics(),
-                                                                                            itemCount: modifierItem
-                                                                                                .modifierDetails!
-                                                                                                .length,
-                                                                                            padding:
-                                                                                            const EdgeInsets.only(left: 25),
-                                                                                            itemBuilder:
-                                                                                                (context, modifierDetailIndex) {
-                                                                                                  cart.ModifierDetail
-                                                                                                  modifierDetailItem =
-                                                                                              modifierItem
-                                                                                                  .modifierDetails![modifierDetailIndex];
-                                                                                              return Padding(
-                                                                                                padding: const EdgeInsets.only(top: 5.0),
-                                                                                                child: Row(
-                                                                                                  children: [
-                                                                                                    Text(
-                                                                                                      '${modifierDetailItem.modifierName} ',
-                                                                                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
-                                                                                                    ),
-                                                                                                    Container(
-                                                                                                      padding: const EdgeInsets.all(4.0),
-                                                                                                      decoration: const BoxDecoration(
-                                                                                                        color: Colors.black,
-                                                                                                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                                                                                                      ),
-                                                                                                      child: const Center(
-                                                                                                        child: Text(
-                                                                                                          'MODIFIERS',
-                                                                                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 10),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  ],
-                                                                                                ),
-                                                                                              );
-                                                                                            },
-                                                                                          );
-                                                                                        },
-                                                                                      ),
-                                                                                    ],
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ],
-                                                                          );
-                                                                        } else if (category ==
-                                                                            'HALF_N_HALF') {
-                                                                          return Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize
-                                                                                    .min,
-                                                                            children: [
-                                                                              Flexible(
-                                                                                fit: FlexFit
-                                                                                    .loose,
-                                                                                child:
-                                                                                    Padding(
-                                                                                  padding: const EdgeInsets
-                                                                                          .only(
-                                                                                      top:
-                                                                                          20.0,
-                                                                                      left:
-                                                                                          15.0),
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      Text(
-                                                                                          '${menuCategory!.name}${orderData.cart![itemIndex].size != null ? ' ( ${orderData.cart![itemIndex].size?.sizeName}) ' : ''} x ${orderData.cart![itemIndex].quantity}  ',
-                                                                                          style: TextStyle(
-                                                                                              color: Color(Constants.colorTheme),
-                                                                                              fontWeight: FontWeight.w900,
-                                                                                              fontSize: 16)),
-                                                                                      Container(
-                                                                                        height:
-                                                                                            20,
-                                                                                        decoration: BoxDecoration(
-                                                                                            color: Color(Constants.colorTheme),
-                                                                                            borderRadius: const BorderRadius.all(Radius.circular(4.0))),
-                                                                                        child:
-                                                                                            const Center(
-                                                                                          child:
-                                                                                              Text(' HALF & HALF ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300, fontSize: 16)),
-                                                                                        ),
-                                                                                      )
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              Flexible(
-                                                                                fit: FlexFit
-                                                                                    .loose,
-                                                                                child: ListView
-                                                                                    .builder(
-                                                                                        shrinkWrap:
-                                                                                            true,
-                                                                                        padding: const EdgeInsets.only(
-                                                                                            left:
-                                                                                                25),
-                                                                                        physics:
-                                                                                            const NeverScrollableScrollPhysics(),
-                                                                                        itemCount: menu
-                                                                                            .length,
-                                                                                        itemBuilder:
-                                                                                            (context, menuIndex) {
-                                                                                          Menu
-                                                                                              menuItem =
-                                                                                              menu[menuIndex];
-                                                                                          return Column(
-                                                                                            mainAxisSize: MainAxisSize.min,
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              Flexible(
-                                                                                                  fit: FlexFit.loose,
-                                                                                                  child: Padding(
-                                                                                                    padding: const EdgeInsets.only(top: 5.0),
-                                                                                                    child: Row(
-                                                                                                      children: [
-                                                                                                        Text(
-                                                                                                          '${menuItem.name!} ',
-                                                                                                          style: const TextStyle(fontWeight: FontWeight.w900),
-                                                                                                        ),
-                                                                                                        if (menuIndex == 0)
-                                                                                                          Container(
-                                                                                                            height: 20,
-                                                                                                            padding: const EdgeInsets.all(3.0),
-                                                                                                            decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: const BorderRadius.all(Radius.circular(4.0))),
-                                                                                                            child: Center(
-                                                                                                              child: Text(
-                                                                                                                'First Half'.toUpperCase(),
-                                                                                                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          )
-                                                                                                        else
-                                                                                                          Container(
-                                                                                                            height: 20,
-                                                                                                            padding: const EdgeInsets.all(3.0),
-                                                                                                            decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: const BorderRadius.all(Radius.circular(4.0))),
-                                                                                                            child: Center(
-                                                                                                              child: Text(
-                                                                                                                'Second Half'.toUpperCase(),
-                                                                                                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          )
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                  )),
-                                                                                              Flexible(
-                                                                                                fit: FlexFit.loose,
-                                                                                                child: ListView.builder(
-                                                                                                    shrinkWrap: true,
-                                                                                                    physics: const NeverScrollableScrollPhysics(),
-                                                                                                    padding: const EdgeInsets.only(
-                                                                                                      left: 16,
-                                                                                                      top: 5.0,
-                                                                                                    ),
-                                                                                                    itemCount: menuItem.addons!.length,
-                                                                                                    itemBuilder: (context, addonIndex) {
-                                                                                                      Addon addonItem = menuItem.addons![addonIndex];
-                                                                                                      return Padding(
-                                                                                                        padding: const EdgeInsets.only(bottom: 5.0),
-                                                                                                        child: Row(
-                                                                                                          children: [
-                                                                                                            Text('${addonItem.name} '),
-                                                                                                            Container(
-                                                                                                              height: 20,
-                                                                                                              padding: const EdgeInsets.all(3.0),
-                                                                                                              decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
-                                                                                                              child: const Center(
-                                                                                                                child: Text(
-                                                                                                                  'ADDONS',
-                                                                                                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
-                                                                                                                ),
-                                                                                                              ),
-                                                                                                            ),
-                                                                                                          ],
-                                                                                                        ),
-                                                                                                      );
-                                                                                                    }),
                                                                                               )
                                                                                             ],
-                                                                                          );
-                                                                                        }),
-                                                                              ),
-                                                                            ],
-                                                                          );
-                                                                        } else if (category ==
-                                                                            'DEALS') {
-                                                                          return Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize
-                                                                                    .min,
-                                                                            children: [
-                                                                              Flexible(
-                                                                                fit: FlexFit
-                                                                                    .loose,
-                                                                                child:
-                                                                                    Padding(
-                                                                                  padding: const EdgeInsets
-                                                                                          .only(
-                                                                                      top:
-                                                                                          20.0,
-                                                                                      left:
-                                                                                          15.0),
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      Text(
-                                                                                          '${menuCategory!.name}  x ${orderData.cart![itemIndex].quantity} ',
-                                                                                          style: TextStyle(
-                                                                                              color: Color(Constants.colorTheme),
-                                                                                              fontWeight: FontWeight.w900,
-                                                                                              fontSize: 16)),
-                                                                                      Container(
+                                                                                          ),
+                                                                                        ),
+                                                                                        ListView
+                                                                                            .builder(
+                                                                                          shrinkWrap:
+                                                                                              true,
+                                                                                          physics:
+                                                                                              const NeverScrollableScrollPhysics(),
+                                                                                          itemCount: menuItem
+                                                                                              .addons!
+                                                                                              .length,
+                                                                                          padding:
+                                                                                              const EdgeInsets.only(left: 25),
+                                                                                          itemBuilder:
+                                                                                              (context, addonIndex) {
+                                                                                            Addon
+                                                                                                addonItem =
+                                                                                                menuItem.addons![addonIndex];
+                                                                                            return Padding(
+                                                                                              padding: const EdgeInsets.only(top: 5.0),
+                                                                                              child: Row(
+                                                                                                children: [
+                                                                                                  Text(
+                                                                                                    '${addonItem.name} ',
+                                                                                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
+                                                                                                  ),
+                                                                                                  Container(
+                                                                                                    padding: const EdgeInsets.all(4.0),
+                                                                                                    decoration: const BoxDecoration(
+                                                                                                      color: Colors.black,
+                                                                                                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                                                                                                    ),
+                                                                                                    child: const Center(
+                                                                                                      child: Text(
+                                                                                                        'ADDONS',
+                                                                                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 10),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                        ),
+                                                                                        ListView.builder(
+                                                                                          shrinkWrap:
+                                                                                          true,
+                                                                                          physics:
+                                                                                          const NeverScrollableScrollPhysics(),
+                                                                                          itemCount: menuItem
+                                                                                              .modifiers!
+                                                                                              .length,
+                                                                                          itemBuilder:
+                                                                                              (context, modifiersIndex) {
+                                                                                                cart.Modifier
+                                                                                            modifierItem =
+                                                                                            menuItem.modifiers![modifiersIndex];
+                                                                                            return ListView.builder(
+                                                                                              shrinkWrap:
+                                                                                              true,
+                                                                                              physics:
+                                                                                              const NeverScrollableScrollPhysics(),
+                                                                                              itemCount: modifierItem
+                                                                                                  .modifierDetails!
+                                                                                                  .length,
+                                                                                              padding:
+                                                                                              const EdgeInsets.only(left: 25),
+                                                                                              itemBuilder:
+                                                                                                  (context, modifierDetailIndex) {
+                                                                                                    cart.ModifierDetail
+                                                                                                    modifierDetailItem =
+                                                                                                modifierItem
+                                                                                                    .modifierDetails![modifierDetailIndex];
+                                                                                                return Padding(
+                                                                                                  padding: const EdgeInsets.only(top: 5.0),
+                                                                                                  child: Row(
+                                                                                                    children: [
+                                                                                                      Text(
+                                                                                                        '${modifierDetailItem.modifierName} ',
+                                                                                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
+                                                                                                      ),
+                                                                                                      Container(
+                                                                                                        padding: const EdgeInsets.all(4.0),
+                                                                                                        decoration: const BoxDecoration(
+                                                                                                          color: Colors.black,
+                                                                                                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                                                                                                        ),
+                                                                                                        child: const Center(
+                                                                                                          child: Text(
+                                                                                                            'MODIFIERS',
+                                                                                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 10),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      )
+                                                                                                    ],
+                                                                                                  ),
+                                                                                                );
+                                                                                              },
+                                                                                            );
+                                                                                          },
+                                                                                        ),
+                                                                                      ],
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          } else if (category ==
+                                                                              'HALF_N_HALF') {
+                                                                            return Column(
+                                                                              mainAxisSize:
+                                                                                  MainAxisSize
+                                                                                      .min,
+                                                                              children: [
+                                                                                Flexible(
+                                                                                  fit: FlexFit
+                                                                                      .loose,
+                                                                                  child:
+                                                                                      Padding(
+                                                                                    padding: const EdgeInsets
+                                                                                            .only(
+                                                                                        top:
+                                                                                            20.0,
+                                                                                        left:
+                                                                                            15.0),
+                                                                                    child: Row(
+                                                                                      children: [
+                                                                                        Text(
+                                                                                            '${menuCategory!.name}${orderData.cart![itemIndex].size != null ? ' ( ${orderData.cart![itemIndex].size?.sizeName}) ' : ''} x ${orderData.cart![itemIndex].quantity}  ',
+                                                                                            style: TextStyle(
+                                                                                                color: Color(Constants.colorTheme),
+                                                                                                fontWeight: FontWeight.w900,
+                                                                                                fontSize: 16)),
+                                                                                        Container(
                                                                                           height:
                                                                                               20,
-                                                                                          padding:
-                                                                                              const EdgeInsets.all(3.0),
-                                                                                          decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: const BorderRadius.all(Radius.circular(4.0))),
-                                                                                          child: const Center(child: Text('DEALS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14))))
-                                                                                    ],
+                                                                                          decoration: BoxDecoration(
+                                                                                              color: Color(Constants.colorTheme),
+                                                                                              borderRadius: const BorderRadius.all(Radius.circular(4.0))),
+                                                                                          child:
+                                                                                              const Center(
+                                                                                            child:
+                                                                                                Text(' HALF & HALF ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300, fontSize: 16)),
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
                                                                                   ),
                                                                                 ),
-                                                                              ),
-                                                                              Flexible(
-                                                                                fit: FlexFit
-                                                                                    .loose,
-                                                                                child: ListView
-                                                                                    .builder(
-                                                                                        shrinkWrap:
-                                                                                            true,
-                                                                                        padding: const EdgeInsets.only(
-                                                                                            left:
-                                                                                                25,
-                                                                                            top:
-                                                                                                5.0),
-                                                                                        physics:
-                                                                                            const NeverScrollableScrollPhysics(),
-                                                                                        itemCount: menu
-                                                                                            .length,
-                                                                                        itemBuilder:
-                                                                                            (context, menuIndex) {
-                                                                                          Menu
-                                                                                              menuItem =
-                                                                                              menu[menuIndex];
-                                                                                          return Column(
-                                                                                            mainAxisSize: MainAxisSize.min,
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              Flexible(
-                                                                                                fit: FlexFit.loose,
-                                                                                                child: ListView.builder(
-                                                                                                    shrinkWrap: true,
-                                                                                                    physics: const NeverScrollableScrollPhysics(),
-                                                                                                    padding: const EdgeInsets.only(
-                                                                                                      left: 24,
-                                                                                                      top: 5.0,
-                                                                                                    ),
-                                                                                                    itemCount: menuItem.addons!.length,
-                                                                                                    itemBuilder: (context, addonIndex) {
-                                                                                                      Addon addonItem = menuItem.addons![addonIndex];
-                                                                                                      return Padding(
-                                                                                                        padding: const EdgeInsets.only(bottom: 5.0),
-                                                                                                        child: Row(
-                                                                                                          children: [
-                                                                                                            Text('${addonItem.name} '),
+                                                                                Flexible(
+                                                                                  fit: FlexFit
+                                                                                      .loose,
+                                                                                  child: ListView
+                                                                                      .builder(
+                                                                                          shrinkWrap:
+                                                                                              true,
+                                                                                          padding: const EdgeInsets.only(
+                                                                                              left:
+                                                                                                  25),
+                                                                                          physics:
+                                                                                              const NeverScrollableScrollPhysics(),
+                                                                                          itemCount: menu
+                                                                                              .length,
+                                                                                          itemBuilder:
+                                                                                              (context, menuIndex) {
+                                                                                            Menu
+                                                                                                menuItem =
+                                                                                                menu[menuIndex];
+                                                                                            return Column(
+                                                                                              mainAxisSize: MainAxisSize.min,
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children: [
+                                                                                                Flexible(
+                                                                                                    fit: FlexFit.loose,
+                                                                                                    child: Padding(
+                                                                                                      padding: const EdgeInsets.only(top: 5.0),
+                                                                                                      child: Row(
+                                                                                                        children: [
+                                                                                                          Text(
+                                                                                                            '${menuItem.name!} ',
+                                                                                                            style: const TextStyle(fontWeight: FontWeight.w900),
+                                                                                                          ),
+                                                                                                          if (menuIndex == 0)
                                                                                                             Container(
                                                                                                               height: 20,
                                                                                                               padding: const EdgeInsets.all(3.0),
-                                                                                                              decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
-                                                                                                              child: const Center(
+                                                                                                              decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: const BorderRadius.all(Radius.circular(4.0))),
+                                                                                                              child: Center(
                                                                                                                 child: Text(
-                                                                                                                  'ADDONS',
-                                                                                                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                                                                  'First Half'.toUpperCase(),
+                                                                                                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
                                                                                                                 ),
                                                                                                               ),
                                                                                                             )
-                                                                                                          ],
-                                                                                                        ),
-                                                                                                      );
-                                                                                                    }),
-                                                                                              )
-                                                                                            ],
-                                                                                          );
-                                                                                        }),
+                                                                                                          else
+                                                                                                            Container(
+                                                                                                              height: 20,
+                                                                                                              padding: const EdgeInsets.all(3.0),
+                                                                                                              decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: const BorderRadius.all(Radius.circular(4.0))),
+                                                                                                              child: Center(
+                                                                                                                child: Text(
+                                                                                                                  'Second Half'.toUpperCase(),
+                                                                                                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            )
+                                                                                                        ],
+                                                                                                      ),
+                                                                                                    )),
+                                                                                                Flexible(
+                                                                                                  fit: FlexFit.loose,
+                                                                                                  child: ListView.builder(
+                                                                                                      shrinkWrap: true,
+                                                                                                      physics: const NeverScrollableScrollPhysics(),
+                                                                                                      padding: const EdgeInsets.only(
+                                                                                                        left: 16,
+                                                                                                        top: 5.0,
+                                                                                                      ),
+                                                                                                      itemCount: menuItem.addons!.length,
+                                                                                                      itemBuilder: (context, addonIndex) {
+                                                                                                        Addon addonItem = menuItem.addons![addonIndex];
+                                                                                                        return Padding(
+                                                                                                          padding: const EdgeInsets.only(bottom: 5.0),
+                                                                                                          child: Row(
+                                                                                                            children: [
+                                                                                                              Text('${addonItem.name} '),
+                                                                                                              Container(
+                                                                                                                height: 20,
+                                                                                                                padding: const EdgeInsets.all(3.0),
+                                                                                                                decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                                                                                                                child: const Center(
+                                                                                                                  child: Text(
+                                                                                                                    'ADDONS',
+                                                                                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ],
+                                                                                                          ),
+                                                                                                        );
+                                                                                                      }),
+                                                                                                )
+                                                                                              ],
+                                                                                            );
+                                                                                          }),
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          } else if (category ==
+                                                                              'DEALS') {
+                                                                            return Column(
+                                                                              mainAxisSize:
+                                                                                  MainAxisSize
+                                                                                      .min,
+                                                                              children: [
+                                                                                Flexible(
+                                                                                  fit: FlexFit
+                                                                                      .loose,
+                                                                                  child:
+                                                                                      Padding(
+                                                                                    padding: const EdgeInsets
+                                                                                            .only(
+                                                                                        top:
+                                                                                            20.0,
+                                                                                        left:
+                                                                                            15.0),
+                                                                                    child: Row(
+                                                                                      children: [
+                                                                                        Text(
+                                                                                            '${menuCategory!.name}  x ${orderData.cart![itemIndex].quantity} ',
+                                                                                            style: TextStyle(
+                                                                                                color: Color(Constants.colorTheme),
+                                                                                                fontWeight: FontWeight.w900,
+                                                                                                fontSize: 16)),
+                                                                                        Container(
+                                                                                            height:
+                                                                                                20,
+                                                                                            padding:
+                                                                                                const EdgeInsets.all(3.0),
+                                                                                            decoration: BoxDecoration(color: Color(Constants.colorTheme), borderRadius: const BorderRadius.all(Radius.circular(4.0))),
+                                                                                            child: const Center(child: Text('DEALS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14))))
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                Flexible(
+                                                                                  fit: FlexFit
+                                                                                      .loose,
+                                                                                  child: ListView
+                                                                                      .builder(
+                                                                                          shrinkWrap:
+                                                                                              true,
+                                                                                          padding: const EdgeInsets.only(
+                                                                                              left:
+                                                                                                  25,
+                                                                                              top:
+                                                                                                  5.0),
+                                                                                          physics:
+                                                                                              const NeverScrollableScrollPhysics(),
+                                                                                          itemCount: menu
+                                                                                              .length,
+                                                                                          itemBuilder:
+                                                                                              (context, menuIndex) {
+                                                                                            Menu
+                                                                                                menuItem =
+                                                                                                menu[menuIndex];
+                                                                                            return Column(
+                                                                                              mainAxisSize: MainAxisSize.min,
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children: [
+                                                                                                Flexible(
+                                                                                                  fit: FlexFit.loose,
+                                                                                                  child: ListView.builder(
+                                                                                                      shrinkWrap: true,
+                                                                                                      physics: const NeverScrollableScrollPhysics(),
+                                                                                                      padding: const EdgeInsets.only(
+                                                                                                        left: 24,
+                                                                                                        top: 5.0,
+                                                                                                      ),
+                                                                                                      itemCount: menuItem.addons!.length,
+                                                                                                      itemBuilder: (context, addonIndex) {
+                                                                                                        Addon addonItem = menuItem.addons![addonIndex];
+                                                                                                        return Padding(
+                                                                                                          padding: const EdgeInsets.only(bottom: 5.0),
+                                                                                                          child: Row(
+                                                                                                            children: [
+                                                                                                              Text('${addonItem.name} '),
+                                                                                                              Container(
+                                                                                                                height: 20,
+                                                                                                                padding: const EdgeInsets.all(3.0),
+                                                                                                                decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                                                                                                                child: const Center(
+                                                                                                                  child: Text(
+                                                                                                                    'ADDONS',
+                                                                                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              )
+                                                                                                            ],
+                                                                                                          ),
+                                                                                                        );
+                                                                                                      }),
+                                                                                                )
+                                                                                              ],
+                                                                                            );
+                                                                                          }),
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          }
+                                                                          return Container();
+                                                                        },
+                                                                      ),
+                                                                      LineWithCircles(),
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .stretch,
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment
+                                                                                    .start,
+                                                                            children: [
+                                                                              const SizedBox(
+                                                                                height: 5,
                                                                               ),
-                                                                            ],
-                                                                          );
-                                                                        }
-                                                                        return Container();
-                                                                      },
-                                                                    ),
-                                                                    LineWithCircles(),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .stretch,
-                                                                      children: [
-                                                                        Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment
-                                                                                  .start,
-                                                                          children: [
-                                                                            const SizedBox(
-                                                                              height: 5,
-                                                                            ),
-                                                                            Text(
-                                                                              'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${double.parse(order.subTotal!).toStringAsFixed(2)} ',
-                                                                              style: TextStyle(
-                                                                                  color: Color(
-                                                                                      0XFF000000),
-                                                                                  fontFamily:
-                                                                                      Constants
-                                                                                          .appFont,
-                                                                                  fontSize:
-                                                                                      12),
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              height: 5,
-                                                                            ),
-                                                                            Text(
-                                                                              'Total Tax : ${double.parse(order.tax!).toStringAsFixed(2)} ',
-                                                                              style: TextStyle(
-                                                                                  color: Color(
-                                                                                      0XFF000000),
-                                                                                  fontFamily:
-                                                                                      Constants
-                                                                                          .appFont,
-                                                                                  fontSize:
-                                                                                      12),
-                                                                            ),
-                                                                            order.discounts ==
-                                                                                    null
-                                                                                ? const SizedBox()
-                                                                                : const SizedBox(
+                                                                              Text(
+                                                                                'Sub Total : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${double.parse(order.subTotal!).toStringAsFixed(2)} ',
+                                                                                style: TextStyle(
+                                                                                    color: Color(
+                                                                                        0XFF000000),
+                                                                                    fontFamily:
+                                                                                        Constants
+                                                                                            .appFont,
+                                                                                    fontSize:
+                                                                                        12),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height: 5,
+                                                                              ),
+                                                                              Text(
+                                                                                'Total Tax : ${double.parse(order.tax!).toStringAsFixed(2)} ',
+                                                                                style: TextStyle(
+                                                                                    color: Color(
+                                                                                        0XFF000000),
+                                                                                    fontFamily:
+                                                                                        Constants
+                                                                                            .appFont,
+                                                                                    fontSize:
+                                                                                        12),
+                                                                              ),
+                                                                              order.discounts ==
+                                                                                      null
+                                                                                  ? const SizedBox()
+                                                                                  : const SizedBox(
+                                                                                      height: 5,
+                                                                                    ),
+                                                                              order.discounts ==
+                                                                                      null
+                                                                                  ? const SizedBox()
+                                                                                  : Text(
+                                                                                      'Discounts : ${double.parse(order.discounts!).toStringAsFixed(2)} ',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors
+                                                                                              .black,
+                                                                                          fontFamily: Constants
+                                                                                              .appFont,
+                                                                                          fontSize:
+                                                                                              12),
+                                                                                    ),
+                                                                              const SizedBox(
+                                                                                height: 5,
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisAlignment:
+                                                                                    MainAxisAlignment
+                                                                                        .spaceBetween,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${double.parse(order.amount!).toStringAsFixed(2)} ',
+                                                                                    style: TextStyle(
+                                                                                        color: Colors
+                                                                                            .black,
+                                                                                        fontFamily:
+                                                                                            Constants
+                                                                                                .appFont,
+                                                                                        fontSize:
+                                                                                            12),
+                                                                                  ),
+                                                                                  RichText(
+                                                                                    text:
+                                                                                        TextSpan(
+                                                                                      children: [
+                                                                                        WidgetSpan(
+                                                                                          child:
+                                                                                              SvgPicture.asset(
+                                                                                            (() {
+                                                                                                  if (order.orderStatus == 'PENDING') {
+                                                                                                    return 'images/ic_pending.svg';
+                                                                                                  } else if (order.orderStatus == 'APPROVE' || order.orderStatus == 'ACCEPT') {
+                                                                                                    return 'images/ic_accept.svg';
+                                                                                                  } else if (order.orderStatus == 'PICKUP' || order.orderStatus == 'PREPARING FOOD') {
+                                                                                                    return 'images/ic_pickup.svg';
+                                                                                                  } else if (order.orderStatus == 'DELIVERED' || order.orderStatus == 'COMPLETE' || order.orderStatus == 'READY TO PICKUP') {
+                                                                                                    return 'images/ic_completed.svg';
+                                                                                                  } else if (order.orderStatus == 'CANCEL' || order.orderStatus == 'REJECT') {
+                                                                                                    return 'images/ic_cancel.svg';
+                                                                                                  } else {
+                                                                                                    return 'images/ic_accept.svg';
+                                                                                                  }
+                                                                                                }()) ??
+                                                                                                '',
+                                                                                            color:
+                                                                                                (() {
+                                                                                              if (order.orderStatus == 'PENDING') {
+                                                                                                return Color(Constants.colorOrderPending);
+                                                                                              } else if (order.orderStatus == 'APPROVE' || order.orderStatus == 'ACCEPT') {
+                                                                                                return Color(Constants.colorBlack);
+                                                                                              } else if (order.orderStatus == 'PICKUP' || order.orderStatus == 'PREPARING FOOD') {
+                                                                                                return Color(Constants.colorOrderPickup);
+                                                                                              }
+                                                                                            }()),
+                                                                                            width:
+                                                                                                15,
+                                                                                            height:
+                                                                                                ScreenUtil().setHeight(15),
+                                                                                          ),
+                                                                                        ),
+                                                                                        TextSpan(
+                                                                                            text:
+                                                                                                (() {
+                                                                                              if (order.deliveryType == 'TAKEAWAY') {
+                                                                                                if (order.orderStatus == 'READY TO PICKUP') {
+                                                                                                  return ' Waiting For User To Pickup';
+                                                                                                }
+                                                                                              } else {
+                                                                                                if (order.orderStatus == 'READY TO PICKUP' || order.orderStatus == 'ACCEPT') {
+                                                                                                  return ' Waiting For Driver To Pickup';
+                                                                                                }
+                                                                                              }
+                                                                                              return " ${order.orderStatus}";
+                                                                                            }()),
+                                                                                            style: TextStyle(
+                                                                                                color: (() {
+                                                                                                  if (order.addressId != null) {
+                                                                                                    if (order.orderStatus == 'PENDING') {
+                                                                                                      return Color(Constants.colorOrderPending);
+                                                                                                    } else if (order.orderStatus == 'APPROVE') {
+                                                                                                      return Color(Constants.colorBlack);
+                                                                                                    } else if (order.orderStatus == 'ACCEPT') {
+                                                                                                      return Color(Constants.colorBlack);
+                                                                                                    } else if (order.orderStatus == 'REJECT') {
+                                                                                                      return Color(Constants.colorLike);
+                                                                                                    } else if (order.orderStatus == 'PICKUP') {
+                                                                                                      return Color(Constants.colorOrderPickup);
+                                                                                                    } else if (order.orderStatus == 'DELIVERED') {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    } else if (order.orderStatus == 'CANCEL') {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    } else if (order.orderStatus == 'COMPLETE') {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    } else {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    }
+                                                                                                  } else {
+                                                                                                    if (order.orderStatus == 'PENDING') {
+                                                                                                      return Color(Constants.colorOrderPending);
+                                                                                                    } else if (order.orderStatus == 'APPROVE') {
+                                                                                                      return Color(Constants.colorBlack);
+                                                                                                    } else if (order.orderStatus == 'ACCEPT') {
+                                                                                                      return Color(Constants.colorBlack);
+                                                                                                    } else if (order.orderStatus == 'REJECT') {
+                                                                                                      return Color(Constants.colorLike);
+                                                                                                    } else if (order.orderStatus == 'PREPARING FOOD') {
+                                                                                                      return Color(Constants.colorOrderPickup);
+                                                                                                    } else if (order.orderStatus == 'READY TO PICKUP') {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    } else if (order.orderStatus == 'CANCEL') {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    } else if (order.orderStatus == 'COMPLETE') {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    } else {
+                                                                                                      return Color(Constants.colorTheme);
+                                                                                                    }
+                                                                                                  }
+                                                                                                }()),
+                                                                                                fontFamily: Constants.appFont,
+                                                                                                fontSize: 12)),
+                                                                                      ],
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              order.paymentType == 'CASH+CARD' ?  Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  const SizedBox(
                                                                                     height: 5,
                                                                                   ),
-                                                                            order.discounts ==
-                                                                                    null
-                                                                                ? const SizedBox()
-                                                                                : Text(
-                                                                                    'Discounts : ${double.parse(order.discounts!).toStringAsFixed(2)} ',
+                                                                                  order.cashAmount != null ? Text(
+                                                                                    'Cash Amount : ${double.parse(order.cashAmount.toString()).toStringAsFixed(2)} ',
                                                                                     style: TextStyle(
                                                                                         color: Colors
                                                                                             .black,
                                                                                         fontFamily: Constants
                                                                                             .appFont,
                                                                                         fontSize:
-                                                                                            12),
-                                                                                  ),
-                                                                            const SizedBox(
-                                                                              height: 5,
-                                                                            ),
-                                                                            Row(
-                                                                              mainAxisAlignment:
-                                                                                  MainAxisAlignment
-                                                                                      .spaceBetween,
-                                                                              children: [
-                                                                                Text(
-                                                                                  'Total Amount : ${AuthController.sharedPreferences?.getString(Constants.appSettingCurrencySymbol) ?? ''}${double.parse(order.amount!).toStringAsFixed(2)} ',
-                                                                                  style: TextStyle(
-                                                                                      color: Colors
-                                                                                          .black,
-                                                                                      fontFamily:
-                                                                                          Constants
-                                                                                              .appFont,
-                                                                                      fontSize:
-                                                                                          12),
-                                                                                ),
-                                                                                RichText(
-                                                                                  text:
-                                                                                      TextSpan(
-                                                                                    children: [
-                                                                                      WidgetSpan(
-                                                                                        child:
-                                                                                            SvgPicture.asset(
-                                                                                          (() {
-                                                                                                if (order.orderStatus == 'PENDING') {
-                                                                                                  return 'images/ic_pending.svg';
-                                                                                                } else if (order.orderStatus == 'APPROVE' || order.orderStatus == 'ACCEPT') {
-                                                                                                  return 'images/ic_accept.svg';
-                                                                                                } else if (order.orderStatus == 'PICKUP' || order.orderStatus == 'PREPARING FOOD') {
-                                                                                                  return 'images/ic_pickup.svg';
-                                                                                                } else if (order.orderStatus == 'DELIVERED' || order.orderStatus == 'COMPLETE' || order.orderStatus == 'READY TO PICKUP') {
-                                                                                                  return 'images/ic_completed.svg';
-                                                                                                } else if (order.orderStatus == 'CANCEL' || order.orderStatus == 'REJECT') {
-                                                                                                  return 'images/ic_cancel.svg';
-                                                                                                } else {
-                                                                                                  return 'images/ic_accept.svg';
-                                                                                                }
-                                                                                              }()) ??
-                                                                                              '',
-                                                                                          color:
-                                                                                              (() {
-                                                                                            if (order.orderStatus == 'PENDING') {
-                                                                                              return Color(Constants.colorOrderPending);
-                                                                                            } else if (order.orderStatus == 'APPROVE' || order.orderStatus == 'ACCEPT') {
-                                                                                              return Color(Constants.colorBlack);
-                                                                                            } else if (order.orderStatus == 'PICKUP' || order.orderStatus == 'PREPARING FOOD') {
-                                                                                              return Color(Constants.colorOrderPickup);
-                                                                                            }
-                                                                                          }()),
-                                                                                          width:
-                                                                                              15,
-                                                                                          height:
-                                                                                              ScreenUtil().setHeight(15),
-                                                                                        ),
-                                                                                      ),
-                                                                                      TextSpan(
-                                                                                          text:
-                                                                                              (() {
-                                                                                            if (order.deliveryType == 'TAKEAWAY') {
-                                                                                              if (order.orderStatus == 'READY TO PICKUP') {
-                                                                                                return ' Waiting For User To Pickup';
-                                                                                              }
-                                                                                            } else {
-                                                                                              if (order.orderStatus == 'READY TO PICKUP' || order.orderStatus == 'ACCEPT') {
-                                                                                                return ' Waiting For Driver To Pickup';
-                                                                                              }
-                                                                                            }
-                                                                                            return " ${order.orderStatus}";
-                                                                                          }()),
-                                                                                          style: TextStyle(
-                                                                                              color: (() {
-                                                                                                if (order.addressId != null) {
-                                                                                                  if (order.orderStatus == 'PENDING') {
-                                                                                                    return Color(Constants.colorOrderPending);
-                                                                                                  } else if (order.orderStatus == 'APPROVE') {
-                                                                                                    return Color(Constants.colorBlack);
-                                                                                                  } else if (order.orderStatus == 'ACCEPT') {
-                                                                                                    return Color(Constants.colorBlack);
-                                                                                                  } else if (order.orderStatus == 'REJECT') {
-                                                                                                    return Color(Constants.colorLike);
-                                                                                                  } else if (order.orderStatus == 'PICKUP') {
-                                                                                                    return Color(Constants.colorOrderPickup);
-                                                                                                  } else if (order.orderStatus == 'DELIVERED') {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  } else if (order.orderStatus == 'CANCEL') {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  } else if (order.orderStatus == 'COMPLETE') {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  } else {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  }
-                                                                                                } else {
-                                                                                                  if (order.orderStatus == 'PENDING') {
-                                                                                                    return Color(Constants.colorOrderPending);
-                                                                                                  } else if (order.orderStatus == 'APPROVE') {
-                                                                                                    return Color(Constants.colorBlack);
-                                                                                                  } else if (order.orderStatus == 'ACCEPT') {
-                                                                                                    return Color(Constants.colorBlack);
-                                                                                                  } else if (order.orderStatus == 'REJECT') {
-                                                                                                    return Color(Constants.colorLike);
-                                                                                                  } else if (order.orderStatus == 'PREPARING FOOD') {
-                                                                                                    return Color(Constants.colorOrderPickup);
-                                                                                                  } else if (order.orderStatus == 'READY TO PICKUP') {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  } else if (order.orderStatus == 'CANCEL') {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  } else if (order.orderStatus == 'COMPLETE') {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  } else {
-                                                                                                    return Color(Constants.colorTheme);
-                                                                                                  }
-                                                                                                }
-                                                                                              }()),
-                                                                                              fontFamily: Constants.appFont,
-                                                                                              fontSize: 12)),
-                                                                                    ],
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                            order.paymentType == 'CASH+CARD' ?  Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                const SizedBox(
-                                                                                  height: 5,
-                                                                                ),
-                                                                                order.cashAmount != null ? Text(
-                                                                                  'Cash Amount : ${double.parse(order.cashAmount.toString()).toStringAsFixed(2)} ',
-                                                                                  style: TextStyle(
-                                                                                      color: Colors
-                                                                                          .black,
-                                                                                      fontFamily: Constants
-                                                                                          .appFont,
-                                                                                      fontSize:
-                                                                                      12),
-                                                                                ) : SizedBox(),
-                                                                                order.cashAmount != null ? const SizedBox(
-                                                                                  height: 5,
-                                                                                ) : SizedBox(),
-                                                                                order.cardAmount != null ? Text(
-                                                                                  'Card Amount : ${double.parse(order.cardAmount.toString()).toStringAsFixed(2)} ',
-                                                                                  style: TextStyle(
-                                                                                      color: Colors
-                                                                                          .black,
-                                                                                      fontFamily: Constants
-                                                                                          .appFont,
-                                                                                      fontSize:
-                                                                                      12),
-                                                                                ) : SizedBox(),
-                                                                                order.cardAmount != null ? const SizedBox(
-                                                                                  height: 5,
-                                                                                ) : SizedBox(),
-                                                                              ],
-                                                                            ) : SizedBox(height: 5,),
+                                                                                        12),
+                                                                                  ) : SizedBox(),
+                                                                                  order.cashAmount != null ? const SizedBox(
+                                                                                    height: 5,
+                                                                                  ) : SizedBox(),
+                                                                                  order.cardAmount != null ? Text(
+                                                                                    'Card Amount : ${double.parse(order.cardAmount.toString()).toStringAsFixed(2)} ',
+                                                                                    style: TextStyle(
+                                                                                        color: Colors
+                                                                                            .black,
+                                                                                        fontFamily: Constants
+                                                                                            .appFont,
+                                                                                        fontSize:
+                                                                                        12),
+                                                                                  ) : SizedBox(),
+                                                                                  order.cardAmount != null ? const SizedBox(
+                                                                                    height: 5,
+                                                                                  ) : SizedBox(),
+                                                                                ],
+                                                                              ) : SizedBox(height: 5,),
 
 
 
-                                                                          ],
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment
-                                                                                  .spaceBetween,
-                                                                          children: [
-                                                                            ///Complete this order button start
-                                                                            order.orderStatus != 'COMPLETE' &&
-                                                                                    order.deliveryType ==
-                                                                                        'TAKEAWAY' &&
-                                                                                    order.deliveryType !=
-                                                                                        'DINING' &&
-                                                                                    (order.paymentType ==
-                                                                                            'POS CASH' ||
-                                                                                        order.paymentType ==
-                                                                                            'POS CARD' || order.paymentType ==
-                                                                                        'CASH+CARD')
-                                                                                ? Expanded(
-                                                                                    child:
-                                                                                        ElevatedButton(
-                                                                                      onPressed:
-                                                                                          () async {
-                                                                                        await orderHistoryController
-                                                                                            .getTakeAwayValue(order.id!)
-                                                                                            .then((value) {
-                                                                                          print("value ${value.data}");
-                                                                                          Get.to(() =>
-                                                                                              PosMenu(isDining: false));
-                                                                                        });
-                                                                                      },
+                                                                            ],
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment
+                                                                                    .spaceBetween,
+                                                                            children: [
+                                                                              ///Complete this order button start
+                                                                              order.orderStatus != 'COMPLETE' &&
+                                                                                      order.deliveryType ==
+                                                                                          'TAKEAWAY' &&
+                                                                                      order.deliveryType !=
+                                                                                          'DINING' &&
+                                                                                      (order.paymentType ==
+                                                                                              'POS CASH' ||
+                                                                                          order.paymentType ==
+                                                                                              'POS CARD' || order.paymentType ==
+                                                                                          'CASH+CARD')
+                                                                                  ? Expanded(
                                                                                       child:
-                                                                                          const Text(
-                                                                                        "Complete",
-                                                                                        textAlign:
-                                                                                            TextAlign.center,
-                                                                                        style:
-                                                                                            TextStyle(
-                                                                                          fontSize: 15,
+                                                                                          ElevatedButton(
+                                                                                        onPressed:
+                                                                                            () async {
+                                                                                          await orderHistoryController
+                                                                                              .getTakeAwayValue(order.id!)
+                                                                                              .then((value) {
+                                                                                            print("value ${value.data}");
+                                                                                            Get.to(() =>
+                                                                                                PosMenu(isDining: false));
+                                                                                          });
+                                                                                        },
+                                                                                        child:
+                                                                                            const Text(
+                                                                                          "Complete",
+                                                                                          textAlign:
+                                                                                              TextAlign.center,
+                                                                                          style:
+                                                                                              TextStyle(
+                                                                                            fontSize: 15,
+                                                                                          ),
                                                                                         ),
                                                                                       ),
-                                                                                    ),
-                                                                                  )
-                                                                                : SizedBox(),
+                                                                                    )
+                                                                                  : SizedBox(),
 
-                                                                            order.orderStatus != 'COMPLETE' &&
-                                                                                    order.deliveryType ==
-                                                                                        'TAKEAWAY' &&
-                                                                                    order.deliveryType !=
-                                                                                        'DINING' &&
-                                                                                    (order.paymentType ==
-                                                                                            'POS CASH' ||
-                                                                                        order.paymentType ==
-                                                                                            'POS CARD')
-                                                                                ? SizedBox(
-                                                                                    width: 5)
-                                                                                : SizedBox(),
+                                                                              order.orderStatus != 'COMPLETE' &&
+                                                                                      order.deliveryType ==
+                                                                                          'TAKEAWAY' &&
+                                                                                      order.deliveryType !=
+                                                                                          'DINING' &&
+                                                                                      (order.paymentType ==
+                                                                                              'POS CASH' ||
+                                                                                          order.paymentType ==
+                                                                                              'POS CARD')
+                                                                                  ? SizedBox(
+                                                                                      width: 5)
+                                                                                  : SizedBox(),
 
-                                                                            ///Complete this order button end
+                                                                              ///Complete this order button end
 
-                                                                            ///Edit Order Button Start
-                                                                            order.paymentType ==
-                                                                                    "INCOMPLETE ORDER"
-                                                                                ? order.orderStatus ==
-                                                                                        'CANCEL'
-                                                                                    ? Container()
-                                                                                    : Expanded(
-                                                                                        child:
-                                                                                            Row(
-                                                                                          children: [
-                                                                                            Expanded(
-                                                                                              child: ElevatedButton(
-                                                                                                onPressed: () async {
-                                                                                                  order
-                                                                                                      .deliveryType ==
-                                                                                                      "TAKEAWAY"
-                                                                                                      ?
-                                                                                                  _cartController
-                                                                                                      .diningValue =
-                                                                                                  false
-                                                                                                      : _cartController
-                                                                                                      .diningValue =
-                                                                                                  true;
-                                                                                                  final prefs = await SharedPreferences.getInstance();
-                                                                                                  String vendorId =
-                                                                                                      prefs.getString(Constants.vendorId.toString()) ?? '';
-                                                                                                  if ((order.tableNo != null || order.tableNo != 0) && order.deliveryType == "DINING") {
-                                                                                                    print("ASSSSSS");
+                                                                              ///Edit Order Button Start
+                                                                              order.paymentType ==
+                                                                                      "INCOMPLETE ORDER"
+                                                                                  ? order.orderStatus ==
+                                                                                          'CANCEL'
+                                                                                      ? Container()
+                                                                                      : Expanded(
+                                                                                          child:
+                                                                                              Row(
+                                                                                            children: [
+                                                                                              Expanded(
+                                                                                                child: ElevatedButton(
+                                                                                                  onPressed: () async {
+                                                                                                    order
+                                                                                                        .deliveryType ==
+                                                                                                        "TAKEAWAY"
+                                                                                                        ?
+                                                                                                    _cartController
+                                                                                                        .diningValue =
+                                                                                                    false
+                                                                                                        : _cartController
+                                                                                                        .diningValue =
+                                                                                                    true;
+                                                                                                    final prefs = await SharedPreferences.getInstance();
+                                                                                                    String vendorId =
+                                                                                                        prefs.getString(Constants.vendorId.toString()) ?? '';
+                                                                                                    if ((order.tableNo != null || order.tableNo != 0) && order.deliveryType == "DINING") {
+                                                                                                      print("ASSSSSS");
+                                                                                                        Map<String, dynamic> param = {
+                                                                                                          'vendor_id':
+                                                                                                          int.parse(vendorId.toString()),
+                                                                                                          'booked_table_number': order.tableNo,
+                                                                                                        };
+                                                                                                        BaseModel<BookedOrderModel> baseModel =
+                                                                                                        await _cartController
+                                                                                                            .getBookedTableData(
+                                                                                                            param, context);
+                                                                                                        BookedOrderModel bookOrderModel =
+                                                                                                        baseModel.data!;
+                                                                                                        if (bookOrderModel.success!) {
+                                                                                                          print(
+                                                                                                              "ANNN  ${bookOrderModel.toJson()}");
+                                                                                                          _cartController.tableNumber = order.tableNo!;
+                                                                                                          _cartController.cartMaster =
+                                                                                                              cart.CartMaster.fromMap(jsonDecode(
+                                                                                                                  bookOrderModel
+                                                                                                                      .data!.orderData!));
+                                                                                                          _cartController
+                                                                                                              .cartMaster?.oldOrderId =
+                                                                                                              bookOrderModel.data!.orderId;
+                                                                                                          _diningCartController.diningUserName =
+                                                                                                          bookOrderModel.data!.userName!;
+                                                                                                          _diningCartController
+                                                                                                              .diningUserMobileNumber =
+                                                                                                          bookOrderModel.data!.mobile!;
+                                                                                                          _diningCartController.diningNotes =
+                                                                                                          bookOrderModel.data!.notes!;
+                                                                                                          _diningCartController
+                                                                                                              .nameController.text =
+                                                                                                              _diningCartController
+                                                                                                                  .diningUserName;
+                                                                                                          _diningCartController
+                                                                                                              .phoneNoController.text =
+                                                                                                              _diningCartController
+                                                                                                                  .diningUserMobileNumber;
+                                                                                                          _diningCartController
+                                                                                                              .notesController.text =
+                                                                                                              _diningCartController.diningNotes;
+                                                                                                        }
+                                                                                                  } else {
                                                                                                       Map<String, dynamic> param = {
-                                                                                                        'vendor_id':
-                                                                                                        int.parse(vendorId.toString()),
-                                                                                                        'booked_table_number': order.tableNo,
+                                                                                                        'order_Id': order.id,
                                                                                                       };
                                                                                                       BaseModel<BookedOrderModel> baseModel =
-                                                                                                      await _cartController
-                                                                                                          .getBookedTableData(
+                                                                                                      await _cartController.getTakeAwayData
+                                                                                                          (
                                                                                                           param, context);
                                                                                                       BookedOrderModel bookOrderModel =
                                                                                                       baseModel.data!;
                                                                                                       if (bookOrderModel.success!) {
                                                                                                         print(
-                                                                                                            "ANNN  ${bookOrderModel.toJson()}");
-                                                                                                        _cartController.tableNumber = order.tableNo!;
+                                                                                                            "BNNNN  ${bookOrderModel.toJson()}");
+
                                                                                                         _cartController.cartMaster =
                                                                                                             cart.CartMaster.fromMap(jsonDecode(
                                                                                                                 bookOrderModel
@@ -3249,869 +3290,836 @@ class OrderHistory extends StatelessWidget {
                                                                                                         _cartController
                                                                                                             .cartMaster?.oldOrderId =
                                                                                                             bookOrderModel.data!.orderId;
-                                                                                                        _diningCartController.diningUserName =
-                                                                                                        bookOrderModel.data!.userName!;
-                                                                                                        _diningCartController
-                                                                                                            .diningUserMobileNumber =
-                                                                                                        bookOrderModel.data!.mobile!;
-                                                                                                        _diningCartController.diningNotes =
-                                                                                                        bookOrderModel.data!.notes!;
-                                                                                                        _diningCartController
-                                                                                                            .nameController.text =
-                                                                                                            _diningCartController
-                                                                                                                .diningUserName;
-                                                                                                        _diningCartController
-                                                                                                            .phoneNoController.text =
-                                                                                                            _diningCartController
-                                                                                                                .diningUserMobileNumber;
-                                                                                                        _diningCartController
-                                                                                                            .notesController.text =
-                                                                                                            _diningCartController.diningNotes;
+                                                                                                        String colorCode = order
+                                                                                                            .orderId
+                                                                                                            .toString();
+                                                                                                        int colorInt = int
+                                                                                                            .parse(
+                                                                                                            colorCode
+                                                                                                                .substring(
+                                                                                                                1));
+                                                                                                        print(
+                                                                                                            "color int $colorInt");
+                                                                                                        SharedPreferences
+                                                                                                            .getInstance()
+                                                                                                            .then((
+                                                                                                            value) {
+                                                                                                          value
+                                                                                                              .setInt(
+                                                                                                              Constants
+                                                                                                                  .order_main_id
+                                                                                                                  .toString(),
+                                                                                                              colorInt);
+                                                                                                        });
+                                                                                                        order
+                                                                                                            .datumUserName ==
+                                                                                                            null ||
+                                                                                                            order
+                                                                                                                .datumUserName ==
+                                                                                                                ''
+                                                                                                            ?
+                                                                                                        _cartController
+                                                                                                            .userName =
+                                                                                                        ''
+                                                                                                            : _cartController
+                                                                                                            .userName =
+                                                                                                        order
+                                                                                                            .datumUserName!;
+                                                                                                        order
+                                                                                                            .mobile ==
+                                                                                                            null ||
+                                                                                                            order
+                                                                                                                .mobile ==
+                                                                                                                ''
+                                                                                                            ?
+                                                                                                        _cartController
+                                                                                                            .userMobileNumber =
+                                                                                                        ''
+                                                                                                            : _cartController
+                                                                                                            .userMobileNumber =
+                                                                                                        order
+                                                                                                            .mobile!;
+                                                                                                        order
+                                                                                                            .notes ==
+                                                                                                            null ||
+                                                                                                            order
+                                                                                                                .notes ==
+                                                                                                                ''
+                                                                                                            ?
+                                                                                                        _cartController
+                                                                                                            .notes =
+                                                                                                        ''
+                                                                                                            : _cartController
+                                                                                                            .notes =
+                                                                                                        order
+                                                                                                            .notes!;
+                                                                                                        _cartController
+                                                                                                            .nameController
+                                                                                                            .text =
+                                                                                                            _cartController
+                                                                                                                .userName;
+                                                                                                        _cartController
+                                                                                                            .phoneNoController
+                                                                                                            .text =
+                                                                                                            _cartController
+                                                                                                                .userMobileNumber;
+                                                                                                        _cartController
+                                                                                                            .notesController
+                                                                                                            .text =
+                                                                                                            _cartController
+                                                                                                                .notes;
                                                                                                       }
-                                                                                                } else {
-                                                                                                    Map<String, dynamic> param = {
-                                                                                                      'order_Id': order.id,
-                                                                                                    };
-                                                                                                    BaseModel<BookedOrderModel> baseModel =
-                                                                                                    await _cartController.getTakeAwayData
-                                                                                                        (
-                                                                                                        param, context);
-                                                                                                    BookedOrderModel bookOrderModel =
-                                                                                                    baseModel.data!;
-                                                                                                    if (bookOrderModel.success!) {
-                                                                                                      print(
-                                                                                                          "BNNNN  ${bookOrderModel.toJson()}");
 
-                                                                                                      _cartController.cartMaster =
-                                                                                                          cart.CartMaster.fromMap(jsonDecode(
-                                                                                                              bookOrderModel
-                                                                                                                  .data!.orderData!));
-                                                                                                      _cartController
-                                                                                                          .cartMaster?.oldOrderId =
-                                                                                                          bookOrderModel.data!.orderId;
-                                                                                                      String colorCode = order
-                                                                                                          .orderId
-                                                                                                          .toString();
-                                                                                                      int colorInt = int
-                                                                                                          .parse(
-                                                                                                          colorCode
-                                                                                                              .substring(
-                                                                                                              1));
-                                                                                                      print(
-                                                                                                          "color int $colorInt");
-                                                                                                      SharedPreferences
-                                                                                                          .getInstance()
-                                                                                                          .then((
-                                                                                                          value) {
-                                                                                                        value
-                                                                                                            .setInt(
-                                                                                                            Constants
-                                                                                                                .order_main_id
-                                                                                                                .toString(),
-                                                                                                            colorInt);
-                                                                                                      });
-                                                                                                      order
-                                                                                                          .datumUserName ==
-                                                                                                          null ||
-                                                                                                          order
-                                                                                                              .datumUserName ==
-                                                                                                              ''
-                                                                                                          ?
-                                                                                                      _cartController
-                                                                                                          .userName =
-                                                                                                      ''
-                                                                                                          : _cartController
-                                                                                                          .userName =
-                                                                                                      order
-                                                                                                          .datumUserName!;
-                                                                                                      order
-                                                                                                          .mobile ==
-                                                                                                          null ||
-                                                                                                          order
-                                                                                                              .mobile ==
-                                                                                                              ''
-                                                                                                          ?
-                                                                                                      _cartController
-                                                                                                          .userMobileNumber =
-                                                                                                      ''
-                                                                                                          : _cartController
-                                                                                                          .userMobileNumber =
-                                                                                                      order
-                                                                                                          .mobile!;
-                                                                                                      order
-                                                                                                          .notes ==
-                                                                                                          null ||
-                                                                                                          order
-                                                                                                              .notes ==
-                                                                                                              ''
-                                                                                                          ?
-                                                                                                      _cartController
-                                                                                                          .notes =
-                                                                                                      ''
-                                                                                                          : _cartController
-                                                                                                          .notes =
-                                                                                                      order
-                                                                                                          .notes!;
-                                                                                                      _cartController
-                                                                                                          .nameController
-                                                                                                          .text =
-                                                                                                          _cartController
-                                                                                                              .userName;
-                                                                                                      _cartController
-                                                                                                          .phoneNoController
-                                                                                                          .text =
-                                                                                                          _cartController
-                                                                                                              .userMobileNumber;
-                                                                                                      _cartController
-                                                                                                          .notesController
-                                                                                                          .text =
-                                                                                                          _cartController
-                                                                                                              .notes;
                                                                                                     }
-
-                                                                                                  }
-                                                                                                  Get
-                                                                                                      .to(() =>
-                                                                                                      PosMenu(
-                                                                                                          isDining: _cartController
-                                                                                                              .diningValue));
-                                                                                                },
-                                                                                                child: const Text(
-                                                                                                  "Edit / Pay",
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 15,
+                                                                                                    Get
+                                                                                                        .to(() =>
+                                                                                                        PosMenu(
+                                                                                                            isDining: _cartController
+                                                                                                                .diningValue));
+                                                                                                  },
+                                                                                                  child: const Text(
+                                                                                                    "Edit / Pay",
+                                                                                                    textAlign: TextAlign.center,
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 15,
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ),
                                                                                               ),
-                                                                                            ),
-                                                                                          ],
-                                                                                        ),
-                                                                                      )
-                                                                                : SizedBox(),
+                                                                                            ],
+                                                                                          ),
+                                                                                        )
+                                                                                  : SizedBox(),
 
-                                                                            order.orderStatus ==
-                                                                                'PENDING' ||
-                                                                                order.orderStatus ==
-                                                                                    'APPROVE'
-                                                                                ?  SizedBox(
-                                                                                width: 5)
-                                                                                : SizedBox(),
+                                                                              order.orderStatus ==
+                                                                                  'PENDING' ||
+                                                                                  order.orderStatus ==
+                                                                                      'APPROVE'
+                                                                                  ?  SizedBox(
+                                                                                  width: 5)
+                                                                                  : SizedBox(),
 
-                                                                            ///End Edit Order Button
+                                                                              ///End Edit Order Button
 
-                                                                            /// Cancel Order Button Start
-                                                                            order.orderStatus ==
-                                                                                        'PENDING' ||
-                                                                                    order.orderStatus ==
-                                                                                        'APPROVE'
-                                                                                ? Expanded(
-                                                                                    child:
-                                                                                        ElevatedButton(
-                                                                                      style: ElevatedButton.styleFrom(
-                                                                                          // backgroundColor: Colors.black
-                                                                                          backgroundColor: Color(0XFF6C6868)),
-                                                                                      onPressed:
-                                                                                          () async {
-                                                                                        await orderHistoryController.showCancelOrderDialog(
-                                                                                            order,
-                                                                                            order.id,
-                                                                                            context);
-                                                                                        orderHistoryController
-                                                                                            .orderHistoryRef
-                                                                                            .value = orderHistoryController.callGetOrderHistoryList();
-                                                                                      },
+                                                                              /// Cancel Order Button Start
+                                                                              order.orderStatus ==
+                                                                                          'PENDING' ||
+                                                                                      order.orderStatus ==
+                                                                                          'APPROVE'
+                                                                                  ? Expanded(
                                                                                       child:
-                                                                                          const Text(
-                                                                                        "Cancel",
-                                                                                        textAlign:
-                                                                                            TextAlign.center,
-                                                                                        style:
-                                                                                            TextStyle(
-                                                                                              fontSize: 15,
+                                                                                          ElevatedButton(
+                                                                                        style: ElevatedButton.styleFrom(
+                                                                                            // backgroundColor: Colors.black
+                                                                                            backgroundColor: Color(0XFF6C6868)),
+                                                                                        onPressed:
+                                                                                            () async {
+                                                                                          await orderHistoryController.showCancelOrderDialog(
+                                                                                              order,
+                                                                                              order.id,
+                                                                                              context);
+                                                                                          orderHistoryController
+                                                                                              .orderHistoryRef
+                                                                                              .value = orderHistoryController.callGetOrderHistoryList();
+                                                                                        },
+                                                                                        child:
+                                                                                            const Text(
+                                                                                          "Cancel",
+                                                                                          textAlign:
+                                                                                              TextAlign.center,
+                                                                                          style:
+                                                                                              TextStyle(
+                                                                                                fontSize: 15,
+                                                                                          ),
                                                                                         ),
                                                                                       ),
-                                                                                    ),
-                                                                                  )
-                                                                                : SizedBox(),
+                                                                                    )
+                                                                                  : SizedBox(),
 
-                                                                            ///CAncel Order button End
-                                                                          ],
-                                                                        )
-                                                                        // constraints.width >
-                                                                        //     600
-                                                                        //     ? Row(
-                                                                        //   mainAxisAlignment:
-                                                                        //   MainAxisAlignment
-                                                                        //       .spaceBetween,
-                                                                        //   children: [
-                                                                        //     ///Complete this order button start
-                                                                        //     order.orderStatus != 'COMPLETE' &&
-                                                                        //         order.deliveryType == 'TAKEAWAY' &&
-                                                                        //         order.deliveryType != 'DINING' &&
-                                                                        //         (order.paymentType == 'POS CASH' || order.paymentType == 'POS CARD')
-                                                                        //         ? Expanded(
-                                                                        //           child: ElevatedButton(
-                                                                        //       onPressed: () async {
-                                                                        //           await orderHistoryController.getTakeAwayValue(order.id!).then((value) {
-                                                                        //             print("value ${value.data}");
-                                                                        //             Get.to(() => PosMenu(isDining: false));
-                                                                        //           });
-                                                                        //       },
-                                                                        //       child: const Text(
-                                                                        //         "Complete",
-                                                                        //         textAlign: TextAlign.center,
-                                                                        //         style: TextStyle(
-                                                                        //           fontSize: 18,
-                                                                        //         ),
-                                                                        //       ),
-                                                                        //     ),
-                                                                        //         )
-                                                                        //         : SizedBox(),
-                                                                        //     order.orderStatus != 'COMPLETE' &&
-                                                                        //         order.deliveryType == 'TAKEAWAY' &&
-                                                                        //         order.deliveryType != 'DINING' &&
-                                                                        //         (order.paymentType == 'POS CASH' || order.paymentType == 'POS CARD')
-                                                                        //         ? SizedBox(width: 5)
-                                                                        //         : SizedBox(),
-                                                                        //     ///Complete this order button end
-                                                                        //
-                                                                        //     ///Edit Order Button Start
-                                                                        //     order.paymentType ==
-                                                                        //         "INCOMPLETE ORDER"
-                                                                        //         ? order.orderStatus == 'CANCEL'
-                                                                        //         ? Container()
-                                                                        //         : Expanded(
-                                                                        //           child: Row(
-                                                                        //             children: [
-                                                                        //               Expanded(
-                                                                        //                    child: ElevatedButton(
-                                                                        //       onPressed: () {
-                                                                        //                 _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
-                                                                        //                 _cartController.cartMaster?.oldOrderId = order.id;
-                                                                        //                 if (order.tableNo != null) {
-                                                                        //                   _cartController.tableNumber = order.tableNo!;
-                                                                        //                 }
-                                                                        //                 String colorCode = order.orderId.toString();
-                                                                        //                 int colorInt = int.parse(colorCode.substring(1));
-                                                                        //                 print("color int $colorInt");
-                                                                        //                 SharedPreferences.getInstance().then((value) {
-                                                                        //                   value.setInt(Constants.order_main_id.toString(), colorInt);
-                                                                        //                 });
-                                                                        //                 if (order.deliveryType == "TAKEAWAY") {
-                                                                        //                   order.userName == null || order.userName == '' ? _cartController.userName = '' : _cartController.userName = order.userName!;
-                                                                        //                   order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile!;
-                                                                        //                   order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes!;
-                                                                        //                   _cartController.nameController.text = _cartController.userName;
-                                                                        //                   _cartController.phoneNoController.text = _cartController.userMobileNumber;
-                                                                        //                   _cartController.notesController.text = _cartController.notes;
-                                                                        //                 } else {
-                                                                        //                   order.userName == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.userName!;
-                                                                        //                   order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile!;
-                                                                        //                   order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes!;
-                                                                        //                   _diningCartController.nameController.text = _diningCartController.diningUserName;
-                                                                        //                   _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
-                                                                        //                   _diningCartController.notesController.text = _diningCartController.diningNotes;
-                                                                        //                 }
-                                                                        //                 order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
-                                                                        //
-                                                                        //                 Get.to(() => PosMenu(isDining: _cartController.diningValue));
-                                                                        //       },
-                                                                        //       child: const Text(
-                                                                        //         "Edit / Pay",
-                                                                        //         textAlign: TextAlign.center,
-                                                                        //         style: TextStyle(
-                                                                        //           fontSize: 18,
-                                                                        //         ),
-                                                                        //       ),
-                                                                        //     ),
-                                                                        //               ),
-                                                                        //             ],
-                                                                        //           ),
-                                                                        //         )
-                                                                        //         : SizedBox(),
-                                                                        //
-                                                                        //
-                                                                        //     ///End Edit Order Button
-                                                                        //
-                                                                        //     /// Cancel Order Button Start
-                                                                        //     order.orderStatus == 'PENDING' ||
-                                                                        //         order.orderStatus == 'APPROVE'
-                                                                        //         ? Expanded(
-                                                                        //           child: ElevatedButton(
-                                                                        //               style: ElevatedButton.styleFrom(
-                                                                        //               // backgroundColor: Colors.black
-                                                                        //                 backgroundColor: Color(0XFF6C6868)
-                                                                        //             ),
-                                                                        //       onPressed: () async {
-                                                                        //           await orderHistoryController.showCancelOrderDialog(order.id, context);
-                                                                        //           orderHistoryController.orderHistoryRef.value = orderHistoryController.callGetOrderHistoryList();
-                                                                        //       },
-                                                                        //       child:   const Text(
-                                                                        //         "Cancel",
-                                                                        //         textAlign: TextAlign.center,
-                                                                        //         style: TextStyle(
-                                                                        //           fontSize: 18,
-                                                                        //         ),
-                                                                        //       ),
-                                                                        //     ),
-                                                                        //         )
-                                                                        //         : SizedBox(),
-                                                                        //
-                                                                        //     ///CAncel Order button End
-                                                                        //   ],
-                                                                        // )
-                                                                        //     : Row(
-                                                                        //   mainAxisAlignment:
-                                                                        //   MainAxisAlignment
-                                                                        //       .spaceBetween,
-                                                                        //   children: [
-                                                                        //     ///Complete this order button start
-                                                                        //     order.orderStatus != 'COMPLETE' &&
-                                                                        //         order.deliveryType == 'TAKEAWAY' &&
-                                                                        //         order.deliveryType != 'DINING' &&
-                                                                        //         (order.paymentType == 'POS CASH' || order.paymentType == 'POS CARD')
-                                                                        //         ? Expanded(
-                                                                        //       child: ElevatedButton(
-                                                                        //         onPressed: () async {
-                                                                        //           await orderHistoryController.getTakeAwayValue(order.id!).then((value) {
-                                                                        //             Get.to(() => PosMenu(isDining: false));
-                                                                        //           });
-                                                                        //         },
-                                                                        //         child: RichText(
-                                                                        //           textAlign: TextAlign.center,
-                                                                        //           text: TextSpan(
-                                                                        //             children: [
-                                                                        //               WidgetSpan(
-                                                                        //                 child: Padding(
-                                                                        //                   padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                        //                   child: SvgPicture.asset(
-                                                                        //                     'images/ic_completed.svg',
-                                                                        //                     width: ScreenUtil().setWidth(20),
-                                                                        //                     //color: Color(Constants.colorRate),
-                                                                        //                     height: ScreenUtil().setHeight(20),
-                                                                        //                   ),
-                                                                        //                 ),
-                                                                        //               ),
-                                                                        //               TextSpan(
-                                                                        //                 text: 'Complete this order',
-                                                                        //                 style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
-                                                                        //               ),
-                                                                        //             ],
-                                                                        //           ),
-                                                                        //         ),
-                                                                        //       ),
-                                                                        //     )
-                                                                        //         : Container(),
-                                                                        //     const SizedBox(
-                                                                        //       width:
-                                                                        //       5,
-                                                                        //     ),
-                                                                        //
-                                                                        //     ///Complete this order button end
-                                                                        //
-                                                                        //     ///Edit Order Button Start
-                                                                        //     order.paymentType ==
-                                                                        //         "INCOMPLETE ORDER"
-                                                                        //         ? order.orderStatus == 'CANCEL'
-                                                                        //         ? Container()
-                                                                        //         : Expanded(
-                                                                        //       child: ElevatedButton(
-                                                                        //         onPressed: () {
-                                                                        //           _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
-                                                                        //           _cartController.cartMaster?.oldOrderId = order.id;
-                                                                        //           if (order.tableNo != null) {
-                                                                        //             _cartController.tableNumber = order.tableNo!;
-                                                                        //           }
-                                                                        //           String colorCode = order.orderId.toString();
-                                                                        //           int colorInt = int.parse(colorCode.substring(1));
-                                                                        //           print("color int $colorInt");
-                                                                        //           SharedPreferences.getInstance().then((value) {
-                                                                        //             value.setInt(Constants.order_main_id.toString(), colorInt);
-                                                                        //           });
-                                                                        //           if (order.deliveryType == "TAKEAWAY") {
-                                                                        //             order.userName == null || order.userName == '' ? _cartController.userName = '' : _cartController.userName = order.userName!;
-                                                                        //             order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile!;
-                                                                        //             order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes!;
-                                                                        //             _cartController.nameController.text = _cartController.userName;
-                                                                        //             _cartController.phoneNoController.text = _cartController.userMobileNumber;
-                                                                        //             _cartController.notesController.text = _cartController.notes;
-                                                                        //           } else {
-                                                                        //             order.userName == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.userName!;
-                                                                        //             order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile!;
-                                                                        //             order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes!;
-                                                                        //             _diningCartController.nameController.text = _diningCartController.diningUserName;
-                                                                        //             _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
-                                                                        //             _diningCartController.notesController.text = _diningCartController.diningNotes;
-                                                                        //           }
-                                                                        //           order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
-                                                                        //
-                                                                        //           Get.to(() => PosMenu(isDining: _cartController.diningValue));
-                                                                        //         },
-                                                                        //         child: const Text(
-                                                                        //           "Edit this order",
-                                                                        //           textAlign: TextAlign.center,
-                                                                        //           style: TextStyle(
-                                                                        //             fontSize: 18,
-                                                                        //           ),
-                                                                        //         ),
-                                                                        //       ),
-                                                                        //     )
-                                                                        //         : Container(),
-                                                                        //     const SizedBox(
-                                                                        //       width:
-                                                                        //       5,
-                                                                        //     ),
-                                                                        //
-                                                                        //     ///End Edit Order Button
-                                                                        //
-                                                                        //     /// Cancel Order Button Start
-                                                                        //     order.orderStatus == 'PENDING' ||
-                                                                        //         order.orderStatus == 'APPROVE'
-                                                                        //         ? Expanded(
-                                                                        //       child: ElevatedButton(
-                                                                        //         onPressed: () async {
-                                                                        //           await orderHistoryController.showCancelOrderDialog(order.id, context);
-                                                                        //
-                                                                        //           orderHistoryController.orderHistoryRef.value = orderHistoryController.callGetOrderHistoryList();
-                                                                        //         },
-                                                                        //         child: RichText(
-                                                                        //           textAlign: TextAlign.center,
-                                                                        //           text: TextSpan(
-                                                                        //             children: [
-                                                                        //               WidgetSpan(
-                                                                        //                 child: Padding(
-                                                                        //                   padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
-                                                                        //                   child: SvgPicture.asset(
-                                                                        //                     'images/ic_cancel.svg',
-                                                                        //                     width: ScreenUtil().setWidth(20),
-                                                                        //                     //color: Color(Constants.colorRate),
-                                                                        //                     height: ScreenUtil().setHeight(20),
-                                                                        //                   ),
-                                                                        //                 ),
-                                                                        //               ),
-                                                                        //               TextSpan(
-                                                                        //                 text: 'Cancel this order',
-                                                                        //                 style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
-                                                                        //               ),
-                                                                        //             ],
-                                                                        //           ),
-                                                                        //         ),
-                                                                        //       ),
-                                                                        //     )
-                                                                        //         : Container(),
-                                                                        //
-                                                                        //     ///CAncel Order button End
-                                                                        //   ],
-                                                                        // ),
-                                                                      ],
-                                                                    ),
-                                                                    order.paymentType.toString() == 'POS CARD' ?
-                                                                    Column(
-                                                                      children: [
-                                                                        const SizedBox(
-                                                                          height: 5,
-                                                                        ),
-                                                                        Row(
-                                                                            children: [
-                                                                         Expanded(
-                                                                              child: ElevatedButton(onPressed: (){
-                                                                                print("o ${order.linkly_id }");
-                                                                             _linklyDataController.sendRefundRequest(order.linkly_id ?? '', order.amount!, order.id, order, context);
-                                                                           }, child: Text("Linkly Refund")),
-                                                                         ),
+                                                                              ///CAncel Order button End
                                                                             ],
+                                                                          )
+                                                                          // constraints.width >
+                                                                          //     600
+                                                                          //     ? Row(
+                                                                          //   mainAxisAlignment:
+                                                                          //   MainAxisAlignment
+                                                                          //       .spaceBetween,
+                                                                          //   children: [
+                                                                          //     ///Complete this order button start
+                                                                          //     order.orderStatus != 'COMPLETE' &&
+                                                                          //         order.deliveryType == 'TAKEAWAY' &&
+                                                                          //         order.deliveryType != 'DINING' &&
+                                                                          //         (order.paymentType == 'POS CASH' || order.paymentType == 'POS CARD')
+                                                                          //         ? Expanded(
+                                                                          //           child: ElevatedButton(
+                                                                          //       onPressed: () async {
+                                                                          //           await orderHistoryController.getTakeAwayValue(order.id!).then((value) {
+                                                                          //             print("value ${value.data}");
+                                                                          //             Get.to(() => PosMenu(isDining: false));
+                                                                          //           });
+                                                                          //       },
+                                                                          //       child: const Text(
+                                                                          //         "Complete",
+                                                                          //         textAlign: TextAlign.center,
+                                                                          //         style: TextStyle(
+                                                                          //           fontSize: 18,
+                                                                          //         ),
+                                                                          //       ),
+                                                                          //     ),
+                                                                          //         )
+                                                                          //         : SizedBox(),
+                                                                          //     order.orderStatus != 'COMPLETE' &&
+                                                                          //         order.deliveryType == 'TAKEAWAY' &&
+                                                                          //         order.deliveryType != 'DINING' &&
+                                                                          //         (order.paymentType == 'POS CASH' || order.paymentType == 'POS CARD')
+                                                                          //         ? SizedBox(width: 5)
+                                                                          //         : SizedBox(),
+                                                                          //     ///Complete this order button end
+                                                                          //
+                                                                          //     ///Edit Order Button Start
+                                                                          //     order.paymentType ==
+                                                                          //         "INCOMPLETE ORDER"
+                                                                          //         ? order.orderStatus == 'CANCEL'
+                                                                          //         ? Container()
+                                                                          //         : Expanded(
+                                                                          //           child: Row(
+                                                                          //             children: [
+                                                                          //               Expanded(
+                                                                          //                    child: ElevatedButton(
+                                                                          //       onPressed: () {
+                                                                          //                 _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                                          //                 _cartController.cartMaster?.oldOrderId = order.id;
+                                                                          //                 if (order.tableNo != null) {
+                                                                          //                   _cartController.tableNumber = order.tableNo!;
+                                                                          //                 }
+                                                                          //                 String colorCode = order.orderId.toString();
+                                                                          //                 int colorInt = int.parse(colorCode.substring(1));
+                                                                          //                 print("color int $colorInt");
+                                                                          //                 SharedPreferences.getInstance().then((value) {
+                                                                          //                   value.setInt(Constants.order_main_id.toString(), colorInt);
+                                                                          //                 });
+                                                                          //                 if (order.deliveryType == "TAKEAWAY") {
+                                                                          //                   order.userName == null || order.userName == '' ? _cartController.userName = '' : _cartController.userName = order.userName!;
+                                                                          //                   order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile!;
+                                                                          //                   order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes!;
+                                                                          //                   _cartController.nameController.text = _cartController.userName;
+                                                                          //                   _cartController.phoneNoController.text = _cartController.userMobileNumber;
+                                                                          //                   _cartController.notesController.text = _cartController.notes;
+                                                                          //                 } else {
+                                                                          //                   order.userName == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.userName!;
+                                                                          //                   order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile!;
+                                                                          //                   order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes!;
+                                                                          //                   _diningCartController.nameController.text = _diningCartController.diningUserName;
+                                                                          //                   _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
+                                                                          //                   _diningCartController.notesController.text = _diningCartController.diningNotes;
+                                                                          //                 }
+                                                                          //                 order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+                                                                          //
+                                                                          //                 Get.to(() => PosMenu(isDining: _cartController.diningValue));
+                                                                          //       },
+                                                                          //       child: const Text(
+                                                                          //         "Edit / Pay",
+                                                                          //         textAlign: TextAlign.center,
+                                                                          //         style: TextStyle(
+                                                                          //           fontSize: 18,
+                                                                          //         ),
+                                                                          //       ),
+                                                                          //     ),
+                                                                          //               ),
+                                                                          //             ],
+                                                                          //           ),
+                                                                          //         )
+                                                                          //         : SizedBox(),
+                                                                          //
+                                                                          //
+                                                                          //     ///End Edit Order Button
+                                                                          //
+                                                                          //     /// Cancel Order Button Start
+                                                                          //     order.orderStatus == 'PENDING' ||
+                                                                          //         order.orderStatus == 'APPROVE'
+                                                                          //         ? Expanded(
+                                                                          //           child: ElevatedButton(
+                                                                          //               style: ElevatedButton.styleFrom(
+                                                                          //               // backgroundColor: Colors.black
+                                                                          //                 backgroundColor: Color(0XFF6C6868)
+                                                                          //             ),
+                                                                          //       onPressed: () async {
+                                                                          //           await orderHistoryController.showCancelOrderDialog(order.id, context);
+                                                                          //           orderHistoryController.orderHistoryRef.value = orderHistoryController.callGetOrderHistoryList();
+                                                                          //       },
+                                                                          //       child:   const Text(
+                                                                          //         "Cancel",
+                                                                          //         textAlign: TextAlign.center,
+                                                                          //         style: TextStyle(
+                                                                          //           fontSize: 18,
+                                                                          //         ),
+                                                                          //       ),
+                                                                          //     ),
+                                                                          //         )
+                                                                          //         : SizedBox(),
+                                                                          //
+                                                                          //     ///CAncel Order button End
+                                                                          //   ],
+                                                                          // )
+                                                                          //     : Row(
+                                                                          //   mainAxisAlignment:
+                                                                          //   MainAxisAlignment
+                                                                          //       .spaceBetween,
+                                                                          //   children: [
+                                                                          //     ///Complete this order button start
+                                                                          //     order.orderStatus != 'COMPLETE' &&
+                                                                          //         order.deliveryType == 'TAKEAWAY' &&
+                                                                          //         order.deliveryType != 'DINING' &&
+                                                                          //         (order.paymentType == 'POS CASH' || order.paymentType == 'POS CARD')
+                                                                          //         ? Expanded(
+                                                                          //       child: ElevatedButton(
+                                                                          //         onPressed: () async {
+                                                                          //           await orderHistoryController.getTakeAwayValue(order.id!).then((value) {
+                                                                          //             Get.to(() => PosMenu(isDining: false));
+                                                                          //           });
+                                                                          //         },
+                                                                          //         child: RichText(
+                                                                          //           textAlign: TextAlign.center,
+                                                                          //           text: TextSpan(
+                                                                          //             children: [
+                                                                          //               WidgetSpan(
+                                                                          //                 child: Padding(
+                                                                          //                   padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                                          //                   child: SvgPicture.asset(
+                                                                          //                     'images/ic_completed.svg',
+                                                                          //                     width: ScreenUtil().setWidth(20),
+                                                                          //                     //color: Color(Constants.colorRate),
+                                                                          //                     height: ScreenUtil().setHeight(20),
+                                                                          //                   ),
+                                                                          //                 ),
+                                                                          //               ),
+                                                                          //               TextSpan(
+                                                                          //                 text: 'Complete this order',
+                                                                          //                 style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
+                                                                          //               ),
+                                                                          //             ],
+                                                                          //           ),
+                                                                          //         ),
+                                                                          //       ),
+                                                                          //     )
+                                                                          //         : Container(),
+                                                                          //     const SizedBox(
+                                                                          //       width:
+                                                                          //       5,
+                                                                          //     ),
+                                                                          //
+                                                                          //     ///Complete this order button end
+                                                                          //
+                                                                          //     ///Edit Order Button Start
+                                                                          //     order.paymentType ==
+                                                                          //         "INCOMPLETE ORDER"
+                                                                          //         ? order.orderStatus == 'CANCEL'
+                                                                          //         ? Container()
+                                                                          //         : Expanded(
+                                                                          //       child: ElevatedButton(
+                                                                          //         onPressed: () {
+                                                                          //           _cartController.cartMaster = cart.CartMaster.fromMap(jsonDecode(order.orderData.toString()) as Map<String, dynamic>);
+                                                                          //           _cartController.cartMaster?.oldOrderId = order.id;
+                                                                          //           if (order.tableNo != null) {
+                                                                          //             _cartController.tableNumber = order.tableNo!;
+                                                                          //           }
+                                                                          //           String colorCode = order.orderId.toString();
+                                                                          //           int colorInt = int.parse(colorCode.substring(1));
+                                                                          //           print("color int $colorInt");
+                                                                          //           SharedPreferences.getInstance().then((value) {
+                                                                          //             value.setInt(Constants.order_main_id.toString(), colorInt);
+                                                                          //           });
+                                                                          //           if (order.deliveryType == "TAKEAWAY") {
+                                                                          //             order.userName == null || order.userName == '' ? _cartController.userName = '' : _cartController.userName = order.userName!;
+                                                                          //             order.mobile == null || order.mobile == '' ? _cartController.userMobileNumber = '' : _cartController.userMobileNumber = order.mobile!;
+                                                                          //             order.notes == null || order.notes == '' ? _cartController.notes = '' : _cartController.notes = order.notes!;
+                                                                          //             _cartController.nameController.text = _cartController.userName;
+                                                                          //             _cartController.phoneNoController.text = _cartController.userMobileNumber;
+                                                                          //             _cartController.notesController.text = _cartController.notes;
+                                                                          //           } else {
+                                                                          //             order.userName == null ? _diningCartController.diningUserName = '' : _diningCartController.diningUserName = order.userName!;
+                                                                          //             order.mobile == null ? _diningCartController.diningUserMobileNumber = '' : _diningCartController.diningUserMobileNumber = order.mobile!;
+                                                                          //             order.notes == null || order.notes == '' ? _diningCartController.diningNotes = '' : _diningCartController.diningNotes = order.notes!;
+                                                                          //             _diningCartController.nameController.text = _diningCartController.diningUserName;
+                                                                          //             _diningCartController.phoneNoController.text = _diningCartController.diningUserMobileNumber;
+                                                                          //             _diningCartController.notesController.text = _diningCartController.diningNotes;
+                                                                          //           }
+                                                                          //           order.deliveryType == "TAKEAWAY" ? _cartController.diningValue = false : _cartController.diningValue = true;
+                                                                          //
+                                                                          //           Get.to(() => PosMenu(isDining: _cartController.diningValue));
+                                                                          //         },
+                                                                          //         child: const Text(
+                                                                          //           "Edit this order",
+                                                                          //           textAlign: TextAlign.center,
+                                                                          //           style: TextStyle(
+                                                                          //             fontSize: 18,
+                                                                          //           ),
+                                                                          //         ),
+                                                                          //       ),
+                                                                          //     )
+                                                                          //         : Container(),
+                                                                          //     const SizedBox(
+                                                                          //       width:
+                                                                          //       5,
+                                                                          //     ),
+                                                                          //
+                                                                          //     ///End Edit Order Button
+                                                                          //
+                                                                          //     /// Cancel Order Button Start
+                                                                          //     order.orderStatus == 'PENDING' ||
+                                                                          //         order.orderStatus == 'APPROVE'
+                                                                          //         ? Expanded(
+                                                                          //       child: ElevatedButton(
+                                                                          //         onPressed: () async {
+                                                                          //           await orderHistoryController.showCancelOrderDialog(order.id, context);
+                                                                          //
+                                                                          //           orderHistoryController.orderHistoryRef.value = orderHistoryController.callGetOrderHistoryList();
+                                                                          //         },
+                                                                          //         child: RichText(
+                                                                          //           textAlign: TextAlign.center,
+                                                                          //           text: TextSpan(
+                                                                          //             children: [
+                                                                          //               WidgetSpan(
+                                                                          //                 child: Padding(
+                                                                          //                   padding: EdgeInsets.only(right: ScreenUtil().setHeight(10)),
+                                                                          //                   child: SvgPicture.asset(
+                                                                          //                     'images/ic_cancel.svg',
+                                                                          //                     width: ScreenUtil().setWidth(20),
+                                                                          //                     //color: Color(Constants.colorRate),
+                                                                          //                     height: ScreenUtil().setHeight(20),
+                                                                          //                   ),
+                                                                          //                 ),
+                                                                          //               ),
+                                                                          //               TextSpan(
+                                                                          //                 text: 'Cancel this order',
+                                                                          //                 style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: Constants.appFont),
+                                                                          //               ),
+                                                                          //             ],
+                                                                          //           ),
+                                                                          //         ),
+                                                                          //       ),
+                                                                          //     )
+                                                                          //         : Container(),
+                                                                          //
+                                                                          //     ///CAncel Order button End
+                                                                          //   ],
+                                                                          // ),
+                                                                        ],
+                                                                      ),
+                                                                      order.paymentType.toString() == 'POS CARD' ?
+                                                                      Column(
+                                                                        children: [
+                                                                          const SizedBox(
+                                                                            height: 5,
                                                                           ),
-                                                                      ],
-                                                                    ) : SizedBox(),
+                                                                          Row(
+                                                                              children: [
+                                                                           Expanded(
+                                                                                child: ElevatedButton(onPressed: (){
+                                                                                  print("o ${order.linkly_id }");
+                                                                               _linklyDataController.sendRefundRequest(order.linkly_id ?? '', order.amount!, order.id, order, context);
+                                                                             }, child: Text("Linkly Refund")),
+                                                                           ),
+                                                                              ],
+                                                                            ),
+                                                                        ],
+                                                                      ) : SizedBox(),
 
-                                                                    const SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Row(
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child:
-                                                                              ElevatedButton(
-                                                                            onPressed: () {
-                                                                              if ((_printerController.printerModel.value.ipPos !=
-                                                                                          null &&
+                                                                      const SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                ElevatedButton(
+                                                                              onPressed: () {
+                                                                                if ((_printerController.printerModel.value.ipPos !=
+                                                                                            null &&
+                                                                                        _printerController
+                                                                                            .printerModel
+                                                                                            .value
+                                                                                            .ipPos!
+                                                                                            .isNotEmpty) &&
+                                                                                    (_printerController.printerModel.value.portPos !=
+                                                                                            null &&
+                                                                                        _printerController
+                                                                                            .printerModel
+                                                                                            .value
+                                                                                            .portPos!
+                                                                                            .isNotEmpty)) {
+                                                                                  orderHistoryController.testPrintPOS(
                                                                                       _printerController
                                                                                           .printerModel
                                                                                           .value
-                                                                                          .ipPos!
-                                                                                          .isNotEmpty) &&
-                                                                                  (_printerController.printerModel.value.portPos !=
-                                                                                          null &&
-                                                                                      _printerController
+                                                                                          .ipPos!,
+                                                                                      int.parse(_printerController
                                                                                           .printerModel
                                                                                           .value
-                                                                                          .portPos!
-                                                                                          .isNotEmpty)) {
-                                                                                orderHistoryController.testPrintPOS(
-                                                                                    _printerController
-                                                                                        .printerModel
-                                                                                        .value
-                                                                                        .ipPos!,
-                                                                                    int.parse(_printerController
-                                                                                        .printerModel
-                                                                                        .value
-                                                                                        .portPos
-                                                                                        .toString()),
-                                                                                    context,
-                                                                                    order);
-                                                                              } else {
-                                                                                Get.snackbar(
-                                                                                    "Error",
-                                                                                    "Please add printer ip and port");
-                                                                              }
-                                                                            },
-                                                                            child: const Text(
-                                                                              "POS Print",
-                                                                              textAlign:
-                                                                                  TextAlign
-                                                                                      .center,
-                                                                              style:
-                                                                                  TextStyle(
-                                                                                    fontSize: 15,
+                                                                                          .portPos
+                                                                                          .toString()),
+                                                                                      context,
+                                                                                      order);
+                                                                                } else {
+                                                                                  Get.snackbar(
+                                                                                      "Error",
+                                                                                      "Please add printer ip and port");
+                                                                                }
+                                                                              },
+                                                                              child: const Text(
+                                                                                "POS Print",
+                                                                                textAlign:
+                                                                                    TextAlign
+                                                                                        .center,
+                                                                                style:
+                                                                                    TextStyle(
+                                                                                      fontSize: 15,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                        SizedBox(width: 5),
-                                                                        Expanded(
-                                                                          child:
-                                                                              ElevatedButton(
-                                                                            style: ElevatedButton
-                                                                                .styleFrom(
-                                                                                    // backgroundColor: Colors.black
-                                                                                    backgroundColor:
-                                                                                        Color(
-                                                                                            0XFF6C6868)),
-                                                                            onPressed: () {
-                                                                              if ((_printerController.printerModel.value.ipKitchen !=
-                                                                                          null &&
+                                                                          SizedBox(width: 5),
+                                                                          Expanded(
+                                                                            child:
+                                                                                ElevatedButton(
+                                                                              style: ElevatedButton
+                                                                                  .styleFrom(
+                                                                                      // backgroundColor: Colors.black
+                                                                                      backgroundColor:
+                                                                                          Color(
+                                                                                              0XFF6C6868)),
+                                                                              onPressed: () {
+                                                                                if ((_printerController.printerModel.value.ipKitchen !=
+                                                                                            null &&
+                                                                                        _printerController
+                                                                                            .printerModel
+                                                                                            .value
+                                                                                            .ipKitchen!
+                                                                                            .isNotEmpty) &&
+                                                                                    (_printerController.printerModel.value.portKitchen !=
+                                                                                            null &&
+                                                                                        _printerController
+                                                                                            .printerModel
+                                                                                            .value
+                                                                                            .portKitchen!
+                                                                                            .isNotEmpty)) {
+                                                                                  orderHistoryController.testPrintKitchen(
                                                                                       _printerController
                                                                                           .printerModel
                                                                                           .value
-                                                                                          .ipKitchen!
-                                                                                          .isNotEmpty) &&
-                                                                                  (_printerController.printerModel.value.portKitchen !=
-                                                                                          null &&
-                                                                                      _printerController
+                                                                                          .ipKitchen!,
+                                                                                      int.parse(_printerController
                                                                                           .printerModel
                                                                                           .value
-                                                                                          .portKitchen!
-                                                                                          .isNotEmpty)) {
-                                                                                orderHistoryController.testPrintKitchen(
-                                                                                    _printerController
-                                                                                        .printerModel
-                                                                                        .value
-                                                                                        .ipKitchen!,
-                                                                                    int.parse(_printerController
-                                                                                        .printerModel
-                                                                                        .value
-                                                                                        .portKitchen
-                                                                                        .toString()),
-                                                                                    context,
-                                                                                    order,
-                                                                                  false,
-                                                                                    );
-                                                                              } else {
-                                                                                Get.snackbar(
-                                                                                    "Error",
-                                                                                    "Please add kitchen printer ip and port");
-                                                                              }
-                                                                            },
-                                                                            child: const Text(
-                                                                              "Kitchen Print",
-                                                                              textAlign:
-                                                                                  TextAlign
-                                                                                      .center,
-                                                                              style:
-                                                                                  TextStyle(
-                                                                                    fontSize: 15,
+                                                                                          .portKitchen
+                                                                                          .toString()),
+                                                                                      context,
+                                                                                      order,
+                                                                                    false,
+                                                                                      );
+                                                                                } else {
+                                                                                  Get.snackbar(
+                                                                                      "Error",
+                                                                                      "Please add kitchen printer ip and port");
+                                                                                }
+                                                                              },
+                                                                              child: const Text(
+                                                                                "Kitchen Print",
+                                                                                textAlign:
+                                                                                    TextAlign
+                                                                                        .center,
+                                                                                style:
+                                                                                    TextStyle(
+                                                                                      fontSize: 15,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height: 30,
-                                                                    ),
-                                                                    Align(
-                                                                      alignment:
-                                                                          Alignment.center,
-                                                                      child: Padding(
-                                                                        padding:
-                                                                            const EdgeInsets
-                                                                                    .symmetric(
-                                                                                horizontal:
-                                                                                    24),
-                                                                        child: Text(
-                                                                          "${order.userName} | ${order.vendorName!} | ${order.paymentType.toString()} | ${order.deliveryType} | ${order.userName} | ${order.userName != null ? order.userName : ''} | ${order.mobile != null ? order.mobile : ""}",
-                                                                          style: TextStyle(
-                                                                            fontSize: 12,
-                                                                            color: Color(
-                                                                                0XFF000000),
+                                                                        ],
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 30,
+                                                                      ),
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.center,
+                                                                        child: Padding(
+                                                                          padding:
+                                                                              const EdgeInsets
+                                                                                      .symmetric(
+                                                                                  horizontal:
+                                                                                      24),
+                                                                          child: Text(
+                                                                            "${order.userName} | ${order.vendorName!} | ${order.paymentType.toString()} | ${order.deliveryType} | ${order.userName} | ${order.userName != null ? order.userName : ''} | ${order.mobile != null ? order.mobile : ""}",
+                                                                            style: TextStyle(
+                                                                              fontSize: 12,
+                                                                              color: Color(
+                                                                                  0XFF000000),
+                                                                            ),
+                                                                            textAlign: TextAlign
+                                                                                .center,
                                                                           ),
-                                                                          textAlign: TextAlign
-                                                                              .center,
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                    order.notes == null
-                                                                        ? const SizedBox()
-                                                                        : LineWithCircles(),
-                                                                    order.notes == null
-                                                                        ? const SizedBox()
-                                                                        : RichText(
-                                                                            text: TextSpan(
-                                                                                text:
-                                                                                    'Instructions : ',
-                                                                                style: TextStyle(
-                                                                                    color: Colors
-                                                                                        .black,
-                                                                                    fontFamily:
-                                                                                        Constants
-                                                                                            .appFont,
-                                                                                    fontSize:
-                                                                                        14,
-                                                                                    fontWeight:
-                                                                                        FontWeight
-                                                                                            .bold),
-                                                                                children: <
-                                                                                    TextSpan>[
-                                                                                  TextSpan(
-                                                                                    text:
-                                                                                        '${order.notes}',
-                                                                                    style: TextStyle(
-                                                                                        color: Colors
-                                                                                            .black,
-                                                                                        fontFamily: Constants
-                                                                                            .appFont,
-                                                                                        fontSize:
-                                                                                            14,
-                                                                                        fontWeight:
-                                                                                            FontWeight.normal),
-                                                                                  )
-                                                                                ]),
-                                                                          ),
-                                                                   order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ||  order.paymentType.toString() == 'POS CASH TAKEAWAY' || order.paymentType.toString() == 'POS CARD TAKEAWAY' ? Column(
-                                                                     children: [
-                                                                       SizedBox(height: 5),
-                                                                       Align(
-                                                                          alignment: Alignment.center,
-                                                                          child: ElevatedButton(
-                                                                            style: ElevatedButton.styleFrom(
-                                                                                backgroundColor: Color(0XFF6C6868)),
-                                                                            onPressed:
-                                                                                () async {
-                                                                              print("order id ${order.id}");
-                                                                              print("order payment type ${order.paymentType}");
-                                                                              await orderHistoryController.showSwitchOrderDialog(
-                                                                                  order.id,
-                                                                                  order.paymentType,
-                                                                                context,
-                                                                              );
-                                                                              orderHistoryController
-                                                                                  .orderHistoryRef
-                                                                                  .value = orderHistoryController.callGetOrderHistoryList();
-                                                                            },
-                                                                            child:
-                                                                            const Text(
-                                                                              "Payment Switch",
-                                                                              textAlign:
-                                                                              TextAlign.center,
-                                                                              style:
-                                                                              TextStyle(
-                                                                                fontSize:
-                                                                                18,
+                                                                      order.notes == null
+                                                                          ? const SizedBox()
+                                                                          : LineWithCircles(),
+                                                                      order.notes == null
+                                                                          ? const SizedBox()
+                                                                          : RichText(
+                                                                              text: TextSpan(
+                                                                                  text:
+                                                                                      'Instructions : ',
+                                                                                  style: TextStyle(
+                                                                                      color: Colors
+                                                                                          .black,
+                                                                                      fontFamily:
+                                                                                          Constants
+                                                                                              .appFont,
+                                                                                      fontSize:
+                                                                                          14,
+                                                                                      fontWeight:
+                                                                                          FontWeight
+                                                                                              .bold),
+                                                                                  children: <
+                                                                                      TextSpan>[
+                                                                                    TextSpan(
+                                                                                      text:
+                                                                                          '${order.notes}',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors
+                                                                                              .black,
+                                                                                          fontFamily: Constants
+                                                                                              .appFont,
+                                                                                          fontSize:
+                                                                                              14,
+                                                                                          fontWeight:
+                                                                                              FontWeight.normal),
+                                                                                    )
+                                                                                  ]),
+                                                                            ),
+                                                                     order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ||  order.paymentType.toString() == 'POS CASH TAKEAWAY' || order.paymentType.toString() == 'POS CARD TAKEAWAY' ? Column(
+                                                                       children: [
+                                                                         SizedBox(height: 5),
+                                                                         Align(
+                                                                            alignment: Alignment.center,
+                                                                            child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                  backgroundColor: Color(0XFF6C6868)),
+                                                                              onPressed:
+                                                                                  () async {
+                                                                                print("order id ${order.id}");
+                                                                                print("order payment type ${order.paymentType}");
+                                                                                await orderHistoryController.showSwitchOrderDialog(
+                                                                                    order.id,
+                                                                                    order.paymentType,
+                                                                                  context,
+                                                                                );
+                                                                                orderHistoryController
+                                                                                    .orderHistoryRef
+                                                                                    .value = orderHistoryController.callGetOrderHistoryList();
+                                                                              },
+                                                                              child:
+                                                                              const Text(
+                                                                                "Payment Switch",
+                                                                                textAlign:
+                                                                                TextAlign.center,
+                                                                                style:
+                                                                                TextStyle(
+                                                                                  fontSize:
+                                                                                  18,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                     ],
-                                                                   ) : SizedBox(height: 5),
+                                                                       ],
+                                                                     ) : SizedBox(height: 5),
 
-                                                                    // order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ? Column(
-                                                                    //   children: [
-                                                                    //     SizedBox(height: 5),
-                                                                    //     Align(
-                                                                    //       alignment: Alignment.center,
-                                                                    //       child: ElevatedButton(
-                                                                    //         style: ElevatedButton.styleFrom(
-                                                                    //             backgroundColor: Color(0XFF6C6868)),
-                                                                    //         onPressed:
-                                                                    //             () async {
-                                                                    //           print("order id ${order.id}");
-                                                                    //           print("order payment type ${order.paymentType}");
-                                                                    //           await orderHistoryController.showSwitchOrderDialog(
-                                                                    //             order.id,
-                                                                    //             order.paymentType,
-                                                                    //             context,
-                                                                    //           );
-                                                                    //           orderHistoryController
-                                                                    //               .orderHistoryRef
-                                                                    //               .value = orderHistoryController.callGetOrderHistoryList();
-                                                                    //         },
-                                                                    //         child:
-                                                                    //         const Text(
-                                                                    //           "Payment Switch",
-                                                                    //           textAlign:
-                                                                    //           TextAlign.center,
-                                                                    //           style:
-                                                                    //           TextStyle(
-                                                                    //             fontSize:
-                                                                    //             18,
-                                                                    //           ),
-                                                                    //         ),
-                                                                    //       ),
-                                                                    //     ),
-                                                                    //   ],
-                                                                    // ) : SizedBox(height: 5),
-                                                                    const SizedBox(
-                                                                      height: 20,
-                                                                    ),
-                                                                     Align(
-                                                                       alignment: Alignment.center,
-                                                                       child: Text(
-                                                                        "${order.shift_code.toString()}",
-                                                                        overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                        style: TextStyle(
-                                                                            color: Colors
-                                                                                .black,
-                                                                            fontFamily:
-                                                                            Constants
-                                                                                .appFontBold,
-                                                                            fontSize: 12),
-                                                                    ),
-                                                                     ),
-
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              if (order.orderStatus !=
-                                                                      'COMPLETE' &&
-                                                                  order.orderStatus !=
-                                                                      'CANCEL' &&
-                                                                  order.deliveryType ==
-                                                                      'DINING')
-                                                                Container(
-                                                                    height: 30,
-                                                                    decoration: BoxDecoration(
-                                                                      color: Color(Constants
-                                                                          .colorTheme),
-                                                                    ),
-                                                                    child: const Center(
-                                                                      child: Text(
-                                                                          "Live Order",
+                                                                      // order.paymentType.toString() == 'POS CASH' || order.paymentType.toString() == 'POS CARD' ? Column(
+                                                                      //   children: [
+                                                                      //     SizedBox(height: 5),
+                                                                      //     Align(
+                                                                      //       alignment: Alignment.center,
+                                                                      //       child: ElevatedButton(
+                                                                      //         style: ElevatedButton.styleFrom(
+                                                                      //             backgroundColor: Color(0XFF6C6868)),
+                                                                      //         onPressed:
+                                                                      //             () async {
+                                                                      //           print("order id ${order.id}");
+                                                                      //           print("order payment type ${order.paymentType}");
+                                                                      //           await orderHistoryController.showSwitchOrderDialog(
+                                                                      //             order.id,
+                                                                      //             order.paymentType,
+                                                                      //             context,
+                                                                      //           );
+                                                                      //           orderHistoryController
+                                                                      //               .orderHistoryRef
+                                                                      //               .value = orderHistoryController.callGetOrderHistoryList();
+                                                                      //         },
+                                                                      //         child:
+                                                                      //         const Text(
+                                                                      //           "Payment Switch",
+                                                                      //           textAlign:
+                                                                      //           TextAlign.center,
+                                                                      //           style:
+                                                                      //           TextStyle(
+                                                                      //             fontSize:
+                                                                      //             18,
+                                                                      //           ),
+                                                                      //         ),
+                                                                      //       ),
+                                                                      //     ),
+                                                                      //   ],
+                                                                      // ) : SizedBox(height: 5),
+                                                                      const SizedBox(
+                                                                        height: 20,
+                                                                      ),
+                                                                       Align(
+                                                                         alignment: Alignment.center,
+                                                                         child: Text(
+                                                                          "${order.shift_code.toString()}",
+                                                                          overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
                                                                           style: TextStyle(
-                                                                              fontSize: 18,
-                                                                              fontWeight:
-                                                                                  FontWeight
-                                                                                      .w500,
                                                                               color: Colors
-                                                                                  .white)),
-                                                                    )),
-                                                              Container(
-                                                                  height: 30,
-                                                                  decoration:
-                                                                      const BoxDecoration(
-                                                                          borderRadius:
-                                                                              BorderRadius
-                                                                                  .only(
-                                                                            bottomLeft: Radius
-                                                                                .circular(30),
-                                                                            bottomRight:
-                                                                                Radius
-                                                                                    .circular(
-                                                                                        30),
-                                                                          ),
-                                                                          color:
-                                                                              Colors.black),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                        order.deliveryType
-                                                                            .toString(),
-                                                                        style:
-                                                                            const TextStyle(
-                                                                                fontSize: 12,
+                                                                                  .black,
+                                                                              fontFamily:
+                                                                              Constants
+                                                                                  .appFontBold,
+                                                                              fontSize: 12),
+                                                                      ),
+                                                                       ),
+
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                if (order.orderStatus !=
+                                                                        'COMPLETE' &&
+                                                                    order.orderStatus !=
+                                                                        'CANCEL' &&
+                                                                    order.deliveryType ==
+                                                                        'DINING')
+                                                                  Container(
+                                                                      height: 30,
+                                                                      decoration: BoxDecoration(
+                                                                        color: Color(Constants
+                                                                            .colorTheme),
+                                                                      ),
+                                                                      child: const Center(
+                                                                        child: Text(
+                                                                            "Live Order",
+                                                                            style: TextStyle(
+                                                                                fontSize: 18,
                                                                                 fontWeight:
                                                                                     FontWeight
-                                                                                        .w700,
+                                                                                        .w500,
                                                                                 color: Colors
                                                                                     .white)),
-                                                                  ))
-                                                            ],
+                                                                      )),
+                                                                Container(
+                                                                    height: 30,
+                                                                    decoration:
+                                                                        const BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius
+                                                                                    .only(
+                                                                              bottomLeft: Radius
+                                                                                  .circular(30),
+                                                                              bottomRight:
+                                                                                  Radius
+                                                                                      .circular(
+                                                                                          30),
+                                                                            ),
+                                                                            color:
+                                                                                Colors.black),
+                                                                    child: Center(
+                                                                      child: Text(
+                                                                          order.deliveryType
+                                                                              .toString(),
+                                                                          style:
+                                                                              const TextStyle(
+                                                                                  fontSize: 12,
+                                                                                  fontWeight:
+                                                                                      FontWeight
+                                                                                          .w700,
+                                                                                  color: Colors
+                                                                                      .white)),
+                                                                    ))
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      );
-                                                    }),
+                                                        );
+                                                      }),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                                if (_linklyDataController.showDialogRefundValue.value == true &&
-                                                  (_linklyDataController.linklyRefundResponseModel.value.data is DataRefundLinkly &&
-                                                      _linklyDataController.linklyRefundResponseModel.value.data?.request.responseType == 'display'))
-                                                Stack(
-                                                  children: [
-                                                    // Black background overlay
-                                                    Positioned.fill(
-                                                      child: Container(
-                                                        color: Colors.black.withOpacity(0.5), // Adjust opacity as needed
-                                                      ),
-                                                    ),
-                                                    // Dialog content
-                                                    AlertDialog(
-                                                      title: Text(
-                                                        _linklyDataController.dialogTitle.value,
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 24
+                                                if (_linklyDataController.showDialogRefundValue.value == true
+                                                // &&
+                                                    // _linklyDataController.linklyRefundResponseModel.value.data is DataRefundLinkly &&
+                                                    // (
+                                                    //     (_linklyDataController.linklyRefundResponseModel.value.data!.request?.response is AboveResponse &&
+                                                    //         _linklyDataController.linklyRefundResponseModel.value.data!.request?.response?.displayText?.isNotEmpty == true) ||
+                                                    //         (_linklyDataController.linklyRefundResponseModel.value.data!.request?.response is BeneathResponse &&
+                                                    //             _linklyDataController.linklyRefundResponseModel.value.data!.request?.responseType == 'transaction')
+                                                    // )
+                                                )
+                                                  Stack(
+                                                    children: [
+                                                      // Black background overlay
+                                                      Positioned.fill(
+                                                        child: Container(
+                                                          color: Colors.black.withOpacity(0.5), // Adjust opacity as needed
                                                         ),
                                                       ),
-                                                      content: Container(
-                                                        height: 140,
-                                                        child: Text(
-                                                          _linklyDataController.dialogContent.value,
+                                                      // Dialog content
+                                                      AlertDialog(
+                                                        title: Text(
+                                                          _linklyDataController.dialogTitle.value,
                                                           style: TextStyle(
-                                                              fontSize: 18
+                                                              color: Colors.black,
+                                                              fontSize: 24
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  ],
+                                                        content: Container(
+                                                          height: 140,
+                                                          child: Text(
+                                                            _linklyDataController.dialogContent.value,
+                                                            style: TextStyle(
+                                                                fontSize: 18
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
 
-                                                ),
-                                            ],
-                                          );
-                                        });
-                                      } else if (snapshot.hasError) {
-                                        // handle the error here
-                                        return Center(
-                                            child: Text('Error: ${snapshot.error}'));
-                                      } else {
-                                        return const Center(
-                                            child: Text('No Orders History'));
-                                      }
-                                    },
+                                                  ),
+                                              ],
+                                            );
+                                          });
+                                        } else if (snapshot.hasError) {
+                                          // handle the error here
+                                          return Center(
+                                              child: Text('Error: ${snapshot.error}'));
+                                        } else {
+                                          return const Center(
+                                              child: Text('No Orders History'));
+                                        }
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
 
-                      );
-                    });
-              }),
-
+                        );
+                      });
+                }),
 
 
-        ),
-      );
+
+          ),
+        );
   }
 }
 

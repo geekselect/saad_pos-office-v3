@@ -1,8 +1,125 @@
+///Perfect only UI Changes
+//  void fetchDataRepeatedly(String sessionId, Function(int, String) onApproved) {
+//     print("linkly Model data ${linklyModel.value.toJson()}");
+//     fetchData(sessionId);
+//     showDialogvalue.value = true;
+//     timer = Timer.periodic(Duration(seconds: 1), (timer) {
+//       fetchData(sessionId);
+//       if (linklyModelDynamic.value is Map<String, dynamic> && linklyModelDynamic.value.containsKey('data')) {
+//         final data = linklyModelDynamic.value['data'];
+//         if (data is Map<String, dynamic> && data.containsKey('request')) {
+//           final request = data['request'];
+//           final responseJson = request['Response'];
+//
+//           if (responseJson is Map<String, dynamic>) {
+//             // linklyModelDynamic.value = responseData;
+//             if (responseJson.containsKey('DisplayText')) {
+//               List<dynamic> displayText = responseJson['DisplayText'];
+//               if (displayText[0] == 'TRANSACTION DECLINED') {
+//                 print("------ beneath above response ------");
+//               } else {
+//                 print("------ above response ------");
+//                 dialogTitle.value =
+//                     mapDisplayTextToTitle(responseJson['DisplayText'][0]);
+//                 dialogContent.value =
+//                     mapDisplayTextToVariable(responseJson['DisplayText'][0]);
+//               }
+//             } else {
+//               print("------ beneath response ------");
+//               print(responseJson);
+//               print("****** beneath response ********");
+//
+//                 if (responseJson['ResponseText'] == 'APPROVED') {
+//                   print("A");
+//                   dialogTitle.value =
+//                       mapDisplayTextToTitle(responseJson['ResponseText']);
+//                   dialogContent.value =
+//                       mapDisplayTextToVariable(responseJson['ResponseText']);
+//                   onApproved(placeValue.value, sessionId);
+//                 } else if (responseJson['ResponseText'] == 'OPERATOR TIMEOUT') {
+//                   print("OP");
+//                   dialogTitle.value =
+//                       mapDisplayTextToTitle(responseJson['ResponseText']);
+//                   dialogContent.value =
+//                       mapDisplayTextToVariable(responseJson['ResponseText']);
+//                 } else if (responseJson['ResponseText'] == 'SYSTEM ERROR') {
+//                   print("SE");
+//                   dialogTitle.value =
+//                       mapDisplayTextToTitle(responseJson['ResponseText']);
+//                   dialogContent.value =
+//                       mapDisplayTextToVariable(responseJson['ResponseText']);
+//                 } else {
+//                   print("TD");
+//                   dialogTitle.value =
+//                       mapDisplayTextToTitle(responseJson['ResponseText']);
+//                   dialogContent.value = mapDisplayTextToVariable(
+//                       "your transaction has been declined");
+//                 }
+//
+//                 timer.cancel();
+//                 Future.delayed(Duration(seconds: 3), () {
+//                   print("F");
+//                   showDialogvalue.value = false;
+//                   resetVariables();
+//                   return;
+//                 });
+//               }
+//
+//           }
+//         }
+//       }
+//     });
+//   }
+//   Future<void> fetchData(String sessionId) async {
+//     final url = 'https://v4.ozfoodz.com.au/api/pos/getLinklydata/$sessionId';
+//     final response = await http.get(Uri.parse(url));
+//     try {
+//       if (response.statusCode == 200) {
+//         final responseData = json.decode(response.body);
+//
+//         if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
+//           final data = responseData['data'];
+//           if (data is Map<String, dynamic> && data.containsKey('request')) {
+//             final request = data['request'];
+//             final responseJson = request['Response'];
+//
+//             if (responseJson is Map<String, dynamic>) {
+//               linklyModelDynamic.value = responseData;
+//               if (responseJson.containsKey('DisplayText')) {
+//                 List<dynamic> displayText = responseJson['DisplayText'];
+//                 if (displayText[0] == 'TRANSACTION DECLINED') {
+//                   // print("------ beneath above response ------");
+//                   // print(responseJson);
+//                   // print("****** beneath above response ********");
+//                 } else {
+//                   // print("------ above response ------");
+//                   // print(responseJson);
+//                   // print("****** above response ********");
+//                   dialogTitle.value = mapDisplayTextToTitle(displayText[0]);
+//                   dialogContent.value = mapDisplayTextToVariable(displayText[0]);
+//                 }
+//               } else {
+//                 // print("------ beneath response ------");
+//                 // print(responseJson);
+//                 // print("****** beneath response ********");
+//               }
+//             }
+//           }
+//         }
+//       } else {
+//         print("Error: HTTP request failed with status code ${response.statusCode}");
+//       }
+//     } catch (e) {
+//       print("Error: Failed to parse response body $e");
+//     }
+//   }
+
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/controller/order_history_controller.dart';
 import 'package:pos/model/cart_master.dart';
@@ -81,16 +198,32 @@ class LinklyDataController extends GetxController {
     timer?.cancel();
   }
 
+  void onDispose() {
+    timer?.cancel();
+    resetVariables();
+    showDialogvalue.value = false;
+    showDialogRefundValue.value = false;
+    super.dispose();
+  }
+
+  void dispose() {
+    timer?.cancel();
+    resetVariables();
+    showDialogvalue.value = false;
+    showDialogRefundValue.value = false;
+    super.dispose();
+  }
+
+
   var uuid = Uuid();
   Future<void> transactionPayment(String Amount, dynamic id,  Function(int, String) onApproved, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String appToken = prefs.getString(Constants.headerToken.toString()) ?? '';
     var completer = Completer<void>();
 
-    var newAmount = (double.parse(Amount) * 100).toInt();
-    print(id);
-    print(linklyDataModel.value.data!.token);// Convert string to double, multiply by 100, and convert to integer
-    print(newAmount);
+    // var newAmount = (double.parse(Amount) * 100).toInt();
+    var newAmount = (int.parse((double.parse(Amount) * 100).toString())).toInt();
+
     var url = Uri.parse(
         'https://rest.pos.sandbox.cloud.pceftpos.com/v1/sessions/$id/transaction?async=true');
     var headers = {
@@ -144,8 +277,7 @@ class LinklyDataController extends GetxController {
     try {
       Constants.onLoading(context);
       var response = await http.post(url, headers: headers, body: body);
-      print('res body ${response.body}');
-      print('res status ${response.statusCode}');
+
       if (response.statusCode == 202) {
         Constants.hideDialog(context);
         linklyModel.value = LinklyModel(
@@ -173,85 +305,90 @@ class LinklyDataController extends GetxController {
     return completer.future;
   }
   Rx<LinklyModel> linklyModel = LinklyModel().obs;
+  Rx<dynamic> linklyModelDynamic = Rx<dynamic>('');
+  Rx<dynamic> linklyRefundModelDynamic = Rx<dynamic>('');
   Rx<LinklyRefundResponseModel> linklyRefundResponseModel = LinklyRefundResponseModel().obs;
   RxBool showDialogvalue = false.obs;
   RxBool showDialogRefundValue = false.obs;
   Timer? timer;
-  void fetchDataRepeatedly(String sessionId, Function(int, String) onApproved) {
-    print("linkly Model data ${linklyModel.value.toJson()}");
+  ///Perfect only UI Changes
+ void fetchDataRepeatedly(String sessionId, Function(int, String) onApproved) {
     fetchData(sessionId);
     showDialogvalue.value = true;
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       fetchData(sessionId);
-      if (linklyModel.value.data is DataLinkly) {
-        DataLinkly data = linklyModel.value.data;
-        if(linklyModel.value.success != null) {
-  // if (data.request?.response?.displayText?.isNotEmpty == true &&
-  //     data.request!.response!.displayText![0] == 'APPROVED') {
-  //   print("timer cancel");
-  //   timer.cancel();
-  //   showDialogvalue.value = false;
-  //   resetVariables();
-  //   onApproved(placeValue.value, sessionId);
-  //   return;
-  // } else if (data.request?.response?.displayText?.isNotEmpty == true &&
-  //     data.request!.response!.displayText![0] == 'TRANSACTION DECLINED'){
-  //   print("timer cancel");
-  //   timer.cancel();
-  //   showDialogvalue.value = false;
-  //   resetVariables();
-  //   Get.snackbar("Order Status", "Your request has not been approved!\nplease try again");
-  // }
+      if (linklyModelDynamic.value is Map<String, dynamic> && linklyModelDynamic.value.containsKey('data')) {
+        final data = linklyModelDynamic.value['data'];
+        if (data is Map<String, dynamic> && data.containsKey('request')) {
+          LinklyModel linklyModelNew = LinklyModel.fromJson(linklyModelDynamic.value);
+          linklyModel.value = linklyModelNew;
+          final request = data['request'];
+          final responseJson = request['Response'];
 
-          if(data.request!.responseType == 'display'){
-            print("display");
-            if( data.request!.response is AboveResponse) {
-              AboveResponse aboveResponse = data.request!.response;
-              if (aboveResponse.displayText?.isNotEmpty == true) {
-                // Map display text values to variable values
-                dialogTitle.value =
-                    mapDisplayTextToTitle(
-                        aboveResponse.displayText?[0]);
-                dialogContent.value =
-                    mapDisplayTextToVariable(
-                        aboveResponse.displayText?[0]);
+          if (responseJson is Map<String, dynamic>) {
+            if (responseJson.containsKey('DisplayText')) {
+              List<dynamic> displayText = responseJson['DisplayText'];
+              if (displayText[0] == 'TRANSACTION DECLINED') {
+                print("------ beneath above response ------");
+              } else {
+                print("------ above response ------");
+                AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
+                // print("------ above response ------");
+                // print(responseJson);
+                // print("****** above response ********");
+                dialogTitle.value = mapDisplayTextToTitle(aboveResponse.displayText![0]);
+                dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText![0]);
               }
-            }
-          } else {
-            print("transaction");
-            BeneathResponse beneathResponse = data.request!.response;
-            if(beneathResponse.responseText == 'APPROVED'){
-              dialogTitle.value =
-                  mapDisplayTextToTitle(beneathResponse.responseText);
-              dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
-              onApproved(placeValue.value, sessionId);
-            } else if(beneathResponse.responseText == 'OPERATOR TIMEOUT'){
-              dialogTitle.value =
-                  mapDisplayTextToTitle(beneathResponse.responseText);
-              dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
-            } else if(beneathResponse.responseText == 'SYSTEM ERROR'){
-              dialogTitle.value =
-                  mapDisplayTextToTitle(beneathResponse.responseText);
-              dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
             } else {
-              dialogTitle.value =
-                  mapDisplayTextToTitle(beneathResponse.responseText);
-              dialogContent.value = mapDisplayTextToVariable("your transaction has been declined");
-            }
-            timer.cancel();
-            Future.delayed(Duration(seconds: 3), () {
-              print("F");
-              showDialogvalue.value = false;
-              resetVariables();
-              return;
-            });
-          }
+              print("------ beneath response ------");
+              print(responseJson);
+              print("****** beneath response ********");
+              BeneathResponse beneathResponse = BeneathResponse.fromJson(responseJson);
+                if (beneathResponse.responseText == 'APPROVED') {
+                  print("A");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                  onApproved(placeValue.value, sessionId);
+                } else if (responseJson['ResponseText'] == 'OPERATOR TIMEOUT') {
+                  print("OP");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else if (beneathResponse.responseText == 'SYSTEM ERROR') {
+                  print("SE");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else if (beneathResponse.responseText == 'PINpad Offline') {
+                  print("PO");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else {
+                  print("TD");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value = mapDisplayTextToVariable(
+                      "your transaction has been declined");
+                }
 
-}
+                timer.cancel();
+                Future.delayed(Duration(seconds: 3), () {
+                  print("F");
+                  showDialogvalue.value = false;
+                  resetVariables();
+                  return;
+                });
+              }
+
+          }
+        }
       }
-      print("-------------------------");
-      print(linklyModel.value.toJson());
-      print("-------------------------");
     });
   }
   Future<void> fetchData(String sessionId) async {
@@ -259,58 +396,188 @@ class LinklyDataController extends GetxController {
     final response = await http.get(Uri.parse(url));
     try {
       if (response.statusCode == 200) {
-        // Check if the response body is a JSON object
+        final responseData = json.decode(response.body);
 
-        // Handle the case where success is true
-        LinklyModel linklyModelNew =
-        LinklyModel.fromJson(jsonDecode(response.body));
-        linklyModel.value = linklyModelNew;
-        print("*************************");
-        print(linklyModelNew.toJson());
-        print("*************************");
+        if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
+          final data = responseData['data'];
+            if (data is Map<String, dynamic> && data.containsKey('request')) {
+              final request = data['request'];
+              final responseJson = request['Response'];
 
+              if (responseJson is Map<String, dynamic>) {
+                linklyModelDynamic.value = responseData;
 
-        if (linklyModelNew.data is DataRefundLinkly) {
-          DataRefundLinkly dataRefundLinkly = linklyModelNew.data!;
-          if(dataRefundLinkly.request!.responseType == "display") {
-            AboveResponse aboveResponse = dataRefundLinkly.request!.response;
-            dialogTitle.value =
-                mapDisplayTextToTitle(aboveResponse.displayText?[0]);
-            dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText?[0]);
+                if (responseJson.containsKey('DisplayText')) {
+                  List<dynamic> displayText = responseJson['DisplayText'];
+                  if (displayText[0] == 'TRANSACTION DECLINED') {
+                    // print("------ beneath above response ------");
+                    // print(responseJson);
+                    // print("****** beneath above response ********");
+                    print("BA");
+                  } else {
+                    // print("------ above response ------");
+                    // // print("${responseJson}");
+                    // dialogTitle.value = mapDisplayTextToTitle(responseJson['DisplayText'][0]);
+                    // dialogContent.value = mapDisplayTextToVariable(responseJson['DisplayText'][0]);
+
+                    print("A");
+
+                    AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
+                    // print("------ above response ------");
+                    // print(responseJson);
+                    // print("****** above response ********");
+                    dialogTitle.value = mapDisplayTextToTitle(aboveResponse.displayText![0]);
+                    dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText![0]);
+                  }
+                } else {
+                  BeneathResponse beneathResponse = BeneathResponse.fromJson(responseJson);
+                  if (beneathResponse.responseText == 'APPROVED') {
+                    print("A");
+                    dialogTitle.value =
+                        mapDisplayTextToTitle(beneathResponse.responseText);
+                    dialogContent.value =
+                        mapDisplayTextToVariable(beneathResponse.responseText);
+                  } else if (responseJson['ResponseText'] == 'OPERATOR TIMEOUT') {
+                    print("OP");
+                    dialogTitle.value =
+                        mapDisplayTextToTitle(beneathResponse.responseText);
+                    dialogContent.value =
+                        mapDisplayTextToVariable(beneathResponse.responseText);
+                  } else if (beneathResponse.responseText == 'SYSTEM ERROR') {
+                    print("SE");
+                    dialogTitle.value =
+                        mapDisplayTextToTitle(beneathResponse.responseText);
+                    dialogContent.value =
+                        mapDisplayTextToVariable(beneathResponse.responseText);
+                  } else if (beneathResponse.responseText == 'PINpad Offline') {
+                    print("PO");
+                    dialogTitle.value =
+                        mapDisplayTextToTitle(beneathResponse.responseText);
+                    dialogContent.value =
+                        mapDisplayTextToVariable(beneathResponse.responseText);
+                  } else {
+                    print("TD");
+                    dialogTitle.value =
+                        mapDisplayTextToTitle(beneathResponse.responseText);
+                    dialogContent.value = mapDisplayTextToVariable(
+                        "your transaction has been declined");
+                  }
+
+                  // print("------ beneath response ------");
+                  print("B");
+                  // print(responseJson);
+                  // print("-----------------------------------------------------");
+                  // print("****** beneath response ********");
+                }
+              }
+
           }
-          // else {
-          //   BeneathResponse beneathResponse = dataRefundLinkly.request!.response;
-          //   if(beneathResponse.responseText == 'APPROVED'){
-          //     dialogTitle.value =
-          //         mapDisplayTextToTitle(beneathResponse.responseText);
-          //     dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
-          //   } else if(beneathResponse.responseText == 'OPERATOR TIMEOUT'){
-          //     dialogTitle.value =
-          //         mapDisplayTextToTitle(beneathResponse.responseText);
-          //     dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
-          //     Get.snackbar("Order Status", "Your request has not been declined due to timeout!\nplease try again");
-          //   } else if(beneathResponse.responseText == 'SYSTEM ERROR'){
-          //     dialogTitle.value =
-          //         mapDisplayTextToTitle(beneathResponse.responseText);
-          //     dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
-          //     Get.snackbar("Order Status", "Your request has not been declined from pin pad!");
-          //   } else {
-          //     dialogTitle.value =
-          //         mapDisplayTextToTitle(beneathResponse.responseText);
-          //     dialogContent.value = mapDisplayTextToVariable("your transaction has been declined");
-          //     Get.snackbar("Order Status", "Your request has not been declined from pin pad!");
-          //   }
-          // }
         }
-
       } else {
         print("Error: HTTP request failed with status code ${response.statusCode}");
       }
     } catch (e) {
-      print("Error: Failed to parse response body");
+      print("Error: Failed to parse response body $e");
     }
   }
+  ///Previous dialog works
+//   void fetchDataRepeatedly(String sessionId, Function(int, String) onApproved) {
+//     print("linkly Model data ${linklyModel.value.toJson()}");
+//     fetchData(sessionId);
+//     showDialogvalue.value = true;
+//     timer = Timer.periodic(Duration(seconds: 1), (timer) {
+//       fetchData(sessionId);
+//       if (linklyModel.value.data is DataLinkly) {
+//         DataLinkly data = linklyModel.value.data;
+//         if(linklyModel.value.success == true) {
+//   if (data.request!.response is AboveResponse) {
+//     print("------ above response ------");
+//     print("${data.request!.response}");
+//     print("****** above response ********");
+//     AboveResponse aboveResponse = data.request!.response;
+//     if (aboveResponse.displayText?.isNotEmpty == true) {
+//       // Map display text values to variable values
+//       dialogTitle.value =
+//           mapDisplayTextToTitle(
+//               aboveResponse.displayText?[0]);
+//       dialogContent.value =
+//           mapDisplayTextToVariable(
+//               aboveResponse.displayText?[0]);
+//     }
+//   } else {
+//     print("------ beneath response ------");
+//     print("${data.request!.response}");
+//     print("****** beneath response ********");
+//
+//     // BeneathResponse beneathResponse = data.request!.response;
+//     // if(beneathResponse.responseText == 'APPROVED'){
+//     //   dialogTitle.value =
+//     //       mapDisplayTextToTitle(beneathResponse.responseText);
+//     //   dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
+//     //   onApproved(placeValue.value, sessionId);
+//     // } else if(beneathResponse.responseText == 'OPERATOR TIMEOUT'){
+//     //   dialogTitle.value =
+//     //       mapDisplayTextToTitle(beneathResponse.responseText);
+//     //   dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
+//     // } else if(beneathResponse.responseText == 'SYSTEM ERROR'){
+//     //   dialogTitle.value =
+//     //       mapDisplayTextToTitle(beneathResponse.responseText);
+//     //   dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
+//     // } else {
+//     //   dialogTitle.value =
+//     //       mapDisplayTextToTitle(beneathResponse.responseText);
+//     //   dialogContent.value = mapDisplayTextToVariable("your transaction has been declined");
+//     // }
+//     //
+//     timer.cancel();
+//     Future.delayed(Duration(seconds: 3), () {
+//       print("F");
+//       showDialogvalue.value = false;
+//       resetVariables();
+//       return;
+//     });
+//   }
+// }
+//       }
+//     });
+//   }
+//   Future<void> fetchData(String sessionId) async {
+//     final url = 'https://v4.ozfoodz.com.au/api/pos/getLinklydata/$sessionId';
+//     final response = await http.get(Uri.parse(url));
+//     try {
+//       if (response.statusCode == 200) {
+//         // Check if the response body is a JSON object
+//
+//         // Handle the case where success is true
+//         LinklyModel linklyModelNew =
+//         LinklyModel.fromJson(jsonDecode(response.body));
+//         linklyModel.value = linklyModelNew;
+//         print("*************************");
+//         print(linklyModelNew.toJson());
+//         print("*************************");
+//
+//
+//         if (linklyModelNew.data is DataRefundLinkly) {
+//           DataRefundLinkly dataRefundLinkly = linklyModelNew.data!;
+//           if(dataRefundLinkly.request!.responseType == "display") {
+//             AboveResponse aboveResponse = dataRefundLinkly.request!.response;
+//             dialogTitle.value =
+//                 mapDisplayTextToTitle(aboveResponse.displayText?[0]);
+//             dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText?[0]);
+//           }
+//
+//         }
+//
+//       } else {
+//         print("Error: HTTP request failed with status code ${response.statusCode}");
+//       }
+//     } catch (e) {
+//       print("Error: Failed to parse response body");
+//     }
+//   }
   void resetVariables() {
+   linklyRefundModelDynamic.value = '';
+    linklyModelDynamic.value = '';
     dialogContent.value = '';
     dialogTitle.value = '';
   }
@@ -331,6 +598,8 @@ class LinklyDataController extends GetxController {
       return "Transaction Timeout";
     } else if (displayText == "SYSTEM ERROR") {
       return "Transaction DECLINED";
+    } else if (displayText == "PINpad Offline") {
+      return "Pinpad Offline";
     } else {
       return "";
     }
@@ -352,6 +621,8 @@ class LinklyDataController extends GetxController {
       return "Your request has been declined due to timeout!";
     } else if (displayText == "SYSTEM ERROR") {
       return "Your request has been declined from pin pad";
+    } else if (displayText == "PINpad Offline") {
+      return "Pinpad is offline\nYour request has been declined";
     } else {
       return "";
     }
@@ -498,80 +769,217 @@ class LinklyDataController extends GetxController {
 
   }
 
+  // void fetchRefundDataRepeatedly(String sessionId, dynamic orderId, dynamic order, BuildContext context)  {
+  //   fetchRefundData(sessionId);
+  //   showDialogRefundValue.value = true;
+  //   timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+  //     fetchRefundData(sessionId);
+  //     if (linklyRefundResponseModel.value.data is DataRefundLinkly) {
+  //       DataRefundLinkly data = linklyRefundResponseModel.value.data;
+  //       print("daaaa ${data.type}");
+  //       if (linklyRefundResponseModel.value.success != null) {
+  //         if (data.request!.responseType == "display") {
+  //           AboveResponse aboveResponse = data.request!.response;
+  //           if (aboveResponse.displayText?.isNotEmpty == true &&
+  //               aboveResponse.displayText![0] == 'APPROVED') {
+  //             print("timer cancel");
+  //             timer.cancel();
+  //             showDialogRefundValue.value = false;
+  //             resetVariables();
+  //               await _orderHistoryMainController.callCancelOrder(
+  //                   orderId,
+  //                   'Refund By Linkly',
+  //                   context);
+  //               if ((_printerController.printerModel.value
+  //                   .ipKitchen !=
+  //                   null &&
+  //                   _printerController.printerModel.value
+  //                       .ipKitchen!.isNotEmpty) &&
+  //                   (_printerController.printerModel.value
+  //                       .portKitchen !=
+  //                       null &&
+  //                       _printerController.printerModel.value
+  //                           .portKitchen!.isNotEmpty)) {
+  //                 _orderHistoryMainController.testPrintKitchen(
+  //                     _printerController
+  //                         .printerModel.value.ipKitchen!,
+  //                     int.parse(_printerController
+  //                         .printerModel.value.portKitchen
+  //                         .toString()),
+  //                     context,
+  //                     order,
+  //                     true);
+  //               } else {
+  //                 Get.snackbar("Error",
+  //                     "Please add kitchen printer ip and port");
+  //               }
+  //
+  //             return;
+  //           } else if (aboveResponse.displayText?.isNotEmpty == true &&
+  //               aboveResponse.displayText![0] == 'TRANSACTION DECLINED'){
+  //             print("timer cancel");
+  //             timer.cancel();
+  //             showDialogRefundValue.value = false;
+  //             resetVariables();
+  //             Get.snackbar("Order Status", "Your request has not been approved!\nplease try again");
+  //           }
+  //
+  //           if(aboveResponse.displayText?.isNotEmpty == true) {
+  //             // Map display text values to variable values
+  //             dialogTitle.value =
+  //                 mapDisplayTextToTitle(aboveResponse.displayText?[0]);
+  //             dialogContent.value =
+  //                 mapDisplayTextToVariable(aboveResponse.displayText?[0]);
+  //           }
+  //
+  //           // Print the updated values
+  //           print('Variable 1 fetchDataRepeatedly: $dialogTitle');
+  //           print('Variable 2 fetchDataRepeatedly: $dialogContent');
+  //
+  //       }
+  //     }
+  //
+  //     }
+  //     print("-------------------------");
+  //     print(linklyRefundResponseModel.value.toJson());
+  //     print("-------------------------");
+  //   });
+  // }
+  //
+  // Future<void> fetchRefundData(String sessionId) async {
+  //   final url = 'https://v4.ozfoodz.com.au/api/pos/getLinklydata/$sessionId';
+  //   final response = await http.get(Uri.parse(url));
+  //   try {
+  //     if (response.statusCode == 200) {
+  //
+  //       // print("response fetchRefundData ${response.body}");
+  //       // Check if the response body is a JSON object
+  //       //
+  //       // Handle the case where success is true
+  //       var responseBody = jsonDecode(response.body);
+  //       LinklyRefundResponseModel linklyRefundModelNew = LinklyRefundResponseModel.fromJson(responseBody);
+  //       linklyRefundResponseModel.value = linklyRefundModelNew;
+  //       print("*************************");
+  //       print(linklyRefundModelNew.toJson());
+  //       print("*************************");
+  //
+  //       if (linklyRefundModelNew.data is DataRefundLinkly) {
+  //         DataRefundLinkly dataRefundLinkly = linklyRefundModelNew.data!;
+  //         if(dataRefundLinkly.request!.responseType == "display") {
+  //           AboveResponse aboveResponse = dataRefundLinkly.request!.response;
+  //               dialogTitle.value =
+  //                   mapDisplayTextToTitle(aboveResponse.displayText?[0]);
+  //               dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText?[0]);
+  //
+  //               // Print the updated values
+  //               print('Variable 1: $dialogTitle');
+  //               print('Variable 2: $dialogContent');
+  //               // Perform any additional logic or actions with the updated variables
+  //         }
+  //       }
+  //     } else {
+  //       print("Error: HTTP request failed with status code ${response.statusCode}");
+  //     }
+  //
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
   void fetchRefundDataRepeatedly(String sessionId, dynamic orderId, dynamic order, BuildContext context)  {
     fetchRefundData(sessionId);
     showDialogRefundValue.value = true;
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       fetchRefundData(sessionId);
-      if (linklyRefundResponseModel.value.data is DataRefundLinkly) {
-        DataRefundLinkly data = linklyRefundResponseModel.value.data;
-        print("daaaa ${data.type}");
-        if (linklyRefundResponseModel.value.success != null) {
-          if (data.request!.responseType == "display") {
-            AboveResponse aboveResponse = data.request!.response;
-            if (aboveResponse.displayText?.isNotEmpty == true &&
-                aboveResponse.displayText![0] == 'APPROVED') {
-              print("timer cancel");
+      if (linklyRefundModelDynamic.value is Map<String, dynamic> && linklyRefundModelDynamic.value.containsKey('data')) {
+        final data = linklyRefundModelDynamic.value['data'];
+        if (data is Map<String, dynamic> && data.containsKey('request')) {
+          LinklyModel linklyModelNew = LinklyModel.fromJson(linklyRefundModelDynamic.value);
+          linklyRefundModelDynamic.value = linklyModelNew;
+          final request = data['request'];
+          final responseJson = request['Response'];
+
+          if (responseJson is Map<String, dynamic>) {
+            if (responseJson.containsKey('DisplayText')) {
+              List<dynamic> displayText = responseJson['DisplayText'];
+              if (displayText[0] == 'TRANSACTION DECLINED') {
+                print("------ beneath above response ------");
+              } else {
+                print("------ above response ------");
+                AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
+                // print("------ above response ------");
+                // print(responseJson);
+                // print("****** above response ********");
+                dialogTitle.value = mapDisplayTextToTitle(aboveResponse.displayText![0]);
+                dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText![0]);
+              }
+            } else {
+              print("------ beneath response ------");
+              print(responseJson);
+              print("****** beneath response ********");
+              BeneathResponse beneathResponse = BeneathResponse.fromJson(responseJson);
+              if (beneathResponse.responseText == 'APPROVED') {
+                print("A");
+                dialogTitle.value = mapDisplayTextToTitle(beneathResponse.responseText);
+                dialogContent.value = mapDisplayTextToVariable(beneathResponse.responseText);
+              }
+              else if (responseJson['ResponseText'] == 'OPERATOR TIMEOUT') {
+                print("OP");
+                dialogTitle.value =
+                    mapDisplayTextToTitle(beneathResponse.responseText);
+                dialogContent.value =
+                    mapDisplayTextToVariable(beneathResponse.responseText);
+              } else if (beneathResponse.responseText == 'SYSTEM ERROR') {
+                print("SE");
+                dialogTitle.value =
+                    mapDisplayTextToTitle(beneathResponse.responseText);
+                dialogContent.value =
+                    mapDisplayTextToVariable(beneathResponse.responseText);
+              } else if (beneathResponse.responseText == 'PINpad Offline') {
+                print("PO");
+                dialogTitle.value =
+                    mapDisplayTextToTitle(beneathResponse.responseText);
+                dialogContent.value =
+                    mapDisplayTextToVariable(beneathResponse.responseText);
+              } else {
+                print("TD");
+                dialogTitle.value =
+                    mapDisplayTextToTitle(beneathResponse.responseText);
+                dialogContent.value = mapDisplayTextToVariable(
+                    "your transaction has been declined");
+              }
+
+
+
               timer.cancel();
-              showDialogRefundValue.value = false;
-              resetVariables();
-                await _orderHistoryMainController.callCancelOrder(
-                    orderId,
-                    'Refund By Linkly',
-                    context);
-                if ((_printerController.printerModel.value
-                    .ipKitchen !=
-                    null &&
-                    _printerController.printerModel.value
-                        .ipKitchen!.isNotEmpty) &&
-                    (_printerController.printerModel.value
-                        .portKitchen !=
-                        null &&
-                        _printerController.printerModel.value
-                            .portKitchen!.isNotEmpty)) {
-                  _orderHistoryMainController.testPrintKitchen(
-                      _printerController
-                          .printerModel.value.ipKitchen!,
-                      int.parse(_printerController
-                          .printerModel.value.portKitchen
-                          .toString()),
+              Future.delayed(Duration(seconds: 3), () async {
+
+                if(beneathResponse.responseText == 'APPROVED'){
+                  print("AAAAAAAAAAAAAAAAAA");
+                  await _orderHistoryMainController.callCancelOrder(orderId, 'Refund By Linkly', context);
+
+                  if ((_printerController.printerModel.value.ipKitchen != null && _printerController.printerModel.value.ipKitchen!.isNotEmpty) &&
+                      (_printerController.printerModel.value.portKitchen != null && _printerController.printerModel.value.portKitchen!.isNotEmpty)) {
+                    _orderHistoryMainController.testPrintKitchen(
+                      _printerController.printerModel.value.ipKitchen!,
+                      int.parse(_printerController.printerModel.value.portKitchen.toString()),
                       context,
                       order,
-                      true);
-                } else {
-                  Get.snackbar("Error",
-                      "Please add kitchen printer ip and port");
+                      true,
+                    );
+                  } else {
+                    Get.snackbar("Error", "Please add kitchen printer IP and port");
+                  }
                 }
-
-              return;
-            } else if (aboveResponse.displayText?.isNotEmpty == true &&
-                aboveResponse.displayText![0] == 'TRANSACTION DECLINED'){
-              print("timer cancel");
-              timer.cancel();
-              showDialogRefundValue.value = false;
-              resetVariables();
-              Get.snackbar("Order Status", "Your request has not been approved!\nplease try again");
+                print("F");
+                showDialogRefundValue.value = false;
+                resetVariables();
+                return;
+              });
             }
 
-            if(aboveResponse.displayText?.isNotEmpty == true) {
-              // Map display text values to variable values
-              dialogTitle.value =
-                  mapDisplayTextToTitle(aboveResponse.displayText?[0]);
-              dialogContent.value =
-                  mapDisplayTextToVariable(aboveResponse.displayText?[0]);
-            }
-
-            // Print the updated values
-            print('Variable 1 fetchDataRepeatedly: $dialogTitle');
-            print('Variable 2 fetchDataRepeatedly: $dialogContent');
-
+          }
         }
       }
-
-      }
-      print("-------------------------");
-      print(linklyRefundResponseModel.value.toJson());
-      print("-------------------------");
     });
   }
 
@@ -581,29 +989,81 @@ class LinklyDataController extends GetxController {
     try {
       if (response.statusCode == 200) {
 
-        // print("response fetchRefundData ${response.body}");
-        // Check if the response body is a JSON object
-        //
-        // Handle the case where success is true
-        var responseBody = jsonDecode(response.body);
-        LinklyRefundResponseModel linklyRefundModelNew = LinklyRefundResponseModel.fromJson(responseBody);
-        linklyRefundResponseModel.value = linklyRefundModelNew;
-        print("*************************");
-        print(linklyRefundModelNew.toJson());
-        print("*************************");
+        final responseData = json.decode(response.body);
 
-        if (linklyRefundModelNew.data is DataRefundLinkly) {
-          DataRefundLinkly dataRefundLinkly = linklyRefundModelNew.data!;
-          if(dataRefundLinkly.request!.responseType == "display") {
-            AboveResponse aboveResponse = dataRefundLinkly.request!.response;
-                dialogTitle.value =
-                    mapDisplayTextToTitle(aboveResponse.displayText?[0]);
-                dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText?[0]);
+        if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
+          final data = responseData['data'];
+          if (data is Map<String, dynamic> && data.containsKey('request')) {
+            final request = data['request'];
+            final responseJson = request['Response'];
 
-                // Print the updated values
-                print('Variable 1: $dialogTitle');
-                print('Variable 2: $dialogContent');
-                // Perform any additional logic or actions with the updated variables
+            if (responseJson is Map<String, dynamic>) {
+              linklyRefundModelDynamic.value = responseData;
+
+              if (responseJson.containsKey('DisplayText')) {
+                List<dynamic> displayText = responseJson['DisplayText'];
+                if (displayText[0] == 'TRANSACTION DECLINED') {
+                  // print("------ beneath above response ------");
+                  // print(responseJson);
+                  // print("****** beneath above response ********");
+                  print("BA");
+                } else {
+                  // print("------ above response ------");
+                  // // print("${responseJson}");
+                  // dialogTitle.value = mapDisplayTextToTitle(responseJson['DisplayText'][0]);
+                  // dialogContent.value = mapDisplayTextToVariable(responseJson['DisplayText'][0]);
+
+                  print("A");
+
+                  AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
+                  // print("------ above response ------");
+                  // print(responseJson);
+                  // print("****** above response ********");
+                  dialogTitle.value = mapDisplayTextToTitle(aboveResponse.displayText![0]);
+                  dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText![0]);
+                }
+              } else {
+                BeneathResponse beneathResponse = BeneathResponse.fromJson(responseJson);
+                if (beneathResponse.responseText == 'APPROVED') {
+                  print("A");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else if (responseJson['ResponseText'] == 'OPERATOR TIMEOUT') {
+                  print("OP");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else if (beneathResponse.responseText == 'SYSTEM ERROR') {
+                  print("SE");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else if (beneathResponse.responseText == 'PINpad Offline') {
+                  print("PO");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value =
+                      mapDisplayTextToVariable(beneathResponse.responseText);
+                } else {
+                  print("TD");
+                  dialogTitle.value =
+                      mapDisplayTextToTitle(beneathResponse.responseText);
+                  dialogContent.value = mapDisplayTextToVariable(
+                      "your transaction has been declined");
+                }
+
+                // print("------ beneath response ------");
+                print("B");
+                // print(responseJson);
+                // print("-----------------------------------------------------");
+                // print("****** beneath response ********");
+              }
+            }
+
           }
         }
       } else {
@@ -614,6 +1074,8 @@ class LinklyDataController extends GetxController {
       print("Error: $e");
     }
   }
+
+
 }
 
 ///Old last with linkly but not best fazool

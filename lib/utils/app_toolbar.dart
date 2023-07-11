@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'constants.dart';
 
-class ApplicationToolbar extends StatelessWidget with PreferredSizeWidget{
+class ApplicationToolbar extends StatelessWidget implements PreferredSizeWidget{
   ApplicationToolbar({required this.appbarTitle});
   final String? appbarTitle;
 

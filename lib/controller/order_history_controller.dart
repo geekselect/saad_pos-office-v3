@@ -61,6 +61,7 @@ import 'package:pos/model/cart_master.dart' as cartMasterModel;
 import 'package:pos/model/common_res.dart' as commonRes;
 import 'package:pos/model/order_history_list_model.dart';
 import 'package:pos/pages/order/OrderDetailScreen.dart';
+import 'package:pos/pages/pos/Paymmmm/linkly_controller.dart';
 import 'package:pos/printer/printer_controller.dart';
 import 'package:pos/retrofit/api_client.dart';
 import 'package:pos/retrofit/api_header.dart';
@@ -72,6 +73,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum FilterType { TakeAway, DineIn, None }
 
 class OrderHistoryController extends GetxController {
+  // final LinklyDataController _linklyDataController=  Get.put(LinklyDataController());
   Rx<Future<BaseModel<OrderHistoryListModel>>?> orderHistoryRef =
       Rx<Future<BaseModel<OrderHistoryListModel>>?>(null);
   RxList<OrderHistoryData> listOrderHistory = <OrderHistoryData>[].obs;
@@ -91,6 +93,8 @@ class OrderHistoryController extends GetxController {
     initAsync();
     super.onInit();
   }
+
+
 
   Future<void> getOrders() async {
     print("get orders ");
@@ -1459,7 +1463,7 @@ class OrderHistoryController extends GetxController {
       if (response.success!) {
         orderHistoryRef.value = callGetOrderHistoryList();
         _textOrderCancelReason.clear();
-        Navigator.pop(context);
+        // Navigator.pop(context);
         Constants.toastMessage(response.data!);
       } else {
         Constants.toastMessage(response.data!);
@@ -1527,6 +1531,9 @@ class OrderHistoryController extends GetxController {
   @override
   void dispose() {
     firebaseListener?.cancel();
+    // _linklyDataController.timer?.cancel();
+    // _linklyDataController.resetVariables();
+    // _linklyDataController.showDialogvalue.value = false;
     super.dispose();
   }
 }

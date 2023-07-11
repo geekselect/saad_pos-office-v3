@@ -17,7 +17,6 @@ import 'package:pos/retrofit/server_error.dart';
 import 'package:pos/utils/constants.dart';
 
 import 'package:pos/utils/rounded_corner_app_button.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../../controller/cart_controller.dart';

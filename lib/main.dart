@@ -129,7 +129,10 @@ class _LoginUiAppState extends State<LoginUiApp> {
             // colorScheme: ColorScheme.fromSwatch().copyWith(
             //   secondary: Color(Constants.colorTheme).withOpacity(0.4), // Your accent color
             // ),
-            accentColor: Color(Constants.colorTheme).withOpacity(0.4),
+            colorScheme: ThemeData().colorScheme.copyWith(
+                primary: Color(Constants.colorTheme),
+                secondary: Color(Constants.colorTheme).withOpacity(0.4),
+            ),
             // scaffoldBackgroundColor: Colors.red,
             primarySwatch: Colors.red,
           ),

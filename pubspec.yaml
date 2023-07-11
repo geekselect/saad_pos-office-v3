@@ -60,11 +60,12 @@ dependencies:
   webview_flutter: ^3.0.0
   http_auth: ^1.0.1
   flutter_credit_card: ^3.0.1
-  modal_progress_hud_nsn: ^0.3.0
   intl: ^0.17.0
   image_picker: ^0.8.5+7
-  firebase_database: ^10.0.4
-  firebase_core: ^2.1.1
+  firebase_database: ^10.2.3
+#  firebase_database: ^10.0.4
+#  firebase_core: ^2.1.1
+  firebase_core: ^2.14.0
   http: ^0.13.4
   sizer: ^2.0.15
   math_expressions: ^2.3.0

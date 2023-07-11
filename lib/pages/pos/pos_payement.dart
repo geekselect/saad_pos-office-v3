@@ -2080,7 +2080,14 @@ class _PosPaymentState extends State<PosPayment> {
   //   totalAmountController.text = discountedTotal.toStringAsFixed(2);
   // }
 
-
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _linklyDataController.timer?.cancel();
+    _linklyDataController.resetVariables();
+    _linklyDataController.showDialogvalue.value = false;
+  }
 
   @override
   Widget build(BuildContext context) {
