@@ -127,6 +127,7 @@
 // }
 
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
@@ -216,13 +217,14 @@ class AuthController extends GetxController {
     try {
       Constants.onLoading(context);
       Uri loginLink = Uri.parse('${Constants.vendorBaseLink}login');
+      String? token = await FirebaseMessaging.instance.getToken();
       var response = await http.post(
         loginLink,
         body: {
           'email_id': email,
           'password': password,
           // 'vendor_id': Constants.vendorId.toString(),
-          'deviceToken': '',
+          'deviceToken': token == null ? '' : token,
         },
       );
       // print(response.statusCode);
@@ -237,7 +239,7 @@ class AuthController extends GetxController {
         sharedPreferences?.setBool(Constants.isKitchenLoggedIn, true);
         sharedPreferences?.setString(Constants.vendorId.toString(), vendor.data!.vendorId!.toString());
 
-        OrderController orderController = Get.find<OrderController>();
+        OrderController orderController = Get.put(OrderController());
         Constants.hideDialog(context);
         await orderController.getOrders('NewOrders');
         Get.to(() => OrderScreen(title: 'Kitchen', apiName: 'NewOrders'));

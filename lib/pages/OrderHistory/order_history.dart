@@ -1794,6 +1794,14 @@ class OrderHistory extends StatelessWidget {
             return Future.value(true);
           },
           child: Scaffold(
+            // floatingActionButton: FloatingActionButton(onPressed: () async {
+            //   await SharedPreferences.getInstance().then((value) {
+            //     var a = value.getString(Constants.loginUserId);
+            //     print("a ${a}");
+            //   });
+            // },
+            //
+            // ),
             appBar: ApplicationToolbarWithClrBtn(
               appbarTitle: 'Order History',
               strButtonTitle: "",

@@ -9,12 +9,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pos/controller/auto_printer_controller.dart';
 import 'package:pos/controller/dining_cart_controller.dart';
 import 'package:pos/controller/order_custimization_controller.dart';
 import 'package:pos/pages/order/OrdersScreen.dart';
 import 'package:pos/pages/pos/pos_menu.dart';
 import 'package:pos/pages/selection_screen.dart';
+import 'package:pos/received_notification.dart';
 import 'package:pos/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'controller/auth_controller.dart';
@@ -23,6 +25,29 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'controller/order_controller.dart';
 import 'controller/order_history_controller.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+  print(message.data);
+}
+void selectNotification(NotificationResponse? notificationResponse) async {
+  print('payload');
+  print(notificationResponse?.payload);
+  //Handle notification tapped logic here
+}
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    '12345', // id
+    'High Importance Notifications', // title
+    description: 'This channel is used for important notifications.', // description
+    importance: Importance.high,
+    playSound: true);
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
 class CustomImageCache extends WidgetsFlutterBinding {
   @override
@@ -57,6 +82,106 @@ void main() async {
   }
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('app_icon');
+  final List<DarwinNotificationCategory> darwinNotificationCategories =
+  <DarwinNotificationCategory>[
+    DarwinNotificationCategory(
+      darwinNotificationCategoryText,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.text(
+          'text_1',
+          'Action 1',
+          buttonTitle: 'Send',
+          placeholder: 'Placeholder',
+        ),
+      ],
+    ),
+    DarwinNotificationCategory(
+      darwinNotificationCategoryPlain,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.plain('id_1', 'Action 1'),
+        DarwinNotificationAction.plain(
+          'id_2',
+          'Action 2 (destructive)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.destructive,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          navigationActionId,
+          'Action 3 (foreground)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.foreground,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          'id_4',
+          'Action 4 (auth required)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.authenticationRequired,
+          },
+        ),
+      ],
+      options: <DarwinNotificationCategoryOption>{
+        DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
+      },
+    )
+  ];
+  final DarwinInitializationSettings initializationSettingsDarwin =
+  DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: false,
+    requestSoundPermission: false,
+    onDidReceiveLocalNotification:
+        (int id, String? title, String? body, String? payload) async {
+      //   didReceiveLocalNotificationSubject.add(
+      //     ReceivedNotification(
+      //       id: id,
+      //       title: title,
+      //       body: body,
+      //       payload: payload,
+      //     ),
+      //   );
+    },
+    notificationCategories: darwinNotificationCategories,
+  );
+  final InitializationSettings initializationSettings =
+  InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+      macOS: null);
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onDidReceiveNotificationResponse: selectNotification);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message)async {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    // If `onMessage` is triggered with a notification, construct our own
+    // local notification to show to users using the created channel.
+    if (notification != null && android != null) {
+      print(channel.id);
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              '12345', // id
+              'High Importance Notifications',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker',
+              showWhen: false,
+              styleInformation: BigTextStyleInformation(notification.body??''),
+              // other properties...
+            ),
+          ));
+    }
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(LoginUiApp(
     sharedPreferences: prefs,
   ));

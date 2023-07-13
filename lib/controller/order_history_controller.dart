@@ -121,8 +121,8 @@ class OrderHistoryController extends GetxController {
             '144')
         .onChildChanged
         .listen((event) {
-      print("Event Trigger ${event}");
-      callGetOrderHistoryList();
+      print("Event Trigger ${event.snapshot.value}");
+      getOrders();
     });
   }
 
