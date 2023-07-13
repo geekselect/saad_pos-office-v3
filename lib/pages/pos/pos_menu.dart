@@ -223,6 +223,7 @@ class _PosMenuState extends State<PosMenu> {
   void _openDrawer() {
     _scaffoldKey.currentState?.openDrawer();
   }
+
   @override
   void initState() {
     sidebarGridTileList = [
@@ -462,7 +463,7 @@ class _PosMenuState extends State<PosMenu> {
       ),
       SideBarGridTile(
         icon: Icons.create_new_folder,
-        title: 'Create',
+        title: 'Create Shift',
         onTap: () {
           shiftController.getShiftAllDetails(context).then((value) {});
           Get.dialog(
@@ -665,32 +666,10 @@ class _PosMenuState extends State<PosMenu> {
         title: 'Reload',
         onTap: _reloadScreen,
       ),
-      SideBarGridTile(
-        icon: Icons.logout,
-        title: 'Logout',
-        onTap: () async {
-          if (shiftController.cartController.cartMaster != null) {
-            shiftController.cartController.cartMaster!.cart.clear();
-          }
-          SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-          sharedPrefs.remove(Constants.isLoggedIn);
 
-          _autoPrinterController.autoPrint.value = true;
-          _autoPrinterController.autoPrintKitchen.value = true;
-          sharedPrefs.setBool(
-              'autoPrintPOS', _autoPrinterController.autoPrint.value);
-          sharedPrefs.setBool(
-              'autoPrintKitchen', _autoPrinterController.autoPrint.value);
-          Get.deleteAll();
-          DefaultCacheManager manager =  DefaultCacheManager();
-          manager.emptyCache();
-          clearCaches();
-          Get.offAll(() => SelectionScreen());
-        },
-      ),
       SideBarGridTile(
         icon: Icons.payments,
-        title: 'Payment',
+        title: 'Linkly Payment',
         onTap:  (){
           if( _orderCustimizationController.strRestaurantLinkly.value == 1 ) {
               print("Linkly");
@@ -714,11 +693,34 @@ class _PosMenuState extends State<PosMenu> {
         title: 'View Changed',
         onTap: _toggleVisibility,
       ),
+      // SideBarGridTile(
+      //   icon: Icons.track_changes,
+      //   title: 'Payments Checks',
+      //   onTap: () {
+      //     Get.to(() => TransactionScreen());
+      //   },
+      // ),
       SideBarGridTile(
-        icon: Icons.track_changes,
-        title: 'Payments Checks',
-        onTap: () {
-          Get.to(() => TransactionScreen());
+        icon: Icons.logout,
+        title: 'Logout',
+        onTap: () async {
+          if (shiftController.cartController.cartMaster != null) {
+            shiftController.cartController.cartMaster!.cart.clear();
+          }
+          SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+          sharedPrefs.remove(Constants.isLoggedIn);
+
+          _autoPrinterController.autoPrint.value = true;
+          _autoPrinterController.autoPrintKitchen.value = true;
+          sharedPrefs.setBool(
+              'autoPrintPOS', _autoPrinterController.autoPrint.value);
+          sharedPrefs.setBool(
+              'autoPrintKitchen', _autoPrinterController.autoPrint.value);
+          Get.deleteAll();
+          DefaultCacheManager manager =  DefaultCacheManager();
+          manager.emptyCache();
+          clearCaches();
+          Get.offAll(() => SelectionScreen());
         },
       ),
     ];
@@ -843,6 +845,31 @@ class _PosMenuState extends State<PosMenu> {
         drawer: Drawer(
           child: Column(
             children: [
+                Container(
+                  width: Get.width,
+                  child: DrawerHeader(
+                    // padding: EdgeInsets.only(top: 30),
+                    decoration: BoxDecoration(
+                      color: Color(Constants.colorTheme),
+                    ),
+                    child: Obx(()=> Column(
+                      children: [
+                        CircleAvatar(
+                              radius: 36,
+                              backgroundImage:
+                              Image.network(_orderCustimizationController.strRestaurantImage.value).image),
+                        Text(
+                            _orderCustimizationController.strRestaurantsName.value,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                          ),
+                      ],
+                    ),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: ListView.builder(
                   itemCount: sidebarGridTileList.length,

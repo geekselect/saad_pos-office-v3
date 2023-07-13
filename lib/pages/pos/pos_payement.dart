@@ -126,7 +126,7 @@ class _PosPaymentState extends State<PosPayment> {
   void initState() {
     getDataShift();
     totalAmountController.text = widget.totalAmount.toString();
-    _printerController.getPrinterDetails();
+    // _printerController.getPrinterDetails();
     _linklyDataController.dialogTitle.value = '';
     _linklyDataController.dialogContent.value = '';
     super.initState();
@@ -2714,6 +2714,7 @@ class _PosPaymentState extends State<PosPayment> {
                                                         onTapped:  () {
                                                           orderPaymentType = 'POS CARD';
                                                           if(_orderCustimizationController.strRestaurantLinkly.value == 1) {
+                                                            _linklyDataController.resetVariables();
                                                             var id = _linklyDataController
                                                                 .uuid.v4();
                                                             _linklyDataController

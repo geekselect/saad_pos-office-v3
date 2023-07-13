@@ -1253,7 +1253,7 @@ class _VendorMenuState extends State<VendorMenu>
                                   ),
                                 ),
 
-                                   Positioned(
+       Positioned(
                                     right: 5,
                                     child: ClipOval(
                                       child: Material(
@@ -1261,24 +1261,23 @@ class _VendorMenuState extends State<VendorMenu>
                                         // Button color
                                         child: GestureDetector(
                                             onTap: () {},
-                                            child: Padding(
+                                            child:    Obx(() => Padding(
                                                 padding: const EdgeInsets.all(
                                                     2.0),
-                                                child:  Obx(() => Text(
-                                                      _cartController.cartTotalQuantity.value != 0 ? _cartController.cartMaster!
-                                                        .cart.length.toString() : '0',
+                                                child: Text(
+                                                      _cartController.cartTotalQuantity.value != 0 ? _cartController.cartMaster != null ? _cartController.cartMaster!
+                                                        .cart.length.toString() : '0' : '0',
                                                     // _cartController
                                                     //     .cartTotalQuantity
                                                     //     .toString(),
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                     )
-                                                ),
-                                                )),
+                                                ))),
                                       ),
                                     ),
-                                  )
                                 ),
+       )
                               ],
                             ),
                           ),

@@ -49,6 +49,7 @@ class PrinterController extends GetxController {
       response = await RestClient(await RetroApi().dioData()).printerData(
         int.parse(vendorId.toString()),
       );
+      print("VVVV");
       printerModel.value = response;
       posIpEditingController.text = printerModel.value.ipPos ?? '';
       kitchenIpEditingController.text = printerModel.value.ipKitchen ?? '';

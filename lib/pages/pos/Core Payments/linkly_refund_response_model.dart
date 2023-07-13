@@ -230,9 +230,9 @@ class BeneathResponse {
   dynamic cardName;
   dynamic rrn;
   DateTime? dateSettlement;
-  double? amtCash;
-  double? amtPurchase;
-  double? amtTip;
+  dynamic amtCash;
+  dynamic amtPurchase;
+  dynamic amtTip;
   dynamic authCode;
   dynamic txnRef;
   dynamic pan;
@@ -241,8 +241,8 @@ class BeneathResponse {
   dynamic accountType;
   Map<String, dynamic>? txnFlags;
   bool? balanceReceived;
-  double? availableBalance;
-  double? clearedFundsBalance;
+  dynamic availableBalance;
+  dynamic clearedFundsBalance;
   bool? success;
   dynamic responseCode;
   dynamic responseText;
@@ -316,7 +316,7 @@ class BeneathResponse {
       stan: json["Stan"],
       // purchaseAnalysisData: List<dynamic>.from(json["PurchaseAnalysisData"].map((x) => x)),
       // receipts: List<Map<String, dynamic>>.from(json["Receipts"].map((x) => x)),
-      purchaseAnalysisData: List<dynamic>.from(json["PurchaseAnalysisData"].map((x) => x)),
+      purchaseAnalysisData: json["PurchaseAnalysisData"] == null ? null : List<dynamic>.from(json["PurchaseAnalysisData"].map((x) => x)),
       receipts: json["Receipts"] == null ? null : List<Map<String, dynamic>>.from(json["Receipts"].map((x) => Map<String, dynamic>.from(x))),
       responseType: json["ResponseType"],
     );

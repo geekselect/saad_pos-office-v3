@@ -1892,6 +1892,8 @@ class _CartScreenState extends State<CartScreen> {
           } else {
             return Scaffold(
               body: Container(
+                height: Get.height,
+                width: Get.width,
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('images/bg-cart.jpg'),

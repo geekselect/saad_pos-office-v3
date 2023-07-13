@@ -221,8 +221,9 @@ class LinklyDataController extends GetxController {
     String appToken = prefs.getString(Constants.headerToken.toString()) ?? '';
     var completer = Completer<void>();
 
-    // var newAmount = (double.parse(Amount) * 100).toInt();
-    var newAmount = (int.parse((double.parse(Amount) * 100).toString())).toInt();
+    var amount = double.parse(Amount);
+    var newAmount = (amount * 100).toInt();
+    print('newAmount $newAmount');
 
     var url = Uri.parse(
         'https://rest.pos.sandbox.cloud.pceftpos.com/v1/sessions/$id/transaction?async=true');
@@ -277,15 +278,18 @@ class LinklyDataController extends GetxController {
     try {
       Constants.onLoading(context);
       var response = await http.post(url, headers: headers, body: body);
-
+print('response ${response.statusCode}');
       if (response.statusCode == 202) {
+        print("rrrrrrrrrrrrrrrrrrrrrr");
         Constants.hideDialog(context);
         linklyModel.value = LinklyModel(
           success: null,
           data: null,
         );
+        showDialogvalue.value = true;
         fetchDataRepeatedly(id, onApproved);
       }  else {
+        print("eeeeeeeeeeeeeeeeeeeeeee");
         linklyDataModel.value.data!.secretKey = null;
         linklyDataModel.value.data!.token = null;
         calllinklyUpdate(context);
@@ -314,7 +318,6 @@ class LinklyDataController extends GetxController {
   ///Perfect only UI Changes
  void fetchDataRepeatedly(String sessionId, Function(int, String) onApproved) {
     fetchData(sessionId);
-    showDialogvalue.value = true;
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       fetchData(sessionId);
       if (linklyModelDynamic.value is Map<String, dynamic> && linklyModelDynamic.value.containsKey('data')) {
@@ -330,47 +333,50 @@ class LinklyDataController extends GetxController {
               List<dynamic> displayText = responseJson['DisplayText'];
               if (displayText[0] == 'TRANSACTION DECLINED') {
                 print("------ beneath above response ------");
+                print(responseJson);
+                print("****** beneath above response ********");
               } else {
-                print("------ above response ------");
-                AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
                 // print("------ above response ------");
-                // print(responseJson);
-                // print("****** above response ********");
+                AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
+                print("------ above response ------");
+                print(responseJson);
+                print("****** above response ********");
                 dialogTitle.value = mapDisplayTextToTitle(aboveResponse.displayText![0]);
                 dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText![0]);
               }
-            } else {
+            }
+            else {
               print("------ beneath response ------");
               print(responseJson);
               print("****** beneath response ********");
               BeneathResponse beneathResponse = BeneathResponse.fromJson(responseJson);
                 if (beneathResponse.responseText == 'APPROVED') {
-                  print("A");
+                  print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                   dialogTitle.value =
                       mapDisplayTextToTitle(beneathResponse.responseText);
                   dialogContent.value =
                       mapDisplayTextToVariable(beneathResponse.responseText);
                   onApproved(placeValue.value, sessionId);
                 } else if (responseJson['ResponseText'] == 'OPERATOR TIMEOUT') {
-                  print("OP");
+                  print("OPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
                   dialogTitle.value =
                       mapDisplayTextToTitle(beneathResponse.responseText);
                   dialogContent.value =
                       mapDisplayTextToVariable(beneathResponse.responseText);
                 } else if (beneathResponse.responseText == 'SYSTEM ERROR') {
-                  print("SE");
+                  print("SEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                   dialogTitle.value =
                       mapDisplayTextToTitle(beneathResponse.responseText);
                   dialogContent.value =
                       mapDisplayTextToVariable(beneathResponse.responseText);
                 } else if (beneathResponse.responseText == 'PINpad Offline') {
-                  print("PO");
+                  print("POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                   dialogTitle.value =
                       mapDisplayTextToTitle(beneathResponse.responseText);
                   dialogContent.value =
                       mapDisplayTextToVariable(beneathResponse.responseText);
                 } else {
-                  print("TD");
+                  print("TDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
                   dialogTitle.value =
                       mapDisplayTextToTitle(beneathResponse.responseText);
                   dialogContent.value = mapDisplayTextToVariable(
@@ -379,7 +385,7 @@ class LinklyDataController extends GetxController {
 
                 timer.cancel();
                 Future.delayed(Duration(seconds: 3), () {
-                  print("F");
+                  print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
                   showDialogvalue.value = false;
                   resetVariables();
                   return;
@@ -410,29 +416,18 @@ class LinklyDataController extends GetxController {
                 if (responseJson.containsKey('DisplayText')) {
                   List<dynamic> displayText = responseJson['DisplayText'];
                   if (displayText[0] == 'TRANSACTION DECLINED') {
-                    // print("------ beneath above response ------");
-                    // print(responseJson);
-                    // print("****** beneath above response ********");
                     print("BA");
                   } else {
-                    // print("------ above response ------");
-                    // // print("${responseJson}");
-                    // dialogTitle.value = mapDisplayTextToTitle(responseJson['DisplayText'][0]);
-                    // dialogContent.value = mapDisplayTextToVariable(responseJson['DisplayText'][0]);
-
                     print("A");
-
                     AboveResponse aboveResponse = AboveResponse.fromJson(responseJson);
-                    // print("------ above response ------");
-                    // print(responseJson);
-                    // print("****** above response ********");
+
                     dialogTitle.value = mapDisplayTextToTitle(aboveResponse.displayText![0]);
                     dialogContent.value = mapDisplayTextToVariable(aboveResponse.displayText![0]);
                   }
                 } else {
                   BeneathResponse beneathResponse = BeneathResponse.fromJson(responseJson);
                   if (beneathResponse.responseText == 'APPROVED') {
-                    print("A");
+                    print("AA");
                     dialogTitle.value =
                         mapDisplayTextToTitle(beneathResponse.responseText);
                     dialogContent.value =
@@ -462,12 +457,7 @@ class LinklyDataController extends GetxController {
                     dialogContent.value = mapDisplayTextToVariable(
                         "your transaction has been declined");
                   }
-
-                  // print("------ beneath response ------");
-                  print("B");
-                  // print(responseJson);
-                  // print("-----------------------------------------------------");
-                  // print("****** beneath response ********");
+                  print("Bara B");
                 }
               }
 
